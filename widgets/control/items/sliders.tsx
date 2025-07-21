@@ -13,8 +13,7 @@ function BrightnessBox() {
    return (
       <overlay
          class={level.as(
-            (v) =>
-               `slider-box brightness-box ${v < 0.16 ? "low-brightness" : ""}`,
+            (v) => `slider-box brightness-box ${v < 0.16 ? "low" : ""}`,
          )}
          valign={Gtk.Align.CENTER}
       >
@@ -44,7 +43,7 @@ function VolumeBox() {
    return (
       <overlay
          class={level.as(
-            (v) => `slider-box volume-box ${v < 0.05 ? "low-volume" : ""}`,
+            (v) => `slider-box volume-box ${v < 0.05 ? "low" : ""}`,
          )}
          valign={Gtk.Align.CENTER}
       >
@@ -72,13 +71,15 @@ function MicrophoneBox() {
    return (
       <overlay
          class={level.as(
-            (v) => `slider-box microphone-box ${v < 0.05 ? "low-mic" : ""}`,
+            (v) => `slider-box microphone-box ${v < 0.05 ? "low" : ""}`,
          )}
          valign={Gtk.Align.CENTER}
       >
          <image
             $type={"overlay"}
-            iconName={mute.as((m) => m ? icons.microphone_muted : icons.microphone)}
+            iconName={mute.as((m) =>
+               m ? icons.microphone_muted : icons.microphone,
+            )}
             pixelSize={20}
             valign={Gtk.Align.CENTER}
             halign={Gtk.Align.START}

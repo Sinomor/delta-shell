@@ -124,8 +124,7 @@ window.control {
       .slider-box {
          border-radius: $widget-radius;
 
-         &.low-volume,
-         &.low-brightness {
+         &.low {
             image {
                color: $fg0;
             }
