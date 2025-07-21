@@ -44,6 +44,7 @@ export const icons = {
    web: "globe-symbolic",
    bell: "bell-symbolic",
    microphone: "mic-symbolic",
+   microphone_muted: "mic-off-symbolic",
    powermenu: {
       sleep: "moon-symbolic",
       reboot: "refresh-cw-symbolic",

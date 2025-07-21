@@ -13,6 +13,7 @@ const [visible, visible_set] = createState(false);
 function OnScreenProgress({ visible }: { visible: Accessor<boolean> }) {
    const brightness = Brightness.get_default();
    const speaker = Wp.get_default()?.get_default_speaker();
+   const mic = Wp.get_default()?.get_default_microphone();
 
    const [iconName, iconName_set] = createState("");
    const [value, value_set] = createState(0);
@@ -58,6 +59,22 @@ function OnScreenProgress({ visible }: { visible: Accessor<boolean> }) {
                   speaker.disconnect(muteconnect);
                });
             }
+            if (mic) {
+               const micVolumeConnect = mic.connect("notify::volume", () => {
+                  if (firstStart) return;
+                  const icon = mic.mute ? icons.microphone_muted : icons.microphone;
+                  show(mic.volume, icon);
+               });
+               const micMuteConnect = mic.connect("notify::mute", () => {
+                  if (firstStart) return;
+                  const icon = mic.mute ? icons.microphone_muted : icons.microphone;
+                  show(mic.volume, icon);
+               });
+               onCleanup(() => {
+                  mic.disconnect(micVolumeConnect);
+                  mic.disconnect(micMuteConnect);
+               });
+            }
          }}
       >
          <overlay class={"osd-main"}>
@@ -78,6 +95,7 @@ function OnScreenProgress({ visible }: { visible: Accessor<boolean> }) {
       </box>
    );
 }
+
 
 export default function (gdkmonitor: Gdk.Monitor) {
    const { BOTTOM, TOP } = Astal.WindowAnchor;
