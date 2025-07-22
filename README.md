@@ -43,6 +43,18 @@ makepkg -si
 yay -S aylurs-gtk-shell-git libastal-meta brightnessctl dart-sass fd bluez tuned-ppd cliphist gpu-screen-recorder wl-clipboard
 ```
 
+3. Clone repo and run
+
+```bash
+git clone https://github.com/Sinomor/delta-shell.git ~/.config/ags
+```
+
+And then you can run it with
+
+```bash
+ags run
+```
+
 </details>
 
 <details>
@@ -63,16 +75,6 @@ nix develop
 No manual installation of dependencies is required when using Nix.
 
 </details>
-
-```bash
-git clone https://github.com/Sinomor/delta-shell.git ~/.config/ags
-```
-
-And then you can run it with
-
-```bash
-ags run
-```
 
 ## Configuration
 
@@ -137,7 +139,10 @@ Config comes with the following defaults:
   },
   "launcher": {
     "width": 500,
-    "margin": 10
+    "margin": 10,
+    "clipboard": {
+        "max_items": 50 // maximum items in clipboard
+    }
   },
   "osd": {
     "width": 300,

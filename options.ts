@@ -64,6 +64,9 @@ const options = mkOptions(configFile, {
    launcher: {
       name: "launcher",
       page: opt<"apps" | "clipboard">("apps"),
+      clipboard: {
+         max_items: opt(50),
+      },
       width: opt(500),
       margin: opt(10),
    },

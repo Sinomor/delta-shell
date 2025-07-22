@@ -43,6 +43,9 @@ async function loadInitialList() {
       console.error("Failed to load clipboard history:", error);
    }
 }
+bash(
+   `wl-paste --watch cliphist -max-items ${options.launcher.clipboard.max_items.get()} store`,
+);
 
 function ClipButton({ item }: { item: string }) {
    const [id, ...contentParts] = item.split("\t");
