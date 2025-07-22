@@ -44,7 +44,8 @@ async function loadInitialList() {
    }
 }
 bash(
-   `wl-paste --watch cliphist -max-items ${options.launcher.clipboard.max_items.get()} store`,
+   `killall -INT wl-paste;
+   wl-paste --watch cliphist -max-items ${options.launcher.clipboard.max_items.get()} store`,
 );
 
 function ClipButton({ item }: { item: string }) {
