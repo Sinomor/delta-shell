@@ -62,12 +62,16 @@ function OnScreenProgress({ visible }: { visible: Accessor<boolean> }) {
             if (mic) {
                const micVolumeConnect = mic.connect("notify::volume", () => {
                   if (firstStart) return;
-                  const icon = mic.mute ? icons.microphone_muted : icons.microphone;
+                  const icon = mic.mute
+                     ? icons.microphone.muted
+                     : icons.microphone.default;
                   show(mic.volume, icon);
                });
                const micMuteConnect = mic.connect("notify::mute", () => {
                   if (firstStart) return;
-                  const icon = mic.mute ? icons.microphone_muted : icons.microphone;
+                  const icon = mic.mute
+                     ? icons.microphone.muted
+                     : icons.microphone.default;
                   show(mic.volume, icon);
                });
                onCleanup(() => {
@@ -95,7 +99,6 @@ function OnScreenProgress({ visible }: { visible: Accessor<boolean> }) {
       </box>
    );
 }
-
 
 export default function (gdkmonitor: Gdk.Monitor) {
    const { BOTTOM, TOP } = Astal.WindowAnchor;

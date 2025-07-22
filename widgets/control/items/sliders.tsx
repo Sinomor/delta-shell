@@ -77,8 +77,8 @@ function MicrophoneBox() {
       >
          <image
             $type={"overlay"}
-            iconName={mute.as((m) =>
-               m ? icons.microphone_muted : icons.microphone,
+            iconName={mute((m) =>
+               m ? icons.microphone.muted : icons.microphone.default,
             )}
             pixelSize={20}
             valign={Gtk.Align.CENTER}
