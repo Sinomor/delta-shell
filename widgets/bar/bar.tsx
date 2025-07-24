@@ -1,5 +1,5 @@
 import app from "ags/gtk4/app";
-import { Astal, Gdk } from "ags/gtk4";
+import { Astal, Gdk, Gtk } from "ags/gtk4";
 import { Workspaces } from "./items/workspaces";
 import { Clock } from "./items/clock";
 import { Launcher } from "./items/launcher";
@@ -10,6 +10,7 @@ import { Keyboard } from "./items/keyboard";
 import options, { compositor } from "@/options";
 import AstalNiri from "gi://AstalNiri?version=0.1";
 import { For, onCleanup } from "ags";
+import { hide_all_windows } from "@/windows";
 const { name, position, spacing, modules } = options.bar;
 
 const Bar_Items = {

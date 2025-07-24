@@ -63,6 +63,7 @@ const options = mkOptions(configFile, {
       page: opt<"main" | "network" | "bluetooth" | "powermodes">("main"),
       default_coverArt: `${SRC}/assets/defsong.jpg`,
       width: opt(500),
+      height: opt(0),
       margin: opt(10),
    },
    launcher: {
@@ -72,6 +73,7 @@ const options = mkOptions(configFile, {
          max_items: opt(50),
       },
       width: opt(500),
+      height: opt(0),
       margin: opt(10),
    },
    osd: {

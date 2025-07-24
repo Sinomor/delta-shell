@@ -10,7 +10,7 @@ import Adw from "gi://Adw?version=1";
 import options from "@/options";
 import { PopupWindow } from "../common/popupwindow";
 import { createComputed } from "ags";
-const { name, page, width, margin } = options.launcher;
+const { name, page, width, height, margin } = options.launcher;
 
 function Launcher() {
    return (
@@ -37,12 +37,19 @@ export default function (gdkmonitor: Gdk.Monitor) {
          if (end.includes("launcher")) return Gtk.Align.END;
       },
    );
+   const valign = createComputed([bar.position, height], (pos, height) => {
+      if (height === 0) return Gtk.Align.FILL;
+      if (pos.includes("top")) return Gtk.Align.START;
+      if (pos.includes("bottom")) return Gtk.Align.END;
+   });
 
    return (
       <PopupWindow
          name={name}
          margin={margin.get()}
          width={width.get()}
+         height={height.get()}
+         valign={valign.get()}
          halign={halign.get()}
       >
          <Launcher />

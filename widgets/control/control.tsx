@@ -12,7 +12,7 @@ import { hide_all_windows } from "@/windows";
 import options from "@/options";
 import Adw from "gi://Adw?version=1";
 import { PopupWindow } from "../common/popupwindow";
-const { name, page, width, margin } = options.control;
+const { name, page, width, height, margin } = options.control;
 
 function Control() {
    return (
@@ -41,13 +41,20 @@ export default function (gdkmonitor: Gdk.Monitor) {
          if (end.includes("sysbox")) return Gtk.Align.END;
       },
    );
+   const valign = createComputed([bar.position, height], (pos, height) => {
+      if (height === 0) return Gtk.Align.FILL;
+      if (pos.includes("top")) return Gtk.Align.START;
+      if (pos.includes("bottom")) return Gtk.Align.END;
+   });
 
    return (
       <PopupWindow
          name={name}
          margin={margin.get()}
          width={width.get()}
+         height={height.get()}
          halign={halign.get()}
+         valign={valign.get()}
       >
          <Control />
       </PopupWindow>

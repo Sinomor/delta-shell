@@ -140,10 +140,12 @@ Config comes with the following defaults:
   },
   "control": {
     "width": 500,
+    "height": 0, // filled when 0
     "margin": 10
   },
   "launcher": {
     "width": 500,
+    "height": 0, // filled when 0
     "margin": 10,
     "clipboard": {
         "max_items": 50 // maximum items in clipboard

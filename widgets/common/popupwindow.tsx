@@ -8,6 +8,7 @@ import Adw from "gi://Adw?version=1";
 type PopupWindowProps = JSX.IntrinsicElements["window"] & {
    children?: any;
    width?: number;
+   height?: number;
    margin?: number;
 };
 
@@ -15,6 +16,7 @@ export function PopupWindow({
    children,
    name,
    width,
+   height,
    margin,
    visible = false,
    halign,
@@ -61,6 +63,7 @@ export function PopupWindow({
             halign={halign}
             valign={valign}
             maximum_size={width}
+            heightRequest={height}
             margin_end={margin}
             margin_start={margin}
             marginBottom={margin}
