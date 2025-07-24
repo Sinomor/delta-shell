@@ -5,6 +5,7 @@ import { onCleanup } from "ags";
 import options from "@/options";
 import BarItem from "@/widgets/common/baritem";
 import { hide_all_windows } from "@/windows";
+import { toggleWindow } from "@/utils/utils";
 const { format } = options.bar.date;
 const { name } = options.calendar;
 
@@ -20,7 +21,7 @@ export function Clock() {
          window={name}
          onPrimaryClick={() => {
             if (!app.get_window(name)?.visible) hide_all_windows();
-            app.toggle_window(name);
+            toggleWindow(name);
          }}
       >
          <label label={time((t) => t)} />

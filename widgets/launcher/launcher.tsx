@@ -42,6 +42,17 @@ export default function (gdkmonitor: Gdk.Monitor) {
       if (pos.includes("top")) return Gtk.Align.START;
       if (pos.includes("bottom")) return Gtk.Align.END;
    });
+   const transitionType = createComputed(
+      [bar.position, bar.modules.start, bar.modules.center, bar.modules.end],
+      (pos, start, center, end) => {
+         if (start.includes("launcher"))
+            return Gtk.RevealerTransitionType.SLIDE_RIGHT;
+         if (center.includes("launcher"))
+            return Gtk.RevealerTransitionType.SLIDE_DOWN;
+         if (end.includes("launcher"))
+            return Gtk.RevealerTransitionType.SLIDE_LEFT;
+      },
+   );
 
    return (
       <PopupWindow
@@ -51,6 +62,7 @@ export default function (gdkmonitor: Gdk.Monitor) {
          height={height.get()}
          valign={valign.get()}
          halign={halign.get()}
+         transitionType={transitionType.get()}
       >
          <Launcher />
       </PopupWindow>

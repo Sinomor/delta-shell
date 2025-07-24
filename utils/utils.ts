@@ -1,4 +1,5 @@
 import { Gdk, Gtk } from "ags/gtk4";
+import app from "ags/gtk4/app";
 import { exec, execAsync } from "ags/process";
 import Gio from "gi://Gio?version=2.0";
 import GLib from "gi://GLib?version=2.0";
@@ -126,4 +127,13 @@ export function isIcon(icon?: string | null) {
 
 export function fileExists(path: string) {
    return GLib.file_test(path, GLib.FileTest.EXISTS);
+}
+
+export function toggleWindow(name: string) {
+   const win = app.get_window(name)!;
+   if (win.visible) {
+      win.hide();
+   } else {
+      win.show();
+   }
 }

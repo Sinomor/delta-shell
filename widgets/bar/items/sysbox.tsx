@@ -15,6 +15,7 @@ import BarItem from "@/widgets/common/baritem";
 import Wp from "gi://AstalWp";
 import { Gtk } from "ags/gtk4";
 import { hide_all_windows } from "@/windows";
+import { toggleWindow } from "@/utils/utils";
 const { name } = options.control;
 const battery = AstalBattery.get_default();
 const bluetooth = AstalBluetooth.get_default();
@@ -41,7 +42,7 @@ export function SysBox() {
          window={name}
          onPrimaryClick={() => {
             if (!app.get_window(name)?.visible) hide_all_windows();
-            app.toggle_window(name);
+            toggleWindow(name);
          }}
       >
          <box spacing={options.bar.spacing}>

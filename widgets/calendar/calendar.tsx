@@ -202,6 +202,13 @@ export default function (gdkmonitor: Gdk.Monitor) {
          if (pos === "bottom") return Gtk.Align.END;
       },
    );
+   const transitionType = createComputed(
+      [bar.position, bar.modules.start, bar.modules.center, bar.modules.end],
+      (pos, start, center, end) => {
+         if (pos === "top") return Gtk.RevealerTransitionType.SLIDE_DOWN;
+         if (pos === "bottom") return Gtk.RevealerTransitionType.SLIDE_UP;
+      },
+   );
 
    return (
       <PopupWindow
@@ -209,6 +216,7 @@ export default function (gdkmonitor: Gdk.Monitor) {
          halign={halign.get()}
          valign={valign.get()}
          margin={margin.get()}
+         transitionType={transitionType.get()}
       >
          <Calendar />
       </PopupWindow>

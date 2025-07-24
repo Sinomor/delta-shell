@@ -4,12 +4,15 @@ import { Accessor, createState } from "ags";
 import { hide_all_windows } from "@/windows";
 import Graphene from "gi://Graphene?version=1.0";
 import Adw from "gi://Adw?version=1";
+import options from "@/options";
 
 type PopupWindowProps = JSX.IntrinsicElements["window"] & {
    children?: any;
    width?: number;
    height?: number;
    margin?: number;
+   transitionType?: Gtk.RevealerTransitionType;
+   transitionDuration?: number;
 };
 
 export function PopupWindow({
@@ -18,13 +21,29 @@ export function PopupWindow({
    width,
    height,
    margin,
-   visible = false,
+   transitionType = Gtk.RevealerTransitionType.SLIDE_DOWN,
+   transitionDuration = options.transition.get(),
    halign,
    valign,
    ...props
 }: PopupWindowProps) {
    const { TOP, BOTTOM, RIGHT, LEFT } = Astal.WindowAnchor;
    let contentbox: Adw.Clamp;
+   const [visible, setVisible] = createState(false);
+   const [revaled, setRevealed] = createState(false);
+
+   function show() {
+      setVisible(true);
+      setRevealed(true);
+   }
+   function hide() {
+      setRevealed(false);
+   }
+
+   function init(self: Gtk.Window) {
+      // override existing show and hide methods
+      Object.assign(self, { show, hide });
+   }
 
    return (
       <window
@@ -36,6 +55,7 @@ export function PopupWindow({
          layer={Astal.Layer.TOP}
          anchor={TOP | BOTTOM | RIGHT | LEFT}
          application={app}
+         $={init}
          onNotifyVisible={({ visible }) => {
             if (visible) contentbox.grab_focus();
          }}
@@ -69,7 +89,16 @@ export function PopupWindow({
             marginBottom={margin}
             marginTop={margin}
          >
-            {children}
+            <revealer
+               transitionType={transitionType}
+               transitionDuration={transitionDuration}
+               revealChild={revaled}
+               onNotifyChildRevealed={({ childRevealed }) =>
+                  setVisible(childRevealed)
+               }
+            >
+               <box class={"window-content"}>{children}</box>
+            </revealer>
          </Adw.Clamp>
       </window>
    );
