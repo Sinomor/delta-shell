@@ -22,14 +22,14 @@ function Entry() {
       <entry
          hexpand
          $={(self) => {
-            appconnect = app.connect("window-toggled", (_, win) => {
+            appconnect = app.connect("window-toggled", async (_, win) => {
                const winName = win.name;
                const visible = win.visible;
                const mode = page.get() == "apps";
 
                if (winName == name && visible && mode) {
                   scrolled.set_vadjustment(null);
-                  text_set("");
+                  await text_set("");
                   self.set_text("");
                   self.grab_focus();
                }

@@ -9,8 +9,18 @@ import { RecordIndicator } from "./items/recordindicator";
 import { Keyboard } from "./items/keyboard";
 import options, { compositor } from "@/options";
 import AstalNiri from "gi://AstalNiri?version=0.1";
-import { onCleanup } from "ags";
-const { name, position, spacing } = options.bar;
+import { For, onCleanup } from "ags";
+const { name, position, spacing, modules } = options.bar;
+
+const Bar_Items = {
+   launcher: () => <Launcher />,
+   workspaces: () => <Workspaces />,
+   clock: () => <Clock />,
+   tray: () => <Tray />,
+   keyboard: () => <Keyboard />,
+   sysbox: () => <SysBox />,
+   record_indicator: () => <RecordIndicator />,
+} as Record<string, any>;
 
 function Start() {
    return (
@@ -20,8 +30,12 @@ function Start() {
          spacing={spacing}
          $={(self) => self.get_first_child()?.add_css_class("first-child")}
       >
-         <Launcher />
-         <Workspaces />
+         <For each={modules.start}>
+            {(module: string) => {
+               const Widget = Bar_Items[module];
+               return Widget ? <Widget /> : <box />;
+            }}
+         </For>
       </box>
    );
 }
@@ -29,7 +43,12 @@ function Start() {
 function Center() {
    return (
       <box $type={"center"} class={"modules-center"} spacing={spacing}>
-         <Clock />
+         <For each={modules.center}>
+            {(module: string) => {
+               const Widget = Bar_Items[module];
+               return Widget ? <Widget /> : <box />;
+            }}
+         </For>
       </box>
    );
 }
@@ -42,10 +61,12 @@ function End() {
          spacing={spacing}
          $={(self) => self.get_last_child()?.add_css_class("last-child")}
       >
-         <RecordIndicator />
-         <Tray />
-         <Keyboard />
-         <SysBox />
+         <For each={modules.end}>
+            {(module: string) => {
+               const Widget = Bar_Items[module];
+               return Widget ? <Widget /> : <box />;
+            }}
+         </For>
       </box>
    );
 }

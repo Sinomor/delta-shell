@@ -127,6 +127,12 @@ Config comes with the following defaults:
   "bar": {
     "position": "top", // "top" | "bottom"
     "height": 52,
+    // available modules: "launcher", "workspaces", "clock", "record_indicator", "tray", "keyboard", "sysbox"
+    "modules": {
+      "start": ["launcher", "workspaces"],
+      "center": ["clock"],
+      "end": ["record_indicator", "tray", "keyboard", "sysbox"]
+    },
     "spacing": 6, // spacing between bar widgets
     "date": {
       "format": "%b %d  %H:%M" // https://docs.gtk.org/glib/method.DateTime.format.html

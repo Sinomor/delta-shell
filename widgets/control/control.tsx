@@ -7,7 +7,7 @@ import { NetworkPage } from "./pages/network";
 import { MainPage } from "./pages/main";
 import { BluetoothPage } from "./pages/bluetooth";
 import { PowerModesPage } from "./pages/powermodes";
-import { onCleanup } from "ags";
+import { createComputed, onCleanup } from "ags";
 import { hide_all_windows } from "@/windows";
 import options from "@/options";
 import Adw from "gi://Adw?version=1";
@@ -32,12 +32,22 @@ function Control() {
 }
 
 export default function (gdkmonitor: Gdk.Monitor) {
+   const { bar } = options;
+   const halign = createComputed(
+      [bar.position, bar.modules.start, bar.modules.center, bar.modules.end],
+      (pos, start, center, end) => {
+         if (start.includes("sysbox")) return Gtk.Align.START;
+         if (center.includes("sysbox")) return Gtk.Align.CENTER;
+         if (end.includes("sysbox")) return Gtk.Align.END;
+      },
+   );
+
    return (
       <PopupWindow
          name={name}
          margin={margin.get()}
          width={width.get()}
-         halign={Gtk.Align.END}
+         halign={halign.get()}
       >
          <Control />
       </PopupWindow>

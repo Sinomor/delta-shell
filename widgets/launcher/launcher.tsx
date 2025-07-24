@@ -9,6 +9,7 @@ import { hide_all_windows } from "@/windows";
 import Adw from "gi://Adw?version=1";
 import options from "@/options";
 import { PopupWindow } from "../common/popupwindow";
+import { createComputed } from "ags";
 const { name, page, width, margin } = options.launcher;
 
 function Launcher() {
@@ -27,12 +28,22 @@ function Launcher() {
 }
 
 export default function (gdkmonitor: Gdk.Monitor) {
+   const { bar } = options;
+   const halign = createComputed(
+      [bar.position, bar.modules.start, bar.modules.center, bar.modules.end],
+      (pos, start, center, end) => {
+         if (start.includes("launcher")) return Gtk.Align.START;
+         if (center.includes("launcher")) return Gtk.Align.CENTER;
+         if (end.includes("launcher")) return Gtk.Align.END;
+      },
+   );
+
    return (
       <PopupWindow
          name={name}
          margin={margin.get()}
          width={width.get()}
-         halign={Gtk.Align.START}
+         halign={halign.get()}
       >
          <Launcher />
       </PopupWindow>

@@ -14,7 +14,8 @@ import options from "@/options";
 import BarItem from "@/widgets/common/baritem";
 import Wp from "gi://AstalWp";
 import { Gtk } from "ags/gtk4";
-import { scrollosd } from "@/widgets/osd/osd";
+import { hide_all_windows } from "@/windows";
+const { name } = options.control;
 const battery = AstalBattery.get_default();
 const bluetooth = AstalBluetooth.get_default();
 const network = AstalNetwork.get_default();
@@ -37,8 +38,11 @@ export function SysBox() {
 
    return (
       <BarItem
-         window={options.control.name}
-         onPrimaryClick={() => app.toggle_window(options.control.name)}
+         window={name}
+         onPrimaryClick={() => {
+            if (!app.get_window(name)?.visible) hide_all_windows();
+            app.toggle_window(name);
+         }}
       >
          <box spacing={options.bar.spacing}>
             <image

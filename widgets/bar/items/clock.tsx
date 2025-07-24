@@ -4,8 +4,9 @@ import { createPoll } from "ags/time";
 import { onCleanup } from "ags";
 import options from "@/options";
 import BarItem from "@/widgets/common/baritem";
-
+import { hide_all_windows } from "@/windows";
 const { format } = options.bar.date;
+const { name } = options.calendar;
 
 export function Clock() {
    const time = createPoll(
@@ -16,8 +17,11 @@ export function Clock() {
 
    return (
       <BarItem
-         window={options.calendar.name}
-         onPrimaryClick={() => app.toggle_window(options.calendar.name)}
+         window={name}
+         onPrimaryClick={() => {
+            if (!app.get_window(name)?.visible) hide_all_windows();
+            app.toggle_window(name);
+         }}
       >
          <label label={time((t) => t)} />
       </BarItem>

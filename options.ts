@@ -47,6 +47,11 @@ const options = mkOptions(configFile, {
    bar: {
       name: "bar",
       spacing: opt(6),
+      modules: {
+         start: opt(["launcher", "workspaces"]),
+         center: opt(["clock"]),
+         end: opt(["record_indicator", "tray", "keyboard", "sysbox"]),
+      },
       height: opt(52),
       position: opt<"top" | "bottom">("top"),
       date: {

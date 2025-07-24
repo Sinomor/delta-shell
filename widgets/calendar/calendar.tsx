@@ -3,7 +3,7 @@ import { icons } from "../../utils/icons";
 import app from "ags/gtk4/app";
 import { Astal, Gdk, Gtk } from "ags/gtk4";
 import Graphene from "gi://Graphene?version=1.0";
-import { createState, For } from "ags";
+import { createComputed, createState, For } from "ags";
 import { hide_all_windows } from "../../windows";
 import options from "@/options";
 import { PopupWindow } from "../common/popupwindow";
@@ -186,15 +186,28 @@ function Calendar() {
 }
 
 export default function (gdkmonitor: Gdk.Monitor) {
+   const { bar } = options;
+   const halign = createComputed(
+      [bar.position, bar.modules.start, bar.modules.center, bar.modules.end],
+      (pos, start, center, end) => {
+         if (start.includes("clock")) return Gtk.Align.START;
+         if (center.includes("clock")) return Gtk.Align.CENTER;
+         if (end.includes("clock")) return Gtk.Align.END;
+      },
+   );
+   const valign = createComputed(
+      [bar.position, bar.modules.start, bar.modules.center, bar.modules.end],
+      (pos, start, center, end) => {
+         if (pos === "top") return Gtk.Align.START;
+         if (pos === "bottom") return Gtk.Align.END;
+      },
+   );
+
    return (
       <PopupWindow
          name={name}
-         halign={Gtk.Align.CENTER}
-         valign={
-            options.bar.position.get() === "top"
-               ? Gtk.Align.START
-               : Gtk.Align.END
-         }
+         halign={halign.get()}
+         valign={valign.get()}
          margin={margin.get()}
       >
          <Calendar />
