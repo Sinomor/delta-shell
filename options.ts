@@ -6,7 +6,6 @@ export const configDir = GLib.get_user_config_dir();
 const configFile = `${configDir}/delta-shell/config.json`;
 
 const options = mkOptions(configFile, {
-   hot_reload: opt<Boolean>(false),
    theme: {
       bg: {
          0: opt("#1d1d20"),

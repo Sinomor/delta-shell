@@ -61,9 +61,7 @@ export default function Bar(gdkmonitor: Gdk.Monitor) {
          class={name}
          gdkmonitor={gdkmonitor}
          exclusivity={Astal.Exclusivity.EXCLUSIVE}
-         anchor={position.as(
-            (p) => (p === "top" ? TOP : BOTTOM) | LEFT | RIGHT,
-         )}
+         anchor={(position.get() === "top" ? TOP : BOTTOM) | LEFT | RIGHT}
          application={app}
       >
          <centerbox class={"bar-main"} heightRequest={options.bar.height}>

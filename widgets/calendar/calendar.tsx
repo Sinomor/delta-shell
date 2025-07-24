@@ -232,9 +232,11 @@ export default function (gdkmonitor: Gdk.Monitor) {
             $={(ref) => (contentbox = ref)}
             focusable
             halign={Gtk.Align.CENTER}
-            valign={options.bar.position.as((p) =>
-               p === "top" ? Gtk.Align.START : Gtk.Align.END,
-            )}
+            valign={
+               options.bar.position.get() === "top"
+                  ? Gtk.Align.START
+                  : Gtk.Align.END
+            }
             marginTop={margin}
             marginBottom={margin}
             orientation={Gtk.Orientation.VERTICAL}

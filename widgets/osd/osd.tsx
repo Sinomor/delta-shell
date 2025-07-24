@@ -109,7 +109,7 @@ export default function (gdkmonitor: Gdk.Monitor) {
          name={name}
          application={app}
          exclusivity={Astal.Exclusivity.IGNORE}
-         anchor={options.bar.position.as((p) => (p === "top" ? BOTTOM : TOP))}
+         anchor={options.bar.position.get() === "top" ? BOTTOM : TOP}
          layer={Astal.Layer.OVERLAY}
          visible={visible((v) => v)}
       >

@@ -86,7 +86,6 @@ Config comes with the following defaults:
 
 ```
 {
-  "hot_reload": false, // apply changes when config file changed
   "theme": {
     "bg": {
       "0": "#1d1d20",
