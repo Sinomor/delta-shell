@@ -4,6 +4,7 @@ import { AppButton } from "../items/app_button";
 import { Gtk } from "ags/gtk4";
 import { createState, For, onCleanup } from "ags";
 import options from "@/options";
+import { hide_all_windows } from "@/windows";
 const { name, page } = options.launcher;
 
 const apps = new Apps.Apps();
@@ -17,6 +18,11 @@ function Entry() {
    onCleanup(() => {
       if (appconnect) app.disconnect(appconnect);
    });
+
+   const onEnter = () => {
+      apps.fuzzy_query(text.get())?.[0].launch();
+      hide_all_windows();
+   };
 
    return (
       <entry
@@ -36,6 +42,7 @@ function Entry() {
             });
          }}
          placeholderText={"Search..."}
+         onActivate={() => onEnter()}
          onNotifyText={(self) => text_set(self.text)}
       />
    );

@@ -7,6 +7,7 @@ import { ClipText } from "../items/clip_text";
 import { ClipColor } from "../items/clip_color";
 import { createComputed, createState, For, onCleanup } from "ags";
 import options from "@/options";
+import { hide_all_windows } from "@/windows";
 const { name, page } = options.launcher;
 
 const colorPatterns = {
@@ -72,6 +73,13 @@ function Entry() {
       if (appconnect) app.disconnect(appconnect);
    });
 
+   const onEnter = () => {
+      const item = list.get()[0];
+      const [id, ...contentParts] = item.split("\t");
+      bash(`cliphist decode ${id} | wl-copy`);
+      hide_all_windows();
+   };
+
    return (
       <entry
          hexpand
@@ -90,6 +98,7 @@ function Entry() {
             });
          }}
          placeholderText={"Search..."}
+         onActivate={() => onEnter()}
          onNotifyText={(self) => text_set(self.text)}
       />
    );
