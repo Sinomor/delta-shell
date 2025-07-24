@@ -6,6 +6,7 @@ import Graphene from "gi://Graphene?version=1.0";
 import { createState, For } from "ags";
 import { hide_all_windows } from "../../windows";
 import options from "@/options";
+import { PopupWindow } from "../common/popupwindow";
 const { name, margin } = options.calendar;
 
 type Day = {
@@ -185,64 +186,18 @@ function Calendar() {
 }
 
 export default function (gdkmonitor: Gdk.Monitor) {
-   const { TOP, BOTTOM, LEFT, RIGHT } = Astal.WindowAnchor;
-   let win: Astal.Window;
-   let contentbox: Gtk.Box;
-
-   function onKey(
-      _e: Gtk.EventControllerKey,
-      keyval: number,
-      _: number,
-      mod: number,
-   ) {
-      if (keyval === Gdk.KEY_Escape) {
-         hide_all_windows();
-      }
-   }
-
-   function onClick(_e: Gtk.GestureClick, _: number, x: number, y: number) {
-      const [, rect] = contentbox.compute_bounds(win);
-      const position = new Graphene.Point({ x, y });
-
-      if (!rect.contains_point(position)) {
-         hide_all_windows();
-      }
-   }
-
    return (
-      <window
-         $={(ref) => (win = ref)}
-         class={name}
+      <PopupWindow
          name={name}
-         namespace={name}
-         gdkmonitor={gdkmonitor}
-         exclusivity={Astal.Exclusivity.NORMAL}
-         anchor={TOP | BOTTOM | LEFT | RIGHT}
-         keymode={Astal.Keymode.ON_DEMAND}
-         layer={Astal.Layer.TOP}
-         application={app}
-         visible={false}
-         onNotifyVisible={({ visible }) => {
-            if (visible) contentbox.grab_focus();
-         }}
+         halign={Gtk.Align.CENTER}
+         valign={
+            options.bar.position.get() === "top"
+               ? Gtk.Align.START
+               : Gtk.Align.END
+         }
+         margin={margin.get()}
       >
-         <Gtk.EventControllerKey onKeyPressed={onKey} />
-         <Gtk.GestureClick onPressed={onClick} />
-         <box
-            $={(ref) => (contentbox = ref)}
-            focusable
-            halign={Gtk.Align.CENTER}
-            valign={
-               options.bar.position.get() === "top"
-                  ? Gtk.Align.START
-                  : Gtk.Align.END
-            }
-            marginTop={margin}
-            marginBottom={margin}
-            orientation={Gtk.Orientation.VERTICAL}
-         >
-            <Calendar />
-         </box>
-      </window>
+         <Calendar />
+      </PopupWindow>
    );
 }

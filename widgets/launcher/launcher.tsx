@@ -8,14 +8,15 @@ import { Clipboard } from "./pages/clipboard";
 import { hide_all_windows } from "@/windows";
 import Adw from "gi://Adw?version=1";
 import options from "@/options";
+import { PopupWindow } from "../common/popupwindow";
 const { name, page, width, margin } = options.launcher;
 
 function Launcher() {
    return (
       <stack
          class="launcher-main"
-         widthRequest={width}
-         transitionDuration={options.transition}
+         widthRequest={width.get()}
+         transitionDuration={options.transition.get()}
          transitionType={Gtk.StackTransitionType.SLIDE_LEFT_RIGHT}
          visibleChildName={page}
       >
@@ -26,56 +27,14 @@ function Launcher() {
 }
 
 export default function (gdkmonitor: Gdk.Monitor) {
-   const { TOP, BOTTOM, LEFT, RIGHT } = Astal.WindowAnchor;
-   let win: Astal.Window;
-   let contentbox: Adw.Clamp;
-
-   function onKey(
-      _e: Gtk.EventControllerKey,
-      keyval: number,
-      _: number,
-      mod: number,
-   ) {
-      if (keyval === Gdk.KEY_Escape) {
-         hide_all_windows();
-      }
-   }
-
-   function onClick(_e: Gtk.GestureClick, _: number, x: number, y: number) {
-      const [, rect] = contentbox.compute_bounds(win);
-      const position = new Graphene.Point({ x, y });
-
-      if (!rect.contains_point(position)) {
-         hide_all_windows();
-      }
-   }
-
    return (
-      <window
-         $={(ref) => (win = ref)}
-         class={name}
+      <PopupWindow
          name={name}
-         namespace={name}
-         gdkmonitor={gdkmonitor}
-         exclusivity={Astal.Exclusivity.NORMAL}
-         anchor={TOP | BOTTOM | LEFT | RIGHT}
-         keymode={Astal.Keymode.ON_DEMAND}
-         layer={Astal.Layer.TOP}
-         application={app}
-         visible={false}
+         margin={margin.get()}
+         width={width.get()}
+         halign={Gtk.Align.START}
       >
-         <Gtk.EventControllerKey onKeyPressed={onKey} />
-         <Gtk.GestureClick onPressed={onClick} />
-         <Adw.Clamp
-            $={(ref) => (contentbox = ref)}
-            halign={Gtk.Align.START}
-            maximum_size={width}
-            marginStart={margin}
-            marginBottom={margin}
-            marginTop={margin}
-         >
-            <Launcher />
-         </Adw.Clamp>
-      </window>
+         <Launcher />
+      </PopupWindow>
    );
 }

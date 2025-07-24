@@ -8,6 +8,7 @@ import { exec } from "ags/process";
 import { createBinding } from "ags";
 import { hide_all_windows } from "@/windows";
 import options from "@/options";
+import { PopupWindow } from "../common/popupwindow";
 const { name } = options.verification;
 const powermenu = Powermenu.get_default();
 
@@ -36,57 +37,13 @@ function Verification() {
 }
 
 export default function (gdkmonitor: Gdk.Monitor) {
-   const { TOP, BOTTOM, LEFT, RIGHT } = Astal.WindowAnchor;
-   let win: Astal.Window;
-   let contentbox: Gtk.Box;
-
-   function onKey(
-      _e: Gtk.EventControllerKey,
-      keyval: number,
-      _: number,
-      mod: number,
-   ) {
-      if (keyval === Gdk.KEY_Escape) {
-         hide_all_windows();
-      }
-   }
-
-   function onClick(_e: Gtk.GestureClick, _: number, x: number, y: number) {
-      const [, rect] = contentbox.compute_bounds(win);
-      const position = new Graphene.Point({ x, y });
-
-      if (!rect.contains_point(position)) {
-         hide_all_windows();
-      }
-   }
-
    return (
-      <window
-         $={(ref) => (win = ref)}
-         class={name}
+      <PopupWindow
          name={name}
-         gdkmonitor={gdkmonitor}
-         exclusivity={Astal.Exclusivity.IGNORE}
-         anchor={TOP | BOTTOM | LEFT | RIGHT}
-         keymode={Astal.Keymode.ON_DEMAND}
-         layer={Astal.Layer.TOP}
-         application={app}
-         visible={false}
-         onNotifyVisible={({ visible }) => {
-            if (visible) contentbox.grab_focus();
-         }}
+         valign={Gtk.Align.CENTER}
+         halign={Gtk.Align.CENTER}
       >
-         <Gtk.EventControllerKey onKeyPressed={onKey} />
-         <Gtk.GestureClick onPressed={onClick} />
-         <box
-            $={(ref) => (contentbox = ref)}
-            focusable
-            halign={Gtk.Align.CENTER}
-            valign={Gtk.Align.CENTER}
-            orientation={Gtk.Orientation.VERTICAL}
-         >
-            <Verification />
-         </box>
-      </window>
+         <Verification />
+      </PopupWindow>
    );
 }
