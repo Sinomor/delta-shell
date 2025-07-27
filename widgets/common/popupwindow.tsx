@@ -10,7 +10,11 @@ type PopupWindowProps = JSX.IntrinsicElements["window"] & {
    children?: any;
    width?: number;
    height?: number;
-   margin?: number;
+   margin_top?: number;
+   margin_bottom?: number;
+   margin_start?: number;
+   margin_end?: number;
+   gdkmonitor: Gdk.Monitor;
    transitionType?: Gtk.RevealerTransitionType;
    transitionDuration?: number;
 };
@@ -20,11 +24,15 @@ export function PopupWindow({
    name,
    width,
    height,
-   margin,
+   margin_top,
+   margin_bottom,
+   margin_start,
+   margin_end,
+   gdkmonitor,
    transitionType = Gtk.RevealerTransitionType.SLIDE_DOWN,
    transitionDuration = options.transition.get(),
-   halign,
-   valign,
+   halign = Gtk.Align.CENTER,
+   valign = Gtk.Align.CENTER,
    ...props
 }: PopupWindowProps) {
    const { TOP, BOTTOM, RIGHT, LEFT } = Astal.WindowAnchor;
@@ -53,6 +61,7 @@ export function PopupWindow({
          namespace={name}
          keymode={Astal.Keymode.ON_DEMAND}
          layer={Astal.Layer.TOP}
+         gdkmonitor={gdkmonitor}
          anchor={TOP | BOTTOM | RIGHT | LEFT}
          application={app}
          $={init}
@@ -77,29 +86,29 @@ export function PopupWindow({
                }
             }}
          />
-         <Adw.Clamp
-            $={(self) => (contentbox = self)}
-            focusable
+         <revealer
+            transitionType={transitionType}
+            transitionDuration={transitionDuration}
+            revealChild={revaled}
             halign={halign}
             valign={valign}
-            maximum_size={width}
-            heightRequest={height}
-            margin_end={margin}
-            margin_start={margin}
-            marginBottom={margin}
-            marginTop={margin}
+            onNotifyChildRevealed={({ childRevealed }) =>
+               setVisible(childRevealed)
+            }
          >
-            <revealer
-               transitionType={transitionType}
-               transitionDuration={transitionDuration}
-               revealChild={revaled}
-               onNotifyChildRevealed={({ childRevealed }) =>
-                  setVisible(childRevealed)
-               }
+            <Adw.Clamp
+               $={(self) => (contentbox = self)}
+               focusable
+               maximum_size={width}
+               heightRequest={height}
+               margin_top={margin_top}
+               margin_bottom={margin_bottom}
+               margin_start={margin_start}
+               margin_end={margin_end}
             >
-               <box class={"window-content"}>{children}</box>
-            </revealer>
-         </Adw.Clamp>
+               {children}
+            </Adw.Clamp>
+         </revealer>
       </window>
    );
 }

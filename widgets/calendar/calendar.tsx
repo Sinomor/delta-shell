@@ -7,6 +7,7 @@ import { createComputed, createState, For } from "ags";
 import { hide_all_windows } from "../../windows";
 import options from "@/options";
 import { PopupWindow } from "../common/popupwindow";
+import { BarItemPopup } from "../common/baritempopup";
 const { name, margin } = options.calendar;
 
 type Day = {
@@ -186,39 +187,14 @@ function Calendar() {
 }
 
 export default function (gdkmonitor: Gdk.Monitor) {
-   const { bar } = options;
-   const halign = createComputed(
-      [bar.position, bar.modules.start, bar.modules.center, bar.modules.end],
-      (pos, start, center, end) => {
-         if (start.includes("clock")) return Gtk.Align.START;
-         if (center.includes("clock")) return Gtk.Align.CENTER;
-         if (end.includes("clock")) return Gtk.Align.END;
-      },
-   );
-   const valign = createComputed(
-      [bar.position, bar.modules.start, bar.modules.center, bar.modules.end],
-      (pos, start, center, end) => {
-         if (pos === "top") return Gtk.Align.START;
-         if (pos === "bottom") return Gtk.Align.END;
-      },
-   );
-   const transitionType = createComputed(
-      [bar.position, bar.modules.start, bar.modules.center, bar.modules.end],
-      (pos, start, center, end) => {
-         if (pos === "top") return Gtk.RevealerTransitionType.SLIDE_DOWN;
-         if (pos === "bottom") return Gtk.RevealerTransitionType.SLIDE_UP;
-      },
-   );
-
    return (
-      <PopupWindow
+      <BarItemPopup
          name={name}
-         halign={halign.get()}
-         valign={valign.get()}
+         module={"clock"}
+         gdkmonitor={gdkmonitor}
          margin={margin.get()}
-         transitionType={transitionType.get()}
       >
          <Calendar />
-      </PopupWindow>
+      </BarItemPopup>
    );
 }

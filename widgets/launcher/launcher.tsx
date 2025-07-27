@@ -10,6 +10,7 @@ import Adw from "gi://Adw?version=1";
 import options from "@/options";
 import { PopupWindow } from "../common/popupwindow";
 import { createComputed } from "ags";
+import { BarItemPopup } from "../common/baritempopup";
 const { name, page, width, height, margin } = options.launcher;
 
 function Launcher() {
@@ -28,43 +29,16 @@ function Launcher() {
 }
 
 export default function (gdkmonitor: Gdk.Monitor) {
-   const { bar } = options;
-   const halign = createComputed(
-      [bar.position, bar.modules.start, bar.modules.center, bar.modules.end],
-      (pos, start, center, end) => {
-         if (start.includes("launcher")) return Gtk.Align.START;
-         if (center.includes("launcher")) return Gtk.Align.CENTER;
-         if (end.includes("launcher")) return Gtk.Align.END;
-      },
-   );
-   const valign = createComputed([bar.position, height], (pos, height) => {
-      if (height === 0) return Gtk.Align.FILL;
-      if (pos.includes("top")) return Gtk.Align.START;
-      if (pos.includes("bottom")) return Gtk.Align.END;
-   });
-   const transitionType = createComputed(
-      [bar.position, bar.modules.start, bar.modules.center, bar.modules.end],
-      (pos, start, center, end) => {
-         if (start.includes("launcher"))
-            return Gtk.RevealerTransitionType.SLIDE_RIGHT;
-         if (center.includes("launcher"))
-            return Gtk.RevealerTransitionType.SLIDE_DOWN;
-         if (end.includes("launcher"))
-            return Gtk.RevealerTransitionType.SLIDE_LEFT;
-      },
-   );
-
    return (
-      <PopupWindow
+      <BarItemPopup
          name={name}
+         module={"launcher"}
+         gdkmonitor={gdkmonitor}
          margin={margin.get()}
          width={width.get()}
          height={height.get()}
-         valign={valign.get()}
-         halign={halign.get()}
-         transitionType={transitionType.get()}
       >
          <Launcher />
-      </PopupWindow>
+      </BarItemPopup>
    );
 }

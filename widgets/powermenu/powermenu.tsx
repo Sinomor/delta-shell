@@ -51,11 +51,7 @@ function PowerMenu() {
 
 export default function (gdkmonitor: Gdk.Monitor) {
    return (
-      <PopupWindow
-         name={name}
-         valign={Gtk.Align.CENTER}
-         halign={Gtk.Align.CENTER}
-      >
+      <PopupWindow name={name} gdkmonitor={gdkmonitor}>
          <PowerMenu />
       </PopupWindow>
    );
