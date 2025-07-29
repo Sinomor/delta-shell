@@ -26,9 +26,7 @@ function AppButton({ app, client }: AppButtonProps) {
 
    const iconName = app
       ? (icons.apps[app.iconName] ?? app.iconName)
-      : client.app_id
-        ? icons.apps[client.app_id]
-        : client.app_id;
+      : icons.apps[client.app_id] || "application-x-executable";
 
    return (
       <box cssClasses={classes}>
