@@ -52,7 +52,9 @@ bash(
 function ClipButton({ item }: { item: string }) {
    const [id, ...contentParts] = item.split("\t");
    const content = contentParts.join(" ").trim();
-   const isImage = content.match(imagePattern);
+   const isImage =
+      options.launcher.clipboard.image_preview.get() &&
+      content.match(imagePattern);
    const isColor = Object.entries(colorPatterns).find(([_, pattern]) =>
       pattern.test(content.trim()),
    );

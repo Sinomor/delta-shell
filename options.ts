@@ -72,6 +72,7 @@ const options = mkOptions(configFile, {
       page: opt<"apps" | "clipboard">("apps"),
       clipboard: {
          max_items: opt(50),
+         image_preview: opt<boolean>(false),
       },
       width: opt(500),
       height: opt(0),

@@ -154,6 +154,7 @@ Config comes with the following defaults:
     "margin": 10,
     "clipboard": {
         "max_items": 50 // maximum items in clipboard
+        "image_preview": false // it may works bad
     }
   },
   "osd": {

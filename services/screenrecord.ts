@@ -44,7 +44,7 @@ export default class ScreenRecord extends GObject.Object {
       this.#file = `${this.#recordings}/${now()}.mp4`;
 
       bash(
-         `gpu-screen-recorder -w screen -f 30 -a default_output -q high -o ${this.#file}`,
+         `gpu-screen-recorder -w screen -f 60 -a default_output -o ${this.#file}`,
       );
 
       this.#recording = true;
