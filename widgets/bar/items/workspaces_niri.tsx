@@ -7,6 +7,7 @@ import { bash } from "@/utils/utils";
 import { icons } from "@/utils/icons";
 import BarItem from "@/widgets/common/baritem";
 const niri = AstalNiri.get_default();
+const apps_icons = options.bar.apps_icons.get();
 
 type AppButtonProps = {
    app?: AstalApps.Application;
@@ -25,8 +26,8 @@ function AppButton({ app, client }: AppButtonProps) {
    });
 
    const iconName = app
-      ? (icons.apps[app.iconName] ?? app.iconName)
-      : icons.apps[client.app_id] || "application-x-executable";
+      ? (apps_icons[app.iconName] ?? app.iconName)
+      : apps_icons[client.app_id] || icons.apps_default;
 
    return (
       <box cssClasses={classes}>

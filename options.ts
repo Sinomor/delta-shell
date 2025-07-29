@@ -54,6 +54,7 @@ const options = mkOptions(configFile, {
       },
       height: opt(52),
       position: opt<"top" | "bottom">("top"),
+      apps_icons: opt({}) as Record<string, any>,
       date: {
          format: opt("%b %d  %H:%M"),
       },

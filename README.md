@@ -133,6 +133,11 @@ Config comes with the following defaults:
       "center": ["clock"],
       "end": ["record_indicator", "tray", "keyboard", "sysbox"]
     },
+    // to use custom icons for apps you need to add
+    // window_class: iconname
+    // where iconname is a file name of icon that should be
+    // located at ~/.config/ags/assets/icons/hicolor/scalable/apps/
+    "apps_icons": {}
     "spacing": 6, // spacing between bar widgets
     "date": {
       "format": "%b %d  %H:%M" // https://docs.gtk.org/glib/method.DateTime.format.html

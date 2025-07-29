@@ -7,6 +7,7 @@ import options from "@/options";
 import { icons } from "@/utils/icons";
 import BarItem from "@/widgets/common/baritem";
 const hyprland = AstalHyprland.get_default();
+const apps_icons = options.bar.apps_icons.get();
 
 type AppButtonProps = {
    app?: AstalApps.Application;
@@ -31,8 +32,8 @@ function AppButton({ app, client }: AppButtonProps) {
    );
 
    const iconName = app
-      ? (icons.apps[app.iconName] ?? app.iconName)
-      : icons.apps[client.class] || "application-x-executable";
+      ? (apps_icons[app.iconName] ?? app.iconName)
+      : apps_icons[client.class] || icons.apps_default;
 
    return (
       <box cssClasses={classes}>
