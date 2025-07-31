@@ -60,7 +60,7 @@ export function PopupWindow({
          name={name}
          namespace={name}
          keymode={Astal.Keymode.ON_DEMAND}
-         layer={Astal.Layer.TOP}
+         layer={Astal.Layer.OVERLAY}
          gdkmonitor={gdkmonitor}
          anchor={TOP | BOTTOM | RIGHT | LEFT}
          application={app}
