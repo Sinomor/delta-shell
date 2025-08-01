@@ -9,11 +9,11 @@ import options from "@/options";
 import Brightness from "@/services/brightness";
 const { name, margin, width } = options.osd;
 const [visible, visible_set] = createState(false);
+const [revealed, setRevealed] = createState(false);
 
 function OnScreenProgress({ visible }: { visible: Accessor<boolean> }) {
    const brightness = Brightness.get_default();
    const speaker = Wp.get_default()?.get_default_speaker();
-   const mic = Wp.get_default()?.get_default_microphone();
 
    const [iconName, iconName_set] = createState("");
    const [value, value_set] = createState(0);
@@ -22,13 +22,16 @@ function OnScreenProgress({ visible }: { visible: Accessor<boolean> }) {
 
    function show(v: number, icon: string) {
       visible_set(true);
+      setRevealed(true);
       value_set(v);
       iconName_set(icon);
       count++;
 
       timeout(options.osd.timeout.get(), () => {
          count--;
-         if (count === 0) visible_set(false);
+         if (count === 0) {
+            setRevealed(false);
+         }
       });
    }
 
@@ -81,7 +84,7 @@ function OnScreenProgress({ visible }: { visible: Accessor<boolean> }) {
 }
 
 export default function (gdkmonitor: Gdk.Monitor) {
-   const { BOTTOM, TOP } = Astal.WindowAnchor;
+   const { TOP, BOTTOM, RIGHT, LEFT } = Astal.WindowAnchor;
 
    return (
       <window
@@ -89,13 +92,32 @@ export default function (gdkmonitor: Gdk.Monitor) {
          name={name}
          application={app}
          exclusivity={Astal.Exclusivity.IGNORE}
-         anchor={options.bar.position.get() === "top" ? BOTTOM : TOP}
+         anchor={TOP | BOTTOM | RIGHT | LEFT}
          layer={Astal.Layer.OVERLAY}
-         visible={visible((v) => v)}
+         visible={visible}
       >
-         <box marginBottom={margin} margin_top={margin}>
-            <OnScreenProgress visible={visible} />
-         </box>
+         <revealer
+            transitionType={
+               options.bar.position.get().includes("top")
+                  ? Gtk.RevealerTransitionType.SLIDE_UP
+                  : Gtk.RevealerTransitionType.SLIDE_DOWN
+            }
+            transitionDuration={options.transition}
+            halign={Gtk.Align.CENTER}
+            valign={
+               options.bar.position.get() === "top"
+                  ? Gtk.Align.END
+                  : Gtk.Align.START
+            }
+            revealChild={revealed}
+            onNotifyChildRevealed={({ childRevealed }) =>
+               visible_set(childRevealed)
+            }
+         >
+            <box marginBottom={margin}>
+               <OnScreenProgress visible={visible} />
+            </box>
+         </revealer>
       </window>
    );
 }
