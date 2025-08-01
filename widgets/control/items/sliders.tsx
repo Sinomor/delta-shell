@@ -63,36 +63,6 @@ function VolumeBox() {
    );
 }
 
-function MicrophoneBox() {
-   const mic = AstalWp.get_default()?.audio!.defaultMicrophone!;
-   const level = createBinding(mic, "volume");
-   const mute = createBinding(mic, "mute");
-
-   return (
-      <overlay
-         class={level.as(
-            (v) => `slider-box microphone-box ${v < 0.05 ? "low" : ""}`,
-         )}
-         valign={Gtk.Align.CENTER}
-      >
-         <image
-            $type={"overlay"}
-            iconName={mute((m) =>
-               m ? icons.microphone.muted : icons.microphone.default,
-            )}
-            pixelSize={20}
-            valign={Gtk.Align.CENTER}
-            halign={Gtk.Align.START}
-         />
-         <slider
-            onChangeValue={({ value }) => mic.set_volume(value)}
-            hexpand
-            value={level}
-         />
-      </overlay>
-   );
-}
-
 export function Sliders() {
    return (
       <box
@@ -101,7 +71,6 @@ export function Sliders() {
          class={"sliders"}
       >
          <VolumeBox />
-         <MicrophoneBox />
          {dependencies("brightnessctl") && <BrightnessBox />}
       </box>
    );

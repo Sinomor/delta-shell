@@ -59,26 +59,6 @@ function OnScreenProgress({ visible }: { visible: Accessor<boolean> }) {
                   speaker.disconnect(muteconnect);
                });
             }
-            if (mic) {
-               const micVolumeConnect = mic.connect("notify::volume", () => {
-                  if (firstStart) return;
-                  const icon = mic.mute
-                     ? icons.microphone.muted
-                     : icons.microphone.default;
-                  show(mic.volume, icon);
-               });
-               const micMuteConnect = mic.connect("notify::mute", () => {
-                  if (firstStart) return;
-                  const icon = mic.mute
-                     ? icons.microphone.muted
-                     : icons.microphone.default;
-                  show(mic.volume, icon);
-               });
-               onCleanup(() => {
-                  mic.disconnect(micVolumeConnect);
-                  mic.disconnect(micMuteConnect);
-               });
-            }
          }}
       >
          <overlay class={"osd-main"}>
