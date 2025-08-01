@@ -96,6 +96,14 @@ const options = mkOptions(configFile, {
    },
    notifications_popup: {
       name: "notifications_popup",
+      position: opt<
+         | "top"
+         | "top_left"
+         | "top_right"
+         | "bottom"
+         | "bottom_left"
+         | "bottom_right"
+      >("top"),
       timeout: opt(3000),
       margin: opt(10),
    },

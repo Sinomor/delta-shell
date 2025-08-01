@@ -153,8 +153,8 @@ Config comes with the following defaults:
     "height": 0, // filled when 0
     "margin": 10,
     "clipboard": {
-        "max_items": 50 // maximum items in clipboard
-        "image_preview": false // it may works bad
+        "max_items": 50, // maximum items in clipboard
+        "image_preview": false, // it may works bad
     }
   },
   "osd": {
@@ -167,6 +167,7 @@ Config comes with the following defaults:
   },
   "notifications_popup": {
     "margin": 10,
+    "position": "top", // "top" | "top_left" | "top_right" | "bottom" | "bottom_left"| "bottom_right"
     "timeout": 3000
   }
 }

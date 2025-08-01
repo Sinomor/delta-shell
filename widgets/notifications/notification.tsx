@@ -143,7 +143,11 @@ export function Notification({
 
    return (
       <revealer
-         transitionType={Gtk.RevealerTransitionType.SLIDE_DOWN}
+         transitionType={
+            options.notifications_popup.position.get().includes("top")
+               ? Gtk.RevealerTransitionType.SLIDE_DOWN
+               : Gtk.RevealerTransitionType.SLIDE_UP
+         }
          transitionDuration={options.transition}
          revealChild={revaled}
       >

@@ -60,6 +60,49 @@ export function NotificationPopup(gdkmonitor: Gdk.Monitor) {
       );
    }
 
+   const halign = createComputed(
+      [options.notifications_popup.position],
+      (position) => {
+         switch (position) {
+            case "top":
+               return Gtk.Align.CENTER;
+            case "bottom":
+               return Gtk.Align.CENTER;
+            case "top_left":
+               return Gtk.Align.START;
+            case "top_right":
+               return Gtk.Align.END;
+            case "bottom_left":
+               return Gtk.Align.START;
+            case "bottom_right":
+               return Gtk.Align.END;
+            default:
+               return Gtk.Align.CENTER;
+         }
+      },
+   );
+   const valign = createComputed(
+      [options.notifications_popup.position],
+      (position) => {
+         switch (position) {
+            case "top":
+               return Gtk.Align.START;
+            case "bottom":
+               return Gtk.Align.END;
+            case "top_left":
+               return Gtk.Align.START;
+            case "top_right":
+               return Gtk.Align.START;
+            case "bottom_left":
+               return Gtk.Align.END;
+            case "bottom_right":
+               return Gtk.Align.END;
+            default:
+               return Gtk.Align.START;
+         }
+      },
+   );
+
    return (
       <window
          class={name}
@@ -82,8 +125,8 @@ export function NotificationPopup(gdkmonitor: Gdk.Monitor) {
             $={(self) => (contentbox = self)}
             orientation={Gtk.Orientation.VERTICAL}
             spacing={options.theme.spacing}
-            halign={Gtk.Align.CENTER}
-            valign={Gtk.Align.START}
+            halign={halign.get()}
+            valign={valign.get()}
             focusable
             marginTop={margin}
             marginEnd={margin}
