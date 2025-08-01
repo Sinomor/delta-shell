@@ -7,7 +7,8 @@ import { icons, VolumeIcon } from "@/utils/icons";
 import { Accessor, createState, onCleanup } from "ags";
 import options from "@/options";
 import Brightness from "@/services/brightness";
-const { name, margin, width } = options.osd;
+import giCairo from "cairo";
+const { name, margin, width, position } = options.osd;
 const [visible, visible_set] = createState(false);
 const [revealed, setRevealed] = createState(false);
 
@@ -85,36 +86,85 @@ function OnScreenProgress({ visible }: { visible: Accessor<boolean> }) {
 
 export default function (gdkmonitor: Gdk.Monitor) {
    const { TOP, BOTTOM, RIGHT, LEFT } = Astal.WindowAnchor;
+   let win: Astal.Window;
+   const pos = position.get();
+
+   function halign() {
+      switch (pos) {
+         case "top":
+            return Gtk.Align.CENTER;
+         case "bottom":
+            return Gtk.Align.CENTER;
+         case "top_left":
+            return Gtk.Align.START;
+         case "top_right":
+            return Gtk.Align.END;
+         case "bottom_left":
+            return Gtk.Align.START;
+         case "bottom_right":
+            return Gtk.Align.END;
+         default:
+            return Gtk.Align.CENTER;
+      }
+   }
+
+   function valign() {
+      switch (pos) {
+         case "top":
+            return Gtk.Align.START;
+         case "bottom":
+            return Gtk.Align.END;
+         case "top_left":
+            return Gtk.Align.START;
+         case "top_right":
+            return Gtk.Align.START;
+         case "bottom_left":
+            return Gtk.Align.END;
+         case "bottom_right":
+            return Gtk.Align.END;
+         default:
+            return Gtk.Align.START;
+      }
+   }
 
    return (
       <window
          gdkmonitor={gdkmonitor}
          name={name}
          application={app}
-         exclusivity={Astal.Exclusivity.IGNORE}
          anchor={TOP | BOTTOM | RIGHT | LEFT}
          layer={Astal.Layer.OVERLAY}
          visible={visible}
+         $={(self) => (win = self)}
+         onNotifyVisible={({ visible }) => {
+            if (visible) {
+               win
+                  .get_native()
+                  ?.get_surface()
+                  ?.set_input_region(new giCairo.Region());
+            }
+         }}
       >
          <revealer
             transitionType={
-               options.bar.position.get().includes("top")
-                  ? Gtk.RevealerTransitionType.SLIDE_UP
-                  : Gtk.RevealerTransitionType.SLIDE_DOWN
+               options.osd.position.get().includes("top")
+                  ? Gtk.RevealerTransitionType.SLIDE_DOWN
+                  : Gtk.RevealerTransitionType.SLIDE_UP
             }
             transitionDuration={options.transition}
-            halign={Gtk.Align.CENTER}
-            valign={
-               options.bar.position.get() === "top"
-                  ? Gtk.Align.END
-                  : Gtk.Align.START
-            }
+            halign={halign()}
+            valign={valign()}
             revealChild={revealed}
             onNotifyChildRevealed={({ childRevealed }) =>
                visible_set(childRevealed)
             }
          >
-            <box marginBottom={margin}>
+            <box
+               marginBottom={pos.includes("top") ? 0 : margin}
+               marginTop={pos.includes("top") ? margin : 0}
+               marginEnd={margin}
+               marginStart={margin}
+            >
                <OnScreenProgress visible={visible} />
             </box>
          </revealer>

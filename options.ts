@@ -81,6 +81,14 @@ const options = mkOptions(configFile, {
    osd: {
       name: "osd",
       width: opt(300),
+      position: opt<
+         | "top"
+         | "top_left"
+         | "top_right"
+         | "bottom"
+         | "bottom_left"
+         | "bottom_right"
+      >("bottom"),
       timeout: opt(3000),
       margin: opt(10),
    },

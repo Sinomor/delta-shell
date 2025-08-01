@@ -140,6 +140,7 @@ Config comes with the following defaults:
   },
   "osd": {
     "width": 300,
+    "position": "bottom", // "top" | "top_left" | "top_right" | "bottom" | "bottom_left"| "bottom_right"
     "margin": 10,
     "timeout": 3000
   },
