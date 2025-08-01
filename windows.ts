@@ -20,11 +20,11 @@ export function hide_all_windows() {
 
 export default [
    Bar,
-   OSD,
    Launcher,
    NotificationPopup,
    Control,
    Powermenu,
    Verification,
    Calendar,
+   OSD,
 ];

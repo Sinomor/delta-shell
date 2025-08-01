@@ -5,6 +5,8 @@ import GLib from "gi://GLib?version=2.0";
 import { isIcon, fileExists } from "@/utils/utils";
 import Gio from "gi://Gio?version=2.0";
 import options from "@/options";
+import { createState } from "ags";
+import { timeout } from "ags/time";
 
 const time = (time: number, format = "%H:%M") =>
    GLib.DateTime.new_from_unix_local(time).format(format);
@@ -22,12 +24,38 @@ function urgency(n: AstalNotifd.Notification) {
    }
 }
 
-export function Notification(props: {
+export function Notification({
+   n,
+   showActions = true,
+   onHide,
+   popup = true,
+}: {
    n: AstalNotifd.Notification;
    showActions?: boolean;
+   onHide?: (notification: AstalNotifd.Notification) => void;
+   popup?: boolean;
 }) {
-   const { n, showActions = true } = props;
-   const hasActions = showActions && n.get_actions().length > 0;
+   const notificationActions = n.actions.filter(
+      (action) => action.id !== "default",
+   );
+   const hasActions = showActions && notificationActions.length > 0;
+   const [revaled, setRevealed] = createState(false);
+
+   function show() {
+      timeout(0, () => {
+         setRevealed(true);
+      });
+      timeout(options.notifications_popup.timeout.get(), () => {});
+
+      timeout(options.notifications_popup.timeout.get(), () => {
+         setRevealed(false);
+         timeout(options.transition.get() + 100, () => {
+            onHide && onHide(n);
+         });
+      });
+   }
+   if (popup) show();
+   else setRevealed(true);
 
    function Header() {
       return (
@@ -51,13 +79,15 @@ export function Notification(props: {
                halign={Gtk.Align.END}
                label={time(n.time)!}
             />
-            <button
-               onClicked={() => n.dismiss()}
-               class={"close"}
-               focusOnClick={false}
-            >
-               <image iconName="window-close-symbolic" />
-            </button>
+            {!popup && (
+               <button
+                  onClicked={() => n.dismiss()}
+                  class={"close"}
+                  focusOnClick={false}
+               >
+                  <image iconName="window-close-symbolic" />
+               </button>
+            )}
          </box>
       );
    }
@@ -102,7 +132,7 @@ export function Notification(props: {
    function Actions() {
       return (
          <box class="actions" spacing={options.theme.spacing}>
-            {n.actions.map(({ label, id }) => (
+            {notificationActions.map(({ label, id }) => (
                <button hexpand onClicked={() => n.invoke(id)}>
                   <label label={label} halign={Gtk.Align.CENTER} hexpand />
                </button>
@@ -112,14 +142,20 @@ export function Notification(props: {
    }
 
    return (
-      <box
-         orientation={Gtk.Orientation.VERTICAL}
-         class={`notification ${urgency(n)}`}
-         spacing={options.theme.spacing}
+      <revealer
+         transitionType={Gtk.RevealerTransitionType.SLIDE_DOWN}
+         transitionDuration={options.transition}
+         revealChild={revaled}
       >
-         <Header />
-         <Content />
-         {hasActions && <Actions />}
-      </box>
+         <box
+            orientation={Gtk.Orientation.VERTICAL}
+            class={`notification ${urgency(n)}`}
+            spacing={options.theme.spacing}
+         >
+            <Header />
+            <Content />
+            {hasActions && <Actions />}
+         </box>
+      </revealer>
    );
 }

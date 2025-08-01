@@ -64,7 +64,9 @@ function List() {
             vexpand
          >
             <For each={list}>
-               {(notif) => <Notification n={notif} showActions={true} />}
+               {(notif) => (
+                  <Notification n={notif} showActions={true} popup={false} />
+               )}
             </For>
          </box>
       </scrolledwindow>
