@@ -57,25 +57,6 @@ ags run
 
 </details>
 
-<details>
-<summary><b>NixOS</b></summary>
-
-If you use Nix or NixOS, you can run Delta Shell with all dependencies managed automatically:
-
-```bash
-nix run github:Sinomor/delta-shell
-```
-
-For development, enter a shell with all dependencies:
-
-```bash
-nix develop
-```
-
-No manual installation of dependencies is required when using Nix.
-
-</details>
-
 ## Configuration
 
 Config file located at `~/.config/delta-shell/config.json`.
