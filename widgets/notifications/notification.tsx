@@ -155,6 +155,20 @@ export function Notification({
             orientation={Gtk.Orientation.VERTICAL}
             class={`notification ${urgency(n)}`}
             spacing={options.theme.spacing}
+            $={(self) => {
+               if (popup) {
+                  self.set_margin_top(
+                     options.notifications_popup.position.get().includes("top")
+                        ? options.notifications_popup.margin.get()
+                        : 0,
+                  );
+                  self.set_margin_bottom(
+                     options.notifications_popup.position.get().includes("top")
+                        ? 0
+                        : options.notifications_popup.margin.get(),
+                  );
+               }
+            }}
          >
             <Header />
             <Content />

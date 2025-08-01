@@ -83,7 +83,6 @@ export default function Bar(gdkmonitor: Gdk.Monitor) {
    const [windowsVisible, windowsVisible_set] = createState<string[]>([]);
    let bar: Astal.Window;
 
-   // Обработчик изменения видимости окон
    const appconnect = app.connect("window-toggled", (_, win) => {
       const winName = win.name;
       if (!windows.includes(winName)) return;

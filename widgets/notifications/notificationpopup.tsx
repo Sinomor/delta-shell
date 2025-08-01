@@ -13,10 +13,11 @@ import GLib from "gi://GLib";
 import options from "@/options";
 import giCairo from "cairo";
 const notifd = AstalNotifd.get_default();
-const { name, margin, timeout } = options.notifications_popup;
+const { name, margin, timeout, position } = options.notifications_popup;
 
 export function NotificationPopup(gdkmonitor: Gdk.Monitor) {
    const { TOP, BOTTOM, RIGHT, LEFT } = Astal.WindowAnchor;
+   const pos = position.get();
    let contentbox: Gtk.Box;
    let win: Astal.Window;
    const [notifications, notifications_set] = createState(
@@ -60,48 +61,42 @@ export function NotificationPopup(gdkmonitor: Gdk.Monitor) {
       );
    }
 
-   const halign = createComputed(
-      [options.notifications_popup.position],
-      (position) => {
-         switch (position) {
-            case "top":
-               return Gtk.Align.CENTER;
-            case "bottom":
-               return Gtk.Align.CENTER;
-            case "top_left":
-               return Gtk.Align.START;
-            case "top_right":
-               return Gtk.Align.END;
-            case "bottom_left":
-               return Gtk.Align.START;
-            case "bottom_right":
-               return Gtk.Align.END;
-            default:
-               return Gtk.Align.CENTER;
-         }
-      },
-   );
-   const valign = createComputed(
-      [options.notifications_popup.position],
-      (position) => {
-         switch (position) {
-            case "top":
-               return Gtk.Align.START;
-            case "bottom":
-               return Gtk.Align.END;
-            case "top_left":
-               return Gtk.Align.START;
-            case "top_right":
-               return Gtk.Align.START;
-            case "bottom_left":
-               return Gtk.Align.END;
-            case "bottom_right":
-               return Gtk.Align.END;
-            default:
-               return Gtk.Align.START;
-         }
-      },
-   );
+   function halign() {
+      switch (pos) {
+         case "top":
+            return Gtk.Align.CENTER;
+         case "bottom":
+            return Gtk.Align.CENTER;
+         case "top_left":
+            return Gtk.Align.START;
+         case "top_right":
+            return Gtk.Align.END;
+         case "bottom_left":
+            return Gtk.Align.START;
+         case "bottom_right":
+            return Gtk.Align.END;
+         default:
+            return Gtk.Align.CENTER;
+      }
+   }
+   function valign() {
+      switch (pos) {
+         case "top":
+            return Gtk.Align.START;
+         case "bottom":
+            return Gtk.Align.END;
+         case "top_left":
+            return Gtk.Align.START;
+         case "top_right":
+            return Gtk.Align.START;
+         case "bottom_left":
+            return Gtk.Align.END;
+         case "bottom_right":
+            return Gtk.Align.END;
+         default:
+            return Gtk.Align.START;
+      }
+   }
 
    return (
       <window
@@ -124,14 +119,11 @@ export function NotificationPopup(gdkmonitor: Gdk.Monitor) {
          <box
             $={(self) => (contentbox = self)}
             orientation={Gtk.Orientation.VERTICAL}
-            spacing={options.theme.spacing}
-            halign={halign.get()}
-            valign={valign.get()}
+            halign={halign()}
+            valign={valign()}
             focusable
-            marginTop={margin}
             marginEnd={margin}
             marginStart={margin}
-            marginBottom={margin}
          >
             <For each={notifications}>
                {(n) => (
