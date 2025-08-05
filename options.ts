@@ -49,7 +49,7 @@ const options = mkOptions(configFile, {
       spacing: opt(6),
       modules: {
          start: opt(["launcher", "workspaces"]),
-         center: opt(["clock"]),
+         center: opt(["clock", "weather"]),
          end: opt(["record_indicator", "tray", "keyboard", "sysbox"]),
       },
       height: opt(52),

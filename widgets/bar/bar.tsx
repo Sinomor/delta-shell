@@ -9,6 +9,7 @@ import { RecordIndicator } from "./items/recordindicator";
 import { Keyboard } from "./items/keyboard";
 import options from "@/options";
 import { For, createState, onCleanup } from "ags";
+import { Weather } from "./items/weather";
 
 const { name, position, spacing, modules } = options.bar;
 
@@ -20,6 +21,7 @@ const Bar_Items = {
    keyboard: () => <Keyboard />,
    sysbox: () => <SysBox />,
    record_indicator: () => <RecordIndicator />,
+   weather: () => <Weather />,
 } as Record<string, any>;
 
 function Start() {

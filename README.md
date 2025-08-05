@@ -109,10 +109,10 @@ Config comes with the following defaults:
   "bar": {
     "position": "top", // "top" | "bottom"
     "height": 52,
-    // available modules: "launcher", "workspaces", "clock", "record_indicator", "tray", "keyboard", "sysbox"
+    // available modules: "launcher", "workspaces", "clock", "record_indicator", "tray", "keyboard", "sysbox", "weather"
     "modules": {
       "start": ["launcher", "workspaces"],
-      "center": ["clock"],
+      "center": ["clock", "weather"],
       "end": ["record_indicator", "tray", "keyboard", "sysbox"]
     },
     // to use custom icons for apps you need to add
