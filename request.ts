@@ -39,6 +39,11 @@ export default function request(
                hide_all_windows();
             toggleWindow(options.powermenu.name);
             break;
+         case "weather":
+            if (!app.get_window(options.weather.name)?.visible)
+               hide_all_windows();
+            toggleWindow(options.weather.name);
+            break;
          default:
             print("Unknown request:", request);
             return res("Unknown request");

@@ -76,6 +76,22 @@ export const icons = {
    video: "ds-video-symbolic",
    settings: "ds-settings-symbolic",
    apps_default: "application-x-executable",
+   droplet: "ds-droplet-symbolic",
+   clock: "ds-clock-symbolic",
+   calendar: "ds-calendar-symbolic",
+   location: "ds-map-pin-symbolic",
+   weather: {
+      clear: {
+         day: "ds-sun-symbolic",
+         night: "ds-moon-symbolic",
+      },
+      cloudy: "ds-cloud-symbolic",
+      fog: "ds-align-center-symbolic",
+      rain: "ds-cloud-drizzle-symbolic",
+      snow: "ds-cloud-snow-symbolic",
+      shower_rain: "ds-cloud-rain-symbolic",
+      thunder: "ds-cloud-lightning-symbolic",
+   },
 };
 
 export function getVolumeIcon(speaker?: AstalWp.Endpoint) {
@@ -215,4 +231,49 @@ export function getAccessPointIcon(accessPoint: AstalNetwork.AccessPoint) {
    } else {
       return icons.network.wifi[1];
    }
+}
+
+export function getWeatherIcon(weatherCode: number, is_day?: boolean) {
+   const weather_icons = {
+      0:
+         is_day === undefined
+            ? is_day
+               ? icons.weather.clear.day
+               : icons.weather.clear.night
+            : icons.weather.clear.day,
+      1:
+         is_day === undefined
+            ? is_day
+               ? icons.weather.clear.day
+               : icons.weather.clear.night
+            : icons.weather.clear.day,
+      2: icons.weather.cloudy,
+      3: icons.weather.cloudy,
+      45: icons.weather.fog,
+      48: icons.weather.fog,
+      51: icons.weather.rain,
+      53: icons.weather.rain,
+      55: icons.weather.rain,
+      56: icons.weather.rain,
+      57: icons.weather.rain,
+      61: icons.weather.rain,
+      63: icons.weather.rain,
+      65: icons.weather.rain,
+      66: icons.weather.rain,
+      67: icons.weather.rain,
+      71: icons.weather.rain,
+      73: icons.weather.snow,
+      75: icons.weather.snow,
+      77: icons.weather.snow,
+      80: icons.weather.shower_rain,
+      81: icons.weather.shower_rain,
+      82: icons.weather.shower_rain,
+      85: icons.weather.snow,
+      86: icons.weather.snow,
+      95: icons.weather.thunder,
+      96: icons.weather.thunder,
+      99: icons.weather.thunder,
+   } as Record<number, any>;
+
+   return weather_icons[weatherCode];
 }

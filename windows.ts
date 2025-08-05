@@ -8,6 +8,7 @@ import Verification from "./widgets/powermenu/verification";
 import { NotificationPopup } from "./widgets/notifications/notificationpopup";
 import app from "ags/gtk4/app";
 import options from "./options";
+import Weather from "./widgets/weather/weather";
 
 export function hide_all_windows() {
    app.get_window(options.launcher.name)?.hide();
@@ -15,6 +16,8 @@ export function hide_all_windows() {
    app.get_window(options.verification.name)?.hide();
    app.get_window(options.calendar.name)?.hide();
    app.get_window(options.control.name)?.hide();
+   options.weather.enabled.get() &&
+      app.get_window(options.weather.name)?.hide();
    options.control.page.set("main");
 }
 
@@ -27,4 +30,5 @@ export default [
    Verification,
    Calendar,
    OSD,
-];
+   options.weather.enabled.get() && Weather,
+].filter(Boolean);

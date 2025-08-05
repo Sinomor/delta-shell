@@ -115,6 +115,20 @@ const options = mkOptions(configFile, {
       timeout: opt(3000),
       margin: opt(10),
    },
+   weather: {
+      name: "weather",
+      enabled: opt<boolean>(true),
+      location: opt<{
+         auto: boolean;
+         coords: { latitude: string; longitude: string } | undefined;
+         city: string | undefined;
+      }>({
+         auto: false,
+         coords: undefined,
+         city: "Minsk",
+      }),
+      margin: opt(10),
+   },
 });
 
 export const [compositor, compositor_set] = createState<string>("");

@@ -22,6 +22,7 @@ A desktop shell based on [Ags](https://github.com/Aylur/ags). Currently supports
 
 - `cliphist` and `wl-clipboard` for clipboard
 - `gpu-screen-recorder` to record screen from control center
+- `geoclue` to autoload the location for weather
 
 ## Installation
 
@@ -151,6 +152,21 @@ Config comes with the following defaults:
     "margin": 10,
     "position": "top", // "top" | "top_left" | "top_right" | "bottom" | "bottom_left"| "bottom_right"
     "timeout": 3000
+  },
+  "weather" {
+    "enabled": true,
+    // when set auto to true it uses geoclue
+    // options priority: auto > coords > city
+    "location": {
+      "auto": false,
+      "coords": {
+        "latitude": "",
+        "longitude": ""
+      },
+      "city": "Minsk"
+
+    }
+
   }
 }
 ```
