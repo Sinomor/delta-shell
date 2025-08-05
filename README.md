@@ -164,9 +164,8 @@ Config comes with the following defaults:
         "longitude": ""
       },
       "city": "Minsk"
-
     }
-
+    "margin": 10
   }
 }
 ```
