@@ -3,6 +3,16 @@
    font-family: $font-name;
 }
 
+@function all-zero($value) {
+   $list: if(type-of($value) == list, $value, ($value));
+   @each $v in $list {
+      @if $v != 0 and $v != 0px and $v != "" {
+         @return false;
+      }
+   }
+   @return true;
+}
+
 // some hack for fg color with accent
 
 @function brightness($color) {

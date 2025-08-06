@@ -17,7 +17,7 @@ window#bar {
    }
 
    @if $bar-position == "top" {
-      @if $bar-margin == 0px 0px 0px 0px {
+      @if all-zero($bar-margin) {
          border-bottom: $bar-border-width solid $bar-border-color;
       } @else {
          border: $bar-border-width solid $bar-border-color;
@@ -25,7 +25,7 @@ window#bar {
    }
 
    @if $bar-position == "bottom" {
-      @if $bar-margin == 0px 0px 0px 0px {
+      @if all-zero($bar-margin) {
          border-top: $bar-border-width solid $bar-border-color;
       } @else {
          border: $bar-border-width solid $bar-border-color;
