@@ -4,11 +4,10 @@ import app from "ags/gtk4/app";
 import { Astal, Gdk, Gtk } from "ags/gtk4";
 import Graphene from "gi://Graphene?version=1.0";
 import { createComputed, createState, For } from "ags";
-import { hide_all_windows } from "../../windows";
-import options from "@/options";
+import { hide_all_windows, windows_names } from "../../windows";
 import { PopupWindow } from "../common/popupwindow";
 import { BarItemPopup } from "../common/baritempopup";
-const { name, margin } = options.calendar;
+import { config, theme } from "@/options";
 
 type Day = {
    day: string;
@@ -78,7 +77,7 @@ function Calendar() {
 
       calendarJson.forEach((row) => {
          const rowBox = (
-            <box spacing={options.theme.spacing}>
+            <box spacing={theme.spacing}>
                {row.map((day: Day) => (
                   <CalendarDay day={day.day} today={day.today} />
                ))}
@@ -125,7 +124,7 @@ function Calendar() {
 
    function Header() {
       return (
-         <box class={"header"} spacing={options.theme.spacing}>
+         <box class={"header"} spacing={theme.spacing}>
             <MonthYear />
             <box hexpand />
             <button
@@ -149,7 +148,7 @@ function Calendar() {
    function CalendarDays() {
       return (
          <box
-            spacing={options.theme.spacing}
+            spacing={theme.spacing}
             class={"days"}
             orientation={Gtk.Orientation.VERTICAL}
             $={(self) => {
@@ -169,10 +168,10 @@ function Calendar() {
             });
          }}
          orientation={Gtk.Orientation.VERTICAL}
-         spacing={options.theme.spacing}
+         spacing={theme.spacing}
       >
          <Header />
-         <box class={"weekdays"} spacing={options.theme.spacing}>
+         <box class={"weekdays"} spacing={theme.spacing}>
             {weekDays.map((day: Day) => (
                <CalendarDay
                   day={day.day}
@@ -189,10 +188,9 @@ function Calendar() {
 export default function (gdkmonitor: Gdk.Monitor) {
    return (
       <BarItemPopup
-         name={name}
+         name={windows_names.calendar}
          module={"clock"}
          gdkmonitor={gdkmonitor}
-         margin={margin.get()}
       >
          <Calendar />
       </BarItemPopup>

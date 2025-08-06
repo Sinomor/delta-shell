@@ -1,8 +1,7 @@
 import Gdk from "gi://Gdk";
 import Gtk from "gi://Gtk";
 import app from "ags/gtk4/app";
-import { hide_all_windows } from "@/windows";
-import options from "@/options";
+import { hide_all_windows, windows_names } from "@/windows";
 import Adw from "gi://Adw?version=1";
 import { BarItemPopup } from "../common/baritempopup";
 import { isLoading, updateWeatherData, weatherData } from "@/services/weather";
@@ -12,7 +11,8 @@ import { currentLocation } from "@/services/location";
 import { icons } from "@/utils/icons";
 import { Days } from "./items/days";
 import { Hours } from "./items/hours";
-const { name, margin } = options.weather;
+import { convertHexToRGBA } from "@/utils/utils";
+import { config, theme } from "@/options";
 
 export function getWeatherBackground(weatherCode: number, isDay: boolean) {
    const colors = {
@@ -63,7 +63,12 @@ export function getWeatherBackground(weatherCode: number, isDay: boolean) {
    const [color1, color2, color3] = colors[type];
 
    return `
-        background: linear-gradient(180deg, ${color1}, ${color2}, ${color3});
+        background: linear-gradient(
+           to bottom,
+           ${convertHexToRGBA(color1, theme.window.opacity.get())},
+           ${convertHexToRGBA(color2, theme.window.opacity.get())},
+           ${convertHexToRGBA(color3, theme.window.opacity.get())}
+        );
     `;
 }
 
@@ -94,7 +99,7 @@ function Header() {
    });
 
    return (
-      <box valign={Gtk.Align.CENTER} spacing={options.theme.spacing}>
+      <box valign={Gtk.Align.CENTER} spacing={theme.spacing}>
          <image iconName={icons.location} pixelSize={20} />
          <label label={data.as((d) => d.label)} />
          <box hexpand />
@@ -121,7 +126,7 @@ function Weather() {
       <box
          class={"main"}
          css={data.as((d) => d.bg)}
-         spacing={options.theme.spacing}
+         spacing={theme.spacing}
          widthRequest={360}
          orientation={Gtk.Orientation.VERTICAL}
       >
@@ -136,10 +141,9 @@ function Weather() {
 export default function (gdkmonitor: Gdk.Monitor) {
    return (
       <BarItemPopup
-         name={name}
+         name={windows_names.weather}
          module={"weather"}
          gdkmonitor={gdkmonitor}
-         margin={margin.get()}
       >
          <Weather />
       </BarItemPopup>

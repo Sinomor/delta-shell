@@ -1,8 +1,9 @@
 import app from "ags/gtk4/app";
-import options from "./options";
 import ScreenRecord from "./services/screenrecord";
-import { hide_all_windows } from "./windows";
+import { hide_all_windows, windows_names } from "./windows";
 import { toggleWindow } from "./utils/utils";
+import { config } from "./options";
+import { launcher_page_set } from "./widgets/launcher/launcher";
 const screenrecord = ScreenRecord.get_default();
 
 export default function request(
@@ -13,36 +14,36 @@ export default function request(
    if (args[0] == "toggle" && args[1]) {
       switch (args[1]) {
          case "applauncher":
-            if (!app.get_window(options.launcher.name)?.visible)
+            if (!app.get_window(windows_names.launcher)?.visible)
                hide_all_windows();
-            options.launcher.page.set("apps");
-            toggleWindow(options.launcher.name);
+            launcher_page_set("apps");
+            toggleWindow(windows_names.launcher);
             break;
          case "clipboard":
-            if (!app.get_window(options.launcher.name)?.visible)
+            if (!app.get_window(windows_names.launcher)?.visible)
                hide_all_windows();
-            options.launcher.page.set("clipboard");
-            toggleWindow(options.launcher.name);
+            launcher_page_set("clipboard");
+            toggleWindow(windows_names.launcher);
             break;
          case "control":
-            if (!app.get_window(options.control.name)?.visible)
+            if (!app.get_window(windows_names.control)?.visible)
                hide_all_windows();
-            toggleWindow(options.control.name);
+            toggleWindow(windows_names.control);
             break;
          case "calendar":
-            if (!app.get_window(options.calendar.name)?.visible)
+            if (!app.get_window(windows_names.calendar)?.visible)
                hide_all_windows();
-            toggleWindow(options.calendar.name);
+            toggleWindow(windows_names.calendar);
             break;
          case "powermenu":
-            if (!app.get_window(options.powermenu.name)?.visible)
+            if (!app.get_window(windows_names.powermenu)?.visible)
                hide_all_windows();
-            toggleWindow(options.powermenu.name);
+            toggleWindow(windows_names.powermenu);
             break;
          case "weather":
-            if (!app.get_window(options.weather.name)?.visible)
+            if (!app.get_window(windows_names.weather)?.visible)
                hide_all_windows();
-            toggleWindow(options.weather.name);
+            toggleWindow(windows_names.weather);
             break;
          default:
             print("Unknown request:", request);

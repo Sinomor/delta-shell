@@ -1,5 +1,5 @@
 import { createState } from "ags";
-import options from "@/options";
+import { config } from "@/options";
 import { fetch, URL } from "ags/fetch";
 import { isLoading_set } from "./weather";
 
@@ -131,17 +131,17 @@ async function location_auto() {
 }
 
 export async function updateLocationData() {
-   const location = options.weather.location.get();
+   const location = config.weather.location.get();
 
    try {
       if (location.auto) {
          location_auto();
-      } else if (location.coords !== undefined) {
+      } else if (location.coords !== null && location.coords !== undefined) {
          location_by_coords(
             location.coords.latitude,
             location.coords.longitude,
          );
-      } else if (location.city !== undefined) {
+      } else if (location.city !== null && location.city !== undefined) {
          location_by_city(location.city);
       } else {
          console.error("Location update failed: check settings in config file");

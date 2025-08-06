@@ -1,6 +1,6 @@
 import { Variable } from "@/utils/variable";
 import { readFile, writeFile, monitorFile, readFileAsync } from "ags/file";
-import { cacheDir, ensureDirectory } from "./utils";
+import { cacheDir, ensureDirectory, ensureFileWithDefaults } from "./utils";
 import Gio from "gi://Gio?version=2.0";
 import GLib from "gi://GLib?version=2.0";
 import { resetCss } from "@/services/styles";
@@ -44,55 +44,23 @@ function setNestedValue<T>(
 }
 
 export class Opt<T = unknown> extends Variable<T> {
-   constructor(initial: T, { cached = false }: { cached?: boolean } = {}) {
+   constructor(initial: T) {
       super(initial);
       this.initial = initial;
-      this.cached = cached;
    }
 
    initial: T;
    id = "";
-   cached = false;
 
-   init(configFile: string): void {
-      const dir = this.cached
-         ? `${GLib.get_user_cache_dir()}/delta-shell/options.json`
-         : configFile;
-
-      if (GLib.file_test(dir, GLib.FileTest.EXISTS)) {
-         let config: GenericObject;
-         try {
-            config = JSON.parse(readFile(dir));
-         } catch {
-            config = {};
-         }
-         const configV = this.cached
-            ? config[this.id]
-            : getNestedValue(config, this.id);
-         if (configV !== undefined) {
-            this.set(configV);
-         }
-      }
-
-      if (this.cached) {
-         this.subscribe(() => {
-            const value = this.get();
-            readFileAsync(`${cacheDir}/options.json`)
-               .then((content) => {
-                  const cache = JSON.parse(content || "{}") as GenericObject;
-                  cache[this.id] = value;
-                  writeFile(
-                     `${cacheDir}/options.json`,
-                     JSON.stringify(cache, null, 2),
-                  );
-               })
-               .catch(() => {});
-         });
+   init(configFile: string, defaultConfig: any): void {
+      const configV = getNestedValue(defaultConfig, this.id);
+      if (configV !== undefined) {
+         this.set(configV);
       }
    }
 }
 
-export const opt = <T>(initial: T, opts = {}): Opt<T> => new Opt(initial, opts);
+export const opt = <T>(initial: T): Opt<T> => new Opt(initial);
 
 function getOptions(object: GenericObject, path = ""): Opt[] {
    return Object.keys(object).flatMap((key) => {
@@ -114,11 +82,7 @@ function getOptions(object: GenericObject, path = ""): Opt[] {
 
 function transformObject(obj: any, initial?: boolean): any {
    if (obj instanceof Opt) {
-      if (obj.cached) {
-         return undefined;
-      } else {
-         return initial ? obj.initial : obj.get();
-      }
+      return initial ? obj.initial : obj.get();
    }
 
    if (typeof obj !== "object" || obj === null) return obj;
@@ -142,26 +106,42 @@ export function mkOptions<T extends GenericObject>(
 ): T & {
    configFile: string;
    handler: (deps: string[], callback: () => void) => void;
+   save: () => void;
 } {
-   for (const opt of getOptions(object)) {
-      opt.init(configFile);
+   const defaultConfig = transformObject(object, true);
+
+   ensureFileWithDefaults(configFile, JSON.stringify(defaultConfig, null, 2));
+
+   let currentConfig = defaultConfig;
+   if (GLib.file_test(configFile, GLib.FileTest.EXISTS)) {
+      try {
+         currentConfig = JSON.parse(readFile(configFile));
+      } catch (e) {
+         console.error("Error parsing config:", e);
+      }
    }
 
-   ensureDirectory(configFile.split("/").slice(0, -1).join("/"));
-   const defaultConfig = transformObject(object, true);
-   const configVar = new Variable<GenericObject>(transformObject(object));
-
-   if (GLib.file_test(configFile, GLib.FileTest.EXISTS)) {
-      let configData: GenericObject;
-      try {
-         configData = JSON.parse(readFile(configFile) || "{}");
-      } catch {
-         configData = {};
+   for (const opt of getOptions(object)) {
+      const value = getNestedValue(currentConfig, opt.id);
+      if (value !== undefined) {
+         opt.set(value);
+      } else {
+         opt.set(opt.initial);
       }
+   }
+
+   const save = () => {
+      const currentState = transformObject(object);
+      writeFile(configFile, JSON.stringify(currentState, null, 2));
+   };
+
+   for (const opt of getOptions(object)) {
+      opt.subscribe(() => save());
    }
 
    return Object.assign(object, {
       configFile,
+      save,
       handler(deps: string[], callback: () => void) {
          for (const opt of getOptions(object)) {
             if (deps.some((i) => opt.id.startsWith(i))) opt.subscribe(callback);

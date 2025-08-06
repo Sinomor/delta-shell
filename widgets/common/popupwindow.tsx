@@ -4,7 +4,8 @@ import { Accessor, createState } from "ags";
 import { hide_all_windows } from "@/windows";
 import Graphene from "gi://Graphene?version=1.0";
 import Adw from "gi://Adw?version=1";
-import options from "@/options";
+import { config, theme } from "@/options";
+const { margin } = theme.window;
 
 type PopupWindowProps = JSX.IntrinsicElements["window"] & {
    children?: any;
@@ -24,13 +25,13 @@ export function PopupWindow({
    name,
    width,
    height,
-   margin_top,
-   margin_bottom,
-   margin_start,
-   margin_end,
+   margin_top = margin.get(),
+   margin_bottom = margin.get(),
+   margin_start = margin.get(),
+   margin_end = margin.get(),
    gdkmonitor,
    transitionType = Gtk.RevealerTransitionType.SLIDE_DOWN,
-   transitionDuration = options.transition.get(),
+   transitionDuration = config.transition.get(),
    halign = Gtk.Align.CENTER,
    valign = Gtk.Align.CENTER,
    ...props
@@ -88,7 +89,7 @@ export function PopupWindow({
          />
          <revealer
             transitionType={transitionType}
-            transitionDuration={transitionDuration}
+            transitionDuration={transitionDuration * 1000}
             revealChild={revaled}
             halign={halign}
             valign={valign}

@@ -4,9 +4,82 @@ import GLib from "gi://GLib?version=2.0";
 import { createState } from "ags";
 export const configDir = GLib.get_user_config_dir();
 const configFile = `${configDir}/delta-shell/config.json`;
+const themeFile = `${configDir}/delta-shell/theme.json`;
 
-const options = mkOptions(configFile, {
-   theme: {
+export const config = mkOptions(configFile, {
+   transition: opt(0.3),
+   bar: {
+      modules: {
+         start: opt(["launcher", "workspaces"]),
+         center: opt(["clock", "weather"]),
+         end: opt(["record_indicator", "tray", "keyboard", "sysbox"]),
+      },
+      height: opt(52),
+      position: opt<"top" | "bottom">("top"),
+      workspaces: {
+         taskbar: opt<boolean>(true),
+         taskbar_icons: opt({}) as Record<string, any>,
+      },
+      date: {
+         format: opt("%b %d  %H:%M"),
+      },
+   },
+   control: {
+      default_coverArt: opt(`${SRC}/assets/defsong.jpg`),
+      width: opt(500),
+      height: opt(0),
+   },
+   launcher: {
+      clipboard: {
+         max_items: opt(50),
+         image_preview: opt<boolean>(false),
+      },
+      width: opt(500),
+      height: opt(0),
+   },
+   osd: {
+      width: opt(300),
+      position: opt<
+         | "top"
+         | "top_left"
+         | "top_right"
+         | "bottom"
+         | "bottom_left"
+         | "bottom_right"
+      >("bottom"),
+      timeout: opt(3),
+   },
+   notifications_popup: {
+      position: opt<
+         | "top"
+         | "top_left"
+         | "top_right"
+         | "bottom"
+         | "bottom_left"
+         | "bottom_right"
+      >("top"),
+      timeout: opt(3),
+   },
+   weather: {
+      enabled: opt<boolean>(true),
+      location: opt<{
+         auto: boolean;
+         coords: { latitude: string; longitude: string } | null | undefined;
+         city: string | null | undefined;
+      }>({
+         auto: false,
+         coords: null,
+         city: "Minsk",
+      }),
+   },
+});
+
+export const theme = mkOptions(themeFile, {
+   font: {
+      size: opt(14),
+      name: opt("Rubik"),
+   },
+   colors: {
       bg: {
          0: opt("#1d1d20"),
          1: opt("#28282c"),
@@ -27,107 +100,68 @@ const options = mkOptions(configFile, {
       red: opt("#e62d42"),
       purple: opt("#9141ac"),
       slate: opt("#6f8396"),
+   },
+   border: {
+      width: opt(1),
+      color: opt("$bg2"),
+   },
+   outline: {
+      width: opt(1),
+      color: opt("$fg1"),
+   },
+   spacing: opt(10),
+   shadow: opt<boolean>(true),
+   radius: opt(0),
+   window: {
+      padding: opt(15),
+      opacity: opt(1),
+      margin: opt(10),
       border: {
          width: opt(1),
-         color: opt("#36363a"),
+         color: opt("$bg2"),
       },
       outline: {
          width: opt(1),
-         color: opt("#c0c0c0"),
+         color: opt("$fg1"),
       },
-      main_padding: opt(15),
-      spacing: opt(10),
-      radius: opt(0),
-   },
-   transition: opt(200),
-   font: {
-      size: opt(14),
-      name: opt("Rubik"),
+      shadow: {
+         offset: opt([0, 0]),
+         blur: opt(10),
+         spread: opt(0),
+         color: opt("black"),
+         opacity: opt(0.4),
+      },
    },
    bar: {
-      name: "bar",
+      bg: opt("$bg0"),
+      opacity: opt(1),
+      margin: opt<number[]>([0, 0, 0, 0]),
       spacing: opt(6),
-      modules: {
-         start: opt(["launcher", "workspaces"]),
-         center: opt(["clock", "weather"]),
-         end: opt(["record_indicator", "tray", "keyboard", "sysbox"]),
+      border: {
+         width: opt(1),
+         color: opt("$bg2"),
       },
-      height: opt(52),
-      position: opt<"top" | "bottom">("top"),
-      apps_icons: opt({}) as Record<string, any>,
-      date: {
-         format: opt("%b %d  %H:%M"),
+      shadow: {
+         offset: opt([0, 0]),
+         blur: opt(10),
+         spread: opt(0),
+         color: opt("black"),
+         opacity: opt(0.4),
       },
-   },
-   control: {
-      name: "control",
-      page: opt<"main" | "network" | "bluetooth" | "powermodes">("main"),
-      default_coverArt: `${SRC}/assets/defsong.jpg`,
-      width: opt(500),
-      height: opt(0),
-      margin: opt(10),
-   },
-   launcher: {
-      name: "launcher",
-      page: opt<"apps" | "clipboard">("apps"),
-      clipboard: {
-         max_items: opt(50),
-         image_preview: opt<boolean>(false),
+      button: {
+         fg: opt("$fg0"),
+         padding: opt([0, 10]),
+         bg: {
+            default: opt("$bg0"),
+            hover: opt("$bg1"),
+            active: opt("$bg2"),
+         },
+         opacity: opt(1),
+         border: {
+            width: opt(0),
+            color: opt("$bg2"),
+         },
       },
-      width: opt(500),
-      height: opt(0),
-      margin: opt(10),
-   },
-   osd: {
-      name: "osd",
-      width: opt(300),
-      position: opt<
-         | "top"
-         | "top_left"
-         | "top_right"
-         | "bottom"
-         | "bottom_left"
-         | "bottom_right"
-      >("bottom"),
-      timeout: opt(3000),
-      margin: opt(10),
-   },
-   calendar: {
-      name: "calendar",
-      margin: opt(10),
-   },
-   powermenu: {
-      name: "powermenu",
-   },
-   verification: {
-      name: "verification",
-   },
-   notifications_popup: {
-      name: "notifications_popup",
-      position: opt<
-         | "top"
-         | "top_left"
-         | "top_right"
-         | "bottom"
-         | "bottom_left"
-         | "bottom_right"
-      >("top"),
-      timeout: opt(3000),
-      margin: opt(10),
-   },
-   weather: {
-      name: "weather",
-      enabled: opt<boolean>(true),
-      location: opt<{
-         auto: boolean;
-         coords: { latitude: string; longitude: string } | undefined;
-         city: string | undefined;
-      }>({
-         auto: false,
-         coords: undefined,
-         city: "Minsk",
-      }),
-      margin: opt(10),
    },
 });
 
@@ -145,5 +179,3 @@ function getCompositor() {
    }
 }
 compositor_set(getCompositor());
-
-export default options;

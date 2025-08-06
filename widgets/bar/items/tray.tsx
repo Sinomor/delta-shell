@@ -3,7 +3,7 @@ import { icons } from "../../../utils/icons";
 import { Gtk } from "ags/gtk4";
 import { createBinding, createState, For } from "ags";
 import BarItem from "@/widgets/common/baritem";
-import options from "@/options";
+import { config } from "@/options";
 const tray = AstalTray.get_default();
 
 export const Tray = () => {
@@ -23,7 +23,7 @@ export const Tray = () => {
          <revealer
             revealChild={tray_visible}
             transitionType={Gtk.RevealerTransitionType.SLIDE_RIGHT}
-            transitionDuration={options.transition}
+            transitionDuration={config.transition}
          >
             <box class={"items"}>
                <For each={items}>

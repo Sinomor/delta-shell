@@ -1,26 +1,28 @@
-import { icons } from "../../../utils/icons";
+import { icons } from "@/utils/icons";
 import app from "ags/gtk4/app";
 import { Gdk, Gtk } from "ags/gtk4";
 import { onCleanup } from "ags";
-import options from "@/options";
 import BarItem from "@/widgets/common/baritem";
-import { hide_all_windows } from "@/windows";
+import { hide_all_windows, windows_names } from "@/windows";
 import { toggleWindow } from "@/utils/utils";
-const { name, page } = options.launcher;
+import { config } from "@/options";
+import { launcher_page_set } from "@/widgets/launcher/launcher";
 
 export function Launcher() {
    return (
       <BarItem
-         window={name}
+         window={windows_names.launcher}
          onPrimaryClick={() => {
-            if (!app.get_window(name)?.visible) hide_all_windows();
-            page.set("apps");
-            toggleWindow(name);
+            if (!app.get_window(windows_names.launcher)?.visible)
+               hide_all_windows();
+            launcher_page_set("apps");
+            toggleWindow(windows_names.launcher);
          }}
          onSecondaryClick={() => {
-            if (!app.get_window(name)?.visible) hide_all_windows();
-            page.set("clipboard");
-            toggleWindow(name);
+            if (!app.get_window(windows_names.launcher)?.visible)
+               hide_all_windows();
+            launcher_page_set("clipboard");
+            toggleWindow(windows_names.launcher);
          }}
       >
          <image iconName={icons.search} pixelSize={20} />

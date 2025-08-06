@@ -4,8 +4,8 @@ import { Accessor, createComputed, createState } from "ags";
 import { hide_all_windows } from "@/windows";
 import Graphene from "gi://Graphene?version=1.0";
 import Adw from "gi://Adw?version=1";
-import options from "@/options";
 import { PopupWindow } from "./popupwindow";
+import { config, theme } from "@/options";
 
 type BarItemPopupProps = JSX.IntrinsicElements["window"] & {
    children?: any;
@@ -25,10 +25,10 @@ export function BarItemPopup({
    gdkmonitor,
    height,
    margin,
-   transitionDuration = options.transition.get(),
+   transitionDuration = config.transition.get(),
    ...props
 }: BarItemPopupProps) {
-   const { bar } = options;
+   const { bar } = config;
    const bar_pos = bar.position.get();
    const monitor_height = gdkmonitor.get_geometry().height;
 
@@ -52,7 +52,6 @@ export function BarItemPopup({
       }
    }
    function valign() {
-      if (height === 0) return Gtk.Align.FILL;
       switch (bar_pos) {
          case "top":
             return Gtk.Align.START;
@@ -83,49 +82,25 @@ export function BarItemPopup({
       }
    }
 
-   function margin_get(pos: string) {
-      if (height === undefined) {
-         return (bar_pos === "top" && pos === "bottom") ||
-            (bar_pos === "bottom" && pos === "top")
-            ? 0
-            : margin;
-      }
-      if (height === 0) {
-         return (module_pos === "start" && pos === "end") ||
-            (module_pos === "end" && pos === "start")
-            ? 0
-            : margin;
-      }
-      if (height > monitor_height / 2) {
-         if (module_pos === "center") {
-            return (bar_pos === "top" && pos === "bottom") ||
-               (bar_pos === "bottom" && pos === "top")
-               ? 0
-               : margin;
-         }
-         return (module_pos === "start" && pos === "end") ||
-            (module_pos === "end" && pos === "start")
-            ? 0
-            : margin;
-      }
-      return (bar_pos === "top" && pos === "bottom") ||
-         (bar_pos === "bottom" && pos === "top")
-         ? 0
-         : margin;
-   }
-
    return (
       <PopupWindow
          name={name}
          valign={valign()}
          halign={halign()}
          gdkmonitor={gdkmonitor}
-         height={height}
+         height={
+            height === 0
+               ? monitor_height -
+                 bar.height.get() -
+                 (margin ? margin * 2 : theme.window.margin.get() * 2) -
+                 (theme.bar.margin.get()[0] + theme.bar.margin.get()[3])
+               : height
+         }
          width={width}
-         margin_top={margin_get("top")}
-         margin_bottom={margin_get("bottom")}
-         margin_start={margin_get("start")}
-         margin_end={margin_get("end")}
+         margin_top={margin}
+         margin_bottom={margin}
+         margin_start={margin}
+         margin_end={margin}
          transitionType={transitionType()}
          transitionDuration={transitionDuration}
       >

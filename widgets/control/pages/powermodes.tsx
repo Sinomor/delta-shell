@@ -2,16 +2,18 @@ import { icons } from "@/utils/icons";
 import { Gtk } from "ags/gtk4";
 import AstalPowerProfiles from "gi://AstalPowerProfiles?version=0.1";
 import { createBinding } from "ags";
-import options from "@/options";
+import { theme } from "@/options";
+import { control_page_set } from "../control";
+
 const power = AstalPowerProfiles.get_default();
 
 function Header() {
    return (
-      <box class={"header"} spacing={options.theme.spacing}>
+      <box class={"header"} spacing={theme.spacing}>
          <button
             cssClasses={["qs-header-button", "qs-page-prev"]}
             focusOnClick={false}
-            onClicked={() => options.control.page.set("main")}
+            onClicked={() => control_page_set("main")}
          >
             <image iconName={icons.arrow.left} pixelSize={20} />
          </button>
@@ -46,7 +48,7 @@ function Item({ profile }: { profile: string }) {
          onClicked={() => setProfile(profile)}
          focusOnClick={false}
       >
-         <box spacing={options.theme.spacing}>
+         <box spacing={theme.spacing}>
             <image iconName={icons.powerprofiles[profile]} pixelSize={24} />
             <label label={profiles_names[profile]} />
             <box hexpand />
@@ -67,7 +69,7 @@ function List() {
       <scrolledwindow>
          <box
             orientation={Gtk.Orientation.VERTICAL}
-            spacing={options.theme.spacing}
+            spacing={theme.spacing}
             vexpand
          >
             {list.map(({ profile }) => (
@@ -85,7 +87,7 @@ export function PowerModesPage() {
          name={"powermodes"}
          cssClasses={["qs-menu-page", "bluetooth-page"]}
          orientation={Gtk.Orientation.VERTICAL}
-         spacing={options.theme.spacing}
+         spacing={theme.spacing}
       >
          <Header />
          <List />

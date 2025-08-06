@@ -1,4 +1,3 @@
-import options from "@/options";
 import { Gtk } from "ags/gtk4";
 import {
    HourlyWeather,

@@ -4,9 +4,9 @@ import AstalNotifd from "gi://AstalNotifd";
 import GLib from "gi://GLib?version=2.0";
 import { isIcon, fileExists } from "@/utils/utils";
 import Gio from "gi://Gio?version=2.0";
-import options from "@/options";
 import { createState } from "ags";
 import { timeout } from "ags/time";
+import { config, theme } from "@/options";
 
 const time = (time: number, format = "%H:%M") =>
    GLib.DateTime.new_from_unix_local(time).format(format);
@@ -45,11 +45,11 @@ export function Notification({
       timeout(0, () => {
          setRevealed(true);
       });
-      timeout(options.notifications_popup.timeout.get(), () => {});
+      timeout(config.notifications_popup.timeout.get(), () => {});
 
-      timeout(options.notifications_popup.timeout.get(), () => {
+      timeout(config.notifications_popup.timeout.get() * 1000, () => {
          setRevealed(false);
-         timeout(options.transition.get() + 100, () => {
+         timeout(config.transition.get() + 100, () => {
             onHide && onHide(n);
          });
       });
@@ -59,7 +59,7 @@ export function Notification({
 
    function Header() {
       return (
-         <box class={"header"} spacing={options.theme.spacing}>
+         <box class={"header"} spacing={theme.spacing}>
             {(n.appIcon || isIcon(n.desktopEntry)) && (
                <image
                   class={"app-icon"}
@@ -94,7 +94,7 @@ export function Notification({
 
    function Content() {
       return (
-         <box class={"content"} spacing={options.theme.spacing}>
+         <box class={"content"} spacing={theme.spacing}>
             {n.image && fileExists(n.image) && (
                <scrolledwindow valign={Gtk.Align.START} class={"image"}>
                   <Gtk.Picture
@@ -131,7 +131,7 @@ export function Notification({
 
    function Actions() {
       return (
-         <box class="actions" spacing={options.theme.spacing}>
+         <box class="actions" spacing={theme.spacing}>
             {notificationActions.map(({ label, id }) => (
                <button hexpand onClicked={() => n.invoke(id)}>
                   <label label={label} halign={Gtk.Align.CENTER} hexpand />
@@ -144,29 +144,23 @@ export function Notification({
    return (
       <revealer
          transitionType={
-            options.notifications_popup.position.get().includes("top")
+            config.notifications_popup.position.get().includes("top")
                ? Gtk.RevealerTransitionType.SLIDE_DOWN
                : Gtk.RevealerTransitionType.SLIDE_UP
          }
-         transitionDuration={options.transition}
+         transitionDuration={config.transition.get() * 1000}
          revealChild={revaled}
       >
          <box
             orientation={Gtk.Orientation.VERTICAL}
             class={`notification ${urgency(n)}`}
-            spacing={options.theme.spacing}
+            spacing={theme.spacing}
             $={(self) => {
                if (popup) {
-                  self.set_margin_top(
-                     options.notifications_popup.position.get().includes("top")
-                        ? options.notifications_popup.margin.get()
-                        : 0,
-                  );
-                  self.set_margin_bottom(
-                     options.notifications_popup.position.get().includes("top")
-                        ? 0
-                        : options.notifications_popup.margin.get(),
-                  );
+                  self.set_margin_top(theme.window.margin.get());
+                  self.set_margin_bottom(theme.window.margin.get());
+                  self.set_margin_start(theme.window.margin.get());
+                  self.set_margin_end(theme.window.margin.get());
                }
             }}
          >

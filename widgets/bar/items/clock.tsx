@@ -2,12 +2,11 @@ import app from "ags/gtk4/app";
 import GLib from "gi://GLib";
 import { createPoll } from "ags/time";
 import { onCleanup } from "ags";
-import options from "@/options";
 import BarItem from "@/widgets/common/baritem";
-import { hide_all_windows } from "@/windows";
+import { hide_all_windows, windows_names } from "@/windows";
 import { toggleWindow } from "@/utils/utils";
-const { format } = options.bar.date;
-const { name } = options.calendar;
+import { config } from "@/options";
+const { format } = config.bar.date;
 
 export function Clock() {
    const time = createPoll(
@@ -18,10 +17,11 @@ export function Clock() {
 
    return (
       <BarItem
-         window={name}
+         window={windows_names.calendar}
          onPrimaryClick={() => {
-            if (!app.get_window(name)?.visible) hide_all_windows();
-            toggleWindow(name);
+            if (!app.get_window(windows_names.calendar)?.visible)
+               hide_all_windows();
+            toggleWindow(windows_names.calendar);
          }}
       >
          <label label={time((t) => t)} />

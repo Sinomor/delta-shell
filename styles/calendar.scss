@@ -3,10 +3,16 @@ window#calendar {
    color: $fg0;
 
    .main {
-      background: $bg0;
-      padding: $widget-main-padding;
-      border-radius: $widget-main-radius;
-      border: $border-width solid $border-color;
+      background: rgba($bg0, $window-opacity);
+      border: $window-border-width solid $window-border-color;
+      padding: $window-padding;
+      border-radius: $window-radius;
+      @if $shadow {
+         box-shadow: $window-shadow-offset
+            $window-shadow-blur
+            $window-shadow-spread
+            rgba($window-shadow-color, $window-shadow-opacity);
+      }
    }
 
    .calendar-button,
@@ -20,18 +26,18 @@ window#calendar {
       min-height: 45px;
 
       &:hover {
-         transition: $transition-background;
+         transition: background $transition;
          background: $bg1;
       }
       &:focus {
          transition: 0s;
-         outline-offset: -$outline-width;
-         outline: $outline-width solid $outline-color;
+         outline-offset: -$window-outline-width;
+         outline: $window-outline-width solid $window-outline-color;
       }
    }
 
    .weekend {
-      color: $red1;
+      color: $red;
    }
 
    .monthshift,
@@ -45,13 +51,13 @@ window#calendar {
       min-width: 45px;
 
       &:hover {
-         transition: $transition-background;
+         transition: background $transition;
          background: $bg2;
       }
       &:focus {
          transition: 0s;
-         outline-offset: -$outline-width;
-         outline: $outline-width solid $outline-color;
+         outline-offset: -$window-outline-width;
+         outline: $window-outline-width solid $window-outline-color;
       }
    }
 
@@ -60,11 +66,12 @@ window#calendar {
    }
 
    .today {
-      background: $accent1;
-      color: $bg0;
+      background: $accent;
+      color: get-contrast-color($accent, $fg0, $bg0);
 
       &:hover {
-         background: $accent1;
+         color: get-contrast-color($accent-light, $fg0, $bg0);
+         background: $accent-light;
       }
    }
 

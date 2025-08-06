@@ -6,10 +6,9 @@ import Graphene from "gi://Graphene?version=1.0";
 import Powermenu from "@/utils/powermenu";
 import { exec } from "ags/process";
 import { createBinding } from "ags";
-import { hide_all_windows } from "@/windows";
-import options from "@/options";
+import { hide_all_windows, windows_names } from "@/windows";
 import { PopupWindow } from "../common/popupwindow";
-const { name } = options.verification;
+import { config, theme } from "@/options";
 const powermenu = Powermenu.get_default();
 
 function Verification() {
@@ -17,7 +16,7 @@ function Verification() {
       <box class={"main"} orientation={Gtk.Orientation.VERTICAL} spacing={20}>
          <label label={createBinding(powermenu, "title")} class={"title"} />
          <label label={"Are you sure?"} class={"label"} />
-         <box homogeneous={true} spacing={options.theme.spacing}>
+         <box homogeneous={true} spacing={theme.spacing}>
             <button
                label={"No"}
                focusOnClick={false}
@@ -38,7 +37,7 @@ function Verification() {
 
 export default function (gdkmonitor: Gdk.Monitor) {
    return (
-      <PopupWindow name={name} gdkmonitor={gdkmonitor}>
+      <PopupWindow name={windows_names.verification} gdkmonitor={gdkmonitor}>
          <Verification />
       </PopupWindow>
    );

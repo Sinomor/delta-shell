@@ -2,15 +2,18 @@ window#osd {
    all: unset;
    color: $fg0;
 
-   .osd-main {
-      // padding: $widget-main-padding;
-      // background: $bg0;
-      // border: 1px solid $border-color;
-      border-radius: $widget-main-radius;
+   .main {
+      border-radius: $window-radius;
+      @if $shadow {
+         box-shadow: $window-shadow-offset
+            $window-shadow-blur
+            $window-shadow-spread
+            rgba($window-shadow-color, $window-shadow-opacity);
+      }
    }
 
    .osd-icon {
-      color: if(is-light($accent1), $bg0, $fg0);
+      color: if(is-light($accent), $bg0, $fg0);
       padding-left: 10px;
       &.low {
          color: $fg0;
@@ -21,7 +24,7 @@ window#osd {
       trough {
          .filled {
             border-radius: $widget-radius;
-            background: $accent1;
+            background: $accent;
          }
       }
 

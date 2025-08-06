@@ -3,7 +3,6 @@ import { Sliders } from "../items/sliders";
 import { NotificationsList } from "../items/notifications";
 import { MprisPlayers } from "../items/media";
 import { Qs_Buttins } from "../items/qsbuttons";
-import options from "@/options";
 import { BatteryIcon, icons } from "@/utils/icons";
 import AstalBattery from "gi://AstalBattery?version=0.1";
 import app from "ags/gtk4/app";
@@ -11,6 +10,8 @@ import { bash } from "@/utils/utils";
 import { createBinding } from "ags";
 import { timeout } from "ags/time";
 import ScreenRecord from "@/services/screenrecord";
+import { config, theme } from "@/options";
+import { windows_names } from "@/windows";
 const battery = AstalBattery.get_default();
 const screenRecord = ScreenRecord.get_default();
 
@@ -21,8 +22,8 @@ function Power() {
          tooltipText={"Power Menu"}
          focusOnClick={false}
          onClicked={() => {
-            app.get_window(options.powermenu.name)?.show();
-            app.get_window(options.control.name)?.hide();
+            app.get_window(windows_names.control)?.show();
+            app.get_window(windows_names.powermenu)?.hide();
          }}
       >
          <image iconName={icons.powermenu.shutdown} pixelSize={20} />
@@ -40,12 +41,12 @@ function Record() {
             if (screenRecord.recording) {
                screenRecord.stop();
             } else {
-               app.toggle_window(options.control.name);
+               app.toggle_window(windows_names.control);
                timeout(200, () => {
                   screenRecord.start();
                });
             }
-            app.get_window(options.control.name)?.hide();
+            app.get_window(windows_names.control)?.hide();
          }}
       >
          <image iconName={icons.video} pixelSize={20} />
@@ -61,7 +62,7 @@ function Settings() {
          tooltipText={"Settings"}
          onClicked={() => {
             bash(`XDG_CURRENT_DESKTOP=gnome gnome-control-center`);
-            app.get_window(options.control.name)?.hide();
+            app.get_window(windows_names.control)?.hide();
          }}
       >
          <image iconName={icons.settings} pixelSize={20} />
@@ -76,7 +77,7 @@ function Battery() {
          focusOnClick={false}
          onClicked={() => {
             bash("XDG_CURRENT_DESKTOP=gnome gnome-control-center power");
-            app.get_window(options.control.name)?.hide();
+            app.get_window(windows_names.control)?.hide();
          }}
       >
          <box spacing={10}>
@@ -110,7 +111,7 @@ export function MainPage() {
          name={"main"}
          cssClasses={["qs-main-page", "wifi-page"]}
          orientation={Gtk.Orientation.VERTICAL}
-         spacing={options.theme.spacing}
+         spacing={theme.spacing}
       >
          <Header />
          <Qs_Buttins />

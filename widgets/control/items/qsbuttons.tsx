@@ -5,10 +5,11 @@ import AstalNotifd from "gi://AstalNotifd?version=0.1";
 import Bluetooth from "gi://AstalBluetooth?version=0.1";
 import AstalPowerProfiles from "gi://AstalPowerProfiles?version=0.1";
 import { createBinding, createComputed } from "ags";
-import options from "@/options";
 import { resetCss } from "@/services/styles";
 import { QSButton } from "@/widgets/common/qsbutton";
 import { profiles_names } from "../pages/powermodes";
+import { theme } from "@/options";
+import { control_page_set } from "../control";
 
 function PowerProfilesButton() {
    const powerprofile = AstalPowerProfiles.get_default();
@@ -30,7 +31,7 @@ function PowerProfilesButton() {
             });
             powerprofile.set_active_profile(setprofile.get());
          }}
-         onArrowClicked={() => options.control.page.set("powermodes")}
+         onArrowClicked={() => control_page_set("powermodes")}
          ArrowClasses={createBinding(powerprofile, "activeProfile").as(
             (profile) => {
                const classes = ["arrow"];
@@ -73,7 +74,7 @@ function WifiButton() {
          onClicked={() => wifi.set_enabled(!wifi.enabled)}
          onArrowClicked={() => {
             wifi.scan();
-            options.control.page.set("network");
+            control_page_set("network");
          }}
          showArrow={true}
          ArrowClasses={enabled.as((p) => {
@@ -132,7 +133,7 @@ function BluetoothButton() {
          )}
          showArrow={true}
          onClicked={() => bluetooth.toggle()}
-         onArrowClicked={() => options.control.page.set("bluetooth")}
+         onArrowClicked={() => control_page_set("bluetooth")}
          ArrowClasses={powered.as((p) => {
             const classes = ["arrow"];
             p && classes.push("active");
@@ -149,7 +150,7 @@ function BluetoothButton() {
 
 function Qs_Row_1() {
    return (
-      <box spacing={options.theme.spacing} homogeneous={true}>
+      <box spacing={theme.spacing} homogeneous={true}>
          <WifiButton />
          <BluetoothButton />
       </box>
@@ -158,7 +159,7 @@ function Qs_Row_1() {
 
 function Qs_Row_2() {
    return (
-      <box spacing={options.theme.spacing} homogeneous={true}>
+      <box spacing={theme.spacing} homogeneous={true}>
          <PowerProfilesButton />
          <DNDButton />
       </box>
@@ -168,7 +169,7 @@ function Qs_Row_2() {
 export function Qs_Buttins() {
    return (
       <box
-         spacing={options.theme.spacing}
+         spacing={theme.spacing}
          class={"qs-buttons"}
          orientation={Gtk.Orientation.VERTICAL}
       >

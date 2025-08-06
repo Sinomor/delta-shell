@@ -2,8 +2,8 @@ import { currentLocation } from "./location";
 import { createState } from "ags";
 import { interval } from "ags/time";
 import { getWeatherIcon } from "@/utils/icons";
-import options from "@/options";
 import { fetch, URL } from "ags/fetch";
+import { config } from "@/options";
 
 export interface HourlyWeather {
    temperature: number;
@@ -148,7 +148,7 @@ export async function updateWeatherData() {
 currentLocation.subscribe(() => {
    updateWeatherData();
 });
-if (options.weather.enabled.get()) {
+if (config.weather.enabled.get()) {
    interval(300 * 1000, () => {
       updateWeatherData();
    });

@@ -5,12 +5,18 @@ window#notifications_popup {
 
 .notification {
    background: $bg1;
-   padding: $widget-main-padding;
+   padding: 10px;
    border-radius: $widget-radius;
    min-width: 400px;
+   @if $shadow {
+      box-shadow: $window-shadow-offset
+         $window-shadow-blur
+         $window-shadow-spread
+         rgba($window-shadow-color, $window-shadow-opacity);
+   }
 
    &.critical {
-      color: $red1;
+      color: $red;
    }
 
    .header {
@@ -33,7 +39,7 @@ window#notifications_popup {
          background-color: $bg2;
 
          &:hover {
-            color: $red1;
+            color: $red;
          }
       }
    }

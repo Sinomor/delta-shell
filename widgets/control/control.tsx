@@ -7,22 +7,23 @@ import { NetworkPage } from "./pages/network";
 import { MainPage } from "./pages/main";
 import { BluetoothPage } from "./pages/bluetooth";
 import { PowerModesPage } from "./pages/powermodes";
-import { createComputed, onCleanup } from "ags";
-import { hide_all_windows } from "@/windows";
-import options from "@/options";
+import { createComputed, createState, onCleanup } from "ags";
+import { hide_all_windows, windows_names } from "@/windows";
 import Adw from "gi://Adw?version=1";
 import { PopupWindow } from "../common/popupwindow";
 import { BarItemPopup } from "../common/baritempopup";
-const { name, page, width, height, margin } = options.control;
+import { config } from "@/options";
+const { width, height } = config.control;
+export const [control_page, control_page_set] = createState("main");
 
 function Control() {
    return (
       <stack
-         class={"control-main"}
-         transitionDuration={options.transition.get()}
+         class={"main"}
+         transitionDuration={config.transition.get() * 1000}
          widthRequest={width.get()}
          transitionType={Gtk.StackTransitionType.SLIDE_LEFT_RIGHT}
-         visibleChildName={page}
+         visibleChildName={control_page}
       >
          <NetworkPage />
          <MainPage />
@@ -35,10 +36,9 @@ function Control() {
 export default function (gdkmonitor: Gdk.Monitor) {
    return (
       <BarItemPopup
-         name={name}
+         name={windows_names.control}
          module={"sysbox"}
          gdkmonitor={gdkmonitor}
-         margin={margin.get()}
          width={width.get()}
          height={height.get()}
       >

@@ -5,10 +5,12 @@ import Wp from "gi://AstalWp";
 import Gtk from "gi://Gtk";
 import { icons, VolumeIcon } from "@/utils/icons";
 import { Accessor, createState, onCleanup } from "ags";
-import options from "@/options";
 import Brightness from "@/services/brightness";
 import giCairo from "cairo";
-const { name, margin, width, position } = options.osd;
+import { config, theme } from "@/options";
+import { windows_names } from "@/windows";
+const { width, position } = config.osd;
+const { margin } = theme.window;
 const [visible, visible_set] = createState(false);
 const [revealed, setRevealed] = createState(false);
 
@@ -28,7 +30,7 @@ function OnScreenProgress({ visible }: { visible: Accessor<boolean> }) {
       iconName_set(icon);
       count++;
 
-      timeout(options.osd.timeout.get(), () => {
+      timeout(config.osd.timeout.get() * 1000, () => {
          count--;
          if (count === 0) {
             setRevealed(false);
@@ -65,7 +67,7 @@ function OnScreenProgress({ visible }: { visible: Accessor<boolean> }) {
             }
          }}
       >
-         <overlay class={"osd-main"}>
+         <overlay class={"main"}>
             <image
                $type={"overlay"}
                iconName={iconName((i) => i)}
@@ -130,7 +132,7 @@ export default function (gdkmonitor: Gdk.Monitor) {
    return (
       <window
          gdkmonitor={gdkmonitor}
-         name={name}
+         name={windows_names.osd}
          application={app}
          anchor={TOP | BOTTOM | RIGHT | LEFT}
          layer={Astal.Layer.OVERLAY}
@@ -147,11 +149,11 @@ export default function (gdkmonitor: Gdk.Monitor) {
       >
          <revealer
             transitionType={
-               options.osd.position.get().includes("top")
+               config.osd.position.get().includes("top")
                   ? Gtk.RevealerTransitionType.SLIDE_DOWN
                   : Gtk.RevealerTransitionType.SLIDE_UP
             }
-            transitionDuration={options.transition}
+            transitionDuration={config.transition.get() * 1000}
             halign={halign()}
             valign={valign()}
             revealChild={revealed}
@@ -160,8 +162,8 @@ export default function (gdkmonitor: Gdk.Monitor) {
             }
          >
             <box
-               marginBottom={pos.includes("top") ? 0 : margin}
-               marginTop={pos.includes("top") ? margin : 0}
+               marginBottom={margin}
+               marginTop={margin}
                marginEnd={margin}
                marginStart={margin}
             >

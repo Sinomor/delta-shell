@@ -10,10 +10,12 @@ import {
 } from "ags";
 import app from "ags/gtk4/app";
 import GLib from "gi://GLib";
-import options from "@/options";
 import giCairo from "cairo";
+import { config, theme } from "@/options";
+import { windows_names } from "@/windows";
 const notifd = AstalNotifd.get_default();
-const { name, margin, timeout, position } = options.notifications_popup;
+const { timeout, position } = config.notifications_popup;
+const { margin } = theme.window;
 
 export function NotificationPopup(gdkmonitor: Gdk.Monitor) {
    const { TOP, BOTTOM, RIGHT, LEFT } = Astal.WindowAnchor;
@@ -100,9 +102,8 @@ export function NotificationPopup(gdkmonitor: Gdk.Monitor) {
 
    return (
       <window
-         class={name}
          gdkmonitor={gdkmonitor}
-         name={name}
+         name={windows_names.notifications_popup}
          visible={windowVisibility}
          anchor={TOP | BOTTOM | RIGHT | LEFT}
          $={(self) => (win = self)}

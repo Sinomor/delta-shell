@@ -2,22 +2,26 @@ window#launcher {
    all: unset;
    color: $fg0;
 
-   .launcher-main {
-      background: $bg0;
-      border: 1px solid $border-color;
-      padding: $widget-main-padding;
-      border-radius: $widget-main-radius;
+   .main {
+      background: rgba($bg0, $window-opacity);
+      border: $window-border-width solid $window-border-color;
+      padding: $window-padding;
+      border-radius: $window-radius;
+      @if $shadow {
+         box-shadow: $window-shadow-offset
+            $window-shadow-blur
+            $window-shadow-spread
+            rgba($window-shadow-color, $window-shadow-opacity);
+      }
    }
 
    .clear {
-      background: $bg1;
-      min-width: 50px;
+      background: transparent;
       padding: 0;
-      min-height: 50px;
 
       &:hover {
-         transition: background 0.3s;
-         color: $red1;
+         transition: color $transition;
+         color: $red;
       }
 
       &:focus {
@@ -54,7 +58,7 @@ window#launcher {
    .header {
       background: $bg1;
       border-radius: $widget-radius;
-      padding: 0 10px 0 10px;
+      padding: 0 10px;
       color: $fg0;
 
       entry {

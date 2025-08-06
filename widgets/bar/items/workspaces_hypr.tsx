@@ -3,11 +3,11 @@ import { range } from "../../../utils/utils";
 import AstalHyprland from "gi://AstalHyprland?version=0.1";
 import AstalApps from "gi://AstalApps?version=0.1";
 import { createBinding, createComputed, For } from "ags";
-import options from "@/options";
 import { icons } from "@/utils/icons";
 import BarItem from "@/widgets/common/baritem";
+import { config, theme } from "@/options";
 const hyprland = AstalHyprland.get_default();
-const apps_icons = options.bar.apps_icons.get();
+const apps_icons = config.bar.workspaces.taskbar_icons.get();
 
 type AppButtonProps = {
    app?: AstalApps.Application;
@@ -59,7 +59,7 @@ function AppButton({ app, client }: AppButtonProps) {
             />
             <box
                class="indicator"
-               valign={options.bar.position.as((p) =>
+               valign={config.bar.position.as((p) =>
                   p === "top" ? Gtk.Align.START : Gtk.Align.END,
                )}
                halign={Gtk.Align.CENTER}
@@ -117,7 +117,7 @@ export function Workspaces_Hypr() {
    const scrollDelay = 400;
 
    return (
-      <box spacing={options.bar.spacing} class={"workspaces"}>
+      <box spacing={theme.bar.spacing} class={"workspaces"}>
          <Gtk.EventControllerScroll
             flags={Gtk.EventControllerScrollFlags.VERTICAL}
             onScroll={(event, dx, dy) => {

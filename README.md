@@ -60,113 +60,167 @@ ags run
 
 ## Configuration
 
-Config file located at `~/.config/delta-shell/config.json`.
+Config separated to 2 files: `~/.config/delta-shell/theme.json` and `~/.config/delta-shell/config.json` (created automaticaly).
 Config comes with the following defaults:
 
 > [!WARNING]
-> Don't copy and paste this entire block into your `config.json`, it's just to show which configurations are available.
+> Don't copy and paste this entire block into your `config.json` and `theme.json`, it's just to show which configurations are available.
+
+config.json
 
 ```
 {
-  "theme": {
-    "bg": {
-      "0": "#1d1d20",
-      "1": "#28282c",
-      "2": "#36363a",
-      "3": "#48484b"
-    },
-    "fg": {
-      "0": "#ffffff",
-      "1": "#c0c0c0",
-      "2": "#808080"
-    },
-    "accent": "#c88800",
-    "blue": "#3584e4",
-    "teel": "#2190a4",
-    "green": "#3a944a",
-    "yellow": "#c88800",
-    "orange": "#ed5b00",
-    "red": "#e62d42",
-    "purple": "#9141ac",
-    "slate": "#6f8396",
-    "border": {
-      "width": 1,
-      "color": "#36363a"
-    },
-    "outline": {
-      "width": 1,
-      "color": "#c0c0c0"
-    },
-    "main-padding": 15, // main padding in widgets
-    "spacing": 10, // spacing between elements
-    "radius": 0 // border radius
-  },
-  "transition": 200, // animation transition
-  "font": {
-    "name": "Rubik",
-    "size": 14
-  },
-  "bar": {
-    "position": "top", // "top" | "bottom"
-    "height": 52,
-    // available modules: "launcher", "workspaces", "clock", "record_indicator", "tray", "keyboard", "sysbox", "weather"
-    "modules": {
-      "start": ["launcher", "workspaces"],
-      "center": ["clock", "weather"],
-      "end": ["record_indicator", "tray", "keyboard", "sysbox"]
-    },
-    // to use custom icons for apps you need to add
-    // window_class: iconname
-    // where iconname is a file name of icon that should be
-    // located at ~/.config/ags/assets/icons/hicolor/scalable/apps/
-    "apps_icons": {}
-    "spacing": 6, // spacing between bar widgets
-    "date": {
-      "format": "%b %d  %H:%M" // https://docs.gtk.org/glib/method.DateTime.format.html
-    }
-  },
-  "control": {
-    "width": 500,
-    "height": 0, // filled when 0
-    "margin": 10
-  },
-  "launcher": {
-    "width": 500,
-    "height": 0, // filled when 0
-    "margin": 10,
-    "clipboard": {
-        "max_items": 50, // maximum items in clipboard
-        "image_preview": false, // it may works bad
-    }
-  },
-  "osd": {
-    "width": 300,
-    "position": "bottom", // "top" | "top_left" | "top_right" | "bottom" | "bottom_left"| "bottom_right"
-    "margin": 10,
-    "timeout": 3000
-  },
-  "calendar": {
-    "margin": 10
-  },
-  "notifications_popup": {
-    "margin": 10,
-    "position": "top", // "top" | "top_left" | "top_right" | "bottom" | "bottom_left"| "bottom_right"
-    "timeout": 3000
-  },
-  "weather" {
-    "enabled": true,
-    // when set auto to true it uses geoclue
-    // options priority: auto > coords > city
-    "location": {
-      "auto": false,
-      "coords": {
-        "latitude": "",
-        "longitude": ""
+   "transition": 0.3, // animation transition (in seconds)
+   "bar": {
+      // available modules: "launcher", "workspaces", "clock", "record_indicator", "tray", "keyboard", "sysbox", "weather"
+      "modules": {
+         "start": ["launcher", "workspaces"],
+         "center": ["clock", "weather"],
+         "end": ["record_indicator", "tray", "keyboard", "sysbox"]
       },
-      "city": "Minsk"
-    }
-    "margin": 10
-  }
+      "height": 52,
+      "position": "top", // "top" | "bottom"
+      "workspaces": {
+         "taskbar": true,
+         // to use custom icons for apps you need to add
+         // window_class: iconname
+         // where iconname is a file name of icon that should be
+         // located at ~/.config/ags/assets/icons/hicolor/scalable/apps/
+         // or a name of icon from your system icon theme
+         "taskbar_icons": {}
+      },
+      "date": {
+         "format": "%b %d  %H:%M" // https://docs.gtk.org/glib/method.DateTime.format.html
+      }
+   },
+   "control": {
+      "default_coverArt": "/home/sinomor/.config/ags/assets/defsong.jpg",
+      "width": 500,
+      "height": 0 // filled when 0
+   },
+   "launcher": {
+      "clipboard": {
+         "max_items": 50, // maximum items in clipboard
+         "image_preview": false, // it may works bad
+      }
+      "width": 500,
+      "height": 0 // filled when 0
+   },
+   "osd": {
+      "width": 300,
+      "position": "bottom", // "top" | "top_left" | "top_right" | "bottom" | "bottom_left"| "bottom_right"
+      "timeout": 3 // in seconds
+   },
+   "notifications_popup": {
+      "position": "top", // "top" | "top_left" | "top_right" | "bottom" | "bottom_left"| "bottom_right"
+      "timeout": 3 // in seconds
+   },
+   "weather": {
+      "enabled": true,
+      // when set auto to true it uses geoclue
+      // for coords set {"latitude": "...", "longitude": "..."}
+      // options priority: auto > coords > city
+      "location": {
+         "auto": false,
+         "coords": null,
+         "city": "Minsk"
+      }
+   }
+}
+```
+
+theme.json
+
+```
+{
+   "font": {
+      "size": 14,
+      "name": "Rubik"
+   },
+   "colors": {
+      "bg": {
+         "0": "#1d1d20",
+         "1": "#28282c",
+         "2": "#36363a",
+         "3": "#48484b"
+      },
+      "fg": {
+         "0": "#ffffff",
+         "1": "#c0c0c0",
+         "2": "#808080"
+      },
+      "accent": "#c88800",
+      "blue": "#3584e4",
+      "teel": "#2190a4",
+      "green": "#3a944a",
+      "yellow": "#c88800",
+      "orange": "#ed5b00",
+      "red": "#e62d42",
+      "purple": "#9141ac",
+      "slate": "#6f8396"
+   },
+   "border": {
+      "width": 1,
+      "color": "$bg2" // css color values (name -> red, rgb -> rgb(50, 50, 50), etc), or use theme color with "$" prefix ($bg, $accent, etc)
+   },
+   "outline": {
+      "width": 1,
+      "color": "$fg1" // css color values
+   },
+   "spacing": 10, // main spacing between elements
+   "shadow": true,
+   "radius": 0, // border radius
+   "window": {
+      "padding": 15,
+      "opacity": 1,
+      "margin": 10, // only number
+      "border": {
+         "width": 1,
+         "color": "$bg2" // css color values
+      },
+      "outline": {
+         "width": 1,
+         "color": "$fg1" // css color values
+      },
+      "shadow": {
+         "offset": [0, 0], // in px, [horizontal, vertical]
+         "blur": 10,
+         "spread": 0,
+         "color": "black", // css color values
+         "opacity": 0.4
+      }
+   },
+   "bar": {
+      "bg": "$bg0",
+      "opacity": 1,
+      "margin": [0, 0, 0, 0], // in px, [top, right, bottom, left]
+      "spacing": 6, // spacing between modules in bar
+      "border": {
+         "width": 1,
+         "color": "$bg2" // css color values
+      },
+      "shadow": {
+         "offset": [0, 0], // in px, [horizontal, vertical]
+         "blur": 10,
+         "spread": 0,
+         "color": "black", // css color values
+         "opacity": 0.4
+      },
+      "button": {
+         "fg": "$fg0",
+         "padding": [0, 10], // in px, support css style (top, right, bottom, left -> [10, 15, 20, 10]
+         "bg": {
+            "default": "$bg0", // css color values
+            "hover": "$bg1", // css color values
+            "active": "$bg2" // css color values
+         },
+         "opacity": 1,
+         "border": {
+            "width": 0,
+            "color": "$bg2" // css color values
+         }
+      }
+   }
 }
 ```
 
@@ -175,3 +229,4 @@ Config comes with the following defaults:
 - [epik-shell](https://github.com/ezerinz/epik-shell/)
 - [re-shell](https://github.com/ReStranger/re-shell)
 - [cafetestrest dotfiles](https://github.com/cafetestrest/nixos)
+- [desktop-shell](https://github.com/Mabi19/desktop-shell)

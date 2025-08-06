@@ -5,22 +5,23 @@ import app from "ags/gtk4/app";
 import Graphene from "gi://Graphene?version=1.0";
 import { AppLauncher } from "./pages/applauncher";
 import { Clipboard } from "./pages/clipboard";
-import { hide_all_windows } from "@/windows";
+import { hide_all_windows, windows_names } from "@/windows";
 import Adw from "gi://Adw?version=1";
-import options from "@/options";
 import { PopupWindow } from "../common/popupwindow";
-import { createComputed } from "ags";
+import { createComputed, createState } from "ags";
 import { BarItemPopup } from "../common/baritempopup";
-const { name, page, width, height, margin } = options.launcher;
+import { config } from "@/options";
+const { width, height } = config.launcher;
+export const [launcher_page, launcher_page_set] = createState("apps");
 
 function Launcher() {
    return (
       <stack
-         class="launcher-main"
+         class={"main"}
          widthRequest={width.get()}
-         transitionDuration={options.transition.get()}
+         transitionDuration={config.transition.get()}
          transitionType={Gtk.StackTransitionType.SLIDE_LEFT_RIGHT}
-         visibleChildName={page}
+         visibleChildName={launcher_page}
       >
          <AppLauncher />
          <Clipboard />
@@ -31,10 +32,9 @@ function Launcher() {
 export default function (gdkmonitor: Gdk.Monitor) {
    return (
       <BarItemPopup
-         name={name}
+         name={windows_names.launcher}
          module={"launcher"}
          gdkmonitor={gdkmonitor}
-         margin={margin.get()}
          width={width.get()}
          height={height.get()}
       >

@@ -3,10 +3,16 @@ window#powermenu {
    color: $fg0;
 
    .main {
-      background: $bg0;
-      padding: $widget-main-padding;
-      border: $border-width solid $border-color;
-      border-radius: $widget-main-radius;
+      background: rgba($bg0, $window-opacity);
+      padding: $window-padding;
+      border: $window-border-width solid $window-border-color;
+      border-radius: $window-radius;
+      @if $shadow {
+         box-shadow: $window-shadow-offset
+            $window-shadow-blur
+            $window-shadow-spread
+            rgba($window-shadow-color, $window-shadow-opacity);
+      }
    }
 
    .menubutton {
@@ -25,14 +31,14 @@ window#powermenu {
       &:focus {
          image {
             transition: 0s;
-            outline-offset: -$outline-width;
-            outline: $outline-width solid $outline-color;
+            outline-offset: -$window-outline-width;
+            outline: $window-outline-width solid $window-outline-color;
          }
       }
 
       &:hover {
          image {
-            transition: $transition-background;
+            transition: background $transition;
             background: $bg2;
          }
       }
@@ -45,9 +51,12 @@ window#verification {
 
    .main {
       background: $bg0;
-      padding: $widget-main-padding;
-      border-radius: $widget-main-radius;
+      padding: $window-padding;
+      border-radius: $window-radius;
       border: $border-width solid $border-color;
+      box-shadow: $window-shadow-offset $window-shadow-blur
+         $window-shadow-spread
+         rgba($window-shadow-color, $window-shadow-opacity);
    }
 
    .title,
@@ -65,12 +74,12 @@ window#verification {
 
       &:focus {
          transition: 0s;
-         outline-offset: -$outline-width;
-         outline: $outline-width solid $outline-color;
+         outline-offset: -$window-outline-width;
+         outline: $window-outline-width solid $window-outline-color;
       }
 
       &:hover {
-         transition: $transition-background;
+         transition: background $transition;
          background: $bg2;
       }
    }

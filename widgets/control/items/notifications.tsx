@@ -3,7 +3,7 @@ import AstalNotifd from "gi://AstalNotifd?version=0.1";
 import { Notification } from "@/widgets/notifications/notification";
 import { icons } from "@/utils/icons";
 import { createBinding, For } from "ags";
-import options from "@/options";
+import { theme } from "@/options";
 const notifd = AstalNotifd.get_default();
 
 function Clear() {
@@ -60,7 +60,7 @@ function List() {
          <box
             class={"notifs-list"}
             orientation={Gtk.Orientation.VERTICAL}
-            spacing={options.theme.spacing}
+            spacing={theme.spacing}
             vexpand
          >
             <For each={list}>
@@ -75,10 +75,7 @@ function List() {
 
 export function NotificationsList() {
    return (
-      <box
-         spacing={options.theme.spacing}
-         orientation={Gtk.Orientation.VERTICAL}
-      >
+      <box spacing={theme.spacing} orientation={Gtk.Orientation.VERTICAL}>
          <Header />
          <NotFound />
          <List />

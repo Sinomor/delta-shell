@@ -10,13 +10,12 @@ import {
 } from "@/utils/icons";
 import app from "ags/gtk4/app";
 import { createBinding, createComputed, onCleanup } from "ags";
-import options from "@/options";
 import BarItem from "@/widgets/common/baritem";
 import Wp from "gi://AstalWp";
 import { Gtk } from "ags/gtk4";
-import { hide_all_windows } from "@/windows";
+import { hide_all_windows, windows_names } from "@/windows";
 import { toggleWindow } from "@/utils/utils";
-const { name } = options.control;
+import { config, theme } from "@/options";
 const battery = AstalBattery.get_default();
 const bluetooth = AstalBluetooth.get_default();
 const network = AstalNetwork.get_default();
@@ -39,13 +38,14 @@ export function SysBox() {
 
    return (
       <BarItem
-         window={name}
+         window={windows_names.control}
          onPrimaryClick={() => {
-            if (!app.get_window(name)?.visible) hide_all_windows();
-            toggleWindow(name);
+            if (!app.get_window(windows_names.control)?.visible)
+               hide_all_windows();
+            toggleWindow(windows_names.control);
          }}
       >
-         <box spacing={options.bar.spacing}>
+         <box spacing={theme.bar.spacing}>
             <image
                visible={createBinding(network.wifi, "enabled")}
                pixelSize={20}

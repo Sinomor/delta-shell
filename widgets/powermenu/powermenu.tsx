@@ -2,13 +2,11 @@ import Astal from "gi://Astal?version=4.0";
 import Gdk from "gi://Gdk";
 import Gtk from "gi://Gtk";
 import app from "ags/gtk4/app";
-import Graphene from "gi://Graphene?version=1.0";
 import { icons } from "@/utils/icons";
 import Powermenu from "@/utils/powermenu";
-import { hide_all_windows } from "@/windows";
-import options from "@/options";
+import { hide_all_windows, windows_names } from "@/windows";
 import { PopupWindow } from "../common/popupwindow";
-const { name } = options.powermenu;
+import { config, theme } from "@/options";
 const powermenu = Powermenu.get_default();
 
 type MenuButtonProps = {
@@ -24,7 +22,7 @@ function MenuButton({ icon, label, clicked }: MenuButtonProps) {
             orientation={Gtk.Orientation.VERTICAL}
             valign={Gtk.Align.CENTER}
             halign={Gtk.Align.CENTER}
-            spacing={options.theme.spacing}
+            spacing={theme.spacing}
          >
             <image iconName={icon} iconSize={Gtk.IconSize.LARGE} />
             <label label={label} />
@@ -37,7 +35,7 @@ const list = ["Sleep", "Logout", "Reboot", "Shutdown"];
 
 function PowerMenu() {
    return (
-      <box class={"main"} spacing={options.theme.main_padding}>
+      <box class={"main"} spacing={theme.spacing}>
          {list.map((value) => (
             <MenuButton
                icon={icons.powermenu[value.toLowerCase()]}
@@ -51,7 +49,7 @@ function PowerMenu() {
 
 export default function (gdkmonitor: Gdk.Monitor) {
    return (
-      <PopupWindow name={name} gdkmonitor={gdkmonitor}>
+      <PopupWindow name={windows_names.powermenu} gdkmonitor={gdkmonitor}>
          <PowerMenu />
       </PopupWindow>
    );

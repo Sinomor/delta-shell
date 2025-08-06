@@ -1,7 +1,14 @@
 window#bar {
    all: unset;
-   background: $bg0;
+   background: rgba($bar-bg, $bar-opacity);
+   margin: $bar-margin;
    color: $fg0;
+   @if $bar-opacity != 0 {
+      box-shadow: $bar-shadow-offset
+         $bar-shadow-blur
+         $bar-shadow-spread
+         rgba($bar-shadow-color, $bar-shadow-opacity);
+   }
 
    tooltip {
       background: $bg0;
@@ -10,11 +17,19 @@ window#bar {
    }
 
    @if $bar-position == "top" {
-      border-bottom: $border-width solid $border-color;
+      @if $bar-margin == 0px 0px 0px 0px {
+         border-bottom: $bar-border-width solid $bar-border-color;
+      } @else {
+         border: $bar-border-width solid $bar-border-color;
+      }
    }
 
    @if $bar-position == "bottom" {
-      border-top: $border-width solid $border-color;
+      @if $bar-margin == 0px 0px 0px 0px {
+         border-top: $bar-border-width solid $bar-border-color;
+      } @else {
+         border: $bar-border-width solid $bar-border-color;
+      }
    }
 
    .modules-start {
@@ -36,20 +51,29 @@ window#bar {
 
       .content {
          border-radius: $widget-radius;
-         padding: 0 10px;
+         background: rgba($bar-button-bg, $bar-button-opacity);
+         border: $bar-button-border-width solid $bar-button-border-color;
+         color: $bar-button-fg;
+         padding: $bar-button-padding;
+         @if $bar-opacity == 0 {
+            box-shadow: $bar-shadow-offset
+               $bar-shadow-blur
+               $bar-shadow-spread
+               rgba($bar-shadow-color, $bar-shadow-opacity);
+         }
       }
 
       &:hover {
          .content {
-            background: $bg1;
-            transition: $transition-background;
+            background: rgba($bar-button-bg-hover, $bar-button-opacity);
+            transition: background $transition;
          }
       }
 
       &.active {
          .content {
-            background: $bg2;
-            transition: $transition-background;
+            background: rgba($bar-button-bg-active, $bar-button-opacity);
+            transition: background $transition;
          }
       }
    }
@@ -60,7 +84,7 @@ window#bar {
 
    @keyframes blink {
       to {
-         background: $red1;
+         background: $red;
       }
    }
 
@@ -108,8 +132,8 @@ window#bar {
 
       &.focused {
          .indicator {
-            transition: $transition-background;
-            background: $accent1;
+            transition: background $transition;
+            background: $accent;
          }
       }
 
@@ -118,7 +142,35 @@ window#bar {
          min-width: 4px;
          min-height: 4px;
          background: $bg3;
-         transition: min-width 0.3s ease-in-out;
+         transition: min-width $transition;
+      }
+   }
+}
+
+window#bar_shadow {
+   all: unset;
+
+   .shadow {
+      margin-right: $bar-margin-right;
+      margin-left: $bar-margin-left;
+
+      @if $bar-position == "top" {
+         @if $shadow {
+            box-shadow: inset
+               0px
+               10px
+               8px -10px
+               rgba($bar-shadow-color, $bar-shadow-opacity);
+         }
+      }
+
+      @if $bar-position == "bottom" {
+         @if $shadow {
+            box-shadow: inset
+               0px -10px
+               8px -10px
+               rgba($bar-shadow-color, $bar-shadow-opacity);
+         }
       }
    }
 }

@@ -5,7 +5,7 @@ import { timeout } from "ags/time";
 import app from "ags/gtk4/app";
 import { createState, onCleanup } from "ags";
 import { hide_all_windows } from "@/windows";
-import options from "@/options";
+import { config } from "@/options";
 
 export function ClipImage({
    id,
@@ -56,7 +56,7 @@ export function ClipImage({
                   const winName = win.name;
                   const visible = win.visible;
 
-                  if (winName == options.launcher.name && !visible) {
+                  if (winName == config.launcher.name && !visible) {
                      picturebox.set_file(null);
                   }
                });

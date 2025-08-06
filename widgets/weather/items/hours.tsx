@@ -1,8 +1,8 @@
-import options from "@/options";
 import { Gtk } from "ags/gtk4";
 import { HourlyWeather, weatherData } from "@/services/weather";
 import { createComputed, For } from "ags";
 import { icons } from "@/utils/icons";
+import { theme } from "@/options";
 
 function formatHour(timestamp: number): string {
    const date = new Date(timestamp * 1000);
@@ -20,7 +20,7 @@ function Hour({ hour }: { hour: HourlyWeather }) {
    return (
       <box
          orientation={Gtk.Orientation.VERTICAL}
-         spacing={options.theme.spacing}
+         spacing={theme.spacing}
          class={"hour"}
       >
          <label label={`${formatHour(hour.time)}`} />
@@ -43,10 +43,10 @@ export function Hours() {
    return (
       <box
          orientation={Gtk.Orientation.VERTICAL}
-         spacing={options.theme.spacing}
+         spacing={theme.spacing}
          class={"forecast"}
       >
-         <box spacing={options.theme.spacing}>
+         <box spacing={theme.spacing}>
             <image iconName={icons.clock} pixelSize={20} />
             <label label={"Hourly forecast"} />
          </box>
@@ -54,7 +54,7 @@ export function Hours() {
             vscrollbarPolicy={Gtk.PolicyType.NEVER}
             hscrollbar_policy={Gtk.PolicyType.EXTERNAL}
          >
-            <box spacing={options.theme.spacing}>
+            <box spacing={theme.spacing}>
                <For each={hours}>{(hour) => <Hour hour={hour} />}</For>
             </box>
          </scrolledwindow>

@@ -7,11 +7,13 @@ import { SysBox } from "./items/sysbox";
 import { Tray } from "./items/tray";
 import { RecordIndicator } from "./items/recordindicator";
 import { Keyboard } from "./items/keyboard";
-import options from "@/options";
 import { For, createState, onCleanup } from "ags";
 import { Weather } from "./items/weather";
+import { config, theme } from "@/options";
+import { windows_names } from "@/windows";
 
-const { name, position, spacing, modules } = options.bar;
+const { position, modules } = config.bar;
+const { spacing } = theme.bar;
 
 const Bar_Items = {
    launcher: () => <Launcher />,
@@ -76,11 +78,12 @@ function End() {
 export default function Bar(gdkmonitor: Gdk.Monitor) {
    const { BOTTOM, TOP, LEFT, RIGHT } = Astal.WindowAnchor;
    const windows = [
-      options.powermenu.name,
-      options.verification.name,
-      options.calendar.name,
-      options.control.name,
-      options.launcher.name,
+      windows_names.powermenu,
+      windows_names.verification,
+      windows_names.calendar,
+      windows_names.control,
+      windows_names.launcher,
+      windows_names.weather,
    ];
    const [windowsVisible, windowsVisible_set] = createState<string[]>([]);
    let bar: Astal.Window;
@@ -113,9 +116,9 @@ export default function Bar(gdkmonitor: Gdk.Monitor) {
    return (
       <window
          visible
-         name={name}
-         namespace={name}
-         class={name}
+         name={windows_names.bar}
+         namespace={windows_names.bar}
+         class={windows_names.bar}
          gdkmonitor={gdkmonitor}
          exclusivity={Astal.Exclusivity.EXCLUSIVE}
          layer={Astal.Layer.TOP}
@@ -123,7 +126,7 @@ export default function Bar(gdkmonitor: Gdk.Monitor) {
          application={app}
          $={(self) => (bar = self)}
       >
-         <centerbox class={"bar-main"} heightRequest={options.bar.height}>
+         <centerbox class={"bar-main"} heightRequest={config.bar.height}>
             <Start />
             <Center />
             <End />

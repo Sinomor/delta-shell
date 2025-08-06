@@ -2,12 +2,12 @@ import { Astal, Gdk, Gtk } from "ags/gtk4";
 import AstalNiri from "gi://AstalNiri";
 import AstalApps from "gi://AstalApps";
 import { createBinding, createComputed, For } from "ags";
-import options, { compositor } from "@/options";
+import { compositor, config, theme } from "@/options";
 import { bash } from "@/utils/utils";
 import { icons } from "@/utils/icons";
 import BarItem from "@/widgets/common/baritem";
 const niri = AstalNiri.get_default();
-const apps_icons = options.bar.apps_icons.get();
+const apps_icons = config.bar.workspaces.taskbar_icons.get();
 
 type AppButtonProps = {
    app?: AstalApps.Application;
@@ -53,7 +53,7 @@ function AppButton({ app, client }: AppButtonProps) {
             />
             <box
                class="indicator"
-               valign={options.bar.position.as((p) =>
+               valign={config.bar.position.as((p) =>
                   p === "top" ? Gtk.Align.START : Gtk.Align.END,
                )}
                halign={Gtk.Align.CENTER}
@@ -64,10 +64,6 @@ function AppButton({ app, client }: AppButtonProps) {
 }
 
 function WorkspaceButton({ ws }: { ws: AstalNiri.Workspace }) {
-   const clients = createBinding(ws, "windows").as((clients) =>
-      clients.sort((a, b) => a.id - b.id),
-   );
-
    const classNames = createBinding(niri, "focusedWorkspace").as((fws) => {
       const classes = ["bar-item"];
 
@@ -82,22 +78,28 @@ function WorkspaceButton({ ws }: { ws: AstalNiri.Workspace }) {
    return (
       <BarItem cssClasses={classNames} onPrimaryClick={() => ws.focus()}>
          <label class={"workspace"} label={ws.idx.toString()} />
-         <For each={clients}>
-            {(client: AstalNiri.Window) => {
-               for (const app of application.list) {
-                  if (
-                     client.app_id &&
-                     app.entry
-                        .split(".desktop")[0]
-                        .toLowerCase()
-                        .match(client.app_id.toLowerCase())
-                  ) {
-                     return <AppButton app={app} client={client} />;
+         {config.bar.workspaces.taskbar.get() && (
+            <For
+               each={createBinding(ws, "windows").as((clients) =>
+                  clients.sort((a, b) => a.id - b.id),
+               )}
+            >
+               {(client: AstalNiri.Window) => {
+                  for (const app of application.list) {
+                     if (
+                        client.app_id &&
+                        app.entry
+                           .split(".desktop")[0]
+                           .toLowerCase()
+                           .match(client.app_id.toLowerCase())
+                     ) {
+                        return <AppButton app={app} client={client} />;
+                     }
                   }
-               }
-               return <AppButton client={client} />;
-            }}
-         </For>
+                  return <AppButton client={client} />;
+               }}
+            </For>
+         )}
       </BarItem>
    );
 }
@@ -110,7 +112,7 @@ export function Workspaces_Niri() {
    const scrollDelay = 400;
 
    return (
-      <box spacing={options.bar.spacing} class={"workspaces"}>
+      <box spacing={theme.bar.spacing} class={"workspaces"}>
          <Gtk.EventControllerScroll
             flags={Gtk.EventControllerScrollFlags.VERTICAL}
             onScroll={(event, dx, dy) => {

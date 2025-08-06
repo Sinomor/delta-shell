@@ -3,7 +3,8 @@ import { bash } from "@/utils/utils";
 import { icons, getAccessPointIcon } from "@/utils/icons";
 import { Gtk } from "ags/gtk4";
 import { createBinding, For } from "ags";
-import options from "@/options";
+import { theme } from "@/options";
+import { control_page_set } from "../control";
 const wifi = AstalNetwork.get_default().wifi;
 
 function ScanningIndicator() {
@@ -22,11 +23,11 @@ function ScanningIndicator() {
 
 function Header() {
    return (
-      <box class={"header"} spacing={options.theme.spacing}>
+      <box class={"header"} spacing={theme.spacing}>
          <button
             cssClasses={["qs-header-button", "qs-page-prev"]}
             focusOnClick={false}
-            onClicked={() => options.control.page.set("main")}
+            onClicked={() => control_page_set("main")}
          >
             <image iconName={icons.arrow.left} pixelSize={20} />
          </button>
@@ -64,7 +65,7 @@ function Item({ accessPoint }: ItemProps) {
          }
          focusOnClick={false}
       >
-         <box spacing={options.theme.spacing}>
+         <box spacing={theme.spacing}>
             <image iconName={getAccessPointIcon(accessPoint)} pixelSize={20} />
             <label label={accessPoint.ssid} />
             <box hexpand />
@@ -87,7 +88,7 @@ function List() {
       <scrolledwindow>
          <box
             orientation={Gtk.Orientation.VERTICAL}
-            spacing={options.theme.spacing}
+            spacing={theme.spacing}
             vexpand
          >
             <For each={list}>{(ap) => <Item accessPoint={ap} />}</For>
@@ -103,7 +104,7 @@ export function NetworkPage() {
          name={"network"}
          cssClasses={["qs-menu-page", "wifi-page"]}
          orientation={Gtk.Orientation.VERTICAL}
-         spacing={options.theme.spacing}
+         spacing={theme.spacing}
       >
          <Header />
          <List />

@@ -3,7 +3,8 @@ import { Gtk } from "ags/gtk4";
 import AstalBluetooth from "gi://AstalBluetooth?version=0.1";
 import { timeout } from "ags/time";
 import { createBinding, For } from "ags";
-import options from "@/options";
+import { theme } from "@/options";
+import { control_page_set } from "../control";
 const bluetooth = AstalBluetooth.get_default();
 
 function ScanningIndicator() {
@@ -24,11 +25,11 @@ function ScanningIndicator() {
 
 function Header() {
    return (
-      <box class={"header"} spacing={options.theme.spacing}>
+      <box class={"header"} spacing={theme.spacing}>
          <button
             cssClasses={["qs-header-button", "qs-page-prev"]}
             focusOnClick={false}
-            onClicked={() => options.control.page.set("main")}
+            onClicked={() => control_page_set("main")}
          >
             <image iconName={icons.arrow.left} pixelSize={20} />
          </button>
@@ -78,7 +79,7 @@ function Item({ device }: ItemProps) {
          }}
          focusOnClick={false}
       >
-         <box spacing={options.theme.spacing}>
+         <box spacing={theme.spacing}>
             <image
                iconName={
                   device.icon === null
@@ -112,7 +113,7 @@ function List() {
       <scrolledwindow>
          <box
             orientation={Gtk.Orientation.VERTICAL}
-            spacing={options.theme.spacing}
+            spacing={theme.spacing}
             vexpand
          >
             <For each={list}>{(device) => <Item device={device} />}</For>
@@ -128,7 +129,7 @@ export function BluetoothPage() {
          name={"bluetooth"}
          cssClasses={["qs-menu-page", "bluetooth-page"]}
          orientation={Gtk.Orientation.VERTICAL}
-         spacing={options.theme.spacing}
+         spacing={theme.spacing}
       >
          <Header />
          <List />

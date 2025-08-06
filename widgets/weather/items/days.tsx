@@ -1,8 +1,8 @@
-import options from "@/options";
 import { Gtk } from "ags/gtk4";
 import { DailyWeather, weatherData } from "@/services/weather";
 import { createComputed, For } from "ags";
 import { icons } from "@/utils/icons";
+import { theme } from "@/options";
 
 function formatDate(timestamp: number): string {
    const date = new Date(timestamp * 1000);
@@ -31,7 +31,7 @@ function Day({ day }: { day: DailyWeather }) {
    return (
       <box
          orientation={Gtk.Orientation.VERTICAL}
-         spacing={options.theme.spacing}
+         spacing={theme.spacing}
          class={"day"}
       >
          <label label={`${formateWeekDay(day.time)}`} />
@@ -61,10 +61,10 @@ export function Days() {
    return (
       <box
          orientation={Gtk.Orientation.VERTICAL}
-         spacing={options.theme.spacing}
+         spacing={theme.spacing}
          class={"forecast"}
       >
-         <box spacing={options.theme.spacing}>
+         <box spacing={theme.spacing}>
             <image iconName={icons.calendar} pixelSize={20} />
             <label label={"Daily forecast"} valign={Gtk.Align.CENTER} />
          </box>
@@ -72,7 +72,7 @@ export function Days() {
             vscrollbarPolicy={Gtk.PolicyType.NEVER}
             hscrollbar_policy={Gtk.PolicyType.EXTERNAL}
          >
-            <box spacing={options.theme.spacing}>
+            <box spacing={theme.spacing}>
                <For each={days}>{(day) => <Day day={day} />}</For>
             </box>
          </scrolledwindow>

@@ -6,9 +6,9 @@ import { ClipImage } from "../items/clip_image";
 import { ClipText } from "../items/clip_text";
 import { ClipColor } from "../items/clip_color";
 import { createComputed, createState, For, onCleanup } from "ags";
-import options from "@/options";
-import { hide_all_windows } from "@/windows";
-const { name, page } = options.launcher;
+import { hide_all_windows, windows_names } from "@/windows";
+import { config, theme } from "@/options";
+import { launcher_page } from "../launcher";
 
 const colorPatterns = {
    hex: /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/,
@@ -46,14 +46,14 @@ async function loadInitialList() {
 }
 bash(
    `killall -INT wl-paste;
-   wl-paste --watch cliphist -max-items ${options.launcher.clipboard.max_items.get()} store`,
+   wl-paste --watch cliphist -max-items ${config.launcher.clipboard.max_items.get()} store`,
 );
 
 function ClipButton({ item }: { item: string }) {
    const [id, ...contentParts] = item.split("\t");
    const content = contentParts.join(" ").trim();
    const isImage =
-      options.launcher.clipboard.image_preview.get() &&
+      config.launcher.clipboard.image_preview.get() &&
       content.match(imagePattern);
    const isColor = Object.entries(colorPatterns).find(([_, pattern]) =>
       pattern.test(content.trim()),
@@ -89,9 +89,9 @@ function Entry() {
             appconnect = app.connect("window-toggled", async (_, win) => {
                const winName = win.name;
                const visible = win.visible;
-               const mode = page.get() == "clipboard";
+               const mode = launcher_page.get() == "clipboard";
 
-               if (winName == name && visible && mode) {
+               if (winName == windows_names.launcher && visible && mode) {
                   scrolled.set_vadjustment(null);
                   await loadInitialList();
                   self.set_text("");
@@ -110,7 +110,7 @@ function Clear() {
    return (
       <button
          class={"clear"}
-         focusOnClick={false}
+         focusable={false}
          onClicked={async () => {
             bash("cliphist wipe");
             await loadInitialList();
@@ -134,7 +134,7 @@ function List() {
    return (
       <scrolledwindow class={"apps-list"} $={(self) => (scrolled = self)}>
          <box
-            spacing={options.theme.spacing}
+            spacing={theme.spacing}
             vexpand
             orientation={Gtk.Orientation.VERTICAL}
          >
@@ -169,7 +169,7 @@ export function Clipboard() {
          $type="named"
          orientation={Gtk.Orientation.VERTICAL}
          vexpand
-         spacing={options.theme.spacing}
+         spacing={theme.spacing}
       >
          <Header />
          <NotFound />

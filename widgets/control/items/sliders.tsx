@@ -3,8 +3,8 @@ import { icons, VolumeIcon } from "@/utils/icons";
 import { Gtk } from "ags/gtk4";
 import AstalWp from "gi://AstalWp?version=0.1";
 import Brightness from "@/services/brightness";
-import options from "@/options";
 import { dependencies } from "@/utils/utils";
+import { theme } from "@/options";
 const brightness = Brightness.get_default();
 
 function BrightnessBox() {
@@ -66,7 +66,7 @@ function VolumeBox() {
 export function Sliders() {
    return (
       <box
-         spacing={options.theme.spacing}
+         spacing={theme.spacing}
          orientation={Gtk.Orientation.VERTICAL}
          class={"sliders"}
       >

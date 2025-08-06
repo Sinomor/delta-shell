@@ -1,4 +1,5 @@
-import options from "@/options";
+import { config } from "@/options";
+import { windows_names } from "@/windows";
 import GObject, { getter, property, register, signal } from "ags/gobject";
 import app from "ags/gtk4/app";
 import GLib from "gi://GLib?version=2.0";
@@ -42,7 +43,7 @@ export default class Powermenu extends GObject.Object {
 
       this.notify("cmd");
       this.notify("title");
-      app.get_window(options.powermenu.name)?.hide();
-      app.get_window(options.verification.name)?.show();
+      app.get_window(windows_names.powermenu)?.hide();
+      app.get_window(windows_names.verification)?.show();
    }
 }

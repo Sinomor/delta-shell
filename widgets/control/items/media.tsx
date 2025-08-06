@@ -5,7 +5,7 @@ import { Gtk } from "ags/gtk4";
 import Gio from "gi://Gio?version=2.0";
 import { createBinding, For } from "ags";
 import Adw from "gi://Adw?version=1";
-import options from "@/options";
+import { config, theme } from "@/options";
 const mpris = AstalMpris.get_default();
 let carousel: Adw.Carousel;
 
@@ -15,7 +15,7 @@ function MediaPlayer({ player }: { player: AstalMpris.Player }) {
       (a) => a || "Unknown Artist",
    );
    const coverArt = createBinding(player, "coverArt").as((c) =>
-      Gio.file_new_for_path(c || options.control.default_coverArt),
+      Gio.file_new_for_path(c || config.control.default_coverArt),
    );
    const playIcon = createBinding(player, "playbackStatus").as((s) =>
       s === AstalMpris.PlaybackStatus.PLAYING
@@ -80,7 +80,7 @@ function MediaPlayer({ player }: { player: AstalMpris.Player }) {
    );
 
    const Buttons = () => (
-      <box spacing={options.theme.spacing} vexpand valign={Gtk.Align.END}>
+      <box spacing={theme.spacing} vexpand valign={Gtk.Align.END}>
          <ButtonPrev />
          <ButtonPlay />
          <ButtonNext />
@@ -92,7 +92,7 @@ function MediaPlayer({ player }: { player: AstalMpris.Player }) {
          $type="overlay"
          orientation={Gtk.Orientation.VERTICAL}
          class={"mediaplayer"}
-         spacing={options.theme.spacing}
+         spacing={theme.spacing}
       >
          <box class={"title"}>
             <PlayerTitle />
@@ -131,7 +131,7 @@ function CustomIndicator({ carousel }: { carousel: Adw.Carousel }) {
    return (
       <box
          class="indicator"
-         spacing={options.theme.spacing}
+         spacing={theme.spacing}
          visible={nPages.as((p) => p > 1)}
          halign={Gtk.Align.START}
          valign={Gtk.Align.END}
@@ -158,7 +158,7 @@ export function MprisPlayers() {
          visible={list.as((players) => players.length !== 0)}
       >
          <Adw.Carousel
-            spacing={options.theme.spacing}
+            spacing={theme.spacing}
             $={(self) => (carousel = self)}
             $type={"overlay"}
          >
