@@ -15,7 +15,7 @@ function MediaPlayer({ player }: { player: AstalMpris.Player }) {
       (a) => a || "Unknown Artist",
    );
    const coverArt = createBinding(player, "coverArt").as((c) =>
-      Gio.file_new_for_path(c || config.control.default_coverArt),
+      Gio.file_new_for_path(c || config.control.default_coverArt.get()),
    );
    const playIcon = createBinding(player, "playbackStatus").as((s) =>
       s === AstalMpris.PlaybackStatus.PLAYING
