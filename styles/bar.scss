@@ -155,7 +155,7 @@ window#bar_shadow {
       margin-left: $bar-margin-left;
 
       @if $bar-position == "top" {
-         @if $shadow {
+         @if $shadow and $bar-opacity != 0 {
             box-shadow: inset
                0px
                10px
@@ -165,7 +165,7 @@ window#bar_shadow {
       }
 
       @if $bar-position == "bottom" {
-         @if $shadow {
+         @if $shadow and $bar-opacity != 0 {
             box-shadow: inset
                0px -10px
                8px -10px
