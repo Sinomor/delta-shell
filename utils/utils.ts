@@ -125,24 +125,6 @@ export function isIcon(icon?: string | null) {
    return icon && iconTheme.has_icon(icon);
 }
 
-export const convertHexToRGBA = (hexCode: string, opacity = 1) => {
-   let hex = hexCode.replace("#", "");
-
-   if (hex.length === 3) {
-      hex = `${hex[0]}${hex[0]}${hex[1]}${hex[1]}${hex[2]}${hex[2]}`;
-   }
-
-   const r = parseInt(hex.substring(0, 2), 16);
-   const g = parseInt(hex.substring(2, 4), 16);
-   const b = parseInt(hex.substring(4, 6), 16);
-
-   if (opacity > 1 && opacity <= 100) {
-      opacity = opacity / 100;
-   }
-
-   return `rgba(${r},${g},${b},${opacity})`;
-};
-
 export function fileExists(path: string) {
    return GLib.file_test(path, GLib.FileTest.EXISTS);
 }
@@ -156,59 +138,12 @@ export function toggleWindow(name: string) {
    }
 }
 
-/**
- * Раскрывает значения для CSS-свойств по направлениям
- * @param value Число или массив чисел
- * @returns Объект с направлениями {top, right, bottom, left}
- */
-function expandDirectionValues(value: number | number[]): {
-   top: number;
-   right: number;
-   bottom: number;
-   left: number;
-} {
-   // Преобразуем в массив если нужно
-   const values = Array.isArray(value) ? value : [value];
-
-   // Обработка всех вариантов длины массива
-   switch (values.length) {
-      case 1: // Все стороны одинаковые: [10] → 10,10,10,10
-         return {
-            top: values[0],
-            right: values[0],
-            bottom: values[0],
-            left: values[0],
-         };
-      case 2: // Вертикальные/горизонтальные: [10,20] → 10,20,10,20
-         return {
-            top: values[0],
-            right: values[1],
-            bottom: values[0],
-            left: values[1],
-         };
-      case 3: // Верх/Горизонтальные/Низ: [10,20,30] → 10,20,30,20
-         return {
-            top: values[0],
-            right: values[1],
-            bottom: values[2],
-            left: values[1],
-         };
-      default: // Все стороны разные: [10,20,30,40] → 10,20,30,40
-         return {
-            top: values[0],
-            right: values[1],
-            bottom: values[2],
-            left: values[3],
-         };
-   }
-}
-
 export function toCssValue(
    value: number | number[],
    options: {
-      unit?: string; // Единица измерения (по умолчанию 'px')
-      separator?: string; // Разделитель (по умолчанию ' ')
-      allowEmpty?: boolean; // Разрешить пустую строку при нулевых значениях
+      unit?: string;
+      separator?: string;
+      allowEmpty?: boolean;
    } = {},
 ): string {
    const { unit = "px", separator = " ", allowEmpty = false } = options;

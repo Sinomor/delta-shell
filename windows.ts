@@ -10,6 +10,7 @@ import app from "ags/gtk4/app";
 import Weather from "./widgets/weather/weather";
 import BarShadow from "./widgets/bar/items/shadow";
 import { config, theme } from "./options";
+import NotificationsList from "./widgets/notifications/notificationslist";
 
 export const windows_names = {
    bar: "bar",
@@ -22,6 +23,7 @@ export const windows_names = {
    verification: "verification",
    weather: "weather",
    calendar: "calendar",
+   notifications_list: "notifications_list",
 };
 
 export function hide_all_windows() {
@@ -32,6 +34,8 @@ export function hide_all_windows() {
    app.get_window(windows_names.control)?.hide();
    config.weather.enabled.get() &&
       app.get_window(windows_names.weather)?.hide();
+   config.notifications.enabled.get() &&
+      app.get_window(windows_names.notifications_list)?.hide();
    control_page_set("main");
 }
 
@@ -39,7 +43,8 @@ export default [
    Bar,
    theme.shadow.get() && BarShadow,
    Launcher,
-   NotificationPopup,
+   config.notifications.enabled.get() && NotificationPopup,
+   config.notifications.enabled.get() && NotificationsList,
    Control,
    Powermenu,
    Verification,

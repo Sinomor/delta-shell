@@ -11,6 +11,7 @@ import { For, createState, onCleanup } from "ags";
 import { Weather } from "./items/weather";
 import { config, theme } from "@/options";
 import { windows_names } from "@/windows";
+import { Notifications } from "./items/notifications";
 
 const { position, modules } = config.bar;
 const { spacing } = theme.bar;
@@ -24,6 +25,7 @@ const Bar_Items = {
    sysbox: () => <SysBox />,
    record_indicator: () => <RecordIndicator />,
    weather: () => <Weather />,
+   notifications: () => <Notifications />,
 } as Record<string, any>;
 
 function Start() {
@@ -84,6 +86,7 @@ export default function Bar(gdkmonitor: Gdk.Monitor) {
       windows_names.control,
       windows_names.launcher,
       windows_names.weather,
+      windows_names.notifications_list,
    ];
    const [windowsVisible, windowsVisible_set] = createState<string[]>([]);
    let bar: Astal.Window;

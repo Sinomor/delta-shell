@@ -14,6 +14,7 @@ export default function BarShadow(gdkmonitor: Gdk.Monitor) {
       windows_names.control,
       windows_names.launcher,
       windows_names.weather,
+      windows_names.notifications_list,
    ];
    const [windowsVisible, windowsVisible_set] = createState<string[]>([]);
    let bar: Astal.Window;

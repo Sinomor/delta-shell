@@ -7,6 +7,8 @@ import Gio from "gi://Gio?version=2.0";
 import { createState } from "ags";
 import { timeout } from "ags/time";
 import { config, theme } from "@/options";
+import Adw from "gi://Adw?version=1";
+import { Timer } from "@/utils/timer";
 
 const time = (time: number, format = "%H:%M") =>
    GLib.DateTime.new_from_unix_local(time).format(format);
@@ -27,35 +29,17 @@ function urgency(n: AstalNotifd.Notification) {
 export function Notification({
    n,
    showActions = true,
-   onHide,
-   popup = true,
+   onClose,
+   ...props
 }: {
    n: AstalNotifd.Notification;
    showActions?: boolean;
-   onHide?: (notification: AstalNotifd.Notification) => void;
-   popup?: boolean;
+   onClose: (notification: AstalNotifd.Notification) => void;
 }) {
    const notificationActions = n.actions.filter(
       (action) => action.id !== "default",
    );
    const hasActions = showActions && notificationActions.length > 0;
-   const [revaled, setRevealed] = createState(false);
-
-   function show() {
-      timeout(0, () => {
-         setRevealed(true);
-      });
-      timeout(config.notifications_popup.timeout.get(), () => {});
-
-      timeout(config.notifications_popup.timeout.get() * 1000, () => {
-         setRevealed(false);
-         timeout(config.transition.get() + 100, () => {
-            onHide && onHide(n);
-         });
-      });
-   }
-   if (popup) show();
-   else setRevealed(true);
 
    function Header() {
       return (
@@ -79,15 +63,9 @@ export function Notification({
                halign={Gtk.Align.END}
                label={time(n.time)!}
             />
-            {!popup && (
-               <button
-                  onClicked={() => n.dismiss()}
-                  class={"close"}
-                  focusOnClick={false}
-               >
-                  <image iconName="window-close-symbolic" />
-               </button>
-            )}
+            <button onClicked={() => {}} class={"close"} focusOnClick={false}>
+               <image iconName="window-close-symbolic" />
+            </button>
          </box>
       );
    }
@@ -142,32 +120,71 @@ export function Notification({
    }
 
    return (
-      <revealer
-         transitionType={
-            config.notifications_popup.position.get().includes("top")
-               ? Gtk.RevealerTransitionType.SLIDE_DOWN
-               : Gtk.RevealerTransitionType.SLIDE_UP
-         }
-         transitionDuration={config.transition.get() * 1000}
-         revealChild={revaled}
-      >
+      <Adw.Clamp maximum_size={config.notifications.width.get()} {...props}>
          <box
             orientation={Gtk.Orientation.VERTICAL}
-            class={`notification ${urgency(n)}`}
+            widthRequest={config.notifications.width.get()}
+            cssClasses={["notification", `${urgency(n)}`]}
             spacing={theme.spacing}
-            $={(self) => {
-               if (popup) {
-                  self.set_margin_top(theme.window.margin.get());
-                  self.set_margin_bottom(theme.window.margin.get());
-                  self.set_margin_start(theme.window.margin.get());
-                  self.set_margin_end(theme.window.margin.get());
-               }
-            }}
          >
             <Header />
             <Content />
             {hasActions && <Actions />}
          </box>
+      </Adw.Clamp>
+   );
+}
+
+export function PopupNotification({
+   n,
+   showActions = true,
+   onHide,
+}: {
+   n: AstalNotifd.Notification;
+   showActions?: boolean;
+   onHide?: (notification: AstalNotifd.Notification) => void;
+}) {
+   const [revealed, revealed_set] = createState(false);
+
+   const timer = new Timer(config.notifications.timeout.get() * 1000);
+
+   timer.subscribe(async () => {
+      revealed_set(true);
+      if (timer.timeLeft <= 0) {
+         revealed_set(false);
+
+         timeout(
+            config.transition.get() * 100 + 100,
+            () => onHide && onHide(n),
+         );
+      }
+   });
+
+   const margin = theme.window.margin.get();
+   return (
+      <revealer
+         transitionType={
+            config.notifications.position.get().includes("top")
+               ? Gtk.RevealerTransitionType.SLIDE_DOWN
+               : Gtk.RevealerTransitionType.SLIDE_UP
+         }
+         transitionDuration={config.transition.get() * 1000}
+         revealChild={revealed}
+      >
+         <Gtk.EventControllerMotion
+            onEnter={() => (timer.isPaused = true)}
+            onLeave={() => (timer.isPaused = false)}
+         />
+         <Notification
+            n={n}
+            onClose={() => {
+               revealed_set(false);
+            }}
+            margin_top={margin / 2}
+            margin_bottom={margin / 2}
+            margin_start={margin}
+            margin_end={margin}
+         />
       </revealer>
    );
 }

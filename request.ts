@@ -45,6 +45,11 @@ export default function request(
                hide_all_windows();
             toggleWindow(windows_names.weather);
             break;
+         case "notifications_list":
+            if (!app.get_window(windows_names.notifications_list)?.visible)
+               hide_all_windows();
+            toggleWindow(windows_names.notifications_list);
+            break;
          default:
             print("Unknown request:", request);
             return res("Unknown request");

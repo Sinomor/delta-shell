@@ -19,6 +19,13 @@ window#control {
       background: $bg0;
       border: $border-width solid $border-color;
       border-radius: $widget-radius;
+      margin: 10px;
+      @if $shadow {
+         box-shadow: $window-shadow-offset
+            $window-shadow-blur
+            $window-shadow-spread
+            rgba($window-shadow-color, $window-shadow-opacity);
+      }
    }
 
    @keyframes spin {

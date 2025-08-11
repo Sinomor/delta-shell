@@ -1,19 +1,89 @@
 window#notifications_popup {
    all: unset;
-   min-height: 420px;
+
+   .notification {
+      @if $shadow {
+         box-shadow: $window-shadow-offset
+            $window-shadow-blur
+            $window-shadow-spread
+            rgba($window-shadow-color, $window-shadow-opacity);
+      }
+   }
+}
+
+window#notifications_list {
+   all: unset;
+
+   .main {
+      background: rgba($bg0, $window-opacity);
+      border: $window-border-width solid $window-border-color;
+      padding: $window-padding;
+      border-radius: $window-radius;
+      @if $shadow {
+         box-shadow: $window-shadow-offset
+            $window-shadow-blur
+            $window-shadow-spread
+            rgba($window-shadow-color, $window-shadow-opacity);
+      }
+   }
+
+   tooltip {
+      background: $bg0;
+      border: $border-width solid $border-color;
+      border-radius: $widget-radius;
+      margin: 10px;
+      @if $shadow {
+         box-shadow: $window-shadow-offset
+            $window-shadow-blur
+            $window-shadow-spread
+            rgba($window-shadow-color, $window-shadow-opacity);
+      }
+   }
+
+   .list {
+      .header {
+         min-height: 0;
+      }
+   }
+
+   .notifs-clear {
+      outline: none;
+      padding: 0;
+      min-height: 40px;
+      min-width: 40px;
+      background: transparent;
+      color: $red;
+
+      &:hover {
+         transition: all $transition;
+         color: $red-light;
+      }
+
+      &:focus {
+         transition: 0s;
+         outline-offset: -$outline-width;
+         outline: $outline-width solid $outline-color;
+      }
+   }
+   .notifs-dnd {
+      outline: none;
+      padding: 0;
+      min-height: 40px;
+      min-width: 40px;
+      background: transparent;
+
+      &:focus {
+         transition: 0s;
+         outline-offset: -$outline-width;
+         outline: $outline-width solid $outline-color;
+      }
+   }
 }
 
 .notification {
    background: $bg1;
    padding: 10px;
    border-radius: $widget-radius;
-   min-width: 400px;
-   @if $shadow {
-      box-shadow: $window-shadow-offset
-         $window-shadow-blur
-         $window-shadow-spread
-         rgba($window-shadow-color, $window-shadow-opacity);
-   }
 
    &.critical {
       color: $red;

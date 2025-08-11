@@ -13,7 +13,6 @@ import Adw from "gi://Adw?version=1";
 import { PopupWindow } from "../common/popupwindow";
 import { BarItemPopup } from "../common/baritempopup";
 import { config } from "@/options";
-const { width, height } = config.control;
 export const [control_page, control_page_set] = createState("main");
 
 function Control() {
@@ -21,7 +20,7 @@ function Control() {
       <stack
          class={"main"}
          transitionDuration={config.transition.get() * 1000}
-         widthRequest={width.get()}
+         widthRequest={440}
          transitionType={Gtk.StackTransitionType.SLIDE_LEFT_RIGHT}
          visibleChildName={control_page}
       >
@@ -39,8 +38,7 @@ export default function (gdkmonitor: Gdk.Monitor) {
          name={windows_names.control}
          module={"sysbox"}
          gdkmonitor={gdkmonitor}
-         width={width.get()}
-         height={height.get()}
+         width={440}
       >
          <Control />
       </BarItemPopup>

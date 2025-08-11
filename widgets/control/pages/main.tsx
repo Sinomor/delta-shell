@@ -1,12 +1,11 @@
 import { Gtk } from "ags/gtk4";
 import { Sliders } from "../items/sliders";
-import { NotificationsList } from "../items/notifications";
 import { MprisPlayers } from "../items/media";
 import { Qs_Buttins } from "../items/qsbuttons";
 import { BatteryIcon, icons } from "@/utils/icons";
 import AstalBattery from "gi://AstalBattery?version=0.1";
 import app from "ags/gtk4/app";
-import { bash } from "@/utils/utils";
+import { bash, toggleWindow } from "@/utils/utils";
 import { createBinding } from "ags";
 import { timeout } from "ags/time";
 import ScreenRecord from "@/services/screenrecord";
@@ -22,8 +21,8 @@ function Power() {
          tooltipText={"Power Menu"}
          focusOnClick={false}
          onClicked={() => {
-            app.get_window(windows_names.control)?.show();
-            app.get_window(windows_names.powermenu)?.hide();
+            toggleWindow(windows_names.powermenu);
+            toggleWindow(windows_names.control);
          }}
       >
          <image iconName={icons.powermenu.shutdown} pixelSize={20} />
@@ -31,41 +30,17 @@ function Power() {
    );
 }
 
-function Record() {
-   return (
-      <button
-         class={"qs-header-button"}
-         tooltipText={"Screen Record"}
-         focusOnClick={false}
-         onClicked={() => {
-            if (screenRecord.recording) {
-               screenRecord.stop();
-            } else {
-               app.toggle_window(windows_names.control);
-               timeout(200, () => {
-                  screenRecord.start();
-               });
-            }
-            app.get_window(windows_names.control)?.hide();
-         }}
-      >
-         <image iconName={icons.video} pixelSize={20} />
-      </button>
-   );
-}
-
-function Settings() {
+function Reload() {
    return (
       <button
          class={"qs-header-button"}
          focusOnClick={false}
-         tooltipText={"Settings"}
+         tooltipText={"Restart shell"}
          onClicked={() => {
-            bash(`XDG_CURRENT_DESKTOP=gnome gnome-control-center`);
-            app.get_window(windows_names.control)?.hide();
+            bash(`ags quit -i delta-shell; ags run -d ${SRC}`);
          }}
       >
-         <image iconName={icons.settings} pixelSize={20} />
+         <image iconName={icons.refresh} pixelSize={20} />
       </button>
    );
 }
@@ -75,12 +50,8 @@ function Battery() {
       <button
          cssClasses={["qs-header-button", "battery-button"]}
          focusOnClick={false}
-         onClicked={() => {
-            bash("XDG_CURRENT_DESKTOP=gnome gnome-control-center power");
-            app.get_window(windows_names.control)?.hide();
-         }}
       >
-         <box spacing={10}>
+         <box spacing={theme.spacing}>
             <image iconName={BatteryIcon} pixelSize={24} />
             <label
                label={createBinding(battery, "percentage").as(
@@ -94,12 +65,11 @@ function Battery() {
 
 export function Header() {
    return (
-      <box spacing={10} class={"header"} hexpand={false}>
+      <box spacing={theme.spacing} class={"header"} hexpand={false}>
          <Battery />
          <box hexpand />
-         <Record />
+         <Reload />
          <Power />
-         <Settings />
       </box>
    );
 }
@@ -117,7 +87,6 @@ export function MainPage() {
          <Qs_Buttins />
          <Sliders />
          <MprisPlayers />
-         <NotificationsList />
       </box>
    );
 }

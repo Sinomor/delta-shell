@@ -48,6 +48,7 @@ export const icons = {
    bluetooth: "ds-bluetooth-symbolic",
    web: "ds-globe-symbolic",
    bell: "ds-bell-symbolic",
+   bell_off: "ds-bell-off-symbolic",
    microphone: {
       default: "ds-mic-symbolic",
       muted: "ds-mic-off-symbolic",

@@ -1,7 +1,8 @@
 # Delta Shell
 
 A desktop shell based on [Ags](https://github.com/Aylur/ags). Currently supports Hyprland and Niri.
-![image](https://i.imgur.com/vBy0QRd.png)
+![image](https://i.imgur.com/NqS4eqJ.png)
+![image](https://i.imgur.com/Hdhg0KW.jpeg)
 
 ## Dependencies
 
@@ -72,11 +73,13 @@ config.json
 {
    "transition": 0.3, // animation transition (in seconds)
    "bar": {
-      // available modules: "launcher", "workspaces", "clock", "record_indicator", "tray", "keyboard", "sysbox", "weather"
+      // available modules: "launcher", "workspaces", "clock",
+      // "record_indicator", "tray", "keyboard", "sysbox", "weather"
+      // "notifications"
       "modules": {
          "start": ["launcher", "workspaces"],
          "center": ["clock", "weather"],
-         "end": ["record_indicator", "tray", "keyboard", "sysbox"]
+         "end": ["record_indicator", "tray", "keyboard", "notifications", "sysbox"]
       },
       "height": 52,
       "position": "top", // "top" | "bottom"
@@ -95,8 +98,6 @@ config.json
    },
    "control": {
       "default_coverArt": "/home/sinomor/.config/ags/assets/defsong.jpg",
-      "width": 500,
-      "height": 0 // filled when 0
    },
    "launcher": {
       "clipboard": {
@@ -111,9 +112,14 @@ config.json
       "position": "bottom", // "top" | "top_left" | "top_right" | "bottom" | "bottom_left"| "bottom_right"
       "timeout": 3 // in seconds
    },
-   "notifications_popup": {
+   "notifications": {
       "position": "top", // "top" | "top_left" | "top_right" | "bottom" | "bottom_left"| "bottom_right"
-      "timeout": 3 // in seconds
+      "enabled": true,
+      "timeout": 3, // in seconds
+      "width": 400,
+      "list": {
+         "height": 500 // filled when 0
+      }
    },
    "weather": {
       "enabled": true,

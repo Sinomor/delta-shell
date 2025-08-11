@@ -24,7 +24,7 @@ window#weather {
    }
 
    .forecast {
-      background: rgba($bg0, 0.5);
+      background: $bg1;
       border-radius: $widget-radius;
       padding: 15px;
    }

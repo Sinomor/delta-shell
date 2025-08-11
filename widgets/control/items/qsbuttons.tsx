@@ -1,15 +1,16 @@
 import { Gtk } from "ags/gtk4";
 import { getNetworkIconBinding, icons } from "@/utils/icons";
 import Network from "gi://AstalNetwork?version=0.1";
-import AstalNotifd from "gi://AstalNotifd?version=0.1";
 import Bluetooth from "gi://AstalBluetooth?version=0.1";
 import AstalPowerProfiles from "gi://AstalPowerProfiles?version=0.1";
 import { createBinding, createComputed } from "ags";
 import { resetCss } from "@/services/styles";
 import { QSButton } from "@/widgets/common/qsbutton";
 import { profiles_names } from "../pages/powermodes";
-import { theme } from "@/options";
+import { config, theme } from "@/options";
 import { control_page_set } from "../control";
+import ScreenRecord from "@/services/screenrecord";
+import { timeout } from "ags/time";
 
 function PowerProfilesButton() {
    const powerprofile = AstalPowerProfiles.get_default();
@@ -18,7 +19,7 @@ function PowerProfilesButton() {
    return (
       <QSButton
          icon={activeprofile.as((profile) => icons.powerprofiles[profile])}
-         label={"Power Modes"}
+         label={"Power Mode"}
          subtitle={activeprofile.as((profile) => profiles_names[profile])}
          showArrow={true}
          onClicked={() => {
@@ -69,7 +70,7 @@ function WifiButton() {
    return (
       <QSButton
          icon={getNetworkIconBinding()}
-         label={"Wi-Fi"}
+         label={"Internet"}
          subtitle={wifiSsid((text) => (text !== "unknown" ? text : "None"))}
          onClicked={() => wifi.set_enabled(!wifi.enabled)}
          onArrowClicked={() => {
@@ -91,15 +92,18 @@ function WifiButton() {
    );
 }
 
-function DNDButton() {
-   const notifd = AstalNotifd.get_default();
+function ScreenRecordButton() {
+   const screenRecord = ScreenRecord.get_default();
 
    return (
       <QSButton
-         icon={icons.bell}
-         label={"Don't Disturb"}
-         onClicked={() => notifd.set_dont_disturb(!notifd.dontDisturb)}
-         ButtonClasses={createBinding(notifd, "dontDisturb").as((p) => {
+         icon={icons.video}
+         label={"Screen Record"}
+         onClicked={() => {
+            if (screenRecord.recording) screenRecord.stop();
+            else screenRecord.start();
+         }}
+         ButtonClasses={createBinding(screenRecord, "recording").as((p) => {
             const classes = ["qs-button-box"];
             p && classes.push("active");
             return classes;
@@ -161,7 +165,7 @@ function Qs_Row_2() {
    return (
       <box spacing={theme.spacing} homogeneous={true}>
          <PowerProfilesButton />
-         <DNDButton />
+         <ScreenRecordButton />
       </box>
    );
 }

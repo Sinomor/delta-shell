@@ -26,8 +26,6 @@ export const config = mkOptions(configFile, {
    },
    control: {
       default_coverArt: opt(`${SRC}/assets/defsong.jpg`),
-      width: opt(500),
-      height: opt(0),
    },
    launcher: {
       clipboard: {
@@ -49,7 +47,7 @@ export const config = mkOptions(configFile, {
       >("bottom"),
       timeout: opt(3),
    },
-   notifications_popup: {
+   notifications: {
       position: opt<
          | "top"
          | "top_left"
@@ -58,7 +56,12 @@ export const config = mkOptions(configFile, {
          | "bottom_left"
          | "bottom_right"
       >("top"),
+      enabled: opt<boolean>(true),
       timeout: opt(3),
+      width: opt(400),
+      list: {
+         height: opt(600),
+      },
    },
    weather: {
       enabled: opt<boolean>(true),

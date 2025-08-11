@@ -1,5 +1,4 @@
 import AstalNotifd from "gi://AstalNotifd";
-import { Notification } from "./notification";
 import { Astal, Gdk, Gtk } from "ags/gtk4";
 import {
    createBinding,
@@ -13,8 +12,9 @@ import GLib from "gi://GLib";
 import giCairo from "cairo";
 import { config, theme } from "@/options";
 import { windows_names } from "@/windows";
+import { PopupNotification } from "./items/notification";
 const notifd = AstalNotifd.get_default();
-const { timeout, position } = config.notifications_popup;
+const { timeout, position } = config.notifications;
 const { margin } = theme.window;
 
 export function NotificationPopup(gdkmonitor: Gdk.Monitor) {
@@ -128,7 +128,7 @@ export function NotificationPopup(gdkmonitor: Gdk.Monitor) {
          >
             <For each={notifications}>
                {(n) => (
-                  <Notification
+                  <PopupNotification
                      n={n}
                      showActions={true}
                      onHide={handleHideNotification}
