@@ -41,7 +41,7 @@ window#launcher {
 
       &:hover {
          transition: background 0.3s;
-         background: $bg1;
+         background: rgba($bg1, $window-opacity);
       }
 
       &:focus {
@@ -61,7 +61,7 @@ window#launcher {
    }
 
    .header {
-      background: $bg1;
+      background: rgba($bg1, $window-opacity);
       border-radius: $widget-radius;
       padding: 0 10px;
       color: $fg0;

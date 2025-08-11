@@ -28,7 +28,7 @@ window#notifications_list {
    }
 
    tooltip {
-      background: $bg0;
+      background: rgba($bg0, $window-opacity);
       border: $border-width solid $border-color;
       border-radius: $widget-radius;
       margin: 10px;
@@ -81,7 +81,7 @@ window#notifications_list {
 }
 
 .notification {
-   background: $bg1;
+   background: rgba($bg1, $window-opacity);
    padding: 10px;
    border-radius: $widget-radius;
 
@@ -111,7 +111,7 @@ window#notifications_list {
       button {
          border-radius: $widget-radius;
          padding: 0 4px;
-         background-color: $bg2;
+         background: rgba($bg2, $window-opacity);
       }
    }
 
@@ -131,10 +131,10 @@ window#notifications_list {
    .actions button {
       border-radius: $widget-radius;
       font-weight: normal;
-      background-color: $bg2;
+      background: rgba($bg2, $window-opacity);
 
       &:hover {
-         background: $bg3;
+         background-color: $bg3;
       }
    }
 }

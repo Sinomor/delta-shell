@@ -11,7 +11,7 @@ window#bar {
    }
 
    tooltip {
-      background: $bg0;
+      background: rgba($bg0, $bar-opacity);
       border: $border-width solid $border-color;
       border-radius: $widget-radius;
    }

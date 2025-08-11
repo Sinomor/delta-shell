@@ -27,7 +27,7 @@ window#calendar {
 
       &:hover {
          transition: background $transition;
-         background: $bg1;
+         background: rgba($bg1, $window-opacity);
       }
       &:focus {
          transition: 0s;
@@ -43,7 +43,7 @@ window#calendar {
    .monthshift,
    .monthyear {
       border-radius: $widget-radius;
-      background: $bg1;
+      background: rgba($bg1, $window-opacity);
       font-weight: normal;
       outline: none;
       padding: 0;
@@ -52,7 +52,7 @@ window#calendar {
 
       &:hover {
          transition: background $transition;
-         background: $bg2;
+         background: rgba($bg2, $window-opacity);
       }
       &:focus {
          transition: 0s;
@@ -66,12 +66,12 @@ window#calendar {
    }
 
    .today {
-      background: $accent;
+      background: rgba($accent, $window-opacity);
       color: get-contrast-color($accent, $fg0, $bg0);
 
       &:hover {
          color: get-contrast-color($accent-light, $fg0, $bg0);
-         background: $accent-light;
+         background: rgba($accent-light, $window-opacity);
       }
    }
 

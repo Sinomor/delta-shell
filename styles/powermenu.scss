@@ -23,7 +23,7 @@ window#powermenu {
 
       image {
          border-radius: $widget-radius;
-         background: $bg1;
+         background: rgba($bg1, $window-opacity);
          min-height: 120px;
          min-width: 120px;
       }
@@ -39,7 +39,7 @@ window#powermenu {
       &:hover {
          image {
             transition: background $transition;
-            background: $bg2;
+            background: rgba($bg2, $window-opacity);
          }
       }
    }
@@ -50,7 +50,7 @@ window#verification {
    color: $fg0;
 
    .main {
-      background: $bg0;
+      background: rgba($bg0, $window-opacity);
       padding: $window-padding;
       border-radius: $window-radius;
       border: $border-width solid $border-color;
@@ -69,7 +69,7 @@ window#verification {
       font-weight: normal;
       outline: none;
       padding: 10px;
-      background: $bg1;
+      background: rgba($bg1, $window-opacity);
       min-width: 100px;
 
       &:focus {
@@ -80,7 +80,7 @@ window#verification {
 
       &:hover {
          transition: background $transition;
-         background: $bg2;
+         background: rgba($bg2, $window-opacity);
       }
    }
 }

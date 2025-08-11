@@ -16,7 +16,7 @@ window#control {
    }
 
    tooltip {
-      background: $bg0;
+      background: rgba($bg0, $window-opacity);
       border: $border-width solid $border-color;
       border-radius: $widget-radius;
       margin: 10px;
@@ -45,7 +45,7 @@ window#control {
          min-height: 50px;
 
          .qs-header-button {
-            background: $bg1;
+            background: rgba($bg1, $window-opacity);
             outline: none;
             border-radius: $widget-radius;
             color: $fg0;
@@ -60,7 +60,7 @@ window#control {
             }
 
             &:hover {
-               background: $bg2;
+               background: rgba($bg2, $window-opacity);
             }
          }
 
@@ -93,15 +93,15 @@ window#control {
          .qs-button-box-arrow,
          .arrow {
             outline: none;
-            background: $bg1;
+            background: rgba($bg1, $window-opacity);
 
             &:hover {
-               background: $bg2;
+               background: rgba($bg2, $window-opacity);
                transition: all $transition;
 
                &.active {
                   color: get-contrast-color($accent-light, $fg0, $bg0);
-                  background: $accent-light;
+                  background: rgba($accent-light, $window-opacity);
                }
             }
 
@@ -112,7 +112,7 @@ window#control {
             }
 
             &.active {
-               background: $accent;
+               background: rgba($accent, $window-opacity);
                color: get-contrast-color($accent, $fg0, $bg0);
             }
          }
@@ -150,7 +150,7 @@ window#control {
 
             trough {
                all: unset;
-               background: $bg1;
+               background: rgba($bg1, $window-opacity);
                min-height: 36px;
                border-radius: $widget-radius;
             }
@@ -159,7 +159,7 @@ window#control {
                all: unset;
                min-height: 36px;
                border-radius: $widget-radius;
-               background: $accent;
+               background: rgba($accent, $window-opacity);
             }
 
             slider {
@@ -190,13 +190,13 @@ window#control {
                min-width: 40px;
                outline: none;
                padding: 0;
-               background: $bg1;
+               background: rgba($bg1, $window-opacity);
                color: $fg0;
 
                &:hover,
                &:active {
                   transition: background $transition;
-                  background: $bg2;
+                  background: rgba($bg2, $window-opacity);
                }
 
                &:focus {
@@ -212,50 +212,23 @@ window#control {
          padding: 10px;
          .active-dot {
             border-radius: $widget-radius;
-            background: $fg0;
+            background: rgba($fg0, $window-opacity);
             min-height: 6px;
             min-width: 6px;
             transition: background $transition;
          }
          .inactive-dot {
             border-radius: $widget-radius;
-            background: $fg2;
+            background: rgba($fg2, $window-opacity);
             min-height: 6px;
             min-width: 6px;
             transition: background $transition;
          }
       }
 
-      .notifs-list {
-         .header {
-            min-height: 0;
-         }
-      }
-
-      .notifs-clear {
-         outline: none;
-         border-radius: $widget-radius;
-         min-height: 40px;
-         min-width: 40px;
-         padding: 0;
-
-         background: $bg1;
-
-         &:hover {
-            transition: all $transition;
-            color: $red;
-            background: $bg2;
-         }
-
-         &:focus {
-            transition: 0s;
-            outline-offset: -$outline-width;
-            outline: $outline-width solid $outline-color;
-         }
-      }
-
       .mediaplayer-art {
          border-radius: $widget-radius;
+         opacity: $window-opacity;
       }
    }
 
@@ -268,7 +241,7 @@ window#control {
       .header {
          min-height: 50px;
          border-radius: $widget-radius;
-         background: $bg1;
+         background: rgba($bg1, $window-opacity);
 
          .qs-header-button {
             background: transparent;
@@ -291,7 +264,7 @@ window#control {
          border-radius: $widget-radius;
 
          &:hover {
-            background: $bg1;
+            background: rgba($bg1, $window-opacity);
          }
 
          &:focus {
@@ -303,6 +276,6 @@ window#control {
    }
 
    .mediaplayer-lower {
-      background: $bg0;
+      background: rgba($bg0, $window-opacity);
    }
 }

@@ -24,12 +24,12 @@ window#osd {
       trough {
          .filled {
             border-radius: $widget-radius;
-            background: $accent;
+            background: rgba($accent, $window-opacity);
          }
       }
 
       block {
-         background: $bg1;
+         background: rgba($bg1, $window-opacity);
          border-radius: $widget-radius;
          min-height: 56px;
       }
