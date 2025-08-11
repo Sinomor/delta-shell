@@ -34,7 +34,7 @@ export function Notification({
 }: {
    n: AstalNotifd.Notification;
    showActions?: boolean;
-   onClose: (notification: AstalNotifd.Notification) => void;
+   onClose: () => void;
 }) {
    const notificationActions = n.actions.filter(
       (action) => action.id !== "default",
@@ -63,7 +63,11 @@ export function Notification({
                halign={Gtk.Align.END}
                label={time(n.time)!}
             />
-            <button onClicked={() => {}} class={"close"} focusOnClick={false}>
+            <button
+               onClicked={() => onClose()}
+               class={"close"}
+               focusOnClick={false}
+            >
                <image iconName="window-close-symbolic" />
             </button>
          </box>
@@ -177,9 +181,7 @@ export function PopupNotification({
          />
          <Notification
             n={n}
-            onClose={() => {
-               revealed_set(false);
-            }}
+            onClose={() => revealed_set(false)}
             margin_top={margin / 2}
             margin_bottom={margin / 2}
             margin_start={margin}
