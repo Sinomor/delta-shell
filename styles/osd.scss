@@ -13,7 +13,7 @@ window#osd {
    }
 
    .osd-icon {
-      color: if(is-light($accent), $bg0, $fg0);
+      color: get-contrast-color($accent, $fg0, $bg0);
       padding-left: 10px;
       &.low {
          color: $fg0;
