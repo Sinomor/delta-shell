@@ -18,10 +18,11 @@ window#launcher {
    .clear {
       background: transparent;
       padding: 0;
+      color: $red;
 
       &:hover {
          transition: color $transition;
-         color: $red;
+         color: $red-light;
       }
 
       &:focus {

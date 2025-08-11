@@ -95,11 +95,16 @@ window#notifications_list {
 
       .close {
          outline: none;
+         color: $red;
 
          &:focus {
             transition: 0s;
             outline-offset: -$outline-width;
             outline: $outline-width solid $outline-color;
+         }
+
+         &:hover {
+            color: $red-light;
          }
       }
 
@@ -107,10 +112,6 @@ window#notifications_list {
          border-radius: $widget-radius;
          padding: 0 4px;
          background-color: $bg2;
-
-         &:hover {
-            color: $red;
-         }
       }
    }
 
