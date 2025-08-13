@@ -104,8 +104,8 @@ config.json
          "max_items": 50, // maximum items in clipboard
          "image_preview": false, // it may works bad
       }
-      "width": 500,
-      "height": 0 // filled when 0
+      "width": 400,
+      "height": 600
    },
    "osd": {
       "width": 300,
@@ -118,7 +118,7 @@ config.json
       "timeout": 3, // in seconds
       "width": 400,
       "list": {
-         "height": 500 // filled when 0
+         "height": 600
       }
    },
    "weather": {

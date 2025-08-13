@@ -60,22 +60,9 @@ export function BarItemPopup({
    }
 
    function transitionType() {
-      if (height === undefined || !(height === 0)) {
-         return bar_pos === "top"
-            ? Gtk.RevealerTransitionType.SLIDE_DOWN
-            : Gtk.RevealerTransitionType.SLIDE_UP;
-      }
-
-      switch (module_pos) {
-         case "start":
-            return Gtk.RevealerTransitionType.SLIDE_RIGHT;
-         case "end":
-            return Gtk.RevealerTransitionType.SLIDE_LEFT;
-         case "center":
-            return bar_pos === "top"
-               ? Gtk.RevealerTransitionType.SLIDE_DOWN
-               : Gtk.RevealerTransitionType.SLIDE_UP;
-      }
+      return bar_pos === "top"
+         ? Gtk.RevealerTransitionType.SLIDE_DOWN
+         : Gtk.RevealerTransitionType.SLIDE_UP;
    }
 
    return (

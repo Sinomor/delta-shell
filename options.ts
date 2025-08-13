@@ -32,8 +32,8 @@ export const config = mkOptions(configFile, {
          max_items: opt(50),
          image_preview: opt<boolean>(false),
       },
-      width: opt(500),
-      height: opt(0),
+      width: opt(400),
+      height: opt(600),
    },
    osd: {
       width: opt(300),
