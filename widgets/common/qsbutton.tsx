@@ -25,7 +25,7 @@ export function QSButton(props: QSButtonProps) {
       onArrowClicked = () => {},
       ButtonClasses,
       ArrowClasses,
-      maxWidthChars = 10,
+      maxWidthChars = 8,
    } = props;
 
    return (

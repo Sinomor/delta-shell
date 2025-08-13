@@ -1,7 +1,7 @@
 import { Gtk } from "ags/gtk4";
 import { getNetworkIconBinding, icons } from "@/utils/icons";
-import Network from "gi://AstalNetwork?version=0.1";
-import Bluetooth from "gi://AstalBluetooth?version=0.1";
+import AstalNetwork from "gi://AstalNetwork?version=0.1";
+import AstalBluetooth from "gi://AstalBluetooth?version=0.1";
 import AstalPowerProfiles from "gi://AstalPowerProfiles?version=0.1";
 import { createBinding, createComputed } from "ags";
 import { resetCss } from "@/services/styles";
@@ -55,15 +55,36 @@ function PowerProfilesButton() {
    );
 }
 
-function WifiButton() {
-   const wifi = Network.get_default().wifi;
-   const enabled = createBinding(wifi, "enabled");
-   const wifiSsid = createComputed(
-      [createBinding(wifi, "state"), createBinding(wifi, "ssid")],
-      (state, ssid) => {
-         return state == Network.DeviceState.ACTIVATED
-            ? ssid
-            : Network.device_state_to_string();
+function InternetButton() {
+   const network = AstalNetwork.get_default();
+   const wifi = network.wifi;
+   const wired = network.wired;
+   const enabled = createComputed(
+      [createBinding(network, "primary"), createBinding(wifi, "enabled")],
+      (primary, enabled) => {
+         if (
+            primary === AstalNetwork.Primary.WIRED &&
+            network.wired.internet === AstalNetwork.Internet.CONNECTED
+         )
+            return true;
+         return enabled;
+      },
+   );
+   const subtitle = createComputed(
+      [
+         createBinding(network, "primary"),
+         createBinding(network, "connectivity"),
+      ],
+      (primary, connectivity) => {
+         if (primary === AstalNetwork.Primary.WIRED) {
+            if (wired.internet === AstalNetwork.Internet.CONNECTED) {
+               return "Wired";
+            }
+         }
+         if (primary === AstalNetwork.Primary.WIFI) {
+            return wifi.ssid;
+         }
+         return "unknown";
       },
    );
 
@@ -71,8 +92,15 @@ function WifiButton() {
       <QSButton
          icon={getNetworkIconBinding()}
          label={"Internet"}
-         subtitle={wifiSsid((text) => (text !== "unknown" ? text : "None"))}
-         onClicked={() => wifi.set_enabled(!wifi.enabled)}
+         subtitle={subtitle((text) => (text !== "unknown" ? text : "None"))}
+         onClicked={() => {
+            if (
+               network.primary === AstalNetwork.Primary.WIFI ||
+               network.primary === AstalNetwork.Primary.UNKNOWN
+            ) {
+               wifi.set_enabled(!wifi.enabled);
+            }
+         }}
          onArrowClicked={() => {
             wifi.scan();
             control_page_set("network");
@@ -113,7 +141,7 @@ function ScreenRecordButton() {
 }
 
 function BluetoothButton() {
-   const bluetooth = Bluetooth.get_default();
+   const bluetooth = AstalBluetooth.get_default();
    const powered = createBinding(bluetooth, "isPowered");
    const deviceConnected = createComputed(
       [
@@ -155,7 +183,7 @@ function BluetoothButton() {
 function Qs_Row_1() {
    return (
       <box spacing={theme.spacing} homogeneous={true}>
-         <WifiButton />
+         <InternetButton />
          <BluetoothButton />
       </box>
    );

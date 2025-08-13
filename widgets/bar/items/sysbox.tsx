@@ -47,7 +47,21 @@ export function SysBox() {
       >
          <box spacing={theme.bar.spacing}>
             <image
-               visible={createBinding(network.wifi, "enabled")}
+               visible={createComputed(
+                  [
+                     createBinding(network, "primary"),
+                     createBinding(network.wifi, "enabled"),
+                  ],
+                  (primary, enabled) => {
+                     if (
+                        primary === AstalNetwork.Primary.WIRED &&
+                        network.wired.internet ===
+                           AstalNetwork.Internet.CONNECTED
+                     )
+                        return true;
+                     return enabled;
+                  },
+               )}
                pixelSize={20}
                iconName={getNetworkIconBinding()}
             />

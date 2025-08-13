@@ -43,7 +43,7 @@ export const icons = {
          3: "ds-wifi-3-symbolic",
          4: "ds-wifi-4-symbolic",
       },
-      wired: "network-wired",
+      wired: "ds-ethernet-port-symbolic",
    },
    bluetooth: "ds-bluetooth-symbolic",
    web: "ds-globe-symbolic",
@@ -148,7 +148,13 @@ export const BatteryIcon = batteryVar(() => getBatteryIcon(battery));
 export function getNetworkIcon(network: AstalNetwork.Network) {
    const { connectivity, wifi, wired } = network;
 
-   if (wifi !== null) {
+   if (network.primary === AstalNetwork.Primary.WIRED) {
+      if (wired.internet === AstalNetwork.Internet.CONNECTED) {
+         return icons.network.wired;
+      }
+   }
+
+   if (network.primary === AstalNetwork.Primary.WIFI) {
       const { strength, internet, enabled } = wifi;
 
       if (!enabled || connectivity === AstalNetwork.Connectivity.NONE) {
@@ -189,35 +195,20 @@ export function getNetworkIcon(network: AstalNetwork.Network) {
          }
       }
 
-      return icons.network.wifi.disabled;
+      return icons.network.wifi[1];
    }
 
-   if (wired !== null) {
-      if (wired.internet === AstalNetwork.Internet.CONNECTED) {
-         return icons.network.wired;
-      } else {
-         return icons.network.wired;
-      }
-   }
-
-   return icons.network.wifi.disabled;
+   return icons.network.wifi[1];
 }
 
 export function getNetworkIconBinding() {
    const network = AstalNetwork.get_default();
 
-   if (network.wifi !== null) {
-      return createComputed([
-         createBinding(network, "connectivity"),
-         createBinding(network.wifi, "strength"),
-         createBinding(network, "primary"),
-      ])(() => getNetworkIcon(network));
-   } else {
-      return createComputed([
-         createBinding(network, "connectivity"),
-         createBinding(network, "primary"),
-      ])(() => getNetworkIcon(network));
-   }
+   return createComputed([
+      createBinding(network, "connectivity"),
+      createBinding(network.wifi, "strength"),
+      createBinding(network, "primary"),
+   ])(() => getNetworkIcon(network));
 }
 
 export function getAccessPointIcon(accessPoint: AstalNetwork.AccessPoint) {
