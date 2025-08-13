@@ -1,5 +1,6 @@
 window#weather {
    all: unset;
+   color: $fg0;
 
    .main {
       background: rgba($bg0, $window-opacity);

@@ -116,12 +116,11 @@ function NotificationsList() {
    );
 }
 
-export default function (gdkmonitor: Gdk.Monitor) {
+export default function () {
    return (
       <BarItemPopup
          name={windows_names.notifications_list}
          module={"notifications"}
-         gdkmonitor={gdkmonitor}
          width={width}
          height={height.get()}
       >

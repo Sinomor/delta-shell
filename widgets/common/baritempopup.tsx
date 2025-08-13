@@ -13,7 +13,7 @@ type BarItemPopupProps = JSX.IntrinsicElements["window"] & {
    width?: number;
    height?: number;
    margin?: number;
-   gdkmonitor: Gdk.Monitor;
+   gdkmonitor?: Gdk.Monitor;
    transitionDuration?: number;
 };
 
@@ -30,7 +30,6 @@ export function BarItemPopup({
 }: BarItemPopupProps) {
    const { bar } = config;
    const bar_pos = bar.position.get();
-   const monitor_height = gdkmonitor.get_geometry().height;
 
    const module_pos = createComputed(
       [bar.modules.start, bar.modules.center, bar.modules.end],
@@ -61,10 +60,7 @@ export function BarItemPopup({
    }
 
    function transitionType() {
-      if (
-         height === undefined ||
-         !(height === 0 || height > monitor_height / 2)
-      ) {
+      if (height === undefined || !(height === 0)) {
          return bar_pos === "top"
             ? Gtk.RevealerTransitionType.SLIDE_DOWN
             : Gtk.RevealerTransitionType.SLIDE_UP;
@@ -87,15 +83,7 @@ export function BarItemPopup({
          name={name}
          valign={valign()}
          halign={halign()}
-         gdkmonitor={gdkmonitor}
-         height={
-            height === 0
-               ? monitor_height -
-                 bar.height.get() -
-                 (margin ? margin * 2 : theme.window.margin.get() * 2) -
-                 (theme.bar.margin.get()[0] + theme.bar.margin.get()[3])
-               : height
-         }
+         height={height}
          width={width}
          margin_top={margin}
          margin_bottom={margin}

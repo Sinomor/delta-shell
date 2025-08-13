@@ -67,13 +67,9 @@ function Weather() {
    );
 }
 
-export default function (gdkmonitor: Gdk.Monitor) {
+export default function () {
    return (
-      <BarItemPopup
-         name={windows_names.weather}
-         module={"weather"}
-         gdkmonitor={gdkmonitor}
-      >
+      <BarItemPopup name={windows_names.weather} module={"weather"}>
          <Weather />
       </BarItemPopup>
    );

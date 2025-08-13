@@ -17,7 +17,7 @@ const notifd = AstalNotifd.get_default();
 const { timeout, position } = config.notifications;
 const { margin } = theme.window;
 
-export function NotificationPopup(gdkmonitor: Gdk.Monitor) {
+export function NotificationPopup() {
    const { TOP, BOTTOM, RIGHT, LEFT } = Astal.WindowAnchor;
    const pos = position.get();
    let contentbox: Gtk.Box;
@@ -102,7 +102,6 @@ export function NotificationPopup(gdkmonitor: Gdk.Monitor) {
 
    return (
       <window
-         gdkmonitor={gdkmonitor}
          name={windows_names.notifications_popup}
          visible={windowVisibility}
          anchor={TOP | BOTTOM | RIGHT | LEFT}

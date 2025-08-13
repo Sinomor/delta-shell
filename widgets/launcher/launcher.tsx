@@ -29,12 +29,11 @@ function Launcher() {
    );
 }
 
-export default function (gdkmonitor: Gdk.Monitor) {
+export default function () {
    return (
       <BarItemPopup
          name={windows_names.launcher}
          module={"launcher"}
-         gdkmonitor={gdkmonitor}
          width={width.get()}
          height={height.get()}
       >

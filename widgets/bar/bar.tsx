@@ -16,68 +16,10 @@ import { Notifications } from "./items/notifications";
 const { position, modules } = config.bar;
 const { spacing } = theme.bar;
 
-const Bar_Items = {
-   launcher: () => <Launcher />,
-   workspaces: () => <Workspaces />,
-   clock: () => <Clock />,
-   tray: () => <Tray />,
-   keyboard: () => <Keyboard />,
-   sysbox: () => <SysBox />,
-   record_indicator: () => <RecordIndicator />,
-   weather: () => <Weather />,
-   notifications: () => <Notifications />,
-} as Record<string, any>;
-
-function Start() {
-   return (
-      <box
-         $type={"start"}
-         class={"modules-start"}
-         spacing={spacing}
-         $={(self) => self.get_first_child()?.add_css_class("first-child")}
-      >
-         <For each={modules.start}>
-            {(module: string) => {
-               const Widget = Bar_Items[module];
-               return Widget ? <Widget /> : <box />;
-            }}
-         </For>
-      </box>
-   );
-}
-
-function Center() {
-   return (
-      <box $type={"center"} class={"modules-center"} spacing={spacing}>
-         <For each={modules.center}>
-            {(module: string) => {
-               const Widget = Bar_Items[module];
-               return Widget ? <Widget /> : <box />;
-            }}
-         </For>
-      </box>
-   );
-}
-
-function End() {
-   return (
-      <box
-         $type={"end"}
-         class={"modules-end"}
-         spacing={spacing}
-         $={(self) => self.get_last_child()?.add_css_class("last-child")}
-      >
-         <For each={modules.end}>
-            {(module: string) => {
-               const Widget = Bar_Items[module];
-               return Widget ? <Widget /> : <box />;
-            }}
-         </For>
-      </box>
-   );
-}
-
-export default function Bar(gdkmonitor: Gdk.Monitor) {
+export default function Bar({
+   gdkmonitor,
+   $,
+}: JSX.IntrinsicElements["window"] & { gdkmonitor: Gdk.Monitor }) {
    const { BOTTOM, TOP, LEFT, RIGHT } = Astal.WindowAnchor;
    const windows = [
       windows_names.powermenu,
@@ -116,6 +58,67 @@ export default function Bar(gdkmonitor: Gdk.Monitor) {
 
    onCleanup(() => app.disconnect(appconnect));
 
+   const Bar_Items = {
+      launcher: () => <Launcher />,
+      workspaces: () => <Workspaces gdkmonitor={gdkmonitor} />,
+      clock: () => <Clock />,
+      tray: () => <Tray />,
+      keyboard: () => <Keyboard />,
+      sysbox: () => <SysBox />,
+      record_indicator: () => <RecordIndicator />,
+      weather: () => <Weather />,
+      notifications: () => <Notifications />,
+   } as Record<string, any>;
+
+   function Start() {
+      return (
+         <box
+            $type={"start"}
+            class={"modules-start"}
+            spacing={spacing}
+            $={(self) => self.get_first_child()?.add_css_class("first-child")}
+         >
+            <For each={modules.start}>
+               {(module: string) => {
+                  const Widget = Bar_Items[module];
+                  return Widget ? <Widget /> : <box />;
+               }}
+            </For>
+         </box>
+      );
+   }
+
+   function Center() {
+      return (
+         <box $type={"center"} class={"modules-center"} spacing={spacing}>
+            <For each={modules.center}>
+               {(module: string) => {
+                  const Widget = Bar_Items[module];
+                  return Widget ? <Widget /> : <box />;
+               }}
+            </For>
+         </box>
+      );
+   }
+
+   function End() {
+      return (
+         <box
+            $type={"end"}
+            class={"modules-end"}
+            spacing={spacing}
+            $={(self) => self.get_last_child()?.add_css_class("last-child")}
+         >
+            <For each={modules.end}>
+               {(module: string) => {
+                  const Widget = Bar_Items[module];
+                  return Widget ? <Widget /> : <box />;
+               }}
+            </For>
+         </box>
+      );
+   }
+
    return (
       <window
          visible
@@ -127,7 +130,10 @@ export default function Bar(gdkmonitor: Gdk.Monitor) {
          layer={Astal.Layer.TOP}
          anchor={(position.get() === "top" ? TOP : BOTTOM) | LEFT | RIGHT}
          application={app}
-         $={(self) => (bar = self)}
+         $={(self) => {
+            bar = self;
+            if ($) $(self);
+         }}
       >
          <centerbox class={"bar-main"} heightRequest={config.bar.height}>
             <Start />

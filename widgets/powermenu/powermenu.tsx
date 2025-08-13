@@ -47,9 +47,9 @@ function PowerMenu() {
    );
 }
 
-export default function (gdkmonitor: Gdk.Monitor) {
+export default function () {
    return (
-      <PopupWindow name={windows_names.powermenu} gdkmonitor={gdkmonitor}>
+      <PopupWindow name={windows_names.powermenu}>
          <PowerMenu />
       </PopupWindow>
    );

@@ -71,12 +71,6 @@ function AppButton({ app, client }: AppButtonProps) {
 }
 
 function WorkspaceButton({ ws }: { ws: AstalHyprland.Workspace }) {
-   const clients = createBinding(hyprland, "clients").as((clients) =>
-      clients
-         .filter((w) => w.workspace.id == ws.id)
-         .sort((a, b) => a.pid - b.pid),
-   );
-
    const classNames = createBinding(hyprland, "focusedWorkspace").as((fws) => {
       const classes = ["bar-item"];
 
@@ -89,29 +83,39 @@ function WorkspaceButton({ ws }: { ws: AstalHyprland.Workspace }) {
    return (
       <BarItem cssClasses={classNames} onPrimaryClick={() => ws.focus()}>
          <label class={"workspace"} label={ws.id.toString()} />
-         <For each={clients}>
-            {(client) => {
-               for (const app of application.list) {
-                  if (
-                     client.class &&
-                     app.entry
-                        .split(".desktop")[0]
-                        .toLowerCase()
-                        .match(client.class.toLowerCase())
-                  ) {
-                     return <AppButton app={app} client={client} />;
+         {config.bar.workspaces.taskbar.get() && (
+            <For
+               each={createBinding(hyprland, "clients").as((clients) =>
+                  clients
+                     .filter((w) => w.workspace.id == ws.id)
+                     .sort((a, b) => a.pid - b.pid),
+               )}
+            >
+               {(client: AstalHyprland.Client) => {
+                  for (const app of application.list) {
+                     if (
+                        client.class &&
+                        app.entry
+                           .split(".desktop")[0]
+                           .toLowerCase()
+                           .match(client.class.toLowerCase())
+                     ) {
+                        return <AppButton app={app} client={client} />;
+                     }
                   }
-               }
-               return <AppButton client={client} />;
-            }}
-         </For>
+                  return <AppButton client={client} />;
+               }}
+            </For>
+         )}
       </BarItem>
    );
 }
 
-export function Workspaces_Hypr() {
+function Workspaces({ monitor }: { monitor: AstalHyprland.Monitor }) {
    const workspaces = createBinding(hyprland, "workspaces").as((workspaces) =>
-      workspaces.sort((a, b) => a.id - b.id),
+      workspaces
+         .filter((ws) => ws.monitor?.model === monitor.model)
+         .sort((a, b) => a.id - b.id),
    );
    let lastScrollTime = 0;
    const scrollDelay = 400;
@@ -134,6 +138,20 @@ export function Workspaces_Hypr() {
             }}
          />
          <For each={workspaces}>{(ws) => <WorkspaceButton ws={ws} />}</For>
+      </box>
+   );
+}
+
+export function Workspaces_Hypr({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
+   const monitors = createBinding(hyprland, "monitors").as((monitors) =>
+      monitors.filter((monitor) => monitor.model === gdkmonitor.model),
+   );
+
+   return (
+      <box>
+         <For each={monitors}>
+            {(monitor) => <Workspaces monitor={monitor} />}
+         </For>
       </box>
    );
 }

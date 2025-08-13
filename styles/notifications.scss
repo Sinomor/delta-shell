@@ -1,5 +1,6 @@
 window#notifications_popup {
    all: unset;
+   color: $fg0;
 
    .notification {
       @if $shadow {
@@ -13,6 +14,7 @@ window#notifications_popup {
 
 window#notifications_list {
    all: unset;
+   color: $fg0;
 
    .main {
       background: rgba($bg0, $window-opacity);

@@ -11,6 +11,8 @@ import Weather from "./widgets/weather/weather";
 import BarShadow from "./widgets/bar/items/shadow";
 import { config, theme } from "./options";
 import NotificationsList from "./widgets/notifications/notificationslist";
+import { createBinding, For, onCleanup, This } from "ags";
+import { Gtk } from "ags/gtk4";
 
 export const windows_names = {
    bar: "bar",
@@ -39,16 +41,37 @@ export function hide_all_windows() {
    control_page_set("main");
 }
 
-export default [
-   Bar,
-   theme.shadow.get() && BarShadow,
-   Launcher,
-   config.notifications.enabled.get() && NotificationPopup,
-   config.notifications.enabled.get() && NotificationsList,
-   Control,
-   Powermenu,
-   Verification,
-   Calendar,
-   OSD,
-   config.weather.enabled.get() && Weather,
-].filter(Boolean);
+export function windows() {
+   const monitors = createBinding(app, "monitors");
+
+   app.add_window(Launcher() as Gtk.Window);
+   app.add_window(Control() as Gtk.Window);
+   app.add_window(Calendar() as Gtk.Window);
+   app.add_window(Powermenu() as Gtk.Window);
+   app.add_window(Verification() as Gtk.Window);
+   if (config.weather.enabled.get()) app.add_window(Weather() as Gtk.Window);
+   if (config.notifications.enabled.get()) {
+      app.add_window(NotificationsList() as Gtk.Window);
+      app.add_window(NotificationPopup() as Gtk.Window);
+   }
+   app.add_window(OSD() as Gtk.Window);
+
+   return (
+      <For each={monitors}>
+         {(monitor) => (
+            <This this={app}>
+               <Bar
+                  gdkmonitor={monitor}
+                  $={(self) => onCleanup(() => self.destroy())}
+               />
+               {theme.shadow.get() && (
+                  <BarShadow
+                     gdkmonitor={monitor}
+                     $={(self) => onCleanup(() => self.destroy())}
+                  />
+               )}
+            </This>
+         )}
+      </For>
+   );
+}

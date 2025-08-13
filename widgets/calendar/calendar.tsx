@@ -185,13 +185,9 @@ function Calendar() {
    );
 }
 
-export default function (gdkmonitor: Gdk.Monitor) {
+export default function () {
    return (
-      <BarItemPopup
-         name={windows_names.calendar}
-         module={"clock"}
-         gdkmonitor={gdkmonitor}
-      >
+      <BarItemPopup name={windows_names.calendar} module={"clock"}>
          <Calendar />
       </BarItemPopup>
    );

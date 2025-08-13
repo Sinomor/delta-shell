@@ -35,9 +35,9 @@ function Verification() {
    );
 }
 
-export default function (gdkmonitor: Gdk.Monitor) {
+export default function () {
    return (
-      <PopupWindow name={windows_names.verification} gdkmonitor={gdkmonitor}>
+      <PopupWindow name={windows_names.verification}>
          <Verification />
       </PopupWindow>
    );

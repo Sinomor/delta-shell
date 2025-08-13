@@ -32,14 +32,9 @@ function Control() {
    );
 }
 
-export default function (gdkmonitor: Gdk.Monitor) {
+export default function () {
    return (
-      <BarItemPopup
-         name={windows_names.control}
-         module={"sysbox"}
-         gdkmonitor={gdkmonitor}
-         width={440}
-      >
+      <BarItemPopup name={windows_names.control} module={"sysbox"} width={440}>
          <Control />
       </BarItemPopup>
    );

@@ -5,7 +5,10 @@ import { createState, onCleanup } from "ags";
 import { config } from "@/options";
 import { windows_names } from "@/windows";
 
-export default function BarShadow(gdkmonitor: Gdk.Monitor) {
+export default function BarShadow({
+   gdkmonitor,
+   $,
+}: JSX.IntrinsicElements["window"] & { gdkmonitor: Gdk.Monitor }) {
    const { BOTTOM, TOP, LEFT, RIGHT } = Astal.WindowAnchor;
    const windows = [
       windows_names.powermenu,
@@ -56,6 +59,7 @@ export default function BarShadow(gdkmonitor: Gdk.Monitor) {
          application={app}
          $={(self) => {
             bar = self;
+            if ($) $(self);
             self
                .get_native()
                ?.get_surface()

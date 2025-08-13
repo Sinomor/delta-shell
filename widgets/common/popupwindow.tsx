@@ -15,7 +15,7 @@ type PopupWindowProps = JSX.IntrinsicElements["window"] & {
    margin_bottom?: number;
    margin_start?: number;
    margin_end?: number;
-   gdkmonitor: Gdk.Monitor;
+   gdkmonitor?: Gdk.Monitor;
    transitionType?: Gtk.RevealerTransitionType;
    transitionDuration?: number;
 };

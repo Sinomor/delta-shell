@@ -2,14 +2,17 @@ import { compositor } from "@/options";
 import { Workspaces_Niri } from "./workspaces_niri";
 import { Workspaces_Hypr } from "./workspaces_hypr";
 import { With } from "ags";
+import { Gdk } from "ags/gtk4";
 
-export function Workspaces() {
+export function Workspaces({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
    return (
       <box>
          <With value={compositor}>
             {(comp) => {
-               if (comp === "niri") return <Workspaces_Niri />;
-               if (comp === "hyprland") return <Workspaces_Hypr />;
+               if (comp === "niri")
+                  return <Workspaces_Niri gdkmonitor={gdkmonitor} />;
+               if (comp === "hyprland")
+                  return <Workspaces_Hypr gdkmonitor={gdkmonitor} />;
                return <box />;
             }}
          </With>

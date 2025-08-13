@@ -104,8 +104,8 @@ function WorkspaceButton({ ws }: { ws: AstalNiri.Workspace }) {
    );
 }
 
-export function Workspaces_Niri() {
-   const workspaces = createBinding(niri, "workspaces").as((workspaces) =>
+function Workspaces({ output }: { output: AstalNiri.Output }) {
+   const workspaces = createBinding(output, "workspaces").as((workspaces) =>
       workspaces.sort((a, b) => a.id - b.id),
    );
    let lastScrollTime = 0;
@@ -129,6 +129,18 @@ export function Workspaces_Niri() {
             }}
          />
          <For each={workspaces}>{(ws) => <WorkspaceButton ws={ws} />}</For>
+      </box>
+   );
+}
+
+export function Workspaces_Niri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
+   const outputs = createBinding(niri, "outputs").as((outputs) =>
+      outputs.filter((output) => output.model === gdkmonitor.model),
+   );
+
+   return (
+      <box>
+         <For each={outputs}>{(output) => <Workspaces output={output} />}</For>
       </box>
    );
 }

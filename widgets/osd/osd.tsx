@@ -86,7 +86,7 @@ function OnScreenProgress({ visible }: { visible: Accessor<boolean> }) {
    );
 }
 
-export default function (gdkmonitor: Gdk.Monitor) {
+export default function () {
    const { TOP, BOTTOM, RIGHT, LEFT } = Astal.WindowAnchor;
    let win: Astal.Window;
    const pos = position.get();
@@ -131,7 +131,6 @@ export default function (gdkmonitor: Gdk.Monitor) {
 
    return (
       <window
-         gdkmonitor={gdkmonitor}
          name={windows_names.osd}
          application={app}
          anchor={TOP | BOTTOM | RIGHT | LEFT}
