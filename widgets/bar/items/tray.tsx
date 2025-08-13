@@ -23,7 +23,7 @@ export const Tray = () => {
          <revealer
             revealChild={tray_visible}
             transitionType={Gtk.RevealerTransitionType.SLIDE_RIGHT}
-            transitionDuration={config.transition}
+            transitionDuration={config.transition.get() * 1000}
          >
             <box class={"items"}>
                <For each={items}>
