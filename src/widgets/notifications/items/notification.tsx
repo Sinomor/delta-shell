@@ -9,6 +9,7 @@ import { timeout } from "ags/time";
 import { config, theme } from "@/options";
 import Adw from "gi://Adw?version=1";
 import { Timer } from "@/src/lib/timer";
+import { icons } from "@/src/lib/icons";
 
 const time = (time: number, format = "%H:%M") =>
    GLib.DateTime.new_from_unix_local(time).format(format);
@@ -68,7 +69,7 @@ export function Notification({
                class={"close"}
                focusOnClick={false}
             >
-               <image iconName="window-close-symbolic" />
+               <image iconName={icons.close} pixelSize={16} />
             </button>
          </box>
       );

@@ -4,11 +4,6 @@ import AstalNetwork from "gi://AstalNetwork";
 import AstalWp from "gi://AstalWp?version=0.1";
 
 export const icons = {
-   alert: {
-      circle: "ds-alert-circle-symbolic",
-      octagon: "ds-alert-octagon-symbolic",
-      triangle: "ds-alert-triangle-symbolic",
-   },
    search: "ds-search-symbolic",
    arrow: {
       left: "ds-chevron-left-symbolic",
@@ -26,10 +21,6 @@ export const icons = {
    },
    refresh: "ds-refresh-cw-symbolic",
    check: "ds-check-symbolic",
-   eye: {
-      on: "ds-eye-symbolic",
-      off: "ds-eye-off-symbolic",
-   },
    powerprofiles: {
       "power-saver": "ds-speedometer-1-symbolic",
       balanced: "ds-speedometer-2-symbolic",
@@ -46,7 +37,6 @@ export const icons = {
       wired: "ds-ethernet-port-symbolic",
    },
    bluetooth: "ds-bluetooth-symbolic",
-   web: "ds-globe-symbolic",
    bell: "ds-bell-symbolic",
    bell_off: "ds-bell-off-symbolic",
    microphone: {
@@ -75,6 +65,7 @@ export const icons = {
    brightness: "ds-sun-symbolic",
    camera: "ds-camera-symbolic",
    video: "ds-video-symbolic",
+   close: "ds-x-symbolic",
    settings: "ds-settings-symbolic",
    apps_default: "application-x-executable",
    droplet: "ds-droplet-symbolic",
