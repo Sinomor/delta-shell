@@ -1,7 +1,7 @@
 import { Gtk } from "ags/gtk4";
 import { Sliders } from "../items/sliders";
 import { MprisPlayers } from "../items/media";
-import { Qs_Buttins } from "../items/qsbuttons";
+import { Qs_Buttons } from "../items/qsbuttons";
 import { BatteryIcon, icons } from "@/utils/icons";
 import AstalBattery from "gi://AstalBattery?version=0.1";
 import app from "ags/gtk4/app";
@@ -84,7 +84,7 @@ export function MainPage() {
          spacing={theme.spacing}
       >
          <Header />
-         <Qs_Buttins />
+         <Qs_Buttons />
          <Sliders />
          <MprisPlayers />
       </box>

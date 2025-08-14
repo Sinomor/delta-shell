@@ -39,7 +39,7 @@ export function PopupWindow({
    const { TOP, BOTTOM, RIGHT, LEFT } = Astal.WindowAnchor;
    let contentbox: Adw.Clamp;
    const [visible, setVisible] = createState(false);
-   const [revaled, setRevealed] = createState(false);
+   const [revealed, setRevealed] = createState(false);
 
    function show() {
       setVisible(true);
@@ -90,7 +90,7 @@ export function PopupWindow({
          <revealer
             transitionType={transitionType}
             transitionDuration={transitionDuration * 1000}
-            revealChild={revaled}
+            revealChild={revealed}
             halign={halign}
             valign={valign}
             onNotifyChildRevealed={({ childRevealed }) =>

@@ -198,7 +198,7 @@ function Qs_Row_2() {
    );
 }
 
-export function Qs_Buttins() {
+export function Qs_Buttons() {
    return (
       <box
          spacing={theme.spacing}
