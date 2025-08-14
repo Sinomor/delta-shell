@@ -2,15 +2,17 @@ import app from "ags/gtk4/app";
 import Apps from "gi://AstalApps?version=0.1";
 import { AppButton } from "../items/app_button";
 import { Gtk } from "ags/gtk4";
-import { createState, For, onCleanup } from "ags";
+import { createComputed, createState, For, onCleanup } from "ags";
 import { hide_all_windows, windows_names } from "@/windows";
 import { config, theme } from "@/options";
 import { launcher_page } from "../launcher";
 
-const apps = new Apps.Apps();
+const [apps, apps_set] = createState<Apps.Apps>(new Apps.Apps());
 const [text, text_set] = createState("");
 let scrolled: Gtk.ScrolledWindow;
-const list = text.as((text) => apps.fuzzy_query(text));
+const list = createComputed([apps, text], (apps, text) => {
+   return apps.fuzzy_query(text);
+});
 
 function Entry() {
    let appconnect: number;
@@ -20,7 +22,7 @@ function Entry() {
    });
 
    const onEnter = () => {
-      apps.fuzzy_query(text.get())?.[0].launch();
+      list.get()[0].launch();
       hide_all_windows();
    };
 
@@ -35,7 +37,8 @@ function Entry() {
 
                if (winName == windows_names.launcher && visible && mode) {
                   scrolled.set_vadjustment(null);
-                  await text_set("");
+                  await apps_set(new Apps.Apps());
+                  text_set("");
                   self.set_text("");
                   self.grab_focus();
                }
