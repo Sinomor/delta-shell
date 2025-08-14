@@ -226,19 +226,20 @@ export function getAccessPointIcon(accessPoint: AstalNetwork.AccessPoint) {
 }
 
 export function getWeatherIcon(weatherCode: number, is_day?: boolean) {
+   console.log(weatherCode, is_day);
    const weather_icons = {
       0:
          is_day === undefined
-            ? is_day
-               ? icons.weather.clear.day
-               : icons.weather.clear.night
-            : icons.weather.clear.day,
+            ? icons.weather.clear.day
+            : is_day
+              ? icons.weather.clear.day
+              : icons.weather.clear.night,
       1:
          is_day === undefined
-            ? is_day
-               ? icons.weather.clear.day
-               : icons.weather.clear.night
-            : icons.weather.clear.day,
+            ? icons.weather.clear.day
+            : is_day
+              ? icons.weather.clear.day
+              : icons.weather.clear.night,
       2: icons.weather.cloudy,
       3: icons.weather.cloudy,
       45: icons.weather.fog,
