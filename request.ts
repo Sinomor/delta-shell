@@ -1,9 +1,9 @@
 import app from "ags/gtk4/app";
-import ScreenRecord from "./services/screenrecord";
+import ScreenRecord from "./src/services/screenrecord";
 import { hide_all_windows, windows_names } from "./windows";
-import { toggleWindow } from "./utils/utils";
+import { toggleWindow } from "./src/lib/utils";
 import { config } from "./options";
-import { launcher_page_set } from "./widgets/launcher/launcher";
+import { launcher_page_set } from "./src/widgets/launcher/launcher";
 const screenrecord = ScreenRecord.get_default();
 
 export default function request(

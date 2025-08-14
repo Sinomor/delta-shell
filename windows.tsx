@@ -1,16 +1,16 @@
-import Bar from "./widgets/bar/bar";
-import OSD from "./widgets/osd/osd";
-import Launcher from "./widgets/launcher/launcher";
-import Control, { control_page_set } from "./widgets/control/control";
-import Calendar from "./widgets/calendar/calendar";
-import Powermenu from "./widgets/powermenu/powermenu";
-import Verification from "./widgets/powermenu/verification";
-import { NotificationPopup } from "./widgets/notifications/notificationpopup";
+import Bar from "./src/widgets/bar/bar";
+import OSD from "./src/widgets/osd/osd";
+import Launcher from "./src/widgets/launcher/launcher";
+import Control, { control_page_set } from "./src/widgets/control/control";
+import Calendar from "./src/widgets/calendar/calendar";
+import Powermenu from "./src/widgets/powermenu/powermenu";
+import Verification from "./src/widgets/powermenu/verification";
+import { NotificationPopup } from "./src/widgets/notifications/notificationpopup";
 import app from "ags/gtk4/app";
-import Weather from "./widgets/weather/weather";
-import BarShadow from "./widgets/bar/items/shadow";
+import Weather from "./src/widgets/weather/weather";
+import BarShadow from "./src/widgets/bar/items/shadow";
 import { config, theme } from "./options";
-import NotificationsList from "./widgets/notifications/notificationslist";
+import NotificationsList from "./src/widgets/notifications/notificationslist";
 import { createBinding, For, onCleanup, This } from "ags";
 import { Gtk } from "ags/gtk4";
 

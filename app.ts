@@ -1,10 +1,9 @@
 import app from "ags/gtk4/app";
-import "@/services/styles";
+import "@/src/services/styles";
 import request from "./request";
-import Gio from "gi://Gio?version=2.0";
-import { updateLocationData } from "./services/location";
 import { config } from "./options";
 import { windows } from "./windows";
+import { updateLocationData } from "./src/services/location";
 
 app.start({
    icons: `${SRC}/assets/icons`,
