@@ -1,11 +1,39 @@
-import { Variable } from "@/utils/variable";
 import { readFile, writeFile, monitorFile, readFileAsync } from "ags/file";
 import { cacheDir, ensureDirectory, ensureFileWithDefaults } from "./utils";
 import Gio from "gi://Gio?version=2.0";
 import GLib from "gi://GLib?version=2.0";
-import { resetCss } from "@/services/styles";
+import { Accessor } from "ags";
 
 type GenericObject = Record<string, any>;
+
+export class Opt<T = unknown> extends Accessor<T> {
+   #subscribers = new Set<() => void>();
+   #value: T;
+   initial: T;
+   id = "";
+
+   constructor(initial: T) {
+      super(
+         () => this.#value,
+         (callback) => {
+            this.#subscribers.add(callback);
+            return () => this.#subscribers.delete(callback);
+         },
+      );
+
+      this.#value = initial;
+      this.initial = initial;
+   }
+
+   set(value: T) {
+      if (this.#value !== value) {
+         this.#value = value;
+         this.#subscribers.forEach((cb) => cb());
+      }
+   }
+}
+
+export const opt = <T>(initial: T): Opt<T> => new Opt(initial);
 
 function getNestedValue(obj: GenericObject, keyPath: string): any {
    const keys = keyPath.split(".");
@@ -42,25 +70,6 @@ function setNestedValue<T>(
 
    current[keys[keys.length - 1]] = value;
 }
-
-export class Opt<T = unknown> extends Variable<T> {
-   constructor(initial: T) {
-      super(initial);
-      this.initial = initial;
-   }
-
-   initial: T;
-   id = "";
-
-   init(configFile: string, defaultConfig: any): void {
-      const configV = getNestedValue(defaultConfig, this.id);
-      if (configV !== undefined) {
-         this.set(configV);
-      }
-   }
-}
-
-export const opt = <T>(initial: T): Opt<T> => new Opt(initial);
 
 function getOptions(object: GenericObject, path = ""): Opt[] {
    return Object.keys(object).flatMap((key) => {

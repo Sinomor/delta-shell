@@ -1,5 +1,5 @@
 import { Astal } from "ags/gtk4";
-import { mkOptions, opt } from "./utils/options";
+import { mkOptions, opt } from "./utils/option";
 import GLib from "gi://GLib?version=2.0";
 import { createState } from "ags";
 export const configDir = GLib.get_user_config_dir();
