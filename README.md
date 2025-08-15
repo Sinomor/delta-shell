@@ -96,9 +96,6 @@ config.json
          "format": "%b %d  %H:%M" // https://docs.gtk.org/glib/method.DateTime.format.html
       }
    },
-   "control": {
-      "default_coverArt": "/home/sinomor/.config/ags/assets/defsong.jpg",
-   },
    "launcher": {
       "clipboard": {
          "max_items": 50, // maximum items in clipboard

@@ -24,9 +24,6 @@ export const config = mkOptions(configFile, {
          format: opt("%b %d  %H:%M"),
       },
    },
-   control: {
-      default_coverArt: opt(`${SRC}/assets/defsong.jpg`),
-   },
    launcher: {
       clipboard: {
          max_items: opt(50),
