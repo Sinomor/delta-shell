@@ -1,6 +1,7 @@
 window#weather {
    all: unset;
    color: $fg0;
+   font-size: $font-size;
 
    .main {
       background: rgba($bg0, $window-opacity);
@@ -22,6 +23,15 @@ window#weather {
    .day,
    .hour {
       min-width: 50px;
+   }
+
+   .current {
+      .temp {
+         font-size: 40pt;
+      }
+      .units {
+         font-size: 18pt;
+      }
    }
 
    .forecast {

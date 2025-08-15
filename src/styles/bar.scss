@@ -2,6 +2,7 @@ window#bar {
    all: unset;
    color: $fg0;
    margin: $bar-margin;
+   font-size: $font-size;
 
    .main {
       background: rgba($bar-bg, $bar-opacity);

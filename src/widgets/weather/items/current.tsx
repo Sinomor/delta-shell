@@ -61,21 +61,14 @@ export function Current() {
    });
 
    return (
-      <box orientation={Gtk.Orientation.VERTICAL}>
+      <box orientation={Gtk.Orientation.VERTICAL} class={"current"}>
          <label label={data.as((d) => d.desc)} />
          <box halign={Gtk.Align.CENTER}>
-            <label
-               label={data.as((d) => d.temp)}
-               css={`
-                  font-size: 40pt;
-               `}
-            />
+            <label label={data.as((d) => d.temp)} class={"temp"} />
             <label
                label={data.as((d) => d.units)}
                valign={Gtk.Align.START}
-               css={`
-                  font-size: 18pt;
-               `}
+               class={"units"}
                marginTop={10}
             />
          </box>

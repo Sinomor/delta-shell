@@ -1,6 +1,7 @@
 window#powermenu {
    all: unset;
    color: $fg0;
+   font-size: $font-size;
 
    .main {
       background: rgba($bg0, $window-opacity);
