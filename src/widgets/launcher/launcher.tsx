@@ -4,7 +4,7 @@ import { Clipboard } from "./pages/clipboard";
 import { hide_all_windows, windows_names } from "@/windows";
 import Adw from "gi://Adw?version=1";
 import { PopupWindow } from "../common/popupwindow";
-import { createState } from "ags";
+import { createState, onCleanup } from "ags";
 import { BarItemPopup } from "../common/baritempopup";
 import { config } from "@/options";
 const { width, height } = config.launcher;
@@ -17,7 +17,12 @@ function Launcher() {
          widthRequest={width.get()}
          transitionDuration={config.transition.get()}
          transitionType={Gtk.StackTransitionType.SLIDE_LEFT_RIGHT}
-         visibleChildName={launcher_page}
+         $={(self) => {
+            const unsub = launcher_page.subscribe(() =>
+               self.set_visible_child_name(launcher_page.get()),
+            );
+            onCleanup(() => unsub());
+         }}
       >
          <AppLauncher />
          <Clipboard />

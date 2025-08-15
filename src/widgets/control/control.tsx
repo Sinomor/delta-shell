@@ -3,7 +3,7 @@ import { NetworkPage } from "./pages/network";
 import { MainPage } from "./pages/main";
 import { BluetoothPage } from "./pages/bluetooth";
 import { PowerModesPage } from "./pages/powermodes";
-import { createState } from "ags";
+import { createState, onCleanup } from "ags";
 import { hide_all_windows, windows_names } from "@/windows";
 import { PopupWindow } from "../common/popupwindow";
 import { BarItemPopup } from "../common/baritempopup";
@@ -17,10 +17,15 @@ function Control() {
          transitionDuration={config.transition.get() * 1000}
          widthRequest={440}
          transitionType={Gtk.StackTransitionType.SLIDE_LEFT_RIGHT}
-         visibleChildName={control_page}
+         $={(self) => {
+            const unsub = control_page.subscribe(() =>
+               self.set_visible_child_name(control_page.get()),
+            );
+            onCleanup(() => unsub());
+         }}
       >
-         <NetworkPage />
          <MainPage />
+         <NetworkPage />
          <BluetoothPage />
          <PowerModesPage />
       </stack>
