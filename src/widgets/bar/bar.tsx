@@ -135,7 +135,7 @@ export default function Bar({
             if ($) $(self);
          }}
       >
-         <centerbox class={"bar-main"} heightRequest={config.bar.height}>
+         <centerbox class={"main"} heightRequest={config.bar.height}>
             <Start />
             <Center />
             <End />

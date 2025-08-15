@@ -1,13 +1,16 @@
 window#bar {
    all: unset;
-   background: rgba($bar-bg, $bar-opacity);
-   margin: $bar-margin;
    color: $fg0;
-   @if $bar-opacity != 0 {
-      box-shadow: $bar-shadow-offset
-         $bar-shadow-blur
-         $bar-shadow-spread
-         rgba($bar-shadow-color, $bar-shadow-opacity);
+   margin: $bar-margin;
+
+   .main {
+      background: rgba($bar-bg, $bar-opacity);
+      @if $bar-opacity != 0 {
+         box-shadow: $bar-shadow-offset
+            $bar-shadow-blur
+            $bar-shadow-spread
+            rgba($bar-shadow-color, $bar-shadow-opacity);
+      }
    }
 
    tooltip {
