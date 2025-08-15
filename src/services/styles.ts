@@ -98,7 +98,7 @@ export async function resetCss() {
       const scss = `${GLib.get_tmp_dir()}/delta-shell/main.scss`;
       const css = `${GLib.get_tmp_dir()}/delta-shell/main.css`;
 
-      const fd = await bash(`fd ".scss" ${SRC}`);
+      const fd = await bash(`fd ".scss" ${DATADIR ?? SRC}`);
       const files = fd.split(/\s+/);
       const imports = [vars, ...files].map((f) => `@import '${f}';`);
 
@@ -116,5 +116,5 @@ export async function resetCss() {
    }
 }
 
-monitorFile(`${SRC}/src/styles`, resetCss);
+monitorFile(`${DATADIR ?? SRC}/src/styles`, resetCss);
 await resetCss();
