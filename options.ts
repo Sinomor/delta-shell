@@ -12,7 +12,13 @@ export const config = mkOptions(configFile, {
       modules: {
          start: opt(["launcher", "workspaces"]),
          center: opt(["clock", "weather"]),
-         end: opt(["record_indicator", "tray", "keyboard", "sysbox"]),
+         end: opt([
+            "record_indicator",
+            "tray",
+            "keyboard",
+            "notifications",
+            "sysbox",
+         ]),
       },
       height: opt(52),
       position: opt<"top" | "bottom">("top"),
