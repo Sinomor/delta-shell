@@ -46,7 +46,10 @@ function Entry() {
          }}
          placeholderText={"Search..."}
          onActivate={() => onEnter()}
-         onNotifyText={(self) => text_set(self.text)}
+         onNotifyText={(self) => {
+            scrolled.set_vadjustment(null);
+            text_set(self.text);
+         }}
       />
    );
 }
