@@ -5,7 +5,7 @@ import { Qs_Buttons } from "../items/qsbuttons";
 import { BatteryIcon, icons } from "@/src/lib/icons";
 import AstalBattery from "gi://AstalBattery?version=0.1";
 import app from "ags/gtk4/app";
-import { bash, toggleWindow } from "@/src/lib/utils";
+import { bash, dependencies, toggleWindow } from "@/src/lib/utils";
 import { createBinding } from "ags";
 import { timeout } from "ags/time";
 import ScreenRecord from "@/src/services/screenrecord";
@@ -37,7 +37,9 @@ function Reload() {
          focusOnClick={false}
          tooltipText={"Restart shell"}
          onClicked={() => {
-            bash(`ags quit -i delta-shell; ags run -d ${SRC}`);
+            if (dependencies("delta-shell"))
+               bash("delta-shell -q; delta-shell");
+            else bash(`astal -i delta-shell -q; ${SRC}/run-dev.sh`);
          }}
       >
          <image iconName={icons.refresh} pixelSize={20} />
