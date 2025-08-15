@@ -2,7 +2,7 @@ import { icons } from "@/src/lib/icons";
 import { Gtk } from "ags/gtk4";
 import AstalBluetooth from "gi://AstalBluetooth?version=0.1";
 import { timeout } from "ags/time";
-import { createBinding, For } from "ags";
+import { createBinding, createComputed, For } from "ags";
 import { theme } from "@/options";
 import { control_page_set } from "../control";
 const bluetooth = AstalBluetooth.get_default();
@@ -91,7 +91,12 @@ function Item({ device }: ItemProps) {
             <label
                class={"bluetooth-device-percentage"}
                label={percentage.as((p) => `${Math.round(p * 100)}%`)}
-               visible={isConnected}
+               visible={createComputed(
+                  [percentage, isConnected],
+                  (percentage, isConnected) => {
+                     return isConnected && percentage > 0;
+                  },
+               )}
             />
             <box hexpand />
             <image
