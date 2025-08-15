@@ -30,31 +30,55 @@ A desktop shell based on [Ags](https://github.com/Aylur/ags). Currently supports
 <details>
 <summary><b>Arch Linux</b></summary>
 
-1. Installation libastal-niri-git
+1. Installation dependencies and delta-shell
 
 ```bash
-mkdir -p libastal-niri-git
-cd libastal-niri-git
-wget https://raw.githubusercontent.com/Sinomor/PKGBUILDS/refs/heads/main/libastal-niri-git/PKGBUILD
-makepkg -si
+yay -S delta-shell-git libastal-niri-git aylurs-gtk-shell-git libastal-meta brightnessctl dart-sass fd bluez tuned-ppd cliphist gpu-screen-recorder wl-clipboard
 ```
 
-2. Installation other dependencies
+2. Run and usage with command
 
 ```bash
-yay -S aylurs-gtk-shell-git libastal-meta brightnessctl dart-sass fd bluez tuned-ppd cliphist gpu-screen-recorder wl-clipboard
+delta-shell
 ```
 
-3. Clone repo and run
+</details>
+
+<details>
+<summary><b>From Source</b></summary>
+
+1. Build the delta-shell
 
 ```bash
-git clone https://github.com/Sinomor/delta-shell.git ~/.config/ags
+git clone https://github.com/Sinomor/delta-shell.git
+cd delta-shell
+meson setup build
+meson install -C build
 ```
 
-And then you can run it with
+2. Run and usage with command
 
 ```bash
-ags run
+delta-shell
+```
+
+</details>
+
+<details>
+<summary><b>Without Building</b></summary>
+
+1. Clone and run
+
+```bash
+git clone https://github.com/Sinomor/delta-shell.git
+cd delta-shell
+./run-dev.sh
+```
+
+2. Usage with command
+
+```bash
+astal -i delta-shell *command*
 ```
 
 </details>
