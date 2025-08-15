@@ -116,5 +116,5 @@ export async function resetCss() {
    }
 }
 
-monitorFile(`${SRC}/styles`, resetCss);
+monitorFile(`${SRC}/src/styles`, resetCss);
 await resetCss();

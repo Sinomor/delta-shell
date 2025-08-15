@@ -107,6 +107,12 @@ window#bar {
             margin-top: 5px;
             border: $border-width solid $bg1;
             box-shadow: none;
+            @if $shadow {
+               box-shadow: $bar-shadow-offset
+                  $bar-shadow-blur
+                  $bar-shadow-spread
+                  rgba($bar-shadow-color, $bar-shadow-opacity);
+            }
          }
 
          &.menu > arrow {
@@ -116,8 +122,9 @@ window#bar {
 
       .items {
          padding: 6px 0;
+
          button {
-            background: transparent;
+            background: rgba($bar-button-bg, $bar-button-opacity);
 
             &:hover {
                background: $bg1;
