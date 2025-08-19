@@ -50,7 +50,9 @@ export function SysBox() {
                visible={createComputed(
                   [
                      createBinding(network, "primary"),
-                     createBinding(network.wifi, "enabled"),
+                     ...(network.wifi !== null
+                        ? [createBinding(network.wifi, "enabled")]
+                        : []),
                   ],
                   (primary, enabled) => {
                      if (

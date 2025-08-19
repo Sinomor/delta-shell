@@ -71,7 +71,7 @@ export function Sliders() {
          class={"sliders"}
       >
          <VolumeBox />
-         {dependencies("brightnessctl") && <BrightnessBox />}
+         {brightness.available && <BrightnessBox />}
       </box>
    );
 }

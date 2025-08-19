@@ -8,7 +8,11 @@ import { hide_all_windows, windows_names } from "@/windows";
 import { PopupWindow } from "../common/popupwindow";
 import { BarItemPopup } from "../common/baritempopup";
 import { config } from "@/options";
+import AstalNetwork from "gi://AstalNetwork?version=0.1";
+import AstalBluetooth from "gi://AstalBluetooth?version=0.1";
 export const [control_page, control_page_set] = createState("main");
+const network = AstalNetwork.get_default();
+const bluetooth = AstalBluetooth.get_default();
 
 function Control() {
    return (
@@ -25,8 +29,8 @@ function Control() {
          }}
       >
          <MainPage />
-         <NetworkPage />
-         <BluetoothPage />
+         {network.wifi !== null && <NetworkPage />}
+         {bluetooth.adapter !== null && <BluetoothPage />}
          <PowerModesPage />
       </stack>
    );

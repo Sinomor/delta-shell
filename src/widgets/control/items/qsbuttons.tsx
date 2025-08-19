@@ -11,9 +11,13 @@ import { config, theme } from "@/options";
 import { control_page_set } from "../control";
 import ScreenRecord from "@/src/services/screenrecord";
 import { timeout } from "ags/time";
+import Adw from "gi://Adw?version=1";
+import { dependencies } from "@/src/lib/utils";
+const network = AstalNetwork.get_default();
+const bluetooth = AstalBluetooth.get_default();
+const powerprofile = AstalPowerProfiles.get_default();
 
 function PowerProfilesButton() {
-   const powerprofile = AstalPowerProfiles.get_default();
    const activeprofile = createBinding(powerprofile, "activeProfile");
 
    return (
@@ -56,11 +60,15 @@ function PowerProfilesButton() {
 }
 
 function InternetButton() {
-   const network = AstalNetwork.get_default();
    const wifi = network.wifi;
    const wired = network.wired;
    const enabled = createComputed(
-      [createBinding(network, "primary"), createBinding(wifi, "enabled")],
+      [
+         createBinding(network, "primary"),
+         ...(network.wifi !== null
+            ? [createBinding(network.wifi, "enabled")]
+            : []),
+      ],
       (primary, enabled) => {
          if (
             primary === AstalNetwork.Primary.WIRED &&
@@ -105,7 +113,7 @@ function InternetButton() {
             wifi.scan();
             control_page_set("network");
          }}
-         showArrow={true}
+         showArrow={network.wifi !== null}
          ArrowClasses={enabled.as((p) => {
             const classes = ["arrow"];
             p && classes.push("active");
@@ -141,7 +149,6 @@ function ScreenRecordButton() {
 }
 
 function BluetoothButton() {
-   const bluetooth = AstalBluetooth.get_default();
    const powered = createBinding(bluetooth, "isPowered");
    const deviceConnected = createComputed(
       [
@@ -184,7 +191,7 @@ function Qs_Row_1() {
    return (
       <box spacing={theme.spacing} homogeneous={true}>
          <InternetButton />
-         <BluetoothButton />
+         {bluetooth.adapter !== null && <BluetoothButton />}
       </box>
    );
 }

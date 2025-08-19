@@ -51,6 +51,7 @@ function Battery() {
    return (
       <button
          cssClasses={["qs-header-button", "battery-button"]}
+         visible={createBinding(battery, "isPresent")}
          focusOnClick={false}
       >
          <box spacing={theme.spacing}>

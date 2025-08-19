@@ -5,10 +5,10 @@ import { Gtk } from "ags/gtk4";
 import { createBinding, For } from "ags";
 import { theme } from "@/options";
 import { control_page_set } from "../control";
-const wifi = AstalNetwork.get_default().wifi;
+const network = AstalNetwork.get_default();
 
 function ScanningIndicator() {
-   const className = createBinding(wifi, "scanning").as((scanning) => {
+   const className = createBinding(network.wifi, "scanning").as((scanning) => {
       const classes = ["scanning"];
       if (scanning) {
          classes.push("active");
@@ -40,7 +40,7 @@ function Header() {
          <button
             cssClasses={["qs-header-button", "qs-page-refresh"]}
             focusOnClick={false}
-            onClicked={() => wifi.scan()}
+            onClicked={() => network.wifi.scan()}
          >
             <ScanningIndicator />
          </button>
@@ -53,7 +53,7 @@ type ItemProps = {
 };
 
 function Item({ accessPoint }: ItemProps) {
-   const isConnected = createBinding(wifi, "ssid").as(
+   const isConnected = createBinding(network.wifi, "ssid").as(
       (ssid) => ssid === accessPoint.ssid,
    );
 
@@ -80,7 +80,7 @@ function Item({ accessPoint }: ItemProps) {
 }
 
 function List() {
-   const list = createBinding(wifi, "accessPoints").as((aps) =>
+   const list = createBinding(network.wifi, "accessPoints").as((aps) =>
       aps.filter((ap) => !!ap.ssid).sort((a, b) => b.strength - a.strength),
    );
 

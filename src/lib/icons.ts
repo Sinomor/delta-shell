@@ -197,7 +197,9 @@ export function getNetworkIconBinding() {
 
    return createComputed([
       createBinding(network, "connectivity"),
-      createBinding(network.wifi, "strength"),
+      ...(network.wifi !== null
+         ? [createBinding(network.wifi, "strength")]
+         : []),
       createBinding(network, "primary"),
    ])(() => getNetworkIcon(network));
 }
