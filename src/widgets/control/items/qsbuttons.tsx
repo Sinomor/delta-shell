@@ -187,33 +187,23 @@ function BluetoothButton() {
    );
 }
 
-function Qs_Row_1() {
-   return (
-      <box spacing={theme.spacing} homogeneous={true}>
-         <InternetButton />
-         {bluetooth.adapter !== null && <BluetoothButton />}
-      </box>
-   );
-}
-
-function Qs_Row_2() {
-   return (
-      <box spacing={theme.spacing} homogeneous={true}>
-         <PowerProfilesButton />
-         <ScreenRecordButton />
-      </box>
-   );
-}
-
 export function Qs_Buttons() {
+   const list = [
+      <InternetButton />,
+      bluetooth.adapter !== null && <BluetoothButton />,
+      powerprofile.get_profiles().length !== 0 && <PowerProfilesButton />,
+      dependencies("gpu-screen-recorder") && <ScreenRecordButton />,
+   ].filter(Boolean);
    return (
-      <box
-         spacing={theme.spacing}
+      <Adw.WrapBox
          class={"qs-buttons"}
-         orientation={Gtk.Orientation.VERTICAL}
+         child_spacing={theme.spacing}
+         lineSpacing={theme.spacing}
+         widthRequest={440 - theme.window.padding.get() * 2}
+         naturalLineLength={440 - theme.window.padding.get() * 2}
       >
-         <Qs_Row_1 />
-         <Qs_Row_2 />
-      </box>
+         {list.map((widget) => widget as Gtk.Widget)}
+         {list.length % 2 !== 0 && <box widthRequest={200} />}
+      </Adw.WrapBox>
    );
 }

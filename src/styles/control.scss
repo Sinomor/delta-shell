@@ -90,6 +90,10 @@ window#control {
             min-width: 36px;
          }
 
+         .qs-button-subtitle {
+            font-size: $font-size - 1pt;
+         }
+
          .qs-button-box,
          .qs-button-box-arrow,
          .arrow {
