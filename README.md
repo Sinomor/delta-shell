@@ -8,14 +8,19 @@ A desktop shell based on [Ags](https://github.com/Aylur/ags). Currently supports
 
 ### Required
 
-- `aylurs-gtk-shell-git`
-- `libastal-meta`
-- `libastal-niri-git`
-- `brightnessctl`
+- `aylurs-gtk-shell`
+- `libastal-hyprland`
+- `libastal-niri`
+- `libastal-apps`
+- `libastal-battery`
+- `libastal-bluetooth`
+- `libastal-mpris`
+- `libastal-network`
+- `libastal-notifd`
+- `libastal-powerprofiles`
+- `libastal-tray`
+- `libastal-wireplumber`
 - `dart-sass`
-- `fd`
-- `bluez`
-- `tuned-ppd` or `power-profiles-daemon`
 
 **NOTE: Delta Shell will not run without the required dependencies.**
 
@@ -24,6 +29,9 @@ A desktop shell based on [Ags](https://github.com/Aylur/ags). Currently supports
 - `cliphist` and `wl-clipboard` for clipboard
 - `gpu-screen-recorder` to record screen from control center
 - `geoclue` to autoload the location for weather
+- `tuned-ppd` or `power-profiles-daemon` to switch between power profiles
+- `brightnessctl` for control screen brightness
+- `bluez` for connect to bluetooth devices
 
 ## Installation
 
@@ -123,7 +131,7 @@ config.json
    "launcher": {
       "clipboard": {
          "max_items": 50, // maximum items in clipboard
-         "image_preview": false, // it may works bad
+         "image_preview": true,
       }
       "width": 400,
       "height": 600
