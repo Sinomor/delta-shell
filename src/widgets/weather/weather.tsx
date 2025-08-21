@@ -41,11 +41,15 @@ function Header() {
    });
 
    return (
-      <box valign={Gtk.Align.CENTER} spacing={theme.spacing}>
+      <box class={"header"} valign={Gtk.Align.CENTER} spacing={theme.spacing}>
          <image iconName={icons.location} pixelSize={20} />
          <label label={data.as((d) => d.label)} />
          <box hexpand />
-         <button class={"refresh"} onClicked={() => updateWeatherData()}>
+         <button
+            focusOnClick={false}
+            class={"refresh"}
+            onClicked={() => updateWeatherData()}
+         >
             <ScanningIndicator />
          </button>
       </box>

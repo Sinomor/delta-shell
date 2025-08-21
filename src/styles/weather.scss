@@ -51,4 +51,20 @@ window#weather {
          animation: spin 1s linear infinite;
       }
    }
+
+   .header {
+      min-height: 40px;
+      button {
+         outline: none;
+         padding: 0;
+         min-width: 40px;
+         background: transparent;
+
+         &:focus {
+            transition: 0s;
+            outline-offset: -$outline-width;
+            outline: $outline-width solid $outline-color;
+         }
+      }
+   }
 }

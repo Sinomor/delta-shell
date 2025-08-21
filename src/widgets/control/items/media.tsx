@@ -107,13 +107,13 @@ function MediaPlayer({ player }: { player: AstalMpris.Player }) {
    );
 
    const PlayerArt = () => (
-      <Gtk.ScrolledWindow canFocus={false} opacity={0.5}>
+      <Adw.Clamp opacity={0.5}>
          <Gtk.Picture
             file={coverArt}
             class={"mediaplayer-art"}
             contentFit={Gtk.ContentFit.COVER}
          />
-      </Gtk.ScrolledWindow>
+      </Adw.Clamp>
    );
 
    return (

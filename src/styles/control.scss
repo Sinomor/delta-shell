@@ -244,14 +244,14 @@ window#control {
       }
 
       .header {
-         min-height: 50px;
+         min-height: 40px;
          border-radius: $widget-radius;
-         background: rgba($bg1, $window-opacity);
+         background: transparent;
 
          .qs-header-button {
             background: transparent;
             border-radius: $widget-radius;
-            min-width: 50px;
+            min-width: 40px;
             padding: 0;
 
             &:focus {

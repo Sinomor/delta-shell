@@ -79,12 +79,17 @@ export function Notification({
       return (
          <box class={"content"} spacing={theme.spacing}>
             {n.image && fileExists(n.image) && (
-               <scrolledwindow valign={Gtk.Align.START} class={"image"}>
+               <Adw.Clamp
+                  valign={Gtk.Align.START}
+                  class={"image"}
+                  maximumSize={90}
+                  heightRequest={90}
+               >
                   <Gtk.Picture
                      contentFit={Gtk.ContentFit.COVER}
                      file={Gio.file_new_for_path(n.image)}
                   />
-               </scrolledwindow>
+               </Adw.Clamp>
             )}
             {n.image && isIcon(n.image) && (
                <box class={"icon"} valign={Gtk.Align.START}>
