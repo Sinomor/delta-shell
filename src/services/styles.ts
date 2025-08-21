@@ -90,17 +90,28 @@ const variables = () => [
    $("shadow", `${theme.shadow.get()}`),
 ];
 
+const style_path = `${DATADIR ?? SRC}/src/styles`;
+const style_files = [
+   `${style_path}/_extra.scss`,
+   `${style_path}/bar.scss`,
+   `${style_path}/calendar.scss`,
+   `${style_path}/control.scss`,
+   `${style_path}/launcher.scss`,
+   `${style_path}/notifications.scss`,
+   `${style_path}/osd.scss`,
+   `${style_path}/powermenu.scss`,
+   `${style_path}/weather.scss`,
+];
+
 export async function resetCss() {
-   if (!dependencies("sass", "fd")) return;
+   if (!dependencies("sass")) return;
 
    try {
       const vars = `${GLib.get_tmp_dir()}/delta-shell/variables.scss`;
       const scss = `${GLib.get_tmp_dir()}/delta-shell/main.scss`;
       const css = `${GLib.get_tmp_dir()}/delta-shell/main.css`;
 
-      const fd = await bash(`fd ".scss" ${DATADIR ?? SRC}`);
-      const files = fd.split(/\s+/);
-      const imports = [vars, ...files].map((f) => `@import '${f}';`);
+      const imports = [vars, ...style_files].map((f) => `@import '${f}';`);
 
       await writeFileAsync(vars, variables().join("\n"));
       await writeFileAsync(scss, imports.join("\n"));
@@ -116,5 +127,5 @@ export async function resetCss() {
    }
 }
 
-monitorFile(`${DATADIR ?? SRC}/src/styles`, resetCss);
+monitorFile(`${style_path}`, resetCss);
 await resetCss();
