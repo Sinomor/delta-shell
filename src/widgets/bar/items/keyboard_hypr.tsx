@@ -8,22 +8,39 @@ const hyprland = AstalHyprland.get_default();
 const [layout_name, layout_name_set] = createState("?");
 
 function updateLayout() {
-   bash(
-      `hyprctl devices -j | jq -r '.keyboards[] | select(.main == true) | .active_keymap'`,
-   )
-      .then((layout) => {
-         if (layout.includes("English")) {
-            layout_name_set("En");
-         } else if (layout.includes("Russian")) {
-            layout_name_set("Ru");
-         } else {
+   bash(`hyprctl devices -j`)
+      .then((json) => {
+         try {
+            const devices = JSON.parse(json);
+
+            const mainKeyboard = devices.keyboards.find(
+               (kb: any) => kb.main === true,
+            );
+
+            if (mainKeyboard && mainKeyboard.active_keymap) {
+               const layout = mainKeyboard.active_keymap;
+
+               if (layout.includes("English")) {
+                  layout_name_set("En");
+               } else if (layout.includes("Russian")) {
+                  layout_name_set("Ru");
+               } else {
+                  layout_name_set(layout.substring(0, 2));
+               }
+            } else {
+               layout_name_set("?");
+            }
+         } catch (error) {
+            console.error("Failed to parse hyprctl JSON output:", error);
             layout_name_set("?");
          }
       })
       .catch((err) => {
          console.error(`Failed to get keyboard layout: ${err}`);
+         layout_name_set("?");
       });
 }
+
 if (compositor.get() === "hyprland") updateLayout();
 
 export function Keyboard_Hypr() {
@@ -36,10 +53,20 @@ export function Keyboard_Hypr() {
    return (
       <BarItem
          onPrimaryClick={async () => {
-            const device = await bash(
-               `hyprctl devices -j | jq -r '.keyboards[] | select(.main == true) | .name'`,
-            );
-            bash(`hyprctl switchxkblayout ${device} next`);
+            try {
+               const json = await bash(`hyprctl devices -j`);
+               const devices = JSON.parse(json);
+
+               const mainKeyboard = devices.keyboards.find(
+                  (kb: any) => kb.main === true,
+               );
+
+               if (mainKeyboard && mainKeyboard.name) {
+                  bash(`hyprctl switchxkblayout ${mainKeyboard.name} next`);
+               }
+            } catch (error) {
+               console.error("Failed to switch keyboard layout:", error);
+            }
          }}
          $={() => {
             hyprlandconnect = hyprland.connect(
