@@ -4,7 +4,7 @@ import { exec, execAsync } from "ags/process";
 import Gio from "gi://Gio?version=2.0";
 import GLib from "gi://GLib?version=2.0";
 
-export const cacheDir = `${GLib.get_user_cache_dir()}/epik-shell`;
+export const cacheDir = `${GLib.get_user_cache_dir()}/delta-shell`;
 
 /**
  * @returns true if all of the `bins` are found

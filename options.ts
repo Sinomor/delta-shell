@@ -33,7 +33,7 @@ export const config = mkOptions(configFile, {
    launcher: {
       clipboard: {
          max_items: opt(50),
-         image_preview: opt<boolean>(false),
+         image_preview: opt<boolean>(true),
       },
       width: opt(400),
       height: opt(600),

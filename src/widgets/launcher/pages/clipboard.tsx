@@ -9,6 +9,8 @@ import { createComputed, createState, For, onCleanup } from "ags";
 import { hide_all_windows, windows_names } from "@/windows";
 import { config, theme } from "@/options";
 import { launcher_page } from "../launcher";
+import Cliphist from "@/src/services/cliphist";
+const clipboard = Cliphist.get_default();
 
 const colorPatterns = {
    hex: /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/,
@@ -21,33 +23,15 @@ const colorPatterns = {
 const imagePattern = /\[\[ binary data (\d+) (KiB|MiB) (\w+) (\d+)x(\d+) \]\]/;
 
 const [text, text_set] = createState("");
-const [cachedList, cachedList_set] = createState<string[]>([]);
 let scrolled: Gtk.ScrolledWindow;
 
-const list = createComputed([cachedList, text], (cachedList, text) => {
-   return cachedList.filter((entry) => {
+const list = createComputed([clipboard.list, text], (list, text) => {
+   return list.filter((entry) => {
       if (!text) return true;
       const content = entry.split("\t").slice(1).join(" ").trim();
       return content.toLowerCase().includes(text.toLowerCase());
    });
 });
-
-async function loadInitialList() {
-   if (!dependencies("cliphist")) return;
-
-   try {
-      const list = await bash("cliphist list");
-      cachedList_set(list.split("\n").filter((line) => line.trim()));
-      text_set("init");
-      text_set("");
-   } catch (error) {
-      console.error("Failed to load clipboard history:", error);
-   }
-}
-bash(
-   `killall -INT wl-paste;
-   wl-paste --watch cliphist -max-items ${config.launcher.clipboard.max_items.get()} store`,
-);
 
 function ClipButton({ item }: { item: string }) {
    const [id, ...contentParts] = item.split("\t");
@@ -78,7 +62,7 @@ function Entry() {
    const onEnter = () => {
       const item = list.get()[0];
       const [id, ...contentParts] = item.split("\t");
-      bash(`cliphist decode ${id} | wl-copy`);
+      clipboard.copy(id);
       hide_all_windows();
    };
 
@@ -93,8 +77,7 @@ function Entry() {
 
                if (winName == windows_names.launcher && visible && mode) {
                   scrolled.set_vadjustment(null);
-                  await loadInitialList();
-                  self.set_text("");
+                  await self.set_text("");
                   self.grab_focus();
                }
             });
@@ -114,10 +97,7 @@ function Clear() {
       <button
          class={"clear"}
          focusable={false}
-         onClicked={async () => {
-            bash("cliphist wipe");
-            await loadInitialList();
-         }}
+         onClicked={async () => await clipboard.clear()}
       >
          <image iconName={icons.trash} pixelSize={20} />
       </button>
