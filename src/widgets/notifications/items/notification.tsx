@@ -170,6 +170,8 @@ export function PopupNotification({
       }
    });
 
+   timer.start();
+
    const margin = theme.window.margin.get();
    return (
       <revealer
@@ -182,8 +184,8 @@ export function PopupNotification({
          revealChild={revealed}
       >
          <Gtk.EventControllerMotion
-            onEnter={() => (timer.isPaused = true)}
-            onLeave={() => (timer.isPaused = false)}
+            onEnter={() => timer.pause()}
+            onLeave={() => timer.resume()}
          />
          <Notification
             n={n}
