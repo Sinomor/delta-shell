@@ -42,36 +42,34 @@ export function hide_all_windows() {
 }
 
 export function windows() {
+   Launcher();
+   Control();
+   Calendar();
+   Powermenu();
+   Verification();
+   if (config.weather.enabled.get()) Weather();
+   if (config.notifications.enabled.get()) {
+      NotificationsList();
+      NotificationPopup();
+   }
+   OSD();
+
    const monitors = createBinding(app, "monitors");
 
-   app.add_window(Launcher() as Gtk.Window);
-   app.add_window(Control() as Gtk.Window);
-   app.add_window(Calendar() as Gtk.Window);
-   app.add_window(Powermenu() as Gtk.Window);
-   app.add_window(Verification() as Gtk.Window);
-   if (config.weather.enabled.get()) app.add_window(Weather() as Gtk.Window);
-   if (config.notifications.enabled.get()) {
-      app.add_window(NotificationsList() as Gtk.Window);
-      app.add_window(NotificationPopup() as Gtk.Window);
-   }
-   app.add_window(OSD() as Gtk.Window);
-
-   return (
-      <For each={monitors}>
-         {(monitor) => (
-            <This this={app}>
-               <Bar
+   <For each={monitors}>
+      {(monitor) => (
+         <This this={app}>
+            <Bar
+               gdkmonitor={monitor}
+               $={(self) => onCleanup(() => self.destroy())}
+            />
+            {theme.shadow.get() && (
+               <BarShadow
                   gdkmonitor={monitor}
                   $={(self) => onCleanup(() => self.destroy())}
                />
-               {theme.shadow.get() && (
-                  <BarShadow
-                     gdkmonitor={monitor}
-                     $={(self) => onCleanup(() => self.destroy())}
-                  />
-               )}
-            </This>
-         )}
-      </For>
-   );
+            )}
+         </This>
+      )}
+   </For>;
 }
