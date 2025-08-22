@@ -5,21 +5,35 @@ import { hide_all_windows, windows_names } from "@/windows";
 import { PopupWindow } from "../common/popupwindow";
 import { config, theme } from "@/options";
 import { bash } from "@/src/lib/utils";
+import Pango from "gi://Pango?version=1.0";
+import Adw from "gi://Adw?version=1";
+import app from "ags/gtk4/app";
 const powermenu = Powermenu.get_default();
 
 function Verification() {
    return (
       <box class={"main"} orientation={Gtk.Orientation.VERTICAL} spacing={20}>
          <label label={createBinding(powermenu, "title")} class={"title"} />
-         <label label={"Are you sure?"} class={"label"} />
+         <Adw.Clamp maximumSize={280}>
+            <label
+               label={createBinding(powermenu, "label")}
+               wrap
+               justify={Gtk.Justification.CENTER}
+               wrapMode={Pango.WrapMode.CHAR}
+               class={"label"}
+            />
+         </Adw.Clamp>
          <box homogeneous={true} spacing={theme.spacing}>
             <button
-               label={"No"}
+               label={"Cancel"}
                focusOnClick={false}
-               onClicked={() => hide_all_windows()}
+               onClicked={() => {
+                  powermenu.cancelAction();
+                  hide_all_windows();
+               }}
             />
             <button
-               label={"Yes"}
+               label={createBinding(powermenu, "title")}
                focusOnClick={false}
                onClicked={() => {
                   bash(powermenu.cmd);
@@ -32,6 +46,15 @@ function Verification() {
 }
 
 export default function () {
+   const appconnect = app.connect("window-toggled", (_, win) => {
+      const winName = win.name;
+      const visible = win.visible;
+
+      if (winName == windows_names.verification && !visible) {
+         powermenu.cancelAction();
+      }
+   });
+
    return (
       <PopupWindow name={windows_names.verification}>
          <Verification />

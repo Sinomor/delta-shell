@@ -60,9 +60,8 @@ window#verification {
          rgba($window-shadow-color, $window-shadow-opacity);
    }
 
-   .title,
-   .label {
-      font-size: 20px;
+   .title {
+      font-size: 22px;
    }
 
    button {
@@ -71,7 +70,7 @@ window#verification {
       outline: none;
       padding: 10px;
       background: rgba($bg1, $window-opacity);
-      min-width: 100px;
+      min-width: 150px;
 
       &:focus {
          transition: 0s;

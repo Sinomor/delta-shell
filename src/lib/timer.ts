@@ -1,22 +1,41 @@
-import { interval, timeout } from "ags/time";
-import AstalIO from "gi://AstalIO?version=0.1";
+import { interval } from "ags/time";
 import GLib from "gi://GLib";
 
 export class Timer {
-   public isPaused: boolean;
-   public timeout: number;
-   public timeLeft: number;
-   private lastTickTime: number;
-   private interval: AstalIO.Time | null;
-   protected subscriptions = new Set<() => void>();
+   private _timeLeft: number;
+   private _timeout: number;
+   private _interval: any = null;
+   private _startTime: number = 0;
+   private _isPaused: boolean = true;
+   private subscriptions = new Set<() => void>();
 
    constructor(timeout: number) {
-      this.isPaused = false;
-      this.timeout = timeout;
-      this.timeLeft = timeout;
-      this.lastTickTime = GLib.get_monotonic_time();
+      this._timeout = timeout;
+      this._timeLeft = timeout;
+   }
 
-      this.interval = interval(20, () => this.tick());
+   get timeLeft(): number {
+      return this._timeLeft;
+   }
+
+   set timeLeft(value: number) {
+      this._timeLeft = value;
+      this.notify();
+   }
+
+   get isPaused(): boolean {
+      return this._isPaused;
+   }
+
+   set isPaused(value: boolean) {
+      if (this._isPaused === value) return;
+
+      this._isPaused = value;
+      if (value) {
+         this.pause();
+      } else {
+         this.resume();
+      }
    }
 
    notify() {
@@ -25,48 +44,55 @@ export class Timer {
       }
    }
 
-   protected unsubscribe(callback: () => void) {
-      this.subscriptions.delete(callback);
-
-      if (
-         this.subscriptions.size === 0 &&
-         this.isPaused &&
-         this.interval != null
-      ) {
-         console.warn("Timer was disconnected while paused");
-         // clean it up anyway
-         this.isPaused = false;
-      }
-   }
-
-   subscribe(callback: () => void) {
+   subscribe(callback: () => void): () => void {
       this.subscriptions.add(callback);
-
-      return () => this.unsubscribe(callback);
+      return () => this.subscriptions.delete(callback);
    }
 
-   tick() {
-      const now = GLib.get_monotonic_time();
+   start() {
+      this.cancel();
+      this._timeLeft = this._timeout;
+      this._startTime = GLib.get_monotonic_time();
+      this._isPaused = false;
 
-      if (this.isPaused) {
-         this.lastTickTime = now;
-         return;
-      }
+      this._interval = interval(100, () => {
+         if (this._isPaused) return;
 
-      const delta = (now - this.lastTickTime) / 1000;
-      this.timeLeft -= delta;
+         const now = GLib.get_monotonic_time();
+         const elapsed = (now - this._startTime) / 1000;
+         this._timeLeft = Math.max(0, this._timeout - elapsed);
 
-      if (this.timeLeft <= 0) {
-         this.timeLeft = 0;
-         this.cancel();
-      }
+         this.notify();
 
-      this.notify();
-      this.lastTickTime = now;
+         if (this._timeLeft <= 0) {
+            this.cancel();
+         }
+      });
+   }
+
+   pause() {
+      this._isPaused = true;
+   }
+
+   resume() {
+      if (!this._interval || this._timeLeft <= 0) return;
+
+      this._isPaused = false;
+      this._startTime =
+         GLib.get_monotonic_time() - (this._timeout - this._timeLeft) * 1000;
    }
 
    cancel() {
-      this.interval?.cancel();
-      this.interval = null;
+      if (this._interval) {
+         this._interval.cancel();
+         this._interval = null;
+      }
+      this._isPaused = true;
+   }
+
+   reset() {
+      this.cancel();
+      this._timeLeft = this._timeout;
+      this.notify();
    }
 }
