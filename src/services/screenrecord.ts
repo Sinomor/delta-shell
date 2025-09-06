@@ -7,7 +7,7 @@ import {
    now,
 } from "@/src/lib/utils";
 import GLib from "gi://GLib?version=2.0";
-import { interval, Time } from "ags/time";
+import { interval, Timer } from "ags/time";
 
 const HOME = GLib.get_home_dir();
 
@@ -22,7 +22,7 @@ export default class ScreenRecord extends GObject.Object {
 
    #recordings = `${HOME}/Videos/Screencasting`;
    #file = "";
-   #interval?: Time;
+   #interval?: Timer;
    #recording = false;
    #timer = 0;
 
