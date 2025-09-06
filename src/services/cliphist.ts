@@ -4,6 +4,7 @@ import { createState } from "ags";
 import { config } from "@/options";
 import { monitorFile } from "ags/file";
 import GLib from "gi://GLib?version=2.0";
+import { subprocess } from "ags/process";
 
 @register({ GTypeName: "Cliphist" })
 export default class Cliphist extends GObject.Object {
@@ -38,8 +39,8 @@ export default class Cliphist extends GObject.Object {
    }
 
    async stop() {
-      bash(`pkill -f "wl-paste.*cliphist"`);
-      bash(`rm ${cacheDir}/cliphist/*`);
+      subprocess(`pkill -f "wl-paste.*cliphist"`);
+      bash(`rm -f ${cacheDir}/cliphist/*.png`);
    }
 
    async update() {
