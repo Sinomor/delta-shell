@@ -1,8 +1,10 @@
 import { Gtk } from "ags/gtk4";
-import { DailyWeather, weatherData } from "@/src/services/weather";
-import { createComputed, For } from "ags";
+import { DailyWeather } from "@/src/services/weather";
+import { For } from "ags";
 import { icons } from "@/src/lib/icons";
 import { theme } from "@/options";
+import WeatherService from "@/src/services/weather";
+const weather = WeatherService.get_default();
 
 function formatDate(timestamp: number): string {
    const date = new Date(timestamp * 1000);
@@ -53,9 +55,9 @@ function Day({ day }: { day: DailyWeather }) {
 }
 
 export function Days() {
-   const days = createComputed([weatherData], (weatherData) => {
-      if (!weatherData) return [];
-      return weatherData?.daily;
+   const days = weather.data.as((data) => {
+      if (!data) return [];
+      return data?.daily;
    });
 
    return (

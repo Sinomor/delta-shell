@@ -1,21 +1,17 @@
 import Gtk from "gi://Gtk";
 import { hide_all_windows, windows_names } from "@/windows";
 import { BarItemPopup } from "../common/baritempopup";
-import {
-   isLoading,
-   updateWeatherData,
-   weatherData,
-} from "@/src/services/weather";
 import { createComputed } from "ags";
 import { Current } from "./items/current";
-import { currentLocation } from "@/src/services/location";
 import { icons } from "@/src/lib/icons";
 import { Days } from "./items/days";
 import { Hours } from "./items/hours";
 import { config, theme } from "@/options";
+import WeatherService from "@/src/services/weather";
+const weather = WeatherService.get_default();
 
 function ScanningIndicator() {
-   const className = isLoading.as((scanning) => {
+   const className = weather.loading.as((scanning) => {
       const classes = ["scanning"];
       if (scanning) {
          classes.push("active");
@@ -29,7 +25,7 @@ function ScanningIndicator() {
 }
 
 function Header() {
-   const data = createComputed([currentLocation], (location) => {
+   const data = weather.location.as((location) => {
       if (!location)
          return {
             label: "",
@@ -48,7 +44,7 @@ function Header() {
          <button
             focusOnClick={false}
             class={"refresh"}
-            onClicked={() => updateWeatherData()}
+            onClicked={() => weather.update()}
          >
             <ScanningIndicator />
          </button>

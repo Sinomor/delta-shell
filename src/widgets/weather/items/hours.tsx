@@ -1,8 +1,10 @@
 import { Gtk } from "ags/gtk4";
-import { HourlyWeather, weatherData } from "@/src/services/weather";
-import { createComputed, For } from "ags";
+import { For } from "ags";
 import { icons } from "@/src/lib/icons";
 import { theme } from "@/options";
+import { HourlyWeather } from "@/src/services/weather";
+import WeatherService from "@/src/services/weather";
+const weather = WeatherService.get_default();
 
 function formatHour(timestamp: number): string {
    const date = new Date(timestamp * 1000);
@@ -35,9 +37,9 @@ function Hour({ hour }: { hour: HourlyWeather }) {
 }
 
 export function Hours() {
-   const hours = createComputed([weatherData], (weatherData) => {
-      if (!weatherData) return [];
-      return weatherData?.hourly;
+   const hours = weather.data.as((data) => {
+      if (!data) return [];
+      return data?.hourly;
    });
 
    return (

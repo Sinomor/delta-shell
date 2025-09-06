@@ -1,10 +1,7 @@
 import { Gtk } from "ags/gtk4";
-import {
-   HourlyWeather,
-   updateWeatherData,
-   weatherData,
-} from "@/src/services/weather";
-import { createComputed, With } from "ags";
+import { With } from "ags";
+import WeatherService from "@/src/services/weather";
+const weather = WeatherService.get_default();
 
 function getDescription(weatherCode: number) {
    const descriptions = {
@@ -42,7 +39,7 @@ function getDescription(weatherCode: number) {
 }
 
 export function Current() {
-   const data = createComputed([weatherData], (data) => {
+   const data = weather.data.as((data) => {
       if (!data)
          return {
             feels: "",

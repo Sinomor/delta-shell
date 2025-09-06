@@ -2,16 +2,17 @@ import app from "ags/gtk4/app";
 import GLib from "gi://GLib";
 import { createBinding, createComputed, onCleanup, With } from "ags";
 import BarItem from "@/src/widgets/common/baritem";
-import { weatherData } from "@/src/services/weather";
 import { Gtk } from "ags/gtk4";
 import { toggleWindow } from "@/src/lib/utils";
 import { hide_all_windows, windows_names } from "@/windows";
 import { config, theme } from "@/options";
+import WeatherService from "@/src/services/weather";
+const weather = WeatherService.get_default();
 
 export function Weather() {
    if (!config.weather.enabled.get()) return <box />;
 
-   const data = createComputed([weatherData], (data) => {
+   const data = weather.data.as((data) => {
       if (!data)
          return {
             icon: "",
