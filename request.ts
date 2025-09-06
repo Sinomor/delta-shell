@@ -7,10 +7,9 @@ import { launcher_page_set } from "./src/widgets/launcher/launcher";
 const screenrecord = ScreenRecord.get_default();
 
 export default function request(
-   request: string,
-   res: (response: any) => void,
+   args: string[],
+   response: (res: string) => void,
 ): void {
-   const args = request.split(" ");
    if (args[0] == "toggle" && args[1]) {
       switch (args[1]) {
          case "applauncher":
@@ -52,10 +51,10 @@ export default function request(
             break;
          default:
             print("Unknown request:", request);
-            return res("Unknown request");
+            return response("Unknown request");
             break;
       }
-      return res("ok");
+      return response("ok");
    } else {
       switch (args[0]) {
          case "screenrecord":
@@ -63,9 +62,9 @@ export default function request(
             break;
          default:
             print("Unknown request:", request);
-            return res("Unknown request");
+            return response("Unknown request");
             break;
       }
-      return res("ok");
+      return response("ok");
    }
 }

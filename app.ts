@@ -12,7 +12,7 @@ app.start({
       if (config.weather.enabled.get()) updateLocationData();
       windows();
    },
-   requestHandler(req, res) {
-      request(req, res);
+   requestHandler(argv, response) {
+      request(argv, response);
    },
 });
