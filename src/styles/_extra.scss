@@ -12,6 +12,18 @@
    @return true;
 }
 
+@function multiply-padding($values, $multiplier) {
+   $result: ();
+   @each $value in $values {
+      @if $value == 0 {
+         $result: append($result, 0);
+      } @else {
+         $result: append($result, $value * $multiplier);
+      }
+   }
+   @return $result;
+}
+
 // some hack for fg color with accent
 
 @function brightness($color) {

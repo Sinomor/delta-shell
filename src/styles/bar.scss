@@ -139,7 +139,7 @@ window#bar {
 
    .taskbar-button {
       background: transparent;
-      padding: 0 15px;
+      padding: multiply-padding($bar-button-padding, 2);
 
       &.focused {
          .indicator {
