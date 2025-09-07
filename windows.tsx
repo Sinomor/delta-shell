@@ -8,7 +8,7 @@ import Verification from "./src/widgets/powermenu/verification";
 import { NotificationPopup } from "./src/widgets/notifications/notificationpopup";
 import app from "ags/gtk4/app";
 import Weather from "./src/widgets/weather/weather";
-import BarShadow from "./src/widgets/bar/items/shadow";
+import BarShadow from "./src/widgets/bar/shadow";
 import { config, theme } from "./options";
 import NotificationsList from "./src/widgets/notifications/notificationslist";
 import { createBinding, For, onCleanup, This } from "ags";

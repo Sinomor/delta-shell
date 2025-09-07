@@ -1,6 +1,6 @@
 import { compositor } from "@/options";
-import { Keyboard_Niri } from "./keyboard_niri";
-import { Keyboard_Hypr } from "./keyboard_hypr";
+import { Keyboard_Niri } from "./keyboard/niri";
+import { Keyboard_Hypr } from "./keyboard/hypr";
 import { With } from "ags";
 
 export function Keyboard() {

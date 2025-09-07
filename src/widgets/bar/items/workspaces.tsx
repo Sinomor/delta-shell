@@ -1,6 +1,6 @@
 import { compositor } from "@/options";
-import { Workspaces_Niri } from "./workspaces_niri";
-import { Workspaces_Hypr } from "./workspaces_hypr";
+import { Workspaces_Niri } from "./workspaces/niri";
+import { Workspaces_Hypr } from "./workspaces/hypr";
 import { With } from "ags";
 import { Gdk } from "ags/gtk4";
 

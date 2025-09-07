@@ -1,9 +1,9 @@
 import { Astal, Gdk } from "ags/gtk4";
-import app from "ags/gtk4/app";
 import giCairo from "cairo";
 import { createState, onCleanup } from "ags";
 import { config } from "@/options";
 import { windows_names } from "@/windows";
+import app from "ags/gtk4/app";
 
 export default function BarShadow({
    gdkmonitor,
