@@ -1,7 +1,7 @@
 import { icons } from "@/src/lib/icons";
 import { Gtk } from "ags/gtk4";
 import AstalBluetooth from "gi://AstalBluetooth?version=0.1";
-import { timeout } from "ags/time";
+import { interval, timeout } from "ags/time";
 import { createBinding, createComputed, For } from "ags";
 import { theme } from "@/options";
 import { control_page_set } from "../control";
@@ -111,7 +111,9 @@ function Item({ device }: ItemProps) {
 
 function List() {
    const list = createBinding(bluetooth, "devices").as((devices) =>
-      devices.sort((a, b) => Number(b.connected) - Number(a.connected)),
+      devices
+         .filter((device) => device.name !== null)
+         .sort((a, b) => Number(b.connected) - Number(a.connected)),
    );
 
    return (
