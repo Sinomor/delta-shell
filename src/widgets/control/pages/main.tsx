@@ -37,9 +37,8 @@ function Reload() {
          focusOnClick={false}
          tooltipText={"Restart shell"}
          onClicked={() => {
-            if (dependencies("delta-shell"))
-               bash("delta-shell -q; delta-shell");
-            else bash(`astal -i delta-shell -q; ${SRC}/run-dev.sh`);
+            if (DATADIR !== null) bash(`delta-shell restart`);
+            else bash(`ags -i delta-shell quit; ${SRC}/run-dev.sh`);
          }}
       >
          <image iconName={icons.refresh} pixelSize={20} />
