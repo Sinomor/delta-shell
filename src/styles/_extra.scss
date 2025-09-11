@@ -24,6 +24,12 @@
    @return $result;
 }
 
+@function is-light($color) {
+   $brightness: (red($color) * 299 + green($color) * 587 + blue($color) * 114) /
+      1000;
+   @return $brightness > 128;
+}
+
 // some hack for fg color with accent
 
 @function brightness($color) {

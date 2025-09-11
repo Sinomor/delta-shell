@@ -184,11 +184,15 @@ window#control {
       }
 
       .mediaplayer {
-         padding: 10px;
+         .content {
+            padding: 10px;
+         }
          font-style: normal;
-         color: $fg0;
+         color: if(is-light($fg0), $fg0, $bg0);
+         background: if(is-light($fg0), $bg0, $fg0);
+         border-radius: $widget-radius;
 
-         .actions {
+         .buttons {
             button {
                min-height: 40px;
                border-radius: $widget-radius;
@@ -211,10 +215,15 @@ window#control {
                }
             }
          }
+
+         .art {
+            border-radius: $widget-radius;
+            opacity: $window-opacity;
+         }
       }
 
       .indicator {
-         padding: 10px;
+         padding: 15px 10px;
          .active-dot {
             border-radius: $widget-radius;
             background: rgba($fg0, $window-opacity);
@@ -229,11 +238,6 @@ window#control {
             min-width: 6px;
             transition: background $transition;
          }
-      }
-
-      .mediaplayer-art {
-         border-radius: $widget-radius;
-         opacity: $window-opacity;
       }
    }
 
@@ -278,9 +282,5 @@ window#control {
             outline: $outline-width solid $outline-color;
          }
       }
-   }
-
-   .mediaplayer-lower {
-      background: rgba($bg0, $window-opacity);
    }
 }
