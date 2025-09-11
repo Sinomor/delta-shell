@@ -7,10 +7,10 @@ import { hide_all_windows, windows_names } from "@/windows";
 import { config, theme } from "@/options";
 import { launcher_page } from "../launcher";
 
-const [apps, apps_set] = createState<Apps.Apps>(new Apps.Apps());
+const apps = new Apps.Apps();
 const [text, text_set] = createState("");
 let scrolled: Gtk.ScrolledWindow;
-const list = createComputed([apps, text], (apps, text) => {
+const list = text.as((text) => {
    return apps.fuzzy_query(text);
 });
 
@@ -37,7 +37,7 @@ function Entry() {
 
                if (winName == windows_names.launcher && visible && mode) {
                   scrolled.set_vadjustment(null);
-                  await apps_set(new Apps.Apps());
+                  await apps.reload();
                   text_set("");
                   self.set_text("");
                   self.grab_focus();
