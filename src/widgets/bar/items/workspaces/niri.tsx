@@ -108,19 +108,12 @@ function Workspaces({ output }: { output: AstalNiri.Output }) {
    const workspaces = createBinding(output, "workspaces").as((workspaces) =>
       workspaces.sort((a, b) => a.id - b.id),
    );
-   let lastScrollTime = 0;
-   const scrollDelay = 400;
 
    return (
       <box spacing={theme.bar.spacing} class={"workspaces"}>
          <Gtk.EventControllerScroll
             flags={Gtk.EventControllerScrollFlags.VERTICAL}
             onScroll={(event, dx, dy) => {
-               const now = Date.now();
-               if (now - lastScrollTime < scrollDelay) return;
-
-               lastScrollTime = now;
-
                if (dy < 0) {
                   AstalNiri.msg.focus_workspace_up();
                } else if (dy > 0) {

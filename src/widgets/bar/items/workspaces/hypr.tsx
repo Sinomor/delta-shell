@@ -116,19 +116,12 @@ function Workspaces({ monitor }: { monitor: AstalHyprland.Monitor }) {
          .filter((ws) => ws.monitor?.model === monitor.model)
          .sort((a, b) => a.id - b.id),
    );
-   let lastScrollTime = 0;
-   const scrollDelay = 400;
 
    return (
       <box spacing={theme.bar.spacing} class={"workspaces"}>
          <Gtk.EventControllerScroll
             flags={Gtk.EventControllerScrollFlags.VERTICAL}
             onScroll={(event, dx, dy) => {
-               const now = Date.now();
-               if (now - lastScrollTime < scrollDelay) return;
-
-               lastScrollTime = now;
-
                if (dy < 0) {
                   hyprland.dispatch("workspace", "+1");
                } else if (dy > 0) {
