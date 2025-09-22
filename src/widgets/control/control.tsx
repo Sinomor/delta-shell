@@ -20,7 +20,9 @@ function Control() {
          class={"main"}
          transitionDuration={config.transition.get() * 1000}
          widthRequest={440}
-         transitionType={Gtk.StackTransitionType.SLIDE_LEFT_RIGHT}
+         vhomogeneous={false}
+         interpolate_size={true}
+         transitionType={Gtk.StackTransitionType.CROSSFADE}
          $={(self) => {
             const unsub = control_page.subscribe(() =>
                self.set_visible_child_name(control_page.get()),

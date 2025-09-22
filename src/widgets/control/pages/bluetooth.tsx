@@ -134,6 +134,7 @@ export function BluetoothPage() {
       <box
          $type={"named"}
          name={"bluetooth"}
+         heightRequest={500}
          cssClasses={["qs-menu-page", "bluetooth-page"]}
          orientation={Gtk.Orientation.VERTICAL}
          spacing={theme.spacing}

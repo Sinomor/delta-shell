@@ -102,6 +102,7 @@ export function NetworkPage() {
       <box
          $type={"named"}
          name={"network"}
+         heightRequest={500}
          cssClasses={["qs-menu-page", "wifi-page"]}
          orientation={Gtk.Orientation.VERTICAL}
          spacing={theme.spacing}

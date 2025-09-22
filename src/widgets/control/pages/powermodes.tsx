@@ -85,6 +85,7 @@ export function PowerModesPage() {
       <box
          $type={"named"}
          name={"powermodes"}
+         heightRequest={500}
          cssClasses={["qs-menu-page", "bluetooth-page"]}
          orientation={Gtk.Orientation.VERTICAL}
          spacing={theme.spacing}
