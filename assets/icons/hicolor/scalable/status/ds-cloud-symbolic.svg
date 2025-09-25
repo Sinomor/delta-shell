@@ -1,1 +1,44 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-cloud"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></svg>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="32"
+   height="32"
+   viewBox="0 0 24 24"
+   fill="none"
+   stroke="currentColor"
+   stroke-width="2"
+   stroke-linecap="round"
+   stroke-linejoin="round"
+   class="feather feather-cloud"
+   version="1.1"
+   id="svg1"
+   sodipodi:docname="ds-cloud-symbolic.svg"
+   inkscape:version="1.4.2 (ebf0e940d0, 2025-05-08)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="24.59375"
+     inkscape:cx="15.97967"
+     inkscape:cy="16"
+     inkscape:window-width="1908"
+     inkscape:window-height="1019"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg1" />
+  <path
+     style="baseline-shift:baseline;display:inline;overflow:visible;vector-effect:none;fill:#000000;stroke:none;stroke-linecap:butt;stroke-linejoin:miter;enable-background:accumulate;stop-color:#000000;stop-opacity:1;opacity:1"
+     d="M 8.3925781,3.0507813 C 5.9709324,3.1898807 3.5794333,4.2926007 1.8769531,6.4921875 -2.662994,12.357752 1.5823467,21.005532 9,21 h 9 c 3.301865,0 6,-2.698137 6,-6 0,-3.301863 -2.698135,-6 -6,-6 H 17.394531 C 15.976208,5.0246507 12.180982,2.8331751 8.3925781,3.0507813 Z m 0.15625,1.9199218 C 11.67858,4.7718303 14.851915,6.6885277 15.771484,10.25 A 1.0001,1.0001 0 0 0 16.740234,11 H 18 c 2.220986,0 4,1.779015 4,4 0,2.220985 -1.779014,4 -4,4 H 9 C 3.1147647,19.004389 -0.14299711,12.368567 3.4589844,7.7148437 4.8097274,5.9696977 6.6709768,5.0900268 8.5488281,4.9707031 Z"
+     id="path1" />
+</svg>

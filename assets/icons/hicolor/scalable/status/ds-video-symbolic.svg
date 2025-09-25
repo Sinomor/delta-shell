@@ -1,1 +1,48 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-video"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="32"
+   height="32"
+   viewBox="0 0 24 24"
+   fill="none"
+   stroke="currentColor"
+   stroke-width="2"
+   stroke-linecap="round"
+   stroke-linejoin="round"
+   class="feather feather-video"
+   version="1.1"
+   id="svg1"
+   sodipodi:docname="ds-video-symbolic.svg"
+   inkscape:version="1.4.2 (ebf0e940d0, 2025-05-08)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="24.59375"
+     inkscape:cx="15.97967"
+     inkscape:cy="16"
+     inkscape:window-width="1908"
+     inkscape:window-height="1019"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg1" />
+  <path
+     style="baseline-shift:baseline;display:inline;overflow:visible;vector-effect:none;fill:#000000;stroke:none;stroke-linecap:butt;stroke-linejoin:miter;enable-background:accumulate;stop-color:#000000;stop-opacity:1;opacity:1"
+     d="m 23.457031,6.1113281 a 1.0001,1.0001 0 0 0 -1.039062,0.074219 l -7,5.0000001 a 1.0001,1.0001 0 0 0 0,1.628906 l 7,5 A 1.0001,1.0001 0 0 0 24,17 V 7 A 1.0001,1.0001 0 0 0 23.457031,6.1113281 Z M 22,8.9453125 V 15.054688 L 17.722656,12 Z"
+     id="polygon1" />
+  <path
+     style="baseline-shift:baseline;display:inline;overflow:visible;vector-effect:none;fill:#000000;stroke:none;stroke-linecap:butt;stroke-linejoin:miter;enable-background:accumulate;stop-color:#000000;stop-opacity:1;opacity:1"
+     d="M 3,4 C 1.3552972,4 0,5.3552972 0,7 v 10 c 0,1.644703 1.3552972,3 3,3 h 11 c 1.644703,0 3,-1.355297 3,-3 V 7 C 17,5.3552972 15.644703,4 14,4 Z m 0,2 h 11 c 0.571297,0 1,0.4287028 1,1 v 10 c 0,0.571297 -0.428703,1 -1,1 H 3 C 2.4287028,18 2,17.571297 2,17 V 7 C 2,6.4287028 2.4287028,6 3,6 Z"
+     id="rect1" />
+</svg>
