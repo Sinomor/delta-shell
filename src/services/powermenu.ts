@@ -7,7 +7,7 @@ import { Timer } from "../lib/timer";
 import { bash } from "../lib/utils";
 import { timeout } from "ags/time";
 
-const user = await GLib.getenv("USERNAME");
+const user = await GLib.getenv("USER");
 
 const commands = {
    sleep: "systemctl suspend",
