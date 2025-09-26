@@ -1,26 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   width="32"
-   height="32"
+   width="24"
+   height="24"
    viewBox="0 0 24 24"
    fill="none"
    stroke="currentColor"
    stroke-width="2"
    stroke-linecap="round"
    stroke-linejoin="round"
-   class="feather feather-align-center"
    version="1.1"
-   id="svg4"
-   sodipodi:docname="ds-align-center-symbolic.svg"
+   id="svg3"
+   sodipodi:docname="ds-cloud-fog-symbolic.svg"
    inkscape:version="1.4.2 (ebf0e940d0, 2025-05-08)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
   <defs
-     id="defs4" />
+     id="defs3" />
   <sodipodi:namedview
-     id="namedview4"
+     id="namedview3"
      pagecolor="#ffffff"
      bordercolor="#000000"
      borderopacity="0.25"
@@ -28,29 +27,25 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="24.59375"
-     inkscape:cx="15.97967"
-     inkscape:cy="16"
+     inkscape:zoom="32.791667"
+     inkscape:cx="11.984752"
+     inkscape:cy="12"
      inkscape:window-width="1908"
      inkscape:window-height="1019"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="0"
-     inkscape:current-layer="svg4" />
+     inkscape:current-layer="svg3" />
   <path
      style="baseline-shift:baseline;display:inline;overflow:visible;vector-effect:none;fill:#000000;stroke:none;stroke-linecap:butt;stroke-linejoin:miter;enable-background:accumulate;stop-color:#000000;stop-opacity:1;opacity:1"
-     d="m 6,9 a 1,1 0 0 0 -1,1 1,1 0 0 0 1,1 h 12 a 1,1 0 0 0 1,-1 1,1 0 0 0 -1,-1 z"
-     id="line1" />
+     d="M 8.4453125,2.0253906 C 7.2526812,2.1039809 6.0553745,2.4530755 4.9414062,3.109375 0.48553309,5.734573 -0.33233809,11.901656 3.2851563,15.597656 a 1,1 0 0 0 1.4140624,0.01563 1,1 0 0 0 0.015625,-1.414062 C 1.9724857,11.397347 2.5791141,6.8240997 5.9570312,4.8339844 9.3349484,2.8438691 13.630291,4.5284437 14.751953,8.2851563 A 1.0001,1.0001 0 0 0 15.710938,9 H 17.5 c 1.793053,-2.044e-4 2.930887,1.103931 3.349609,2.484375 0.418723,1.380444 0.08673,2.929845 -1.404297,3.925781 a 1,1 0 0 0 -0.277343,1.386719 1,1 0 0 0 1.386718,0.277344 c 2.209838,-1.476072 2.852846,-4.047241 2.208985,-6.169922 C 22.119811,8.7816162 20.157475,6.9996971 17.5,7 H 16.255859 C 14.90537,3.7760779 11.754974,1.8072955 8.4453125,2.0253906 Z"
+     id="path1" />
   <path
      style="baseline-shift:baseline;display:inline;overflow:visible;vector-effect:none;fill:#000000;stroke:none;stroke-linecap:butt;stroke-linejoin:miter;enable-background:accumulate;stop-color:#000000;stop-opacity:1;opacity:1"
-     d="M 3,5 A 1.0001251,1.0001251 0 0 0 2,6 1.0001251,1.0001251 0 0 0 3,7 H 21 A 1.0001251,1.0001251 0 0 0 22,6 1.0001251,1.0001251 0 0 0 21,5 Z"
-     id="line2" />
+     d="m 7,16 a 1,1 0 0 0 -1,1 1,1 0 0 0 1,1 h 9 a 1,1 0 0 0 1,-1 1,1 0 0 0 -1,-1 z"
+     id="path2" />
   <path
      style="baseline-shift:baseline;display:inline;overflow:visible;vector-effect:none;fill:#000000;stroke:none;stroke-linecap:butt;stroke-linejoin:miter;enable-background:accumulate;stop-color:#000000;stop-opacity:1;opacity:1"
-     d="m 3,13 a 1,1 0 0 0 -1,1 1,1 0 0 0 1,1 h 18 a 1,1 0 0 0 1,-1 1,1 0 0 0 -1,-1 z"
-     id="line3" />
-  <path
-     style="baseline-shift:baseline;display:inline;overflow:visible;vector-effect:none;fill:#000000;stroke:none;stroke-linecap:butt;stroke-linejoin:miter;enable-background:accumulate;stop-color:#000000;stop-opacity:1;opacity:1"
-     d="m 6,17 a 1,1 0 0 0 -1,1 1,1 0 0 0 1,1 h 12 a 1,1 0 0 0 1,-1 1,1 0 0 0 -1,-1 z"
-     id="line4" />
+     d="m 9,20 a 1,1 0 0 0 -1,1 1,1 0 0 0 1,1 h 8 a 1,1 0 0 0 1,-1 1,1 0 0 0 -1,-1 z"
+     id="path3" />
 </svg>

@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   width="32"
-   height="32"
+   width="24"
+   height="24"
    viewBox="0 0 24 24"
    fill="none"
    stroke="currentColor"
    stroke-width="2"
    stroke-linecap="round"
    stroke-linejoin="round"
-   class="feather feather-skip-forward"
    version="1.1"
-   id="svg1"
+   id="svg2"
    sodipodi:docname="ds-skip-forward-symbolic.svg"
    inkscape:version="1.4.2 (ebf0e940d0, 2025-05-08)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -18,9 +17,9 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
   <defs
-     id="defs1" />
+     id="defs2" />
   <sodipodi:namedview
-     id="namedview1"
+     id="namedview2"
      pagecolor="#ffffff"
      bordercolor="#000000"
      borderopacity="0.25"
@@ -28,21 +27,21 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="24.59375"
-     inkscape:cx="15.97967"
-     inkscape:cy="16"
+     inkscape:zoom="32.791667"
+     inkscape:cx="11.984752"
+     inkscape:cy="12"
      inkscape:window-width="1908"
      inkscape:window-height="1019"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="0"
-     inkscape:current-layer="svg1" />
+     inkscape:current-layer="svg2" />
   <path
      style="baseline-shift:baseline;display:inline;overflow:visible;vector-effect:none;fill:#000000;stroke:none;stroke-linecap:butt;stroke-linejoin:miter;enable-background:accumulate;stop-color:#000000;stop-opacity:1;opacity:1"
-     d="M 4.5664062,3.0996094 A 1.0001,1.0001 0 0 0 4,4 v 16 a 1.0001,1.0001 0 0 0 1.625,0.78125 l 10,-8 a 1.0001,1.0001 0 0 0 0,-1.5625 l -10,-8 A 1.0001,1.0001 0 0 0 4.5664062,3.0996094 Z M 6,6.0820312 13.398438,12 6,17.917969 Z"
-     id="polygon1" />
+     d="m 21,3 a 1,1 0 0 0 -1,1 v 16 a 1,1 0 0 0 1,1 1,1 0 0 0 1,-1 V 4 A 1,1 0 0 0 21,3 Z"
+     id="path1" />
   <path
      style="baseline-shift:baseline;display:inline;overflow:visible;vector-effect:none;fill:#000000;stroke:none;stroke-linecap:butt;stroke-linejoin:miter;enable-background:accumulate;stop-color:#000000;stop-opacity:1;opacity:1"
-     d="m 19,4 a 1,1 0 0 0 -1,1 v 14 a 1,1 0 0 0 1,1 1,1 0 0 0 1,-1 V 5 A 1,1 0 0 0 19,4 Z"
-     id="line1" />
+     d="M 5.0078125,3.0136719 C 3.4547871,3.0372708 1.9999835,4.2885816 2,6 v 12 c -2.2e-5,2.281891 2.586269,3.746299 4.5429687,2.572266 l 9.9960933,-5.996094 0.002,-0.002 c 1.905516,-1.141032 1.907165,-4.00365 0.002,-5.1464846 l -10.0000003,-6 C 6.0537938,3.1342261 5.5254876,3.0058056 5.0078125,3.0136719 Z M 4.4921875,5.1015625 C 4.7821369,4.937395 5.1589655,4.9297519 5.5136719,5.1425781 L 15.513672,11.142578 c 0.686455,0.411768 0.687174,1.30623 0,1.716797 a 1.0001,1.0001 0 0 0 -0.002,0 L 5.5136719,18.857422 C 4.8042592,19.283074 3.999992,18.827313 4,18 V 6 c -4e-6,-0.4136563 0.2022381,-0.73427 0.4921875,-0.8984375 z"
+     id="path2" />
 </svg>
