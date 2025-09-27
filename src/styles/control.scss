@@ -252,6 +252,24 @@ window#control {
          border-radius: $widget-radius;
          background: transparent;
 
+         .toggle {
+            padding: 0;
+            outline: none;
+            min-height: 20px;
+            min-width: 45px;
+
+            slider {
+               margin: 4px;
+               box-shadow: none;
+            }
+
+            &:focus {
+               transition: 0s;
+               outline-offset: -$outline-width + 6px;
+               outline: $outline-width solid $outline-color;
+            }
+         }
+
          .qs-header-button {
             background: transparent;
             border-radius: $widget-radius;

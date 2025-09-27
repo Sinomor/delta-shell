@@ -52,6 +52,12 @@ function Header() {
          >
             <ScanningIndicator />
          </button>
+         <switch
+            class={"toggle"}
+            valign={Gtk.Align.CENTER}
+            active={createBinding(bluetooth, "isPowered")}
+            onNotifyState={() => bluetooth.toggle()}
+         />
       </box>
    );
 }
