@@ -82,7 +82,8 @@ export function Notification({
                <Adw.Clamp
                   valign={Gtk.Align.START}
                   class={"image"}
-                  maximumSize={90}
+                  maximumSize={80}
+                  widthRequest={80}
                   heightRequest={90}
                >
                   <Gtk.Picture
