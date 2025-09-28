@@ -190,7 +190,7 @@ export function PopupNotification({
          />
          <Notification
             n={n}
-            onClose={() => revealed_set(false)}
+            onClose={() => (timer.timeLeft = 0)}
             margin_top={margin / 2}
             margin_bottom={margin / 2}
             margin_start={margin}
