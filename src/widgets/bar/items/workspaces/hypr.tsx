@@ -5,6 +5,7 @@ import { createBinding, createComputed, For } from "ags";
 import { icons } from "@/src/lib/icons";
 import BarItem from "@/src/widgets/common/baritem";
 import { config, theme } from "@/options";
+import { attachHoverScroll } from "@/src/lib/utils";
 const hyprland = AstalHyprland.get_default();
 const apps_icons = config.bar.workspaces.taskbar_icons.get();
 
@@ -118,17 +119,19 @@ function Workspaces({ monitor }: { monitor: AstalHyprland.Monitor }) {
    );
 
    return (
-      <box spacing={theme.bar.spacing} class={"workspaces"}>
-         <Gtk.EventControllerScroll
-            flags={Gtk.EventControllerScrollFlags.VERTICAL}
-            onScroll={(event, dx, dy) => {
+      <box
+         spacing={theme.bar.spacing}
+         class={"workspaces"}
+         $={(self) =>
+            attachHoverScroll(self, ({ dy }) => {
                if (dy < 0) {
                   hyprland.dispatch("workspace", "+1");
                } else if (dy > 0) {
                   hyprland.dispatch("workspace", "-1");
                }
-            }}
-         />
+            })
+         }
+      >
          <For each={workspaces}>{(ws) => <WorkspaceButton ws={ws} />}</For>
       </box>
    );

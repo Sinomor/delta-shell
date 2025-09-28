@@ -265,3 +265,4 @@ theme.json
 - [re-shell](https://github.com/ReStranger/re-shell)
 - [cafetestrest dotfiles](https://github.com/cafetestrest/nixos)
 - [desktop-shell](https://github.com/Mabi19/desktop-shell)
+- [Okpanel](https://github.com/JohnOberhauser/OkPanel)

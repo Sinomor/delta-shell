@@ -3,7 +3,7 @@ import AstalNiri from "gi://AstalNiri";
 import AstalApps from "gi://AstalApps";
 import { createBinding, createComputed, For } from "ags";
 import { compositor, config, theme } from "@/options";
-import { bash } from "@/src/lib/utils";
+import { attachHoverScroll, bash } from "@/src/lib/utils";
 import { icons } from "@/src/lib/icons";
 import BarItem from "@/src/widgets/common/baritem";
 const niri = AstalNiri.get_default();
@@ -110,17 +110,19 @@ function Workspaces({ output }: { output: AstalNiri.Output }) {
    );
 
    return (
-      <box spacing={theme.bar.spacing} class={"workspaces"}>
-         <Gtk.EventControllerScroll
-            flags={Gtk.EventControllerScrollFlags.VERTICAL}
-            onScroll={(event, dx, dy) => {
+      <box
+         spacing={theme.bar.spacing}
+         class={"workspaces"}
+         $={(self) =>
+            attachHoverScroll(self, ({ dy }) => {
                if (dy < 0) {
                   AstalNiri.msg.focus_workspace_up();
                } else if (dy > 0) {
                   AstalNiri.msg.focus_workspace_down();
                }
-            }}
-         />
+            })
+         }
+      >
          <For each={workspaces}>{(ws) => <WorkspaceButton ws={ws} />}</For>
       </box>
    );
