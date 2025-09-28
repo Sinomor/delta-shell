@@ -8,7 +8,9 @@ const tray = AstalTray.get_default();
 
 export const Tray = () => {
    const [tray_visible, tray_visible_set] = createState(false);
-   const items = createBinding(tray, "items");
+   const items = createBinding(tray, "items").as((items) =>
+      items.filter((item) => item.id !== null),
+   );
 
    const init = (btn: Gtk.MenuButton, item: AstalTray.TrayItem) => {
       btn.menuModel = item.menuModel;
