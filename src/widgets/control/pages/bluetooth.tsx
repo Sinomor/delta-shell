@@ -4,7 +4,7 @@ import AstalBluetooth from "gi://AstalBluetooth?version=0.1";
 import { interval, timeout } from "ags/time";
 import { createBinding, createComputed, For } from "ags";
 import { theme } from "@/options";
-import { control_page_set } from "../control";
+import { control_page, control_page_set } from "../control";
 const bluetooth = AstalBluetooth.get_default();
 
 function ScanningIndicator() {
@@ -56,7 +56,9 @@ function Header() {
             class={"toggle"}
             valign={Gtk.Align.CENTER}
             active={createBinding(bluetooth, "isPowered")}
-            onNotifyState={() => bluetooth.toggle()}
+            onNotifyActive={() =>
+               control_page.get() === "bluetooth" && bluetooth.toggle()
+            }
          />
       </box>
    );

@@ -48,7 +48,7 @@ function Header() {
             class={"toggle"}
             valign={Gtk.Align.CENTER}
             active={createBinding(network.wifi, "enabled")}
-            onNotifyState={({ state }) => network.wifi.set_enabled(state)}
+            onNotifyActive={({ state }) => network.wifi.set_enabled(state)}
          />
       </box>
    );
