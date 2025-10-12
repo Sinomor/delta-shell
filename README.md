@@ -1,8 +1,9 @@
 # Delta Shell
 
 A desktop shell based on [Ags](https://github.com/Aylur/ags). Currently supports Hyprland and Niri.
-![image](https://i.imgur.com/NqS4eqJ.png)
-![image](https://i.imgur.com/Hdhg0KW.jpeg)
+![image](https://i.imgur.com/Y6stuGl.png)
+![image](https://i.imgur.com/hBdbgCe.png)
+![image](https://i.imgur.com/tUD8NLv.png)
 
 ## Dependencies
 
