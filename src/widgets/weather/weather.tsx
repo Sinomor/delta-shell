@@ -57,7 +57,7 @@ function Weather() {
       <box
          class={"main"}
          spacing={theme.spacing}
-         widthRequest={360}
+         widthRequest={340}
          orientation={Gtk.Orientation.VERTICAL}
       >
          <Header />

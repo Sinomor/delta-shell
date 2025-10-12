@@ -35,9 +35,8 @@ window#weather {
    }
 
    .forecast {
-      background: rgba($bg1, $window-opacity);
       border-radius: $widget-radius;
-      padding: 15px;
+      padding: 5px;
    }
 
    @keyframes spin {
