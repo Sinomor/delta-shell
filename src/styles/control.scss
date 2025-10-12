@@ -258,6 +258,10 @@ window#control {
             min-height: 20px;
             min-width: 45px;
 
+            &:checked {
+               background: $accent;
+            }
+
             slider {
                margin: 4px;
                box-shadow: none;
