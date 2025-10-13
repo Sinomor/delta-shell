@@ -3,7 +3,6 @@ import { Astal, Gdk, Gtk } from "ags/gtk4";
 import { Workspaces } from "./items/workspaces";
 import { Clock } from "./items/clock";
 import { Launcher } from "./items/launcher";
-import { SysBox } from "./items/sysbox";
 import { Tray } from "./items/tray";
 import { RecordIndicator } from "./items/recordindicator";
 import { Keyboard } from "./items/keyboard";
@@ -12,6 +11,11 @@ import { Weather } from "./items/weather";
 import { config, theme } from "@/options";
 import { windows_names } from "@/windows";
 import { Notifications } from "./items/notifications";
+import { Volume } from "./items/volume";
+import { Network } from "./items/network";
+import { Bluetooth } from "./items/bluetooth";
+import { Battery } from "./items/battery";
+import { QuickSettings } from "./items/quicksettings";
 
 const { position, modules } = config.bar;
 const { spacing } = theme.bar;
@@ -26,10 +30,14 @@ export function BarModule({
       clock: () => <Clock />,
       tray: () => <Tray />,
       keyboard: () => <Keyboard />,
-      sysbox: () => <SysBox />,
-      record_indicator: () => <RecordIndicator />,
+      recordindicator: () => <RecordIndicator />,
       weather: () => <Weather />,
       notifications: () => <Notifications />,
+      volume: () => <Volume />,
+      network: () => <Network />,
+      bluetooth: () => <Bluetooth />,
+      battery: () => <Battery />,
+      quicksettings: () => <QuickSettings />,
    } as Record<string, any>;
 
    function Start() {

@@ -6,7 +6,7 @@ export function QuickSettingsWindow() {
    return (
       <BarItemPopup
          name={windows_names.quicksettings}
-         module={"sysbox"}
+         module={"quicksettings"}
          width={440}
       >
          <QuickSettingsModule />
