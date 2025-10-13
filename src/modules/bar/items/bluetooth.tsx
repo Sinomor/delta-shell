@@ -20,7 +20,7 @@ export function Bluetooth() {
    );
    return (
       <BarItem>
-         <image visible={bluetoothconnected} iconName={icons.bluetooth} />
+         <image iconName={icons.bluetooth} />
       </BarItem>
    );
 }
