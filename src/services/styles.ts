@@ -95,7 +95,7 @@ const style_files = [
    `${style_path}/_extra.scss`,
    `${style_path}/bar.scss`,
    `${style_path}/calendar.scss`,
-   `${style_path}/control.scss`,
+   `${style_path}/quicksettings.scss`,
    `${style_path}/launcher.scss`,
    `${style_path}/notifications.scss`,
    `${style_path}/osd.scss`,

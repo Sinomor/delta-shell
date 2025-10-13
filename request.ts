@@ -3,7 +3,7 @@ import ScreenRecord from "./src/services/screenrecord";
 import { hide_all_windows, windows_names } from "./windows";
 import { toggleWindow } from "./src/lib/utils";
 import { config } from "./options";
-import { launcher_page_set } from "./src/widgets/launcher/launcher";
+import { launcher_page_set } from "./src/modules/launcher/launcher";
 const screenrecord = ScreenRecord.get_default();
 
 export default function request(
@@ -24,10 +24,10 @@ export default function request(
             launcher_page_set("clipboard");
             toggleWindow(windows_names.launcher);
             break;
-         case "control":
-            if (!app.get_window(windows_names.control)?.visible)
+         case "quicksettings":
+            if (!app.get_window(windows_names.quicksettings)?.visible)
                hide_all_windows();
-            toggleWindow(windows_names.control);
+            toggleWindow(windows_names.quicksettings);
             break;
          case "calendar":
             if (!app.get_window(windows_names.calendar)?.visible)
