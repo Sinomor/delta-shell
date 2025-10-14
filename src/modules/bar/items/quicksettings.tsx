@@ -14,7 +14,7 @@ export function QuickSettings() {
             toggleWindow(windows_names.quicksettings);
          }}
       >
-         <image pixelSize={20} iconName={icons.bolt} />
+         <image pixelSize={20} iconName={icons.settings} />
       </BarItem>
    );
 }

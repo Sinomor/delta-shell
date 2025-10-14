@@ -3,7 +3,7 @@ import { getNetworkIconBinding, icons } from "@/src/lib/icons";
 import AstalNetwork from "gi://AstalNetwork?version=0.1";
 import AstalBluetooth from "gi://AstalBluetooth?version=0.1";
 import AstalPowerProfiles from "gi://AstalPowerProfiles?version=0.1";
-import { createBinding, createComputed } from "ags";
+import { createBinding, createComputed, For } from "ags";
 import { resetCss } from "@/src/services/styles";
 import { QSButton } from "@/src/widgets/qsbutton";
 import { config, theme } from "@/options";
@@ -20,6 +20,17 @@ const bluetooth = AstalBluetooth.get_default();
 const powerprofile = AstalPowerProfiles.get_default();
 const weather = WeatherService.get_default();
 const notifd = AstalNotifd.get_default();
+
+const Buttons = {
+   network: () => <InternetButton />,
+   bluetooth: () => (bluetooth.adapter !== null ? <BluetoothButton /> : null),
+   power: () =>
+      powerprofile.get_profiles().length !== 0 ? <PowerProfilesButton /> : null,
+   screenrecord: () =>
+      dependencies("gpu-screen-recorder") ? <ScreenRecordButton /> : null,
+   weather: () => <WeatherButton />,
+   notifications: () => <NotificationsButton />,
+} as Record<string, any>;
 
 function PowerProfilesButton() {
    const activeprofile = createBinding(powerprofile, "activeProfile");
@@ -264,14 +275,12 @@ function NotificationsButton() {
 }
 
 export function Qs_Buttons() {
-   const list = [
-      <InternetButton />,
-      bluetooth.adapter !== null && <BluetoothButton />,
-      powerprofile.get_profiles().length !== 0 && <PowerProfilesButton />,
-      dependencies("gpu-screen-recorder") && <ScreenRecordButton />,
-      <WeatherButton />,
-      <NotificationsButton />,
-   ].filter(Boolean);
+   const getVisibleButtons = () =>
+      config.quicksettings.buttons
+         .get()
+         .map((button) => Buttons[button]?.())
+         .filter(Boolean);
+
    return (
       <Adw.WrapBox
          class={"qs-buttons"}
@@ -280,8 +289,8 @@ export function Qs_Buttons() {
          widthRequest={440 - theme.window.padding.get() * 2}
          naturalLineLength={440 - theme.window.padding.get() * 2}
       >
-         {list.map((widget) => widget as Gtk.Widget)}
-         {list.length % 2 !== 0 && <box widthRequest={200} />}
+         {getVisibleButtons()}
+         {getVisibleButtons().length % 2 !== 0 && <box widthRequest={200} />}
       </Adw.WrapBox>
    );
 }
