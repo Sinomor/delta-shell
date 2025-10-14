@@ -23,8 +23,8 @@ window#calendar {
       outline: none;
       border-radius: $widget-radius;
       padding: 0;
-      min-width: 45px;
-      min-height: 45px;
+      min-width: 40px;
+      min-height: 40px;
 
       &:hover {
          transition: background $transition;
@@ -44,16 +44,16 @@ window#calendar {
    .monthshift,
    .monthyear {
       border-radius: $widget-radius;
-      background: rgba($bg1, $window-opacity);
+      background: transparent;
       font-weight: normal;
       outline: none;
       padding: 0;
-      min-height: 45px;
-      min-width: 45px;
+      min-height: 40px;
+      min-width: 40px;
 
       &:hover {
          transition: background $transition;
-         background: rgba($bg2, $window-opacity);
+         background: rgba($bg1, $window-opacity);
       }
       &:focus {
          transition: 0s;
