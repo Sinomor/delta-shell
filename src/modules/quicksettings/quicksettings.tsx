@@ -3,6 +3,7 @@ import { NetworkPage } from "./pages/network";
 import { MainPage } from "./pages/main";
 import { BluetoothPage } from "./pages/bluetooth";
 import { PowerModesPage } from "./pages/powermodes";
+import { VolumePage } from "./pages/volume";
 import { createState, onCleanup } from "ags";
 import { hide_all_windows, windows_names } from "@/windows";
 import { config } from "@/options";
@@ -32,6 +33,7 @@ export function QuickSettingsModule() {
          {network.wifi !== null && <NetworkPage />}
          {bluetooth.adapter !== null && <BluetoothPage />}
          <PowerModesPage />
+         <VolumePage />
       </stack>
    );
 }

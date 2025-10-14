@@ -101,6 +101,7 @@ const style_files = [
    `${style_path}/osd.scss`,
    `${style_path}/powermenu.scss`,
    `${style_path}/weather.scss`,
+   `${style_path}/volume.scss`,
 ];
 
 export async function resetCss() {

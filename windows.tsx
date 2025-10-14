@@ -12,6 +12,7 @@ import { OsdWindow } from "./src/windows/osd";
 import { LauncherWindow } from "./src/windows/launcher";
 import { NotificationsListWindow } from "./src/windows/notificationslist";
 import { NotificationsWindow } from "./src/windows/notifications";
+import { VolumeWindow } from "./src/windows/volume";
 
 export const windows_names = {
    bar: "bar",
@@ -25,6 +26,7 @@ export const windows_names = {
    weather: "weather",
    calendar: "calendar",
    notifications_list: "notifications_list",
+   volume: "volume",
 };
 
 export function hide_all_windows() {
@@ -33,6 +35,7 @@ export function hide_all_windows() {
    app.get_window(windows_names.verification)?.hide();
    app.get_window(windows_names.calendar)?.hide();
    app.get_window(windows_names.quicksettings)?.hide();
+   app.get_window(windows_names.volume)?.hide();
    config.weather.enabled.get() &&
       app.get_window(windows_names.weather)?.hide();
    config.notifications.enabled.get() &&
@@ -52,6 +55,7 @@ export function windows() {
       NotificationsWindow();
    }
    OsdWindow();
+   VolumeWindow();
    const monitors = createBinding(app, "monitors");
 
    <For each={monitors}>

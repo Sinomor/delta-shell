@@ -135,6 +135,21 @@ window#quicksettings {
          border-radius: 0 $widget-radius $widget-radius 0;
       }
 
+      .slider-button {
+         border-radius: $widget-radius;
+         background: $bg1;
+         outline: none;
+
+         &:hover {
+            background: $bg2;
+         }
+         &:focus {
+            transition: 0s;
+            outline-offset: -$outline-width;
+            outline: $outline-width solid $outline-color;
+         }
+      }
+
       .slider-box {
          border-radius: $widget-radius;
 

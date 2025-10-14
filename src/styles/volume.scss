@@ -1,0 +1,79 @@
+window#volume {
+   all: unset;
+   color: $fg0;
+   font-size: $font-size;
+
+   .main {
+      background: rgba($bg0, $window-opacity);
+      border: $window-border-width solid $window-border-color;
+      padding: $window-padding;
+      border-radius: $window-radius;
+      @if $shadow {
+         box-shadow: $window-shadow-offset
+            $window-shadow-blur
+            $window-shadow-spread
+            rgba($window-shadow-color, $window-shadow-opacity);
+      }
+   }
+}
+
+.volume {
+   .dropdown {
+      font-weight: normal;
+      outline: none;
+      background: $bg1;
+
+      &:hover {
+         background: $bg2;
+         transition: background $transition;
+      }
+
+      &:focus {
+         transition: 0s;
+         outline-offset: -$outline-width;
+         outline: $outline-width solid $outline-color;
+      }
+   }
+
+   .slider-box {
+      border-radius: $widget-radius;
+
+      image {
+         color: get-contrast-color($accent, $fg0, $bg0);
+         padding-left: 10px;
+         border-radius: $widget-radius;
+      }
+
+      scale {
+         padding: 0;
+
+         trough {
+            all: unset;
+            background: rgba($bg1, $window-opacity);
+            min-height: 18px;
+            border-radius: $widget-radius;
+         }
+
+         highlight {
+            all: unset;
+            min-height: 18px;
+            border-radius: $widget-radius;
+            background: rgba($accent, $window-opacity);
+         }
+
+         slider {
+            all: unset;
+            border-radius: $widget-radius;
+            margin: 0;
+         }
+
+         &:focus {
+            trough {
+               transition: 0s;
+               outline-offset: -$outline-width;
+               outline: $outline-width solid $outline-color;
+            }
+         }
+      }
+   }
+}

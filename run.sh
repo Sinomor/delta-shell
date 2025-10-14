@@ -1,6 +1,6 @@
 #!/bin/bash
 
-WIDGETS=("applauncher" "clipboard" "control" "powermenu" "calendar" "weather" "notifications_list")
+WIDGETS=("applauncher" "clipboard" "control" "powermenu" "calendar" "weather" "notifications_list", "volume")
 
 print_help() {
     cat <<EOF

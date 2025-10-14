@@ -42,25 +42,34 @@ function VolumeBox() {
    const level = createBinding(speaker, "volume");
 
    return (
-      <overlay
-         class={level.as(
-            (v) => `slider-box volume-box ${v < 0.05 ? "low" : ""}`,
-         )}
-         valign={Gtk.Align.CENTER}
-      >
-         <image
-            $type={"overlay"}
-            iconName={VolumeIcon}
-            pixelSize={20}
+      <box spacing={theme.spacing}>
+         <overlay
+            class={level.as(
+               (v) => `slider-box volume-box ${v < 0.05 ? "low" : ""}`,
+            )}
             valign={Gtk.Align.CENTER}
-            halign={Gtk.Align.START}
-         />
-         <slider
-            onChangeValue={({ value }) => speaker.set_volume(value)}
-            hexpand
-            value={level}
-         />
-      </overlay>
+         >
+            <image
+               $type={"overlay"}
+               iconName={VolumeIcon}
+               pixelSize={20}
+               valign={Gtk.Align.CENTER}
+               halign={Gtk.Align.START}
+            />
+            <slider
+               onChangeValue={({ value }) => speaker.set_volume(value)}
+               hexpand
+               value={level}
+            />
+         </overlay>
+         <button
+            onClicked={() => qs_page_set("volume")}
+            class={"slider-button"}
+            focusOnClick={false}
+         >
+            <image iconName={icons.arrow.right} pixelSize={20} />
+         </button>
+      </box>
    );
 }
 

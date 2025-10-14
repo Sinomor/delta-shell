@@ -49,6 +49,11 @@ export default function request(
                hide_all_windows();
             toggleWindow(windows_names.notifications_list);
             break;
+         case "volume":
+            if (!app.get_window(windows_names.volume)?.visible)
+               hide_all_windows();
+            toggleWindow(windows_names.volume);
+            break;
          default:
             print("Unknown request:", request);
             return response("Unknown request");
