@@ -14,10 +14,12 @@ import { dependencies } from "@/src/lib/utils";
 import { qs_page_set } from "../quicksettings";
 import { profiles_names } from "../../power/power";
 import WeatherService from "@/src/services/weather";
+import AstalNotifd from "gi://AstalNotifd?version=0.1";
 const network = AstalNetwork.get_default();
 const bluetooth = AstalBluetooth.get_default();
 const powerprofile = AstalPowerProfiles.get_default();
 const weather = WeatherService.get_default();
+const notifd = AstalNotifd.get_default();
 
 function PowerProfilesButton() {
    const activeprofile = createBinding(powerprofile, "activeProfile");
@@ -235,6 +237,32 @@ function WeatherButton() {
    );
 }
 
+function NotificationsButton() {
+   const enabled = createBinding(notifd, "dontDisturb");
+   return (
+      <QSButton
+         icon={icons.bell}
+         label={"Notifications"}
+         subtitle={createBinding(notifd, "notifications").as((notifs) =>
+            notifs.length === 0 ? "None" : notifs.length.toString(),
+         )}
+         showArrow={true}
+         onClicked={() => notifd.set_dont_disturb(!notifd.dontDisturb)}
+         onArrowClicked={() => qs_page_set("notifications")}
+         ArrowClasses={enabled.as((p) => {
+            const classes = ["arrow"];
+            !p && classes.push("active");
+            return classes;
+         })}
+         ButtonClasses={enabled.as((p) => {
+            const classes = ["qs-button-box-arrow"];
+            !p && classes.push("active");
+            return classes;
+         })}
+      />
+   );
+}
+
 export function Qs_Buttons() {
    const list = [
       <InternetButton />,
@@ -242,6 +270,7 @@ export function Qs_Buttons() {
       powerprofile.get_profiles().length !== 0 && <PowerProfilesButton />,
       dependencies("gpu-screen-recorder") && <ScreenRecordButton />,
       <WeatherButton />,
+      <NotificationsButton />,
    ].filter(Boolean);
    return (
       <Adw.WrapBox

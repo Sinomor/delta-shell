@@ -262,7 +262,14 @@ window#quicksettings {
          font-weight: normal;
       }
 
-      .header {
+      .list {
+         .header {
+            min-height: 0;
+         }
+      }
+
+      .header,
+      .notifs-header {
          min-height: 40px;
          border-radius: $widget-radius;
          background: transparent;

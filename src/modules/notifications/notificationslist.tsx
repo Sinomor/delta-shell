@@ -4,53 +4,51 @@ import { icons } from "@/src/lib/icons";
 import { createBinding, For } from "ags";
 import { theme } from "@/options";
 import { Notification } from "./notification";
+import { qs_page_set } from "../quicksettings/quicksettings";
 const notifd = AstalNotifd.get_default();
 
-function Clear() {
-   return (
-      <button
-         class={"notifs-clear"}
-         focusOnClick={false}
-         tooltipText={"Clear all"}
-         onClicked={() => {
-            notifd.notifications.forEach((n) => n.dismiss());
-         }}
-      >
-         <image
-            halign={Gtk.Align.CENTER}
-            iconName={icons.trash}
-            pixelSize={20}
-         />
-      </button>
-   );
-}
-
-function DND() {
-   return (
-      <button
-         class={"notifs-dnd"}
-         tooltipText={"Don't disturb"}
-         focusOnClick={false}
-         onClicked={() => notifd.set_dont_disturb(!notifd.dontDisturb)}
-      >
-         <image
-            halign={Gtk.Align.CENTER}
-            iconName={createBinding(notifd, "dontDisturb").as((dnd) =>
-               dnd ? icons.bell_off : icons.bell,
-            )}
-            pixelSize={20}
-         />
-      </button>
-   );
-}
-
-function Header() {
+function Header({ showArrow = false }: { showArrow?: boolean }) {
    return (
       <box class={"notifs-header"} spacing={theme.spacing}>
+         {showArrow && (
+            <button
+               cssClasses={["qs-header-button", "qs-page-prev"]}
+               focusOnClick={false}
+               onClicked={() => qs_page_set("main")}
+            >
+               <image iconName={icons.arrow.left} pixelSize={20} />
+            </button>
+         )}
          <label label={"Notifications"} />
          <box hexpand />
-         <DND />
-         <Clear />
+         <button
+            cssClasses={["qs-header-button", "notifs-dnd"]}
+            tooltipText={"Don't disturb"}
+            focusOnClick={false}
+            onClicked={() => notifd.set_dont_disturb(!notifd.dontDisturb)}
+         >
+            <image
+               halign={Gtk.Align.CENTER}
+               iconName={createBinding(notifd, "dontDisturb").as((dnd) =>
+                  dnd ? icons.bell_off : icons.bell,
+               )}
+               pixelSize={20}
+            />
+         </button>
+         <button
+            cssClasses={["qs-header-button", "notifs-clear"]}
+            focusOnClick={false}
+            tooltipText={"Clear all"}
+            onClicked={() => {
+               notifd.notifications.forEach((n) => n.dismiss());
+            }}
+         >
+            <image
+               halign={Gtk.Align.CENTER}
+               iconName={icons.trash}
+               pixelSize={20}
+            />
+         </button>
       </box>
    );
 }
@@ -94,15 +92,21 @@ function List() {
    );
 }
 
-export function NotificationsListModule({ width }: { width: number }) {
+export function NotificationsListModule({
+   width,
+   showArrow = false,
+}: {
+   width: number;
+   showArrow?: boolean;
+}) {
    return (
       <box
          spacing={theme.spacing}
          orientation={Gtk.Orientation.VERTICAL}
          widthRequest={width}
-         class={"main"}
+         class={"notifications-list"}
       >
-         <Header />
+         <Header showArrow={showArrow} />
          <NotFound />
          <List />
       </box>
