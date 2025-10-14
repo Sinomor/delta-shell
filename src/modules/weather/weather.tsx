@@ -7,7 +7,6 @@ import { Days } from "./days";
 import { Hours } from "./hours";
 import { config, theme } from "@/options";
 import WeatherService from "@/src/services/weather";
-import { BarItemPopup } from "@/src/widgets/common/baritempopup";
 import { qs_page_set } from "../quicksettings/quicksettings";
 const weather = WeatherService.get_default();
 

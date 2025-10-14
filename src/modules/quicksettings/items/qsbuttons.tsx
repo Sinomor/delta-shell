@@ -13,9 +13,11 @@ import Adw from "gi://Adw?version=1";
 import { dependencies } from "@/src/lib/utils";
 import { qs_page_set } from "../quicksettings";
 import { profiles_names } from "../../power/power";
+import WeatherService from "@/src/services/weather";
 const network = AstalNetwork.get_default();
 const bluetooth = AstalBluetooth.get_default();
 const powerprofile = AstalPowerProfiles.get_default();
+const weather = WeatherService.get_default();
 
 function PowerProfilesButton() {
    const activeprofile = createBinding(powerprofile, "activeProfile");
@@ -187,12 +189,59 @@ function BluetoothButton() {
    );
 }
 
+function WeatherButton() {
+   const temp = createComputed(
+      [weather.data, weather.running],
+      (data, running) => {
+         if (!data) return "None";
+
+         const current = data.hourly[0];
+         return running
+            ? `${current.temperature}${current.units.temperature}`
+            : "None";
+      },
+   );
+
+   const icon = weather.data.as((data) => {
+      if (!data) return icons.weather.clear.day;
+
+      const current = data.hourly[0];
+      return current.icon;
+   });
+
+   return (
+      <QSButton
+         icon={icon.as((icon) => icon)}
+         label={"Weather"}
+         subtitle={temp.as((temp) => (temp !== "None" ? temp : "None"))}
+         showArrow={true}
+         onClicked={() => {
+            const running = weather.running.get();
+            if (running) weather.stop();
+            else weather.start();
+         }}
+         onArrowClicked={() => qs_page_set("weather")}
+         ArrowClasses={weather.running.as((p) => {
+            const classes = ["arrow"];
+            p && classes.push("active");
+            return classes;
+         })}
+         ButtonClasses={weather.running.as((p) => {
+            const classes = ["qs-button-box-arrow"];
+            p && classes.push("active");
+            return classes;
+         })}
+      />
+   );
+}
+
 export function Qs_Buttons() {
    const list = [
       <InternetButton />,
       bluetooth.adapter !== null && <BluetoothButton />,
       powerprofile.get_profiles().length !== 0 && <PowerProfilesButton />,
       dependencies("gpu-screen-recorder") && <ScreenRecordButton />,
+      <WeatherButton />,
    ].filter(Boolean);
    return (
       <Adw.WrapBox

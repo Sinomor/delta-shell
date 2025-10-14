@@ -9,6 +9,7 @@ import { hide_all_windows, windows_names } from "@/windows";
 import { config } from "@/options";
 import AstalNetwork from "gi://AstalNetwork?version=0.1";
 import AstalBluetooth from "gi://AstalBluetooth?version=0.1";
+import { WeatherPage } from "./pages/weather";
 export const [qs_page, qs_page_set] = createState("main");
 const network = AstalNetwork.get_default();
 const bluetooth = AstalBluetooth.get_default();
@@ -34,6 +35,7 @@ export function QuickSettingsModule() {
          {bluetooth.adapter !== null && <BluetoothPage />}
          <PowerPage />
          <VolumePage />
+         <WeatherPage />
       </stack>
    );
 }

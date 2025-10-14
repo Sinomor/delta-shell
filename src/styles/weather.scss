@@ -15,7 +15,9 @@ window#weather {
             rgba($window-shadow-color, $window-shadow-opacity);
       }
    }
+}
 
+.weather {
    .refresh {
       background: transparent;
    }
