@@ -1,7 +1,7 @@
 import app from "ags/gtk4/app";
 import ScreenRecord from "./src/services/screenrecord";
 import { hide_all_windows, windows_names } from "./windows";
-import { toggleWindow } from "./src/lib/utils";
+import { toggleQsModule, toggleWindow } from "./src/lib/utils";
 import { config } from "./options";
 import { launcher_page_set } from "./src/modules/launcher/launcher";
 const screenrecord = ScreenRecord.get_default();
@@ -40,34 +40,22 @@ export default function request(
             toggleWindow(windows_names.powermenu);
             break;
          case "weather":
-            if (!app.get_window(windows_names.weather)?.visible)
-               hide_all_windows();
-            toggleWindow(windows_names.weather);
+            toggleQsModule("weather");
             break;
          case "notifications_list":
-            if (!app.get_window(windows_names.notifications_list)?.visible)
-               hide_all_windows();
-            toggleWindow(windows_names.notifications_list);
+            toggleQsModule("notifications");
             break;
          case "volume":
-            if (!app.get_window(windows_names.volume)?.visible)
-               hide_all_windows();
-            toggleWindow(windows_names.volume);
+            toggleQsModule("volume");
             break;
          case "network":
-            if (!app.get_window(windows_names.network)?.visible)
-               hide_all_windows();
-            toggleWindow(windows_names.network);
+            toggleQsModule("network");
             break;
          case "bluetooth":
-            if (!app.get_window(windows_names.bluetooth)?.visible)
-               hide_all_windows();
-            toggleWindow(windows_names.bluetooth);
+            toggleQsModule("bluetooth");
             break;
          case "power":
-            if (!app.get_window(windows_names.power)?.visible)
-               hide_all_windows();
-            toggleWindow(windows_names.power);
+            toggleQsModule("power");
             break;
          default:
             print("Unknown request:", request);

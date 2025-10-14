@@ -1,8 +1,12 @@
+import { hide_all_windows, windows_names } from "@/windows";
 import { Gdk, Gtk } from "ags/gtk4";
 import app from "ags/gtk4/app";
 import { exec, execAsync } from "ags/process";
 import Gio from "gi://Gio?version=2.0";
 import GLib from "gi://GLib?version=2.0";
+import { qs_page_set } from "../modules/quicksettings/quicksettings";
+import { createComputed } from "gnim";
+import { config } from "@/options";
 
 export const cacheDir = `${GLib.get_user_cache_dir()}/delta-shell`;
 
@@ -216,4 +220,37 @@ export function attachHoverScroll(box: Gtk.Box, onScroll: ScrollHandler) {
    // Bubble phase usually works best so children get first crack at events
    scrollCtrl.set_propagation_phase(Gtk.PropagationPhase.BUBBLE);
    box.add_controller(scrollCtrl);
+}
+
+export function hasBarItem(module: string) {
+   return createComputed(
+      [
+         config.bar.modules.start,
+         config.bar.modules.center,
+         config.bar.modules.end,
+      ],
+      (start, center, end) => {
+         return (
+            start.includes(module) ||
+            center.includes(module) ||
+            end.includes(module)
+         );
+      },
+   ).get();
+}
+
+export function toggleQsModule(name: string) {
+   if (hasBarItem(name)) {
+      const windowName = windows_names[name as keyof typeof windows_names];
+      if (!app.get_window(windowName)?.visible) {
+         hide_all_windows();
+      }
+      toggleWindow(windowName);
+   } else {
+      if (!app.get_window(windows_names.quicksettings)?.visible) {
+         hide_all_windows();
+      }
+      qs_page_set(name);
+      toggleWindow(windows_names.quicksettings);
+   }
 }

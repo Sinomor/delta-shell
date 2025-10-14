@@ -16,6 +16,7 @@ import { VolumeWindow } from "./src/windows/volume";
 import { NetworkWindow } from "./src/windows/network";
 import { BluetoothWindow } from "./src/windows/bluetooth";
 import { PowerWindow } from "./src/windows/power";
+import { hasBarItem } from "./src/lib/utils";
 
 export const windows_names = {
    bar: "bar",
@@ -58,16 +59,16 @@ export function windows() {
    CalendarWindow();
    PowerMenuWindow();
    VerificationWindow();
-   if (config.weather.enabled.get()) WeatherWindow();
+   if (config.weather.enabled.get()) hasBarItem("weather") && WeatherWindow();
    if (config.notifications.enabled.get()) {
-      NotificationsListWindow();
+      hasBarItem("notifications") && NotificationsListWindow();
       NotificationsWindow();
    }
    OsdWindow();
-   VolumeWindow();
-   NetworkWindow();
-   BluetoothWindow();
-   PowerWindow();
+   hasBarItem("volume") && VolumeWindow();
+   hasBarItem("network") && NetworkWindow();
+   hasBarItem("bluetooth") && BluetoothWindow();
+   hasBarItem("power") && PowerWindow();
    const monitors = createBinding(app, "monitors");
 
    <For each={monitors}>
