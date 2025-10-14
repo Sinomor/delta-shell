@@ -74,8 +74,8 @@ export function BarItemPopup({
          width={width}
          margin_top={margin}
          margin_bottom={margin}
-         margin_start={margin}
-         margin_end={margin}
+         margin_start={theme.bar.margin.get()[3]}
+         margin_end={theme.bar.margin.get()[1]}
          transitionType={transitionType()}
          transitionDuration={transitionDuration}
       >
