@@ -2,7 +2,7 @@ import Gtk from "gi://Gtk";
 import { NetworkPage } from "./pages/network";
 import { MainPage } from "./pages/main";
 import { BluetoothPage } from "./pages/bluetooth";
-import { PowerModesPage } from "./pages/powermodes";
+import { PowerPage } from "./pages/power";
 import { VolumePage } from "./pages/volume";
 import { createState, onCleanup } from "ags";
 import { hide_all_windows, windows_names } from "@/windows";
@@ -32,7 +32,7 @@ export function QuickSettingsModule() {
          <MainPage />
          {network.wifi !== null && <NetworkPage />}
          {bluetooth.adapter !== null && <BluetoothPage />}
-         <PowerModesPage />
+         <PowerPage />
          <VolumePage />
       </stack>
    );

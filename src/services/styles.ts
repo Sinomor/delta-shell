@@ -104,6 +104,7 @@ const style_files = [
    `${style_path}/volume.scss`,
    `${style_path}/network.scss`,
    `${style_path}/bluetooth.scss`,
+   `${style_path}/power.scss`,
 ];
 
 export async function resetCss() {

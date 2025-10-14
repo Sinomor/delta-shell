@@ -3,22 +3,24 @@ import { Gtk } from "ags/gtk4";
 import AstalPowerProfiles from "gi://AstalPowerProfiles?version=0.1";
 import { createBinding } from "ags";
 import { theme } from "@/options";
-import { qs_page_set } from "../quicksettings";
+import { qs_page_set } from "../quicksettings/quicksettings";
 
 const power = AstalPowerProfiles.get_default();
 
-function Header() {
+function Header({ showArrow = false }: { showArrow?: boolean }) {
    return (
       <box class={"header"} spacing={theme.spacing}>
-         <button
-            cssClasses={["qs-header-button", "qs-page-prev"]}
-            focusOnClick={false}
-            onClicked={() => qs_page_set("main")}
-         >
-            <image iconName={icons.arrow.left} pixelSize={20} />
-         </button>
+         {showArrow && (
+            <button
+               cssClasses={["qs-header-button", "qs-page-prev"]}
+               focusOnClick={false}
+               onClicked={() => qs_page_set("main")}
+            >
+               <image iconName={icons.arrow.left} pixelSize={20} />
+            </button>
+         )}
          <label
-            label={"Power Modes"}
+            label={"Power"}
             halign={Gtk.Align.START}
             valign={Gtk.Align.CENTER}
          />
@@ -44,7 +46,7 @@ function Item({ profile }: { profile: string }) {
 
    return (
       <button
-         class="page-button"
+         class={"page-button"}
          onClicked={() => setProfile(profile)}
          focusOnClick={false}
       >
@@ -80,18 +82,17 @@ function List() {
    );
 }
 
-export function PowerModesPage() {
+export function PowerModule({ showArrow = false }: { showArrow?: boolean }) {
    return (
       <box
-         $type={"named"}
-         name={"powermodes"}
+         class={"power"}
          heightRequest={500}
          widthRequest={410}
          cssClasses={["qs-menu-page", "bluetooth-page"]}
          orientation={Gtk.Orientation.VERTICAL}
          spacing={theme.spacing}
       >
-         <Header />
+         <Header showArrow={showArrow} />
          <List />
       </box>
    );

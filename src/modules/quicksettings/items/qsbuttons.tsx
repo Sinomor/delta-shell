@@ -6,13 +6,13 @@ import AstalPowerProfiles from "gi://AstalPowerProfiles?version=0.1";
 import { createBinding, createComputed } from "ags";
 import { resetCss } from "@/src/services/styles";
 import { QSButton } from "@/src/widgets/qsbutton";
-import { profiles_names } from "../pages/powermodes";
 import { config, theme } from "@/options";
 import ScreenRecord from "@/src/services/screenrecord";
 import { timeout } from "ags/time";
 import Adw from "gi://Adw?version=1";
 import { dependencies } from "@/src/lib/utils";
 import { qs_page_set } from "../quicksettings";
+import { profiles_names } from "../../power/power";
 const network = AstalNetwork.get_default();
 const bluetooth = AstalBluetooth.get_default();
 const powerprofile = AstalPowerProfiles.get_default();
@@ -23,7 +23,7 @@ function PowerProfilesButton() {
    return (
       <QSButton
          icon={activeprofile.as((profile) => icons.powerprofiles[profile])}
-         label={"Power Mode"}
+         label={"Power"}
          subtitle={activeprofile.as((profile) => profiles_names[profile])}
          showArrow={true}
          onClicked={() => {
@@ -36,7 +36,7 @@ function PowerProfilesButton() {
             });
             powerprofile.set_active_profile(setprofile.get());
          }}
-         onArrowClicked={() => qs_page_set("powermodes")}
+         onArrowClicked={() => qs_page_set("power")}
          ArrowClasses={createBinding(powerprofile, "activeProfile").as(
             (profile) => {
                const classes = ["arrow"];
