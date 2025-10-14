@@ -59,6 +59,11 @@ export default function request(
                hide_all_windows();
             toggleWindow(windows_names.network);
             break;
+         case "bluetooth":
+            if (!app.get_window(windows_names.bluetooth)?.visible)
+               hide_all_windows();
+            toggleWindow(windows_names.bluetooth);
+            break;
          default:
             print("Unknown request:", request);
             return response("Unknown request");

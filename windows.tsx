@@ -14,6 +14,7 @@ import { NotificationsListWindow } from "./src/windows/notificationslist";
 import { NotificationsWindow } from "./src/windows/notifications";
 import { VolumeWindow } from "./src/windows/volume";
 import { NetworkWindow } from "./src/windows/network";
+import { BluetoothWindow } from "./src/windows/bluetooth";
 
 export const windows_names = {
    bar: "bar",
@@ -29,6 +30,7 @@ export const windows_names = {
    notifications_list: "notifications_list",
    volume: "volume",
    network: "network",
+   bluetooth: "bluetooth",
 };
 
 export function hide_all_windows() {
@@ -39,6 +41,7 @@ export function hide_all_windows() {
    app.get_window(windows_names.quicksettings)?.hide();
    app.get_window(windows_names.volume)?.hide();
    app.get_window(windows_names.network)?.hide();
+   app.get_window(windows_names.bluetooth)?.hide();
    config.weather.enabled.get() &&
       app.get_window(windows_names.weather)?.hide();
    config.notifications.enabled.get() &&
@@ -60,6 +63,7 @@ export function windows() {
    OsdWindow();
    VolumeWindow();
    NetworkWindow();
+   BluetoothWindow();
    const monitors = createBinding(app, "monitors");
 
    <For each={monitors}>

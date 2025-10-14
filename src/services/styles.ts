@@ -103,6 +103,7 @@ const style_files = [
    `${style_path}/weather.scss`,
    `${style_path}/volume.scss`,
    `${style_path}/network.scss`,
+   `${style_path}/bluetooth.scss`,
 ];
 
 export async function resetCss() {
