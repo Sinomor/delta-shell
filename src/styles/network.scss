@@ -1,0 +1,76 @@
+window#network {
+   all: unset;
+   color: $fg0;
+   font-size: $font-size;
+
+   .main {
+      background: rgba($bg0, $window-opacity);
+      border: $window-border-width solid $window-border-color;
+      padding: $window-padding;
+      border-radius: $window-radius;
+      @if $shadow {
+         box-shadow: $window-shadow-offset
+            $window-shadow-blur
+            $window-shadow-spread
+            rgba($window-shadow-color, $window-shadow-opacity);
+      }
+   }
+}
+
+.network {
+   .refresh {
+      background: transparent;
+   }
+
+   .header {
+      min-height: 40px;
+      button {
+         outline: none;
+         padding: 0;
+         min-width: 40px;
+         background: transparent;
+
+         &:focus {
+            transition: 0s;
+            outline-offset: -$outline-width;
+            outline: $outline-width solid $outline-color;
+         }
+      }
+   }
+
+   .toggle {
+      padding: 0;
+      outline: none;
+      min-height: 20px;
+      min-width: 45px;
+
+      slider {
+         margin: 4px;
+         box-shadow: none;
+      }
+
+      &:focus {
+         transition: 0s;
+         outline-offset: -$outline-width + 6px;
+         outline: $outline-width solid $outline-color;
+      }
+   }
+
+   .page-button {
+      font-weight: normal;
+      background: transparent;
+      min-height: 50px;
+      padding: 0 10px;
+      border-radius: $widget-radius;
+
+      &:hover {
+         background: rgba($bg1, $window-opacity);
+      }
+
+      &:focus {
+         transition: 0s;
+         outline-offset: -$outline-width;
+         outline: $outline-width solid $outline-color;
+      }
+   }
+}

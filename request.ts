@@ -54,6 +54,11 @@ export default function request(
                hide_all_windows();
             toggleWindow(windows_names.volume);
             break;
+         case "network":
+            if (!app.get_window(windows_names.network)?.visible)
+               hide_all_windows();
+            toggleWindow(windows_names.network);
+            break;
          default:
             print("Unknown request:", request);
             return response("Unknown request");
