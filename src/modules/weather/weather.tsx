@@ -1,6 +1,6 @@
 import Gtk from "gi://Gtk";
 import { hide_all_windows, windows_names } from "@/windows";
-import { createComputed } from "ags";
+import { createComputed, With } from "ags";
 import { Current } from "./current";
 import { icons } from "@/src/lib/icons";
 import { Days } from "./days";
@@ -57,6 +57,12 @@ function Header({ showArrow = false }: { showArrow?: boolean }) {
          >
             <ScanningIndicator />
          </button>
+         <switch
+            class={"toggle"}
+            valign={Gtk.Align.CENTER}
+            active={weather.running}
+            onNotifyActive={() => weather.toggle()}
+         />
       </box>
    );
 }
@@ -67,12 +73,24 @@ export function WeatherModule({ showArrow = false }: { showArrow?: boolean }) {
          class={"weather"}
          spacing={theme.spacing}
          widthRequest={340}
+         heightRequest={550}
          orientation={Gtk.Orientation.VERTICAL}
       >
          <Header showArrow={showArrow} />
-         <Current />
-         <Hours />
-         <Days />
+         <With value={weather.running}>
+            {(running) =>
+               running && (
+                  <box
+                     orientation={Gtk.Orientation.VERTICAL}
+                     spacing={theme.spacing}
+                  >
+                     <Current />
+                     <Hours />
+                     <Days />
+                  </box>
+               )
+            }
+         </With>
       </box>
    );
 }

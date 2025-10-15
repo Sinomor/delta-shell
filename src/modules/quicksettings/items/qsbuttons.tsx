@@ -228,11 +228,7 @@ function WeatherButton() {
          label={"Weather"}
          subtitle={temp.as((temp) => (temp !== "None" ? temp : "None"))}
          showArrow={true}
-         onClicked={() => {
-            const running = weather.running.get();
-            if (running) weather.stop();
-            else weather.start();
-         }}
+         onClicked={() => weather.toggle()}
          onArrowClicked={() => qs_page_set("weather")}
          ArrowClasses={weather.running.as((p) => {
             const classes = ["arrow"];

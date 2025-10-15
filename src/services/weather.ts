@@ -81,11 +81,13 @@ export default class WeatherService extends GObject.Object {
       if (this.#interval) {
          this.#running[1](false);
          this.#interval.cancel();
+         this.#interval = null;
       }
    }
 
-   async toggle() {
-      this.#running ? this.stop() : this.start();
+   toggle() {
+      if (this.#interval !== null) this.stop();
+      else this.start();
    }
 
    get running() {
