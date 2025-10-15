@@ -16,6 +16,7 @@ import { Network } from "./items/network";
 import { Bluetooth } from "./items/bluetooth";
 import { Battery } from "./items/battery";
 import { QuickSettings } from "./items/quicksettings";
+import { Clipboard } from "./items/clipboard";
 
 const { position, modules } = config.bar;
 const { spacing } = theme.bar;
@@ -38,6 +39,7 @@ export function BarModule({
       bluetooth: () => <Bluetooth />,
       battery: () => <Battery />,
       quicksettings: () => <QuickSettings />,
+      clipboard: () => <Clipboard />,
    } as Record<string, any>;
 
    function Start() {

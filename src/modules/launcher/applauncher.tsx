@@ -1,11 +1,11 @@
 import app from "ags/gtk4/app";
 import Apps from "gi://AstalApps?version=0.1";
-import { AppButton } from "../items/app_button";
 import { Gtk } from "ags/gtk4";
 import { createComputed, createState, For, onCleanup } from "ags";
 import { hide_all_windows, windows_names } from "@/windows";
 import { config, theme } from "@/options";
-import { launcher_page } from "../launcher";
+import { AppButton } from "./appbutton";
+import { launcher_page } from "./launcher";
 
 const apps = new Apps.Apps();
 const [text, text_set] = createState("");
@@ -90,7 +90,7 @@ function NotFound() {
    );
 }
 
-export function AppLauncher() {
+export function AppLauncherModule() {
    return (
       <box
          name={"apps"}

@@ -17,6 +17,7 @@ import { NetworkWindow } from "./src/windows/network";
 import { BluetoothWindow } from "./src/windows/bluetooth";
 import { PowerWindow } from "./src/windows/power";
 import { hasBarItem } from "./src/lib/utils";
+import { ClipboardWindow } from "./src/windows/clipboard";
 
 export const windows_names = {
    bar: "bar",
@@ -34,6 +35,7 @@ export const windows_names = {
    network: "network",
    bluetooth: "bluetooth",
    power: "power",
+   clipboard: "clipboard",
 };
 
 export function hide_all_windows() {
@@ -46,6 +48,7 @@ export function hide_all_windows() {
    app.get_window(windows_names.network)?.hide();
    app.get_window(windows_names.bluetooth)?.hide();
    app.get_window(windows_names.power)?.hide();
+   app.get_window(windows_names.clipboard)?.hide();
    config.weather.enabled.get() &&
       app.get_window(windows_names.weather)?.hide();
    config.notifications.enabled.get() &&
@@ -65,6 +68,7 @@ export function windows() {
       NotificationsWindow();
    }
    OsdWindow();
+   hasBarItem("clipboard") && ClipboardWindow();
    hasBarItem("volume") && VolumeWindow();
    hasBarItem("network") && NetworkWindow();
    hasBarItem("bluetooth") && BluetoothWindow();

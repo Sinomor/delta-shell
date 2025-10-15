@@ -1,7 +1,7 @@
 import app from "ags/gtk4/app";
 import ScreenRecord from "./src/services/screenrecord";
 import { hide_all_windows, windows_names } from "./windows";
-import { toggleQsModule, toggleWindow } from "./src/lib/utils";
+import { hasBarItem, toggleQsModule, toggleWindow } from "./src/lib/utils";
 import { config } from "./options";
 import { launcher_page_set } from "./src/modules/launcher/launcher";
 const screenrecord = ScreenRecord.get_default();
@@ -16,12 +16,6 @@ export default function request(
             if (!app.get_window(windows_names.launcher)?.visible)
                hide_all_windows();
             launcher_page_set("apps");
-            toggleWindow(windows_names.launcher);
-            break;
-         case "clipboard":
-            if (!app.get_window(windows_names.launcher)?.visible)
-               hide_all_windows();
-            launcher_page_set("clipboard");
             toggleWindow(windows_names.launcher);
             break;
          case "quicksettings":
@@ -39,6 +33,19 @@ export default function request(
                hide_all_windows();
             toggleWindow(windows_names.powermenu);
             break;
+         case "clipboard":
+            if (hasBarItem("clipboard")) {
+               if (!app.get_window(windows_names.clipboard)?.visible)
+                  hide_all_windows();
+               toggleWindow(windows_names.clipboard);
+               break;
+            } else {
+               if (!app.get_window(windows_names.launcher)?.visible)
+                  hide_all_windows();
+               launcher_page_set("clipboard");
+               toggleWindow(windows_names.launcher);
+               break;
+            }
          case "weather":
             toggleQsModule("weather");
             break;

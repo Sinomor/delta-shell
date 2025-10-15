@@ -1,16 +1,17 @@
 import app from "ags/gtk4/app";
 import { Gtk } from "ags/gtk4";
-import { bash, dependencies } from "@/src/lib/utils";
-import { ClipImage } from "../items/clip_image";
+import { bash, dependencies, hasBarItem } from "@/src/lib/utils";
 import { icons } from "@/src/lib/icons";
-import { ClipText } from "../items/clip_text";
-import { ClipColor } from "../items/clip_color";
 import { createComputed, createState, For, onCleanup } from "ags";
 import { hide_all_windows, windows_names } from "@/windows";
 import { config, theme } from "@/options";
-import { launcher_page } from "../launcher";
 import Cliphist from "@/src/services/cliphist";
+import { ClipText } from "./text";
+import { ClipColor } from "./color";
+import { ClipImage } from "./image";
+import { launcher_page } from "../launcher/launcher";
 const clipboard = Cliphist.get_default();
+const { width, height } = config.launcher;
 
 const colorPatterns = {
    hex: /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/,
@@ -73,12 +74,20 @@ function Entry() {
             appconnect = app.connect("window-toggled", async (_, win) => {
                const winName = win.name;
                const visible = win.visible;
-               const mode = launcher_page.get() == "clipboard";
 
-               if (winName == windows_names.launcher && visible && mode) {
-                  scrolled.set_vadjustment(null);
-                  await self.set_text("");
-                  self.grab_focus();
+               if (hasBarItem("clipboard")) {
+                  if (winName == windows_names.clipboard && visible) {
+                     scrolled.set_vadjustment(null);
+                     await self.set_text("");
+                     self.grab_focus();
+                  }
+               } else {
+                  const mode = launcher_page.get() == "clipboard";
+                  if (winName == windows_names.launcher && visible && mode) {
+                     scrolled.set_vadjustment(null);
+                     await self.set_text("");
+                     self.grab_focus();
+                  }
                }
             });
          }}
@@ -145,11 +154,11 @@ function NotFound() {
    );
 }
 
-export function Clipboard() {
+export function ClipboardModule() {
    return (
       <box
+         $type={"named"}
          name={"clipboard"}
-         $type="named"
          orientation={Gtk.Orientation.VERTICAL}
          vexpand
          spacing={theme.spacing}
