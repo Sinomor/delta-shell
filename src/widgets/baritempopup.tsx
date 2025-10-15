@@ -30,6 +30,7 @@ export function BarItemPopup({
 }: BarItemPopupProps) {
    const { bar } = config;
    const bar_pos = bar.position.get();
+   const bar_margin = theme.bar.margin.get();
 
    const module_pos = createComputed(
       [bar.modules.start, bar.modules.center, bar.modules.end],
@@ -74,8 +75,8 @@ export function BarItemPopup({
          width={width}
          margin_top={margin}
          margin_bottom={margin}
-         margin_start={theme.bar.margin.get()[3]}
-         margin_end={theme.bar.margin.get()[1]}
+         margin_start={bar_margin[3] === 0 ? margin : bar_margin[3]}
+         margin_end={bar_margin[1] === 0 ? margin : bar_margin[1]}
          transitionType={transitionType()}
          transitionDuration={transitionDuration}
       >

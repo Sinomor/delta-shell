@@ -25,10 +25,10 @@ export function Popup({
    name,
    width,
    height,
-   margin_top,
-   margin_bottom,
-   margin_start,
-   margin_end,
+   margin_top = margin.get(),
+   margin_bottom = margin.get(),
+   margin_start = margin.get(),
+   margin_end = margin.get(),
    gdkmonitor,
    transitionType = Gtk.RevealerTransitionType.SLIDE_DOWN,
    transitionDuration = config.transition.get(),
@@ -102,18 +102,10 @@ export function Popup({
                focusable
                maximum_size={width}
                heightRequest={height}
-               margin_top={
-                  margin_top ? margin_top + margin.get() : margin.get()
-               }
-               margin_bottom={
-                  margin_bottom ? margin_bottom + margin.get() : margin.get()
-               }
-               margin_start={
-                  margin_start ? margin_start + margin.get() : margin.get()
-               }
-               margin_end={
-                  margin_end ? margin_end + margin.get() : margin.get()
-               }
+               margin_top={margin_top}
+               margin_bottom={margin_bottom}
+               margin_start={margin_start}
+               margin_end={margin_end}
             >
                {children}
             </Adw.Clamp>
