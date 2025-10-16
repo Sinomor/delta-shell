@@ -3,7 +3,7 @@ import AstalNiri from "gi://AstalNiri";
 import AstalApps from "gi://AstalApps";
 import { createBinding, createComputed, For } from "ags";
 import { compositor, config, theme } from "@/options";
-import { attachHoverScroll, bash } from "@/src/lib/utils";
+import { attachHoverScroll, bash, getAppInfo } from "@/src/lib/utils";
 import { icons } from "@/src/lib/icons";
 import BarItem from "@/src/widgets/baritem";
 const niri = AstalNiri.get_default();
@@ -25,9 +25,10 @@ function AppButton({ app, client }: AppButtonProps) {
       return classes;
    });
 
+   const appInfo = getAppInfo(client.app_id);
    const iconName = app
       ? (apps_icons[app.iconName] ?? app.iconName)
-      : apps_icons[client.app_id] || icons.apps_default;
+      : apps_icons[client.app_id] || appInfo.iconName;
 
    return (
       <box cssClasses={classes}>

@@ -7,36 +7,9 @@ import { createBinding, For } from "ags";
 import Adw from "gi://Adw?version=1";
 import { config, theme } from "@/options";
 import AstalApps from "gi://AstalApps?version=0.1";
+import { getAppInfo, lengthStr } from "@/src/lib/utils";
 const mpris = AstalMpris.get_default();
 let carousel: Adw.Carousel;
-
-const application = new AstalApps.Apps();
-
-function lengthStr(length: number) {
-   const hours = Math.floor(length / 3600);
-   const minutes = Math.floor((length % 3600) / 60);
-   const seconds = Math.floor(length % 60);
-
-   const min0 = minutes < 10 ? "0" : "";
-   const sec0 = seconds < 10 ? "0" : "";
-
-   if (hours > 0) {
-      return `${hours}:${min0}${minutes}:${sec0}${seconds}`;
-   }
-   return `${minutes}:${sec0}${seconds}`;
-}
-
-function playerIcon(entry: string) {
-   for (const app of application.list) {
-      if (
-         entry &&
-         app.entry.split(".desktop")[0].toLowerCase().match(entry.toLowerCase())
-      ) {
-         return app.iconName;
-      }
-   }
-   return icons.player.play;
-}
 
 function MediaPlayer({ player }: { player: AstalMpris.Player }) {
    const title = createBinding(player, "title").as((t) => t || "Unknown Track");
@@ -62,7 +35,10 @@ function MediaPlayer({ player }: { player: AstalMpris.Player }) {
          >
             <box spacing={theme.spacing}>
                <box hexpand />
-               <image iconName={playerIcon(player.entry)} pixelSize={22} />
+               <image
+                  iconName={getAppInfo(player.entry).iconName}
+                  pixelSize={22}
+               />
                <label label={player.identity} />
             </box>
             <box orientation={Gtk.Orientation.VERTICAL} spacing={5}>
