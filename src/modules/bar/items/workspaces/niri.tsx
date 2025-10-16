@@ -16,7 +16,7 @@ type AppButtonProps = {
 
 const application = new AstalApps.Apps();
 
-function AppButton({ app, client }: AppButtonProps) {
+function AppButton({ client }: AppButtonProps) {
    const classes = createBinding(niri, "focusedWindow").as((fcsClient) => {
       const classes = ["taskbar-button"];
       if (!fcsClient || !client.app_id || !fcsClient.app_id) return classes;
@@ -26,9 +26,7 @@ function AppButton({ app, client }: AppButtonProps) {
    });
 
    const appInfo = getAppInfo(client.app_id);
-   const iconName = app
-      ? (apps_icons[app.iconName] ?? app.iconName)
-      : apps_icons[client.app_id] || appInfo.iconName;
+   const iconName = apps_icons[client.app_id] || appInfo.iconName;
 
    return (
       <box cssClasses={classes}>
@@ -85,20 +83,7 @@ function WorkspaceButton({ ws }: { ws: AstalNiri.Workspace }) {
                   clients.sort((a, b) => a.id - b.id),
                )}
             >
-               {(client: AstalNiri.Window) => {
-                  for (const app of application.list) {
-                     if (
-                        client.app_id &&
-                        app.entry
-                           .split(".desktop")[0]
-                           .toLowerCase()
-                           .match(client.app_id.toLowerCase())
-                     ) {
-                        return <AppButton app={app} client={client} />;
-                     }
-                  }
-                  return <AppButton client={client} />;
-               }}
+               {(client: AstalNiri.Window) => <AppButton client={client} />}
             </For>
          )}
       </BarItem>

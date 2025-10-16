@@ -5,7 +5,7 @@ import { createBinding, createComputed, For } from "ags";
 import { icons } from "@/src/lib/icons";
 import BarItem from "@/src/widgets/baritem";
 import { config, theme } from "@/options";
-import { attachHoverScroll } from "@/src/lib/utils";
+import { attachHoverScroll, getAppInfo } from "@/src/lib/utils";
 const hyprland = AstalHyprland.get_default();
 const apps_icons = config.bar.workspaces.taskbar_icons.get();
 
@@ -16,7 +16,7 @@ type AppButtonProps = {
 
 const application = new AstalApps.Apps();
 
-function AppButton({ app, client }: AppButtonProps) {
+function AppButton({ client }: AppButtonProps) {
    const classes = createBinding(hyprland, "focusedClient").as((fcsClient) => {
       const classes = ["taskbar-button"];
       if (!fcsClient || !client.class || !fcsClient.pid) return classes;
@@ -31,9 +31,8 @@ function AppButton({ app, client }: AppButtonProps) {
          .includes(client.class.toLowerCase()),
    );
 
-   const iconName = app
-      ? (apps_icons[app.iconName] ?? app.iconName)
-      : apps_icons[client.class] || icons.apps_default;
+   const appInfo = getAppInfo(client.class);
+   const iconName = apps_icons[client.class] || icons.apps_default;
 
    return (
       <box cssClasses={classes}>
@@ -91,20 +90,7 @@ function WorkspaceButton({ ws }: { ws: AstalHyprland.Workspace }) {
                      .sort((a, b) => a.pid - b.pid),
                )}
             >
-               {(client: AstalHyprland.Client) => {
-                  for (const app of application.list) {
-                     if (
-                        client.class &&
-                        app.entry
-                           .split(".desktop")[0]
-                           .toLowerCase()
-                           .match(client.class.toLowerCase())
-                     ) {
-                        return <AppButton app={app} client={client} />;
-                     }
-                  }
-                  return <AppButton client={client} />;
-               }}
+               {(client: AstalHyprland.Client) => <AppButton client={client} />}
             </For>
          )}
       </BarItem>
