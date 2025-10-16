@@ -7,12 +7,13 @@ import app from "ags/gtk4/app";
 import giCairo from "cairo";
 const { position, modules } = config.bar;
 const { spacing } = theme.bar;
+const { BOTTOM, TOP, LEFT, RIGHT } = Astal.WindowAnchor;
+const [windowsVisible, windowsVisible_set] = createState<string[]>([]);
 
 export function BarWindow({
    gdkmonitor,
    $,
 }: JSX.IntrinsicElements["window"] & { gdkmonitor: Gdk.Monitor }) {
-   const { BOTTOM, TOP, LEFT, RIGHT } = Astal.WindowAnchor;
    const windows = [
       windows_names.powermenu,
       windows_names.verification,
@@ -21,8 +22,12 @@ export function BarWindow({
       windows_names.launcher,
       windows_names.weather,
       windows_names.notifications_list,
+      windows_names.volume,
+      windows_names.network,
+      windows_names.bluetooth,
+      windows_names.power,
+      windows_names.clipboard,
    ];
-   const [windowsVisible, windowsVisible_set] = createState<string[]>([]);
    let bar: Astal.Window;
 
    const appconnect = app.connect("window-toggled", (_, win) => {
@@ -75,7 +80,6 @@ export function BarShadowWindow({
    gdkmonitor,
    $,
 }: JSX.IntrinsicElements["window"] & { gdkmonitor: Gdk.Monitor }) {
-   const { BOTTOM, TOP, LEFT, RIGHT } = Astal.WindowAnchor;
    const windows = [
       windows_names.powermenu,
       windows_names.verification,
@@ -84,9 +88,13 @@ export function BarShadowWindow({
       windows_names.launcher,
       windows_names.weather,
       windows_names.notifications_list,
+      windows_names.volume,
+      windows_names.network,
+      windows_names.bluetooth,
+      windows_names.power,
+      windows_names.clipboard,
    ];
-   const [windowsVisible, windowsVisible_set] = createState<string[]>([]);
-   let bar: Astal.Window;
+   let shadow: Astal.Window;
 
    const appconnect = app.connect("window-toggled", (_, win) => {
       const winName = win.name;
@@ -106,7 +114,7 @@ export function BarShadowWindow({
 
       windowsVisible_set(newVisible);
 
-      bar.set_layer(
+      shadow.set_layer(
          newVisible.length > 0 ? Astal.Layer.OVERLAY : Astal.Layer.TOP,
       );
    });
@@ -124,7 +132,7 @@ export function BarShadowWindow({
          anchor={TOP | BOTTOM | RIGHT | LEFT}
          application={app}
          $={(self) => {
-            bar = self;
+            shadow = self;
             if ($) $(self);
             self
                .get_native()
@@ -132,9 +140,9 @@ export function BarShadowWindow({
                ?.set_input_region(new giCairo.Region());
          }}
       >
-         <box class="shadow">
-            <box class="border" vexpand hexpand>
-               <box class="corner" vexpand hexpand />
+         <box class={"shadow"}>
+            <box class={"border"} vexpand hexpand>
+               <box class={"corner"} vexpand hexpand />
             </box>
          </box>
       </window>
