@@ -67,7 +67,7 @@ export function windows() {
       hasBarItem("notifications") && NotificationsListWindow();
       NotificationsWindow();
    }
-   OsdWindow();
+   if (config.osd.enabled.get()) OsdWindow();
    hasBarItem("clipboard") && ClipboardWindow();
    hasBarItem("volume") && VolumeWindow();
    hasBarItem("network") && NetworkWindow();

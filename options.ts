@@ -42,6 +42,7 @@ export const config = mkOptions(configFile, {
       height: opt(600),
    },
    osd: {
+      enabled: opt<boolean>(true),
       width: opt(300),
       position: opt<
          | "top"
