@@ -5,6 +5,8 @@ import AstalWp from "gi://AstalWp?version=0.1";
 
 export const icons = {
    search: "ds-search-symbolic",
+   settings: "ds-settings-2-symbolic",
+   clipboard: "ds-clipboard-symbolic",
    arrow: {
       left: "ds-chevron-left-symbolic",
       right: "ds-chevron-right-symbolic",

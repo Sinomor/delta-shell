@@ -1,4 +1,4 @@
-window#notifications_popup {
+window#notificationspopup {
    all: unset;
    color: $fg0;
    font-size: $font-size;
@@ -13,7 +13,7 @@ window#notifications_popup {
    }
 }
 
-window#notifications_list {
+window#notificationslist {
    all: unset;
    color: $fg0;
    font-size: $font-size;
@@ -30,58 +30,6 @@ window#notifications_list {
             rgba($window-shadow-color, $window-shadow-opacity);
       }
    }
-
-   tooltip {
-      background: rgba($bg0, $window-opacity);
-      border: $border-width solid $border-color;
-      border-radius: $widget-radius;
-      margin: 10px;
-      @if $shadow {
-         box-shadow: $window-shadow-offset
-            $window-shadow-blur
-            $window-shadow-spread
-            rgba($window-shadow-color, $window-shadow-opacity);
-      }
-   }
-
-   .list {
-      .header {
-         min-height: 0;
-      }
-   }
-
-   .notifs-clear {
-      outline: none;
-      padding: 0;
-      min-height: 40px;
-      min-width: 40px;
-      background: transparent;
-      color: $red;
-
-      &:hover {
-         transition: all $transition;
-         color: $red-light;
-      }
-
-      &:focus {
-         transition: 0s;
-         outline-offset: -$outline-width;
-         outline: $outline-width solid $outline-color;
-      }
-   }
-   .notifs-dnd {
-      outline: none;
-      padding: 0;
-      min-height: 40px;
-      min-width: 40px;
-      background: transparent;
-
-      &:focus {
-         transition: 0s;
-         outline-offset: -$outline-width;
-         outline: $outline-width solid $outline-color;
-      }
-   }
 }
 
 .notification {
@@ -94,9 +42,6 @@ window#notifications_list {
    }
 
    .header {
-      .time {
-      }
-
       .close {
          outline: none;
          color: $red;
@@ -137,6 +82,52 @@ window#notifications_list {
 
       &:hover {
          background-color: $bg3;
+      }
+   }
+}
+
+.notifications-list {
+   tooltip {
+      background: rgba($bg0, $window-opacity);
+      border: $border-width solid $border-color;
+      border-radius: $widget-radius;
+      margin: 10px;
+      @if $shadow {
+         box-shadow: $window-shadow-offset
+            $window-shadow-blur
+            $window-shadow-spread
+            rgba($window-shadow-color, $window-shadow-opacity);
+      }
+   }
+
+   .notifs-header {
+      min-height: 40px;
+      button {
+         outline: none;
+         padding: 0;
+         min-width: 40px;
+         background: transparent;
+
+         &:focus {
+            transition: 0s;
+            outline-offset: -$outline-width;
+            outline: $outline-width solid $outline-color;
+         }
+      }
+   }
+
+   .list {
+      .header {
+         min-height: 0;
+      }
+   }
+
+   .notifs-clear {
+      color: $red;
+
+      &:hover {
+         transition: all $transition;
+         color: $red-light;
       }
    }
 }

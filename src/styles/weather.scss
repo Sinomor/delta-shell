@@ -15,11 +15,9 @@ window#weather {
             rgba($window-shadow-color, $window-shadow-opacity);
       }
    }
+}
 
-   .refresh {
-      background: transparent;
-   }
-
+.weather {
    .day,
    .hour {
       min-width: 50px;
@@ -37,33 +35,5 @@ window#weather {
    .forecast {
       border-radius: $widget-radius;
       padding: 5px;
-   }
-
-   @keyframes spin {
-      to {
-         -gtk-icon-transform: rotate(1turn);
-      }
-   }
-
-   .scanning {
-      &.active {
-         animation: spin 1s linear infinite;
-      }
-   }
-
-   .header {
-      min-height: 40px;
-      button {
-         outline: none;
-         padding: 0;
-         min-width: 40px;
-         background: transparent;
-
-         &:focus {
-            transition: 0s;
-            outline-offset: -$outline-width;
-            outline: $outline-width solid $outline-color;
-         }
-      }
    }
 }

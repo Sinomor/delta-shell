@@ -1,0 +1,293 @@
+import { Gtk } from "ags/gtk4";
+import { getNetworkIconBinding, icons } from "@/src/lib/icons";
+import AstalNetwork from "gi://AstalNetwork?version=0.1";
+import AstalBluetooth from "gi://AstalBluetooth?version=0.1";
+import AstalPowerProfiles from "gi://AstalPowerProfiles?version=0.1";
+import { createBinding, createComputed, For } from "ags";
+import { resetCss } from "@/src/services/styles";
+import { QSButton } from "@/src/widgets/qsbutton";
+import { config, theme } from "@/options";
+import ScreenRecord from "@/src/services/screenrecord";
+import { timeout } from "ags/time";
+import Adw from "gi://Adw?version=1";
+import { dependencies } from "@/src/lib/utils";
+import { qs_page_set } from "../quicksettings";
+import { profiles_names } from "../../power/power";
+import WeatherService from "@/src/services/weather";
+import AstalNotifd from "gi://AstalNotifd?version=0.1";
+const network = AstalNetwork.get_default();
+const bluetooth = AstalBluetooth.get_default();
+const powerprofile = AstalPowerProfiles.get_default();
+const weather = WeatherService.get_default();
+const notifd = AstalNotifd.get_default();
+
+const Buttons = {
+   network: () => <InternetButton />,
+   bluetooth: () => (bluetooth.adapter !== null ? <BluetoothButton /> : null),
+   power: () =>
+      powerprofile.get_profiles().length !== 0 ? <PowerProfilesButton /> : null,
+   screenrecord: () =>
+      dependencies("gpu-screen-recorder") ? <ScreenRecordButton /> : null,
+   weather: () => config.weather.enabled.get() && <WeatherButton />,
+   notifications: () =>
+      config.notifications.enabled.get() && <NotificationsButton />,
+} as Record<string, any>;
+
+function PowerProfilesButton() {
+   const activeprofile = createBinding(powerprofile, "activeProfile");
+
+   return (
+      <QSButton
+         icon={activeprofile.as((profile) => icons.powerprofiles[profile])}
+         label={"Power"}
+         subtitle={activeprofile.as((profile) => profiles_names[profile])}
+         showArrow={true}
+         onClicked={() => {
+            const setprofile = activeprofile.as((profile) => {
+               if (profile == "performance" || profile == "power-saver") {
+                  return "balanced";
+               } else {
+                  return "performance";
+               }
+            });
+            powerprofile.set_active_profile(setprofile.get());
+         }}
+         onArrowClicked={() => qs_page_set("power")}
+         ArrowClasses={createBinding(powerprofile, "activeProfile").as(
+            (profile) => {
+               const classes = ["arrow"];
+               if (profile == "performance" || profile == "power-saver") {
+                  classes.push("active");
+               }
+               return classes;
+            },
+         )}
+         ButtonClasses={createBinding(powerprofile, "activeProfile").as(
+            (profile) => {
+               const classes = ["qs-button-box-arrow"];
+               if (profile == "performance" || profile == "power-saver") {
+                  classes.push("active");
+               }
+               return classes;
+            },
+         )}
+      />
+   );
+}
+
+function InternetButton() {
+   const wifi = network.wifi;
+   const wired = network.wired;
+   const enabled = createComputed(
+      [
+         createBinding(network, "primary"),
+         ...(network.wifi !== null
+            ? [createBinding(network.wifi, "enabled")]
+            : []),
+      ],
+      (primary, enabled) => {
+         if (
+            primary === AstalNetwork.Primary.WIRED &&
+            network.wired.internet === AstalNetwork.Internet.CONNECTED
+         )
+            return true;
+         return enabled;
+      },
+   );
+   const subtitle = createComputed(
+      [
+         createBinding(network, "primary"),
+         createBinding(network, "connectivity"),
+      ],
+      (primary, connectivity) => {
+         if (primary === AstalNetwork.Primary.WIRED) {
+            if (wired.internet === AstalNetwork.Internet.CONNECTED) {
+               return "Wired";
+            }
+         }
+         if (primary === AstalNetwork.Primary.WIFI) {
+            return wifi.ssid;
+         }
+         return "unknown";
+      },
+   );
+
+   return (
+      <QSButton
+         icon={getNetworkIconBinding()}
+         label={"Internet"}
+         subtitle={subtitle((text) => (text !== "unknown" ? text : "None"))}
+         onClicked={() => {
+            if (
+               network.primary === AstalNetwork.Primary.WIFI ||
+               network.primary === AstalNetwork.Primary.UNKNOWN
+            ) {
+               wifi.set_enabled(!wifi.enabled);
+            }
+         }}
+         onArrowClicked={() => {
+            wifi.scan();
+            qs_page_set("network");
+         }}
+         showArrow={network.wifi !== null}
+         ArrowClasses={enabled.as((p) => {
+            const classes = ["arrow"];
+            p && classes.push("active");
+            return classes;
+         })}
+         ButtonClasses={enabled.as((p) => {
+            const classes = ["qs-button-box-arrow"];
+            p && classes.push("active");
+            return classes;
+         })}
+      />
+   );
+}
+
+function ScreenRecordButton() {
+   const screenRecord = ScreenRecord.get_default();
+
+   return (
+      <QSButton
+         icon={icons.video}
+         label={"Screen Record"}
+         onClicked={() => {
+            if (screenRecord.recording) screenRecord.stop();
+            else screenRecord.start();
+         }}
+         ButtonClasses={createBinding(screenRecord, "recording").as((p) => {
+            const classes = ["qs-button-box"];
+            p && classes.push("active");
+            return classes;
+         })}
+      />
+   );
+}
+
+function BluetoothButton() {
+   const powered = createBinding(bluetooth, "isPowered");
+   const deviceConnected = createComputed(
+      [
+         createBinding(bluetooth, "devices"),
+         createBinding(bluetooth, "isConnected"),
+      ],
+      (d, _) => {
+         for (const device of d) {
+            if (device.connected) return device.name;
+         }
+         return "No device";
+      },
+   );
+
+   return (
+      <QSButton
+         icon={icons.bluetooth}
+         label={"Bluetooth"}
+         subtitle={deviceConnected((text) =>
+            text !== "No device" ? text : "None",
+         )}
+         showArrow={true}
+         onClicked={() => bluetooth.toggle()}
+         onArrowClicked={() => qs_page_set("bluetooth")}
+         ArrowClasses={powered.as((p) => {
+            const classes = ["arrow"];
+            p && classes.push("active");
+            return classes;
+         })}
+         ButtonClasses={powered.as((p) => {
+            const classes = ["qs-button-box-arrow"];
+            p && classes.push("active");
+            return classes;
+         })}
+      />
+   );
+}
+
+function WeatherButton() {
+   const temp = createComputed(
+      [weather.data, weather.running],
+      (data, running) => {
+         if (!data) return "None";
+
+         const current = data.hourly[0];
+         return running
+            ? `${current.temperature}${current.units.temperature}`
+            : "None";
+      },
+   );
+
+   const icon = weather.data.as((data) => {
+      if (!data) return icons.weather.clear.day;
+
+      const current = data.hourly[0];
+      return current.icon;
+   });
+
+   return (
+      <QSButton
+         icon={icon.as((icon) => icon)}
+         label={"Weather"}
+         subtitle={temp.as((temp) => (temp !== "None" ? temp : "None"))}
+         showArrow={true}
+         onClicked={() => weather.toggle()}
+         onArrowClicked={() => qs_page_set("weather")}
+         ArrowClasses={weather.running.as((p) => {
+            const classes = ["arrow"];
+            p && classes.push("active");
+            return classes;
+         })}
+         ButtonClasses={weather.running.as((p) => {
+            const classes = ["qs-button-box-arrow"];
+            p && classes.push("active");
+            return classes;
+         })}
+      />
+   );
+}
+
+function NotificationsButton() {
+   const enabled = createBinding(notifd, "dontDisturb");
+   return (
+      <QSButton
+         icon={icons.bell}
+         label={"Notifications"}
+         subtitle={createBinding(notifd, "notifications").as((notifs) =>
+            notifs.length === 0 ? "None" : notifs.length.toString(),
+         )}
+         showArrow={true}
+         onClicked={() => notifd.set_dont_disturb(!notifd.dontDisturb)}
+         onArrowClicked={() => qs_page_set("notificationslist")}
+         ArrowClasses={enabled.as((p) => {
+            const classes = ["arrow"];
+            !p && classes.push("active");
+            return classes;
+         })}
+         ButtonClasses={enabled.as((p) => {
+            const classes = ["qs-button-box-arrow"];
+            !p && classes.push("active");
+            return classes;
+         })}
+      />
+   );
+}
+
+export function Qs_Buttons() {
+   const getVisibleButtons = () =>
+      config.quicksettings.buttons
+         .get()
+         .map((button) => Buttons[button]?.())
+         .filter(Boolean);
+
+   return (
+      <Adw.WrapBox
+         class={"qs-buttons"}
+         child_spacing={theme.spacing}
+         lineSpacing={theme.spacing}
+         widthRequest={440 - theme.window.padding.get() * 2}
+         naturalLineLength={440 - theme.window.padding.get() * 2}
+      >
+         {getVisibleButtons()}
+         {getVisibleButtons().length % 2 !== 0 && <box widthRequest={200} />}
+      </Adw.WrapBox>
+   );
+}

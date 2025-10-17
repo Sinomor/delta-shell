@@ -30,6 +30,9 @@ export const config = mkOptions(configFile, {
          format: opt("%b %d  %H:%M"),
       },
    },
+   quicksettings: {
+      buttons: opt(["network", "bluetooth", "notifications", "screenrecord"]),
+   },
    launcher: {
       clipboard: {
          max_items: opt(50),
@@ -39,6 +42,7 @@ export const config = mkOptions(configFile, {
       height: opt(600),
    },
    osd: {
+      enabled: opt<boolean>(true),
       width: opt(300),
       position: opt<
          | "top"

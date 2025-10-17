@@ -1,0 +1,18 @@
+window#bluetooth {
+   all: unset;
+   color: $fg0;
+   font-size: $font-size;
+
+   .main {
+      background: rgba($bg0, $window-opacity);
+      border: $window-border-width solid $window-border-color;
+      padding: $window-padding;
+      border-radius: $window-radius;
+      @if $shadow {
+         box-shadow: $window-shadow-offset
+            $window-shadow-blur
+            $window-shadow-spread
+            rgba($window-shadow-color, $window-shadow-opacity);
+      }
+   }
+}

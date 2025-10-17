@@ -1,70 +1,89 @@
-import Bar from "./src/widgets/bar/bar";
-import OSD from "./src/widgets/osd/osd";
-import Launcher from "./src/widgets/launcher/launcher";
-import Control, { control_page_set } from "./src/widgets/control/control";
-import Calendar from "./src/widgets/calendar/calendar";
-import Powermenu from "./src/widgets/powermenu/powermenu";
-import Verification from "./src/widgets/powermenu/verification";
-import { NotificationPopup } from "./src/widgets/notifications/notificationpopup";
+import { BarShadowWindow, BarWindow } from "./src/windows/bar";
 import app from "ags/gtk4/app";
-import Weather from "./src/widgets/weather/weather";
-import BarShadow from "./src/widgets/bar/shadow";
 import { config, theme } from "./options";
-import NotificationsList from "./src/widgets/notifications/notificationslist";
 import { createBinding, For, onCleanup, This } from "ags";
 import { Gtk } from "ags/gtk4";
+import { qs_page_set } from "./src/modules/quicksettings/quicksettings";
+import { WeatherWindow } from "./src/windows/weather";
+import { QuickSettingsWindow } from "./src/windows/quicksettings";
+import { CalendarWindow } from "./src/windows/calendar";
+import { PowerMenuWindow, VerificationWindow } from "./src/windows/powermenu";
+import { OsdWindow } from "./src/windows/osd";
+import { NotificationsListWindow } from "./src/windows/notificationslist";
+import { NotificationsWindow } from "./src/windows/notifications";
+import { VolumeWindow } from "./src/windows/volume";
+import { NetworkWindow } from "./src/windows/network";
+import { BluetoothWindow } from "./src/windows/bluetooth";
+import { PowerWindow } from "./src/windows/power";
+import { hasBarItem } from "./src/lib/utils";
+import { ClipboardWindow } from "./src/windows/clipboard";
+import { AppLauncherWindow } from "./src/windows/applauncher";
 
 export const windows_names = {
    bar: "bar",
    bar_shadow: "bar_shadow",
-   launcher: "launcher",
-   notifications_popup: "notifications_popup",
-   control: "control",
+   applauncher: "applauncher",
+   notifications_popup: "notificationspopup",
+   quicksettings: "quicksettings",
    osd: "osd",
    powermenu: "powermenu",
    verification: "verification",
    weather: "weather",
    calendar: "calendar",
-   notifications_list: "notifications_list",
+   notifications_list: "notificationslist",
+   volume: "volume",
+   network: "network",
+   bluetooth: "bluetooth",
+   power: "power",
+   clipboard: "clipboard",
 };
 
 export function hide_all_windows() {
-   app.get_window(windows_names.launcher)?.hide();
+   app.get_window(windows_names.applauncher)?.hide();
    app.get_window(windows_names.powermenu)?.hide();
    app.get_window(windows_names.verification)?.hide();
    app.get_window(windows_names.calendar)?.hide();
-   app.get_window(windows_names.control)?.hide();
+   app.get_window(windows_names.quicksettings)?.hide();
+   app.get_window(windows_names.volume)?.hide();
+   app.get_window(windows_names.network)?.hide();
+   app.get_window(windows_names.bluetooth)?.hide();
+   app.get_window(windows_names.power)?.hide();
+   app.get_window(windows_names.clipboard)?.hide();
    config.weather.enabled.get() &&
       app.get_window(windows_names.weather)?.hide();
    config.notifications.enabled.get() &&
       app.get_window(windows_names.notifications_list)?.hide();
-   control_page_set("main");
+   qs_page_set("main");
 }
 
 export function windows() {
-   Launcher();
-   Control();
-   Calendar();
-   Powermenu();
-   Verification();
-   if (config.weather.enabled.get()) Weather();
+   AppLauncherWindow();
+   QuickSettingsWindow();
+   CalendarWindow();
+   PowerMenuWindow();
+   VerificationWindow();
+   if (config.weather.enabled.get()) hasBarItem("weather") && WeatherWindow();
    if (config.notifications.enabled.get()) {
-      NotificationsList();
-      NotificationPopup();
+      hasBarItem("notifications") && NotificationsListWindow();
+      NotificationsWindow();
    }
-   OSD();
-
+   if (config.osd.enabled.get()) OsdWindow();
+   ClipboardWindow();
+   hasBarItem("volume") && VolumeWindow();
+   hasBarItem("network") && NetworkWindow();
+   hasBarItem("bluetooth") && BluetoothWindow();
+   hasBarItem("battery") && PowerWindow();
    const monitors = createBinding(app, "monitors");
 
    <For each={monitors}>
       {(monitor) => (
          <This this={app}>
-            <Bar
+            <BarWindow
                gdkmonitor={monitor}
                $={(self) => onCleanup(() => self.destroy())}
             />
             {theme.shadow.get() && (
-               <BarShadow
+               <BarShadowWindow
                   gdkmonitor={monitor}
                   $={(self) => onCleanup(() => self.destroy())}
                />

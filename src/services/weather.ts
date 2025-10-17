@@ -55,6 +55,7 @@ export default class WeatherService extends GObject.Object {
       return this.instance;
    }
 
+   #running = createState<boolean>(false);
    #location = createState<LocationData | null>(null);
    #data = createState<WeatherData | null>(null);
    #interval: any = null;
@@ -68,6 +69,7 @@ export default class WeatherService extends GObject.Object {
    async start() {
       if (config.weather.enabled.get()) {
          this.updateLocation();
+         this.#running[1](true);
          this.#location[0].subscribe(() => this.update());
          this.#interval = interval(5 * 60 * 1000, () => {
             this.update();
@@ -77,8 +79,19 @@ export default class WeatherService extends GObject.Object {
 
    async stop() {
       if (this.#interval) {
+         this.#running[1](false);
          this.#interval.cancel();
+         this.#interval = null;
       }
+   }
+
+   toggle() {
+      if (this.#interval !== null) this.stop();
+      else this.start();
+   }
+
+   get running() {
+      return this.#running[0];
    }
 
    get location() {

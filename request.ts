@@ -1,9 +1,8 @@
 import app from "ags/gtk4/app";
 import ScreenRecord from "./src/services/screenrecord";
 import { hide_all_windows, windows_names } from "./windows";
-import { toggleWindow } from "./src/lib/utils";
+import { hasBarItem, toggleQsModule, toggleWindow } from "./src/lib/utils";
 import { config } from "./options";
-import { launcher_page_set } from "./src/widgets/launcher/launcher";
 const screenrecord = ScreenRecord.get_default();
 
 export default function request(
@@ -13,21 +12,14 @@ export default function request(
    if (args[0] == "toggle" && args[1]) {
       switch (args[1]) {
          case "applauncher":
-            if (!app.get_window(windows_names.launcher)?.visible)
+            if (!app.get_window(windows_names.applauncher)?.visible)
                hide_all_windows();
-            launcher_page_set("apps");
-            toggleWindow(windows_names.launcher);
+            toggleWindow(windows_names.applauncher);
             break;
-         case "clipboard":
-            if (!app.get_window(windows_names.launcher)?.visible)
+         case "quicksettings":
+            if (!app.get_window(windows_names.quicksettings)?.visible)
                hide_all_windows();
-            launcher_page_set("clipboard");
-            toggleWindow(windows_names.launcher);
-            break;
-         case "control":
-            if (!app.get_window(windows_names.control)?.visible)
-               hide_all_windows();
-            toggleWindow(windows_names.control);
+            toggleWindow(windows_names.quicksettings);
             break;
          case "calendar":
             if (!app.get_window(windows_names.calendar)?.visible)
@@ -39,15 +31,28 @@ export default function request(
                hide_all_windows();
             toggleWindow(windows_names.powermenu);
             break;
-         case "weather":
-            if (!app.get_window(windows_names.weather)?.visible)
+         case "clipboard":
+            if (!app.get_window(windows_names.clipboard)?.visible)
                hide_all_windows();
-            toggleWindow(windows_names.weather);
+            toggleWindow(windows_names.clipboard);
             break;
-         case "notifications_list":
-            if (!app.get_window(windows_names.notifications_list)?.visible)
-               hide_all_windows();
-            toggleWindow(windows_names.notifications_list);
+         case "weather":
+            toggleQsModule("weather");
+            break;
+         case "notificationslist":
+            toggleQsModule("notificationslist");
+            break;
+         case "volume":
+            toggleQsModule("volume");
+            break;
+         case "network":
+            toggleQsModule("network");
+            break;
+         case "bluetooth":
+            toggleQsModule("bluetooth");
+            break;
+         case "power":
+            toggleQsModule("power");
             break;
          default:
             print("Unknown request:", request);

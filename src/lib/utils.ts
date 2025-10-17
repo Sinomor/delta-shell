@@ -1,8 +1,13 @@
+import { hide_all_windows, windows_names } from "@/windows";
 import { Gdk, Gtk } from "ags/gtk4";
 import app from "ags/gtk4/app";
 import { exec, execAsync } from "ags/process";
 import Gio from "gi://Gio?version=2.0";
 import GLib from "gi://GLib?version=2.0";
+import { qs_page_set } from "../modules/quicksettings/quicksettings";
+import { createComputed } from "gnim";
+import { config } from "@/options";
+import AstalApps from "gi://AstalApps?version=0.1";
 
 export const cacheDir = `${GLib.get_user_cache_dir()}/delta-shell`;
 
@@ -216,4 +221,137 @@ export function attachHoverScroll(box: Gtk.Box, onScroll: ScrollHandler) {
    // Bubble phase usually works best so children get first crack at events
    scrollCtrl.set_propagation_phase(Gtk.PropagationPhase.BUBBLE);
    box.add_controller(scrollCtrl);
+}
+
+export function hasBarItem(module: string) {
+   return createComputed(
+      [
+         config.bar.modules.start,
+         config.bar.modules.center,
+         config.bar.modules.end,
+      ],
+      (start, center, end) => {
+         return (
+            start.includes(module) ||
+            center.includes(module) ||
+            end.includes(module)
+         );
+      },
+   ).get();
+}
+
+export function toggleQsModule(name: string) {
+   if (hasBarItem(name)) {
+      const windowName = windows_names[name as keyof typeof windows_names];
+      if (!app.get_window(windowName)?.visible) {
+         hide_all_windows();
+      }
+      toggleWindow(windowName);
+   } else {
+      if (!app.get_window(windows_names.quicksettings)?.visible) {
+         hide_all_windows();
+      }
+      qs_page_set(name);
+      toggleWindow(windows_names.quicksettings);
+   }
+}
+
+const appInfoCache = new Map<string, any>();
+const MAX_CACHE_SIZE = 50;
+
+let appManager: AstalApps.Apps | null = null;
+const getAppManager = () => {
+   if (!appManager) {
+      appManager = new AstalApps.Apps();
+   }
+   return appManager;
+};
+
+export function getAppInfo(appId: string) {
+   if (!appId) return null;
+
+   // Check cache first
+   if (appInfoCache.has(appId)) {
+      return appInfoCache.get(appId);
+   }
+
+   // Use the single app manager instance
+   const appList = getAppManager().get_list();
+   for (const app of appList) {
+      if (
+         app.entry.toLowerCase().includes(appId.toLowerCase()) ||
+         app.iconName === appId ||
+         app.name === appId ||
+         app.wm_class === appId
+      ) {
+         // Limit cache size
+         if (appInfoCache.size >= MAX_CACHE_SIZE) {
+            const firstKey = appInfoCache.keys().next().value;
+            if (firstKey) {
+               appInfoCache.delete(firstKey);
+            }
+         }
+         appInfoCache.set(appId, app);
+         return app;
+      }
+   }
+
+   const commonKeywords = [
+      "browser",
+      "web",
+      "music",
+      "media",
+      "video",
+      "audio",
+      "terminal",
+      "editor",
+      "code",
+      "chat",
+      "mail",
+      "photo",
+      "image",
+      "settings",
+      "control",
+   ];
+
+   for (const keyword of commonKeywords) {
+      if (appId.toLowerCase().includes(keyword)) {
+         const keywordResults = getAppManager().fuzzy_query(keyword);
+         if (keywordResults.length > 0) {
+            // Limit cache size
+            if (appInfoCache.size >= MAX_CACHE_SIZE) {
+               const firstKey = appInfoCache.keys().next().value;
+               if (firstKey) {
+                  appInfoCache.delete(firstKey);
+               }
+            }
+            appInfoCache.set(appId, keywordResults[0]);
+            return keywordResults[0];
+         }
+      }
+   }
+
+   // Cache null result to avoid repeated failed lookups
+   if (appInfoCache.size >= MAX_CACHE_SIZE) {
+      const firstKey = appInfoCache.keys().next().value;
+      if (firstKey) {
+         appInfoCache.delete(firstKey);
+      }
+   }
+   appInfoCache.set(appId, null);
+   return null;
+}
+
+export function lengthStr(length: number) {
+   const hours = Math.floor(length / 3600);
+   const minutes = Math.floor((length % 3600) / 60);
+   const seconds = Math.floor(length % 60);
+
+   const min0 = minutes < 10 ? "0" : "";
+   const sec0 = seconds < 10 ? "0" : "";
+
+   if (hours > 0) {
+      return `${hours}:${min0}${minutes}:${sec0}${seconds}`;
+   }
+   return `${minutes}:${sec0}${seconds}`;
 }
