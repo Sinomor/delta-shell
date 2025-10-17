@@ -31,7 +31,7 @@ const list = ["Sleep", "Logout", "Reboot", "Shutdown"];
 
 export function PowerMenuModule() {
    return (
-      <box class={"main"} spacing={theme.spacing}>
+      <box spacing={theme.spacing}>
          {list.map((value) => (
             <MenuButton
                icon={icons.powermenu[value.toLowerCase()]}

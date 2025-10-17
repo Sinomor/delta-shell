@@ -29,18 +29,6 @@ window#quicksettings {
       }
    }
 
-   @keyframes spin {
-      to {
-         -gtk-icon-transform: rotate(1turn);
-      }
-   }
-
-   .scanning {
-      &.active {
-         animation: spin 1s linear infinite;
-      }
-   }
-
    .qs-main-page {
       .header {
          min-height: 50px;
@@ -137,11 +125,11 @@ window#quicksettings {
 
       .slider-button {
          border-radius: $widget-radius;
-         background: $bg1;
+         background: rgba($bg1, $window-opacity);
          outline: none;
 
          &:hover {
-            background: $bg2;
+            background: rgba($bg2, $window-opacity);
          }
          &:focus {
             transition: 0s;
@@ -255,76 +243,94 @@ window#quicksettings {
          }
       }
    }
+}
 
-   .qs-menu-page {
-      button {
+.network,
+.bluetooth,
+.power,
+.weather,
+.qs-menu-page {
+   @keyframes spin {
+      to {
+         -gtk-icon-transform: rotate(1turn);
+      }
+   }
+
+   .scanning {
+      &.active {
+         animation: spin 1s linear infinite;
+      }
+   }
+
+   button {
+      outline: none;
+      font-weight: normal;
+   }
+
+   .list {
+      .header {
+         min-height: 0;
+      }
+   }
+
+   .header,
+   .notifs-header {
+      min-height: 40px;
+      border-radius: $widget-radius;
+      background: transparent;
+
+      .toggle {
+         all: unset;
+         padding: 0;
          outline: none;
-         font-weight: normal;
-      }
+         min-height: 20px;
+         min-width: 45px;
 
-      .list {
-         .header {
-            min-height: 0;
+         &:checked {
+            background: rgba($accent, $window-opacity);
+         }
+
+         slider {
+            background: rgba($fg0, $window-opacity);
+            margin: 4px;
+            box-shadow: none;
+         }
+
+         &:focus {
+            transition: 0s;
+            outline-offset: -$outline-width + 6px;
+            outline: $outline-width solid $outline-color;
          }
       }
 
-      .header,
-      .notifs-header {
-         min-height: 40px;
-         border-radius: $widget-radius;
+      .qs-header-button {
          background: transparent;
-
-         .toggle {
-            padding: 0;
-            outline: none;
-            min-height: 20px;
-            min-width: 45px;
-
-            &:checked {
-               background: $accent;
-            }
-
-            slider {
-               margin: 4px;
-               box-shadow: none;
-            }
-
-            &:focus {
-               transition: 0s;
-               outline-offset: -$outline-width + 6px;
-               outline: $outline-width solid $outline-color;
-            }
-         }
-
-         .qs-header-button {
-            background: transparent;
-            border-radius: $widget-radius;
-            min-width: 40px;
-            padding: 0;
-
-            &:focus {
-               transition: 0s;
-               outline-offset: -$outline-width;
-               outline: $outline-width solid $outline-color;
-            }
-         }
-      }
-
-      .page-button {
-         background: transparent;
-         min-height: 50px;
-         padding: 0 10px;
          border-radius: $widget-radius;
-
-         &:hover {
-            background: rgba($bg1, $window-opacity);
-         }
+         min-width: 40px;
+         padding: 0;
 
          &:focus {
             transition: 0s;
             outline-offset: -$outline-width;
             outline: $outline-width solid $outline-color;
          }
+      }
+   }
+
+   .page-button {
+      background: transparent;
+      min-height: 50px;
+      padding: 0 10px;
+      border-radius: $widget-radius;
+
+      &:hover {
+         background: rgba($bg1, $window-opacity);
+      }
+
+      &:focus {
+         transition: 0s;
+         outline-offset: -$outline-width;
+         outline: $outline-width solid $outline-color;
       }
    }
 }

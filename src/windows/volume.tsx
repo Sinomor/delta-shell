@@ -5,9 +5,7 @@ import { VolumeModule } from "../modules/volume/volume";
 export function VolumeWindow() {
    return (
       <BarItemPopup name={windows_names.volume} module={"volume"}>
-         <box class={"main"}>
-            <VolumeModule />
-         </box>
+         <VolumeModule />
       </BarItemPopup>
    );
 }

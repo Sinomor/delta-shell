@@ -5,7 +5,7 @@ import { createComputed, createState, For, onCleanup } from "ags";
 import { hide_all_windows, windows_names } from "@/windows";
 import { config, theme } from "@/options";
 import { AppButton } from "./appbutton";
-import { launcher_page } from "./launcher";
+const { width } = config.launcher;
 
 const apps = new Apps.Apps();
 const [text, text_set] = createState("");
@@ -33,9 +33,8 @@ function Entry() {
             appconnect = app.connect("window-toggled", async (_, win) => {
                const winName = win.name;
                const visible = win.visible;
-               const mode = launcher_page.get() == "apps";
 
-               if (winName == windows_names.launcher && visible && mode) {
+               if (winName == windows_names.applauncher && visible) {
                   scrolled.set_vadjustment(null);
                   await apps.reload();
                   text_set("");
@@ -93,8 +92,7 @@ function NotFound() {
 export function AppLauncherModule() {
    return (
       <box
-         name={"apps"}
-         $type="named"
+         widthRequest={width.get() - theme.window.padding.get() * 2}
          orientation={Gtk.Orientation.VERTICAL}
          vexpand
          spacing={theme.spacing}

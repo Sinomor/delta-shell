@@ -10,7 +10,7 @@ const powermenu = Powermenu.get_default();
 
 export function VerificationModule() {
    return (
-      <box class={"main"} orientation={Gtk.Orientation.VERTICAL} spacing={20}>
+      <box orientation={Gtk.Orientation.VERTICAL} spacing={20}>
          <label label={createBinding(powermenu, "title")} class={"title"} />
          <Adw.Clamp maximumSize={280}>
             <label

@@ -2,7 +2,7 @@ import AstalNotifd from "gi://AstalNotifd?version=0.1";
 import { Gdk, Gtk } from "ags/gtk4";
 import { icons } from "@/src/lib/icons";
 import { createBinding, For } from "ags";
-import { theme } from "@/options";
+import { config, theme } from "@/options";
 import { Notification } from "./notification";
 import { qs_page_set } from "../quicksettings/quicksettings";
 const notifd = AstalNotifd.get_default();
@@ -93,17 +93,15 @@ function List() {
 }
 
 export function NotificationsListModule({
-   width,
    showArrow = false,
 }: {
-   width: number;
    showArrow?: boolean;
 }) {
    return (
       <box
          spacing={theme.spacing}
          orientation={Gtk.Orientation.VERTICAL}
-         widthRequest={width}
+         widthRequest={config.notifications.width}
          class={"notifications-list"}
       >
          <Header showArrow={showArrow} />

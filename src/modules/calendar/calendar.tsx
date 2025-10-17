@@ -4,7 +4,6 @@ import { Gtk } from "ags/gtk4";
 import { createComputed, createState, For } from "ags";
 import { hide_all_windows, windows_names } from "@/windows";
 import { config, theme } from "@/options";
-import { PopupWindow } from "@/src/widgets/common/popupwindow";
 
 type Day = {
    day: string;
@@ -158,7 +157,6 @@ export function CalendarModule() {
 
    return (
       <box
-         class={"main"}
          $={(self) => {
             self.connect("map", () => {
                shiftCalendarXMonths(0);

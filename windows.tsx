@@ -9,7 +9,6 @@ import { QuickSettingsWindow } from "./src/windows/quicksettings";
 import { CalendarWindow } from "./src/windows/calendar";
 import { PowerMenuWindow, VerificationWindow } from "./src/windows/powermenu";
 import { OsdWindow } from "./src/windows/osd";
-import { LauncherWindow } from "./src/windows/launcher";
 import { NotificationsListWindow } from "./src/windows/notificationslist";
 import { NotificationsWindow } from "./src/windows/notifications";
 import { VolumeWindow } from "./src/windows/volume";
@@ -18,19 +17,20 @@ import { BluetoothWindow } from "./src/windows/bluetooth";
 import { PowerWindow } from "./src/windows/power";
 import { hasBarItem } from "./src/lib/utils";
 import { ClipboardWindow } from "./src/windows/clipboard";
+import { AppLauncherWindow } from "./src/windows/applauncher";
 
 export const windows_names = {
    bar: "bar",
    bar_shadow: "bar_shadow",
-   launcher: "launcher",
-   notifications_popup: "notifications_popup",
+   applauncher: "applauncher",
+   notifications_popup: "notificationspopup",
    quicksettings: "quicksettings",
    osd: "osd",
    powermenu: "powermenu",
    verification: "verification",
    weather: "weather",
    calendar: "calendar",
-   notifications_list: "notifications_list",
+   notifications_list: "notificationslist",
    volume: "volume",
    network: "network",
    bluetooth: "bluetooth",
@@ -39,7 +39,7 @@ export const windows_names = {
 };
 
 export function hide_all_windows() {
-   app.get_window(windows_names.launcher)?.hide();
+   app.get_window(windows_names.applauncher)?.hide();
    app.get_window(windows_names.powermenu)?.hide();
    app.get_window(windows_names.verification)?.hide();
    app.get_window(windows_names.calendar)?.hide();
@@ -57,7 +57,7 @@ export function hide_all_windows() {
 }
 
 export function windows() {
-   LauncherWindow();
+   AppLauncherWindow();
    QuickSettingsWindow();
    CalendarWindow();
    PowerMenuWindow();
@@ -68,11 +68,11 @@ export function windows() {
       NotificationsWindow();
    }
    if (config.osd.enabled.get()) OsdWindow();
-   hasBarItem("clipboard") && ClipboardWindow();
+   ClipboardWindow();
    hasBarItem("volume") && VolumeWindow();
    hasBarItem("network") && NetworkWindow();
    hasBarItem("bluetooth") && BluetoothWindow();
-   hasBarItem("power") && PowerWindow();
+   hasBarItem("battery") && PowerWindow();
    const monitors = createBinding(app, "monitors");
 
    <For each={monitors}>

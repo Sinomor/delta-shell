@@ -72,7 +72,7 @@ export function WeatherModule({ showArrow = false }: { showArrow?: boolean }) {
       <box
          class={"weather"}
          spacing={theme.spacing}
-         widthRequest={340}
+         widthRequest={345 - theme.window.padding.get() * 2}
          heightRequest={550}
          orientation={Gtk.Orientation.VERTICAL}
       >

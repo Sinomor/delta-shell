@@ -28,8 +28,9 @@ const Buttons = {
       powerprofile.get_profiles().length !== 0 ? <PowerProfilesButton /> : null,
    screenrecord: () =>
       dependencies("gpu-screen-recorder") ? <ScreenRecordButton /> : null,
-   weather: () => <WeatherButton />,
-   notifications: () => <NotificationsButton />,
+   weather: () => config.weather.enabled.get() && <WeatherButton />,
+   notifications: () =>
+      config.notifications.enabled.get() && <NotificationsButton />,
 } as Record<string, any>;
 
 function PowerProfilesButton() {
@@ -255,7 +256,7 @@ function NotificationsButton() {
          )}
          showArrow={true}
          onClicked={() => notifd.set_dont_disturb(!notifd.dontDisturb)}
-         onArrowClicked={() => qs_page_set("notifications")}
+         onArrowClicked={() => qs_page_set("notificationslist")}
          ArrowClasses={enabled.as((p) => {
             const classes = ["arrow"];
             !p && classes.push("active");

@@ -1,4 +1,4 @@
-window#notifications_popup {
+window#notificationspopup {
    all: unset;
    color: $fg0;
    font-size: $font-size;
@@ -13,7 +13,7 @@ window#notifications_popup {
    }
 }
 
-window#notifications_list {
+window#notificationslist {
    all: unset;
    color: $fg0;
    font-size: $font-size;
@@ -42,9 +42,6 @@ window#notifications_list {
    }
 
    .header {
-      .time {
-      }
-
       .close {
          outline: none;
          color: $red;

@@ -7,9 +7,7 @@ export function PowerPage() {
       <box
          $type={"named"}
          name={"power"}
-         heightRequest={500}
-         widthRequest={410}
-         cssClasses={["qs-menu-page", "bluetooth-page"]}
+         class={"qs-menu-page"}
          orientation={Gtk.Orientation.VERTICAL}
          spacing={theme.spacing}
       >

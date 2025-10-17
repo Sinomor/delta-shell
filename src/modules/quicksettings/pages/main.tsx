@@ -22,7 +22,7 @@ function Power() {
          focusOnClick={false}
          onClicked={() => {
             toggleWindow(windows_names.powermenu);
-            toggleWindow(windows_names.control);
+            toggleWindow(windows_names.quicksettings);
          }}
       >
          <image iconName={icons.powermenu.shutdown} pixelSize={20} />
@@ -81,7 +81,7 @@ export function MainPage() {
       <box
          $type={"named"}
          name={"main"}
-         cssClasses={["qs-main-page", "wifi-page"]}
+         class={"qs-main-page"}
          orientation={Gtk.Orientation.VERTICAL}
          spacing={theme.spacing}
       >

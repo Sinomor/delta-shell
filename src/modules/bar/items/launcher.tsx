@@ -6,24 +6,21 @@ import BarItem from "@/src/widgets/baritem";
 import { hide_all_windows, windows_names } from "@/windows";
 import { hasBarItem, toggleWindow } from "@/src/lib/utils";
 import { config } from "@/options";
-import { launcher_page_set } from "../../launcher/launcher";
 
 export function Launcher() {
    return (
       <BarItem
-         window={windows_names.launcher}
+         window={windows_names.applauncher}
          onPrimaryClick={() => {
-            if (!app.get_window(windows_names.launcher)?.visible)
+            if (!app.get_window(windows_names.applauncher)?.visible)
                hide_all_windows();
-            launcher_page_set("apps");
-            toggleWindow(windows_names.launcher);
+            toggleWindow(windows_names.applauncher);
          }}
          onSecondaryClick={() => {
             if (!hasBarItem("clipboard")) {
-               if (!app.get_window(windows_names.launcher)?.visible)
+               if (!app.get_window(windows_names.clipboard)?.visible)
                   hide_all_windows();
-               launcher_page_set("clipboard");
-               toggleWindow(windows_names.launcher);
+               toggleWindow(windows_names.clipboard);
             }
          }}
       >

@@ -147,8 +147,8 @@ export function BluetoothModule({
    return (
       <box
          class={"bluetooth"}
-         heightRequest={500}
-         widthRequest={410}
+         heightRequest={500 - theme.window.padding.get() * 2}
+         widthRequest={410 - theme.window.padding.get() * 2}
          orientation={Gtk.Orientation.VERTICAL}
          spacing={theme.spacing}
       >

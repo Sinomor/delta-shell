@@ -1,18 +1,18 @@
 import { windows_names } from "@/windows";
 import { BarItemPopup } from "../widgets/baritempopup";
 import { config } from "@/options";
-import { LauncherModule } from "../modules/launcher/launcher";
+import { AppLauncherModule } from "../modules/applauncher/applauncher";
 const { width, height } = config.launcher;
 
-export function LauncherWindow() {
+export function AppLauncherWindow() {
    return (
       <BarItemPopup
-         name={windows_names.launcher}
+         name={windows_names.applauncher}
          module={"launcher"}
          width={width.get()}
          height={height.get()}
       >
-         <LauncherModule />
+         <AppLauncherModule />
       </BarItemPopup>
    );
 }

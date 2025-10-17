@@ -16,9 +16,7 @@ export function NotificationsListWindow() {
          width={width}
          height={height.get()}
       >
-         <box class={"main"}>
-            <NotificationsListModule width={width} />
-         </box>
+         <NotificationsListModule />
       </BarItemPopup>
    );
 }

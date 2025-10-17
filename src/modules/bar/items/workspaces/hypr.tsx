@@ -32,7 +32,7 @@ function AppButton({ client }: AppButtonProps) {
    );
 
    const appInfo = getAppInfo(client.class);
-   const iconName = apps_icons[client.class] || icons.apps_default;
+   const iconName = apps_icons[client.class] || appInfo.iconName;
 
    return (
       <box cssClasses={classes}>
@@ -84,10 +84,8 @@ function WorkspaceButton({ ws }: { ws: AstalHyprland.Workspace }) {
          <label class={"workspace"} label={ws.id.toString()} />
          {config.bar.workspaces.taskbar.get() && (
             <For
-               each={createBinding(hyprland, "clients").as((clients) =>
-                  clients
-                     .filter((w) => w.workspace.id == ws.id)
-                     .sort((a, b) => a.pid - b.pid),
+               each={createBinding(ws, "clients").as((clients) =>
+                  clients.sort((a, b) => a.pid - b.pid),
                )}
             >
                {(client: AstalHyprland.Client) => <AppButton client={client} />}

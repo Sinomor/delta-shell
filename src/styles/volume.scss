@@ -21,10 +21,10 @@ window#volume {
    .dropdown {
       font-weight: normal;
       outline: none;
-      background: $bg1;
+      background: rgba($bg1, $window-opacity);
 
       &:hover {
-         background: $bg2;
+         background: rgba($bg2, $window-opacity);
          transition: background $transition;
       }
 
@@ -36,14 +36,6 @@ window#volume {
    }
 
    .slider-box {
-      border-radius: $widget-radius;
-
-      image {
-         color: get-contrast-color($accent, $fg0, $bg0);
-         padding-left: 10px;
-         border-radius: $widget-radius;
-      }
-
       scale {
          padding: 0;
 

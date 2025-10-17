@@ -86,8 +86,8 @@ export function PowerModule({ showArrow = false }: { showArrow?: boolean }) {
    return (
       <box
          class={"power"}
-         heightRequest={500}
-         widthRequest={410}
+         heightRequest={500 - theme.window.padding.get() * 2}
+         widthRequest={410 - theme.window.padding.get() * 2}
          cssClasses={["qs-menu-page", "bluetooth-page"]}
          orientation={Gtk.Orientation.VERTICAL}
          spacing={theme.spacing}

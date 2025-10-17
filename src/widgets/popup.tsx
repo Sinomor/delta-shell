@@ -81,6 +81,7 @@ export function Popup({
             onPressed={({ widget }, _, x, y) => {
                const [, rect] = children.compute_bounds(widget);
                const position = new Graphene.Point({ x, y });
+               console.log(rect.get_width(), rect.get_height());
 
                if (!rect.contains_point(position)) {
                   hide_all_windows();
@@ -107,7 +108,7 @@ export function Popup({
                margin_start={margin_start}
                margin_end={margin_end}
             >
-               {children}
+               <box class={"main"}>{children}</box>
             </Adw.Clamp>
          </revealer>
       </window>

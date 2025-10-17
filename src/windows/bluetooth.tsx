@@ -5,9 +5,7 @@ import { BluetoothModule } from "../modules/bluetooth/bluetooth";
 export function BluetoothWindow() {
    return (
       <BarItemPopup name={windows_names.bluetooth} module={"bluetooth"}>
-         <box class={"main"}>
-            <BluetoothModule />
-         </box>
+         <BluetoothModule />
       </BarItemPopup>
    );
 }

@@ -3,7 +3,6 @@ import ScreenRecord from "./src/services/screenrecord";
 import { hide_all_windows, windows_names } from "./windows";
 import { hasBarItem, toggleQsModule, toggleWindow } from "./src/lib/utils";
 import { config } from "./options";
-import { launcher_page_set } from "./src/modules/launcher/launcher";
 const screenrecord = ScreenRecord.get_default();
 
 export default function request(
@@ -13,10 +12,9 @@ export default function request(
    if (args[0] == "toggle" && args[1]) {
       switch (args[1]) {
          case "applauncher":
-            if (!app.get_window(windows_names.launcher)?.visible)
+            if (!app.get_window(windows_names.applauncher)?.visible)
                hide_all_windows();
-            launcher_page_set("apps");
-            toggleWindow(windows_names.launcher);
+            toggleWindow(windows_names.applauncher);
             break;
          case "quicksettings":
             if (!app.get_window(windows_names.quicksettings)?.visible)
@@ -34,23 +32,15 @@ export default function request(
             toggleWindow(windows_names.powermenu);
             break;
          case "clipboard":
-            if (hasBarItem("clipboard")) {
-               if (!app.get_window(windows_names.clipboard)?.visible)
-                  hide_all_windows();
-               toggleWindow(windows_names.clipboard);
-               break;
-            } else {
-               if (!app.get_window(windows_names.launcher)?.visible)
-                  hide_all_windows();
-               launcher_page_set("clipboard");
-               toggleWindow(windows_names.launcher);
-               break;
-            }
+            if (!app.get_window(windows_names.clipboard)?.visible)
+               hide_all_windows();
+            toggleWindow(windows_names.clipboard);
+            break;
          case "weather":
             toggleQsModule("weather");
             break;
-         case "notifications_list":
-            toggleQsModule("notifications");
+         case "notificationslist":
+            toggleQsModule("notificationslist");
             break;
          case "volume":
             toggleQsModule("volume");

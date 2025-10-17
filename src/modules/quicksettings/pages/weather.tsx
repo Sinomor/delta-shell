@@ -7,9 +7,7 @@ export function WeatherPage() {
       <box
          $type={"named"}
          name={"weather"}
-         heightRequest={500}
-         widthRequest={340}
-         cssClasses={["qs-menu-page", "weather-page"]}
+         class={"qs-menu-page"}
          orientation={Gtk.Orientation.VERTICAL}
          spacing={theme.spacing}
       >

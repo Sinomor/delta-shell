@@ -9,9 +9,8 @@ import Cliphist from "@/src/services/cliphist";
 import { ClipText } from "./text";
 import { ClipColor } from "./color";
 import { ClipImage } from "./image";
-import { launcher_page } from "../launcher/launcher";
 const clipboard = Cliphist.get_default();
-const { width, height } = config.launcher;
+const { width } = config.launcher;
 
 const colorPatterns = {
    hex: /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/,
@@ -75,19 +74,10 @@ function Entry() {
                const winName = win.name;
                const visible = win.visible;
 
-               if (hasBarItem("clipboard")) {
-                  if (winName == windows_names.clipboard && visible) {
-                     scrolled.set_vadjustment(null);
-                     await self.set_text("");
-                     self.grab_focus();
-                  }
-               } else {
-                  const mode = launcher_page.get() == "clipboard";
-                  if (winName == windows_names.launcher && visible && mode) {
-                     scrolled.set_vadjustment(null);
-                     await self.set_text("");
-                     self.grab_focus();
-                  }
+               if (winName == windows_names.clipboard && visible) {
+                  scrolled.set_vadjustment(null);
+                  await self.set_text("");
+                  self.grab_focus();
                }
             });
          }}
@@ -157,8 +147,7 @@ function NotFound() {
 export function ClipboardModule() {
    return (
       <box
-         $type={"named"}
-         name={"clipboard"}
+         widthRequest={width.get() - theme.window.padding.get() * 2}
          orientation={Gtk.Orientation.VERTICAL}
          vexpand
          spacing={theme.spacing}

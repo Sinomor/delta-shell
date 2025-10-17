@@ -10,7 +10,7 @@ import { config } from "@/options";
 import AstalNetwork from "gi://AstalNetwork?version=0.1";
 import AstalBluetooth from "gi://AstalBluetooth?version=0.1";
 import { WeatherPage } from "./pages/weather";
-import { NotificationsPage } from "./pages/notifications";
+import { NotificationsListPage } from "./pages/notificationslist";
 export const [qs_page, qs_page_set] = createState("main");
 const network = AstalNetwork.get_default();
 const bluetooth = AstalBluetooth.get_default();
@@ -18,7 +18,6 @@ const bluetooth = AstalBluetooth.get_default();
 export function QuickSettingsModule() {
    return (
       <stack
-         class={"main"}
          transitionDuration={config.transition.get() * 1000}
          vhomogeneous={false}
          hhomogeneous={false}
@@ -36,8 +35,8 @@ export function QuickSettingsModule() {
          {bluetooth.adapter !== null && <BluetoothPage />}
          <PowerPage />
          <VolumePage />
-         <WeatherPage />
-         <NotificationsPage />
+         {config.notifications.enabled.get() && <WeatherPage />}
+         {config.notifications.enabled.get() && <NotificationsListPage />}
       </stack>
    );
 }
