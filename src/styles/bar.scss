@@ -20,38 +20,49 @@ window#bar {
       border-radius: $widget-radius;
    }
 
-   @if $bar-position == "top" {
-      @if all-zero($bar-margin) {
+   @if all-zero($bar-margin) {
+      @if $bar-position == "top" {
          border-bottom: $bar-border-width solid $bar-border-color;
-      } @else {
-         border: $bar-border-width solid $bar-border-color;
-      }
-   }
-
-   @if $bar-position == "bottom" {
-      @if all-zero($bar-margin) {
+      } @else if $bar-position == "bottom" {
          border-top: $bar-border-width solid $bar-border-color;
-      } @else {
-         border: $bar-border-width solid $bar-border-color;
+      } @else if $bar-position == "left" {
+         border-right: $bar-border-width solid $bar-border-color;
+      } @else if $bar-position == "right" {
+         border-left: $bar-border-width solid $bar-border-color;
       }
+   } @else {
+      border-radius: $widget-radius;
+      border: $bar-border-width solid $bar-border-color;
    }
 
    .modules-start {
       .first-child {
-         padding-left: 6px;
+         @if $bar-vertical {
+            padding-top: 6px;
+         } @else {
+            padding-left: 6px;
+         }
       }
    }
 
    .modules-end {
       .last-child {
-         padding-right: 6px;
+         @if $bar-vertical {
+            padding-bottom: 6px;
+         } @else {
+            padding-right: 6px;
+         }
       }
    }
 
    .bar-item {
       background: transparent;
       font-weight: normal;
-      padding: 6px 0;
+      @if $bar-vertical {
+         padding: 0 6px;
+      } @else {
+         padding: 6px 0;
+      }
 
       .content {
          border-radius: $widget-radius;
@@ -83,7 +94,13 @@ window#bar {
    }
 
    .workspace {
-      padding: 0 5px;
+      label {
+         @if $bar-vertical {
+            padding: 5px 0;
+         } @else {
+            padding: 0 5px;
+         }
+      }
    }
 
    @keyframes blink {
@@ -139,7 +156,11 @@ window#bar {
 
    .taskbar-button {
       background: transparent;
-      padding: multiply-padding($bar-button-padding, 2);
+      @if $bar-vertical {
+         padding: multiply-padding($bar-button-padding, 1);
+      } @else {
+         padding: multiply-padding($bar-button-padding, 2);
+      }
 
       &.focused {
          .indicator {
@@ -162,23 +183,35 @@ window#bar_shadow {
    all: unset;
 
    .shadow {
-      margin-right: $bar-margin-right;
-      margin-left: $bar-margin-left;
+      @if $bar-vertical {
+         margin-top: $bar-margin-top;
+         margin-bottom: $bar-margin-bottom;
+      } @else {
+         margin-right: $bar-margin-right;
+         margin-left: $bar-margin-left;
+      }
 
-      @if $bar-position == "top" {
-         @if $shadow and $bar-opacity != 0 {
+      @if $shadow and $bar-opacity != 0 {
+         @if $bar-position == "top" {
             box-shadow: inset
                0px
                10px
                8px -10px
                rgba($bar-shadow-color, $bar-shadow-opacity);
-         }
-      }
-
-      @if $bar-position == "bottom" {
-         @if $shadow and $bar-opacity != 0 {
+         } @else if $bar-position == "bottom" {
             box-shadow: inset
                0px -10px
+               8px -10px
+               rgba($bar-shadow-color, $bar-shadow-opacity);
+         } @else if $bar-position == "right" {
+            box-shadow: inset -10px
+               0px
+               8px -10px
+               rgba($bar-shadow-color, $bar-shadow-opacity);
+         } @else if $bar-position == "left" {
+            box-shadow: inset
+               10px
+               0px
                8px -10px
                rgba($bar-shadow-color, $bar-shadow-opacity);
          }

@@ -14,8 +14,8 @@ export const config = mkOptions(configFile, {
          center: opt(["clock"]),
          end: opt(["record_indicator", "tray", "keyboard", "quicksettings"]),
       },
-      height: opt(52),
-      position: opt<"top" | "bottom">("top"),
+      size: opt(52),
+      position: opt<"top" | "bottom" | "right" | "left">("top"),
       workspaces: {
          taskbar: opt<boolean>(true),
          taskbar_icons: opt({}) as Record<string, any>,

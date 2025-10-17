@@ -1,11 +1,13 @@
 import app from "ags/gtk4/app";
 import GLib from "gi://GLib";
 import { createPoll } from "ags/time";
-import { onCleanup } from "ags";
+import { For, onCleanup } from "ags";
 import { hide_all_windows, windows_names } from "@/windows";
 import { toggleWindow } from "@/src/lib/utils";
 import { config } from "@/options";
 import BarItem from "@/src/widgets/baritem";
+import { isVertical } from "../bar";
+import { Gtk } from "ags/gtk4";
 const { format } = config.bar.date;
 
 export function Clock() {
@@ -23,8 +25,17 @@ export function Clock() {
                hide_all_windows();
             toggleWindow(windows_names.calendar);
          }}
+         hexpand={isVertical}
       >
-         <label label={time((t) => t)} />
+         {isVertical ? (
+            <box orientation={Gtk.Orientation.VERTICAL}>
+               <For each={time.as((t) => [...t.split(" ")])}>
+                  {(part: string) => <label hexpand label={part} />}
+               </For>
+            </box>
+         ) : (
+            <label label={time} />
+         )}
       </BarItem>
    );
 }

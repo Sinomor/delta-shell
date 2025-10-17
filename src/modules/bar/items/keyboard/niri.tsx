@@ -3,6 +3,7 @@ import { bash } from "@/src/lib/utils";
 import { createState, onCleanup } from "ags";
 import { compositor } from "@/options";
 import BarItem from "@/src/widgets/baritem";
+import { isVertical } from "../../bar";
 const niri = AstalNiri.get_default();
 
 const [layout_name, layout_name_set] = createState("?");
@@ -39,8 +40,9 @@ export function Keyboard_Niri() {
                updateLayout();
             });
          }}
+         hexpand={isVertical}
       >
-         <label label={layout_name((s) => s)} />
+         <label hexpand={isVertical} label={layout_name} />
       </BarItem>
    );
 }

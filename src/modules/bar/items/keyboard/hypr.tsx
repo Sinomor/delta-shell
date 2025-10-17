@@ -3,6 +3,7 @@ import { bash } from "@/src/lib/utils";
 import BarItem from "@/src/widgets/baritem";
 import { createState, onCleanup } from "ags";
 import AstalHyprland from "gi://AstalHyprland?version=0.1";
+import { isVertical } from "../../bar";
 const hyprland = AstalHyprland.get_default();
 
 const [layout_name, layout_name_set] = createState("?");
@@ -76,8 +77,9 @@ export function Keyboard_Hypr() {
                },
             );
          }}
+         hexpand={isVertical}
       >
-         <label label={layout_name} />
+         <label hexpand={isVertical} label={layout_name} />
       </BarItem>
    );
 }

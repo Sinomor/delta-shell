@@ -6,6 +6,7 @@ import { hide_all_windows, windows_names } from "@/windows";
 import app from "ags/gtk4/app";
 import AstalBluetooth from "gi://AstalBluetooth";
 import { createBinding, createComputed } from "gnim";
+import { isVertical } from "../bar";
 const bluetooth = AstalBluetooth.get_default();
 
 export function Bluetooth() {
@@ -29,8 +30,9 @@ export function Bluetooth() {
                hide_all_windows();
             toggleWindow(windows_names.bluetooth);
          }}
+         hexpand={isVertical}
       >
-         <image iconName={icons.bluetooth} />
+         <image hexpand={isVertical} iconName={icons.bluetooth} />
       </BarItem>
    );
 }

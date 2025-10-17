@@ -4,6 +4,7 @@ import { Gtk } from "ags/gtk4";
 import { createBinding, createState, For } from "ags";
 import BarItem from "@/src/widgets/baritem";
 import { config } from "@/options";
+import { isVertical } from "../bar";
 const tray = AstalTray.get_default();
 
 export const Tray = () => {
@@ -20,14 +21,39 @@ export const Tray = () => {
       });
    };
 
+   function icon(visible: boolean) {
+      if (isVertical) {
+         return visible ? icons.arrow.down : icons.arrow.up;
+      } else {
+         return visible ? icons.arrow.right : icons.arrow.left;
+      }
+   }
+
    return (
-      <box class={"tray"}>
+      <box
+         class={"tray"}
+         orientation={
+            isVertical ? Gtk.Orientation.VERTICAL : Gtk.Orientation.HORIZONTAL
+         }
+      >
          <revealer
             revealChild={tray_visible}
-            transitionType={Gtk.RevealerTransitionType.SLIDE_RIGHT}
+            transitionType={
+               isVertical
+                  ? Gtk.RevealerTransitionType.SLIDE_UP
+                  : Gtk.RevealerTransitionType.SLIDE_RIGHT
+            }
             transitionDuration={config.transition.get() * 1000}
          >
-            <box class={"items"}>
+            <box
+               class={"items"}
+               hexpand={isVertical}
+               orientation={
+                  isVertical
+                     ? Gtk.Orientation.VERTICAL
+                     : Gtk.Orientation.HORIZONTAL
+               }
+            >
                <For each={items}>
                   {(item) => (
                      <menubutton $={(self) => init(self, item)}>
@@ -40,11 +66,13 @@ export const Tray = () => {
                </For>
             </box>
          </revealer>
-         <BarItem onPrimaryClick={() => tray_visible_set((v) => !v)}>
+         <BarItem
+            onPrimaryClick={() => tray_visible_set((v) => !v)}
+            hexpand={isVertical}
+         >
             <image
-               iconName={tray_visible((v) =>
-                  v ? icons.arrow.right : icons.arrow.left,
-               )}
+               hexpand={isVertical}
+               iconName={tray_visible((v) => icon(v))}
                pixelSize={20}
             />
          </BarItem>

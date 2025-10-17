@@ -7,6 +7,7 @@ import { Gtk } from "ags/gtk4";
 import app from "ags/gtk4/app";
 import AstalNotifd from "gi://AstalNotifd?version=0.1";
 import { createBinding } from "ags";
+import { isVertical } from "../bar";
 const notifd = AstalNotifd.get_default();
 
 export function Notifications() {
@@ -21,8 +22,17 @@ export function Notifications() {
                hide_all_windows();
             toggleWindow(windows_names.notifications_list);
          }}
+         hexpand={isVertical}
       >
-         <box spacing={theme.bar.spacing}>
+         <box
+            spacing={theme.bar.spacing}
+            hexpand={isVertical}
+            orientation={
+               isVertical
+                  ? Gtk.Orientation.VERTICAL
+                  : Gtk.Orientation.HORIZONTAL
+            }
+         >
             <image
                iconName={icons.bell}
                pixelSize={20}

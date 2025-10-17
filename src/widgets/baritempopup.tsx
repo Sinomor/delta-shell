@@ -6,6 +6,7 @@ import Graphene from "gi://Graphene?version=1.0";
 import Adw from "gi://Adw?version=1";
 import { Popup } from "./popup";
 import { config, theme } from "@/options";
+import { isVertical } from "../modules/bar/bar";
 
 type BarItemPopupProps = JSX.IntrinsicElements["window"] & {
    children?: any;
@@ -42,28 +43,55 @@ export function BarItemPopup({
    ).get();
 
    function halign() {
-      switch (module_pos) {
-         case "start":
-            return Gtk.Align.START;
-         case "center":
-            return Gtk.Align.CENTER;
-         case "end":
-            return Gtk.Align.END;
+      if (isVertical) {
+         switch (bar_pos) {
+            case "right":
+               return Gtk.Align.END;
+            case "left":
+               return Gtk.Align.START;
+         }
+      } else {
+         switch (module_pos) {
+            case "start":
+               return Gtk.Align.START;
+            case "center":
+               return Gtk.Align.CENTER;
+            case "end":
+               return Gtk.Align.END;
+         }
       }
    }
    function valign() {
-      switch (bar_pos) {
-         case "top":
-            return Gtk.Align.START;
-         case "bottom":
-            return Gtk.Align.END;
+      if (isVertical) {
+         switch (module_pos) {
+            case "start":
+               return Gtk.Align.START;
+            case "center":
+               return Gtk.Align.CENTER;
+            case "end":
+               return Gtk.Align.END;
+         }
+      } else {
+         switch (bar_pos) {
+            case "top":
+               return Gtk.Align.START;
+            case "bottom":
+               return Gtk.Align.END;
+         }
       }
    }
 
    function transitionType() {
-      return bar_pos === "top"
-         ? Gtk.RevealerTransitionType.SLIDE_DOWN
-         : Gtk.RevealerTransitionType.SLIDE_UP;
+      switch (bar_pos) {
+         case "top":
+            return Gtk.RevealerTransitionType.SLIDE_DOWN;
+         case "bottom":
+            return Gtk.RevealerTransitionType.SLIDE_UP;
+         case "right":
+            return Gtk.RevealerTransitionType.SLIDE_LEFT;
+         case "left":
+            return Gtk.RevealerTransitionType.SLIDE_RIGHT;
+      }
    }
 
    return (
@@ -73,10 +101,26 @@ export function BarItemPopup({
          halign={halign()}
          height={height}
          width={width}
-         margin_top={margin}
-         margin_bottom={margin}
-         margin_start={bar_margin[3] === 0 ? margin : bar_margin[3]}
-         margin_end={bar_margin[1] === 0 ? margin : bar_margin[1]}
+         margin_top={
+            isVertical ? (bar_margin[0] === 0 ? margin : bar_margin[0]) : margin
+         }
+         margin_bottom={
+            isVertical ? (bar_margin[2] === 0 ? margin : bar_margin[2]) : margin
+         }
+         margin_start={
+            !isVertical
+               ? bar_margin[3] === 0
+                  ? margin
+                  : bar_margin[3]
+               : margin
+         }
+         margin_end={
+            !isVertical
+               ? bar_margin[1] === 0
+                  ? margin
+                  : bar_margin[1]
+               : margin
+         }
          transitionType={transitionType()}
          transitionDuration={transitionDuration}
       >

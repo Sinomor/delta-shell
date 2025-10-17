@@ -1,6 +1,6 @@
 import { windows_names } from "@/windows";
 import { Astal, Gdk } from "ags/gtk4";
-import { BarModule } from "../modules/bar/bar";
+import { BarModule, isVertical } from "../modules/bar/bar";
 import { config, theme } from "@/options";
 import { createState, onCleanup } from "gnim";
 import app from "ags/gtk4/app";
@@ -19,7 +19,7 @@ export function BarWindow({
       windows_names.verification,
       windows_names.calendar,
       windows_names.quicksettings,
-      windows_names.launcher,
+      windows_names.applauncher,
       windows_names.weather,
       windows_names.notifications_list,
       windows_names.volume,
@@ -55,6 +55,19 @@ export function BarWindow({
 
    onCleanup(() => app.disconnect(appconnect));
 
+   function anchor() {
+      switch (position.get()) {
+         case "top":
+            return TOP | LEFT | RIGHT;
+         case "bottom":
+            return BOTTOM | LEFT | RIGHT;
+         case "right":
+            return RIGHT | BOTTOM | TOP;
+         case "left":
+            return LEFT | BOTTOM | TOP;
+      }
+   }
+
    return (
       <window
          visible
@@ -64,7 +77,7 @@ export function BarWindow({
          gdkmonitor={gdkmonitor}
          exclusivity={Astal.Exclusivity.EXCLUSIVE}
          layer={Astal.Layer.TOP}
-         anchor={(position.get() === "top" ? TOP : BOTTOM) | LEFT | RIGHT}
+         anchor={anchor()}
          application={app}
          $={(self) => {
             bar = self;
