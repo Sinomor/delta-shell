@@ -106,12 +106,13 @@ config.json
 {
    "transition": 0.3, // animation transition (in seconds)
    "bar": {
-      // available modules: "launcher", "workspaces", "clock",
-      // "record_indicator", "tray", "keyboard", "sysbox", "weather"
-      // "notifications"
+      // available modules: launcher, workspaces, clock,
+      // record_indicator, tray, keyboard, quicksettings,
+      // weather, notifications, volume, network, bluetooth,
+      // battery, clipboard
       "modules": {
          "start": ["launcher", "workspaces"],
-         "center": ["clock", "weather"],
+         "center": ["clock"],
          "end": ["record_indicator", "tray", "keyboard", "notifications", "sysbox"]
       },
       "height": 52,
@@ -129,6 +130,11 @@ config.json
          "format": "%b %d  %H:%M" // https://docs.gtk.org/glib/method.DateTime.format.html
       }
    },
+   "quicksettings": {
+      // available buttons: network, bluetooth, notifications,
+      // weather, screenrecord
+      "buttons": ["network", "bluetooth", "notifications", "screenrecord"]
+   }
    "launcher": {
       "clipboard": {
          "max_items": 50, // maximum items in clipboard
@@ -138,13 +144,14 @@ config.json
       "height": 600
    },
    "osd": {
+      "enabled": true,
       "width": 300,
       "position": "bottom", // "top" | "top_left" | "top_right" | "bottom" | "bottom_left"| "bottom_right"
       "timeout": 3 // in seconds
    },
    "notifications": {
-      "position": "top", // "top" | "top_left" | "top_right" | "bottom" | "bottom_left"| "bottom_right"
       "enabled": true,
+      "position": "top", // "top" | "top_left" | "top_right" | "bottom" | "bottom_left"| "bottom_right"
       "timeout": 3, // in seconds
       "width": 400,
       "list": {

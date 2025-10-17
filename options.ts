@@ -11,14 +11,8 @@ export const config = mkOptions(configFile, {
    bar: {
       modules: {
          start: opt(["launcher", "workspaces"]),
-         center: opt(["clock", "weather"]),
-         end: opt([
-            "record_indicator",
-            "tray",
-            "keyboard",
-            "notifications",
-            "sysbox",
-         ]),
+         center: opt(["clock"]),
+         end: opt(["record_indicator", "tray", "keyboard", "quicksettings"]),
       },
       height: opt(52),
       position: opt<"top" | "bottom">("top"),
