@@ -156,11 +156,7 @@ window#bar {
 
    .taskbar-button {
       background: transparent;
-      @if $bar-vertical {
-         padding: multiply-padding($bar-button-padding, 1);
-      } @else {
-         padding: multiply-padding($bar-button-padding, 2);
-      }
+      padding: $bar-button-padding;
 
       &.focused {
          .indicator {
