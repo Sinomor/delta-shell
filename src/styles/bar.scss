@@ -94,12 +94,10 @@ window#bar {
    }
 
    .workspace {
-      label {
-         @if $bar-vertical {
-            padding: 5px 0;
-         } @else {
-            padding: 0 5px;
-         }
+      @if $bar-vertical {
+         padding: 5px 0;
+      } @else {
+         padding: 0 5px;
       }
    }
 
