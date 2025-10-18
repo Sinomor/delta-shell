@@ -6,6 +6,7 @@ import BarItem from "@/src/widgets/baritem";
 import { hide_all_windows, windows_names } from "@/windows";
 import { hasBarItem, toggleWindow } from "@/src/lib/utils";
 import { config } from "@/options";
+import { isVertical } from "../bar";
 
 export function Launcher() {
    return (
@@ -23,8 +24,9 @@ export function Launcher() {
                toggleWindow(windows_names.clipboard);
             }
          }}
+         hexpand={isVertical}
       >
-         <image iconName={icons.search} pixelSize={20} />
+         <image hexpand={isVertical} iconName={icons.search} pixelSize={20} />
       </BarItem>
    );
 }

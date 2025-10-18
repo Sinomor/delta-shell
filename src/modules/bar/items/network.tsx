@@ -5,6 +5,7 @@ import { hide_all_windows, windows_names } from "@/windows";
 import app from "ags/gtk4/app";
 import AstalNetwork from "gi://AstalNetwork";
 import { createBinding, createComputed } from "gnim";
+import { isVertical } from "../bar";
 const network = AstalNetwork.get_default();
 
 export function Network() {
@@ -16,8 +17,10 @@ export function Network() {
                hide_all_windows();
             toggleWindow(windows_names.network);
          }}
+         hexpand={isVertical}
       >
          <image
+            hexpand={isVertical}
             visible={createComputed(
                [
                   createBinding(network, "primary"),

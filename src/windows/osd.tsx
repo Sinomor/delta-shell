@@ -9,7 +9,7 @@ import {
    OsdModule,
 } from "../modules/osd/osd";
 import giCairo from "cairo";
-const { width, position } = config.osd;
+const { position, vertical } = config.osd;
 const { margin } = theme.window;
 
 export function OsdWindow() {
@@ -31,6 +31,10 @@ export function OsdWindow() {
             return Gtk.Align.START;
          case "bottom_right":
             return Gtk.Align.END;
+         case "right":
+            return Gtk.Align.END;
+         case "left":
+            return Gtk.Align.START;
          default:
             return Gtk.Align.CENTER;
       }
@@ -50,9 +54,28 @@ export function OsdWindow() {
             return Gtk.Align.END;
          case "bottom_right":
             return Gtk.Align.END;
+         case "right":
+            return Gtk.Align.CENTER;
+         case "left":
+            return Gtk.Align.CENTER;
          default:
             return Gtk.Align.START;
       }
+   }
+
+   function transitionType() {
+      if (vertical.get()) {
+         if (pos.includes("right"))
+            return Gtk.RevealerTransitionType.SLIDE_LEFT;
+         if (pos.includes("left"))
+            return Gtk.RevealerTransitionType.SLIDE_RIGHT;
+      } else {
+         if (pos === "right") return Gtk.RevealerTransitionType.SLIDE_LEFT;
+         if (pos === "left") return Gtk.RevealerTransitionType.SLIDE_RIGHT;
+      }
+      return pos === "top"
+         ? Gtk.RevealerTransitionType.SLIDE_DOWN
+         : Gtk.RevealerTransitionType.SLIDE_UP;
    }
 
    return (
@@ -72,11 +95,7 @@ export function OsdWindow() {
          }}
       >
          <revealer
-            transitionType={
-               config.osd.position.get().includes("top")
-                  ? Gtk.RevealerTransitionType.SLIDE_DOWN
-                  : Gtk.RevealerTransitionType.SLIDE_UP
-            }
+            transitionType={transitionType()}
             transitionDuration={config.transition.get() * 1000}
             halign={halign()}
             valign={valign()}

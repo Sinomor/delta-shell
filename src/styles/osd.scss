@@ -15,7 +15,7 @@ window#osd {
 
    .osd-icon {
       color: get-contrast-color($accent, $fg0, $bg0);
-      padding-left: 10px;
+      padding: 10px;
       &.low {
          color: $fg0;
       }
@@ -32,7 +32,6 @@ window#osd {
       block {
          background: rgba($bg1, $window-opacity);
          border-radius: $widget-radius;
-         min-height: 56px;
       }
    }
 }

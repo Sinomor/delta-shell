@@ -20,6 +20,8 @@ import { Clipboard } from "./items/clipboard";
 
 const { position, modules } = config.bar;
 const { spacing } = theme.bar;
+export const isVertical =
+   position.get() === "right" || position.get() === "left";
 
 export function BarModule({
    gdkmonitor,
@@ -48,6 +50,11 @@ export function BarModule({
             $type={"start"}
             class={"modules-start"}
             spacing={spacing}
+            orientation={
+               isVertical
+                  ? Gtk.Orientation.VERTICAL
+                  : Gtk.Orientation.HORIZONTAL
+            }
             $={(self) => self.get_first_child()?.add_css_class("first-child")}
          >
             <For each={modules.start}>
@@ -62,7 +69,16 @@ export function BarModule({
 
    function Center() {
       return (
-         <box $type={"center"} class={"modules-center"} spacing={spacing}>
+         <box
+            $type={"center"}
+            class={"modules-center"}
+            spacing={spacing}
+            orientation={
+               isVertical
+                  ? Gtk.Orientation.VERTICAL
+                  : Gtk.Orientation.HORIZONTAL
+            }
+         >
             <For each={modules.center}>
                {(module: string) => {
                   const Widget = Bar_Items[module];
@@ -79,6 +95,11 @@ export function BarModule({
             $type={"end"}
             class={"modules-end"}
             spacing={spacing}
+            orientation={
+               isVertical
+                  ? Gtk.Orientation.VERTICAL
+                  : Gtk.Orientation.HORIZONTAL
+            }
             $={(self) => self.get_last_child()?.add_css_class("last-child")}
          >
             <For each={modules.end}>
@@ -92,7 +113,18 @@ export function BarModule({
    }
 
    return (
-      <centerbox class={"main"} heightRequest={config.bar.height}>
+      <centerbox
+         class={"main"}
+         orientation={
+            isVertical ? Gtk.Orientation.VERTICAL : Gtk.Orientation.HORIZONTAL
+         }
+         $={(self) => {
+            const size = config.bar.size.get();
+            isVertical
+               ? (self.widthRequest = size)
+               : (self.heightRequest = size);
+         }}
+      >
          <Start />
          <Center />
          <End />

@@ -6,7 +6,7 @@ import { Accessor, createState, onCleanup } from "ags";
 import Brightness from "@/src/services/brightness";
 import { config, theme } from "@/options";
 import { windows_names } from "@/windows";
-const { width, position } = config.osd;
+const { width, height, vertical } = config.osd;
 export const [osd_visible, osd_visible_set] = createState(false);
 export const [osd_revealed, osd_revealed_set] = createState(false);
 
@@ -36,6 +36,7 @@ export function OsdModule({ visible }: { visible: Accessor<boolean> }) {
 
    return (
       <box
+         class={"main"}
          $={() => {
             if (brightness) {
                const brightnessconnect = brightness.connect(
@@ -63,17 +64,24 @@ export function OsdModule({ visible }: { visible: Accessor<boolean> }) {
             }
          }}
       >
-         <overlay class={"main"}>
+         <overlay>
             <image
                $type={"overlay"}
                iconName={iconName((i) => i)}
                class={value((v) => `osd-icon ${v < 0.1 ? "low" : ""}`)}
-               valign={Gtk.Align.CENTER}
-               halign={Gtk.Align.START}
+               valign={vertical.get() ? Gtk.Align.END : Gtk.Align.CENTER}
+               halign={vertical.get() ? Gtk.Align.CENTER : Gtk.Align.START}
                pixelSize={24}
             />
             <levelbar
+               orientation={
+                  vertical.get()
+                     ? Gtk.Orientation.VERTICAL
+                     : Gtk.Orientation.HORIZONTAL
+               }
+               inverted={vertical}
                widthRequest={width}
+               heightRequest={height}
                valign={Gtk.Align.CENTER}
                value={value((v) => v)}
             />

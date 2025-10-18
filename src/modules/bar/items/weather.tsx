@@ -7,6 +7,7 @@ import { toggleWindow } from "@/src/lib/utils";
 import { hide_all_windows, windows_names } from "@/windows";
 import { config, theme } from "@/options";
 import WeatherService from "@/src/services/weather";
+import { isVertical } from "../bar";
 const weather = WeatherService.get_default();
 
 export function Weather() {
@@ -22,7 +23,9 @@ export function Weather() {
       const current = data.hourly[0];
       return {
          icon: current.icon,
-         temp: `${current.temperature}${current.units.temperature}`,
+         temp: isVertical
+            ? `${current.temperature}`
+            : `${current.temperature}${current.units.temperature}`,
       };
    });
    return (
@@ -33,10 +36,17 @@ export function Weather() {
                hide_all_windows();
             toggleWindow(windows_names.weather);
          }}
+         hexpand={isVertical}
       >
          <box
             visible={data.as((d) => d.temp !== "")}
             spacing={theme.bar.spacing}
+            hexpand={isVertical}
+            orientation={
+               isVertical
+                  ? Gtk.Orientation.VERTICAL
+                  : Gtk.Orientation.HORIZONTAL
+            }
          >
             <image
                iconName={data.as((d) => d.icon)}
