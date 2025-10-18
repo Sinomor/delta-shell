@@ -12,18 +12,6 @@
    @return true;
 }
 
-@function multiply-padding($values, $multiplier) {
-   $result: ();
-   @each $value in $values {
-      @if $value == 0 {
-         $result: append($result, 0);
-      } @else {
-         $result: append($result, $value * $multiplier);
-      }
-   }
-   @return $result;
-}
-
 @function is-light($color) {
    $brightness: (red($color) * 299 + green($color) * 587 + blue($color) * 114) /
       1000;

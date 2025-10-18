@@ -116,7 +116,7 @@ config.json
          "end": ["record_indicator", "tray", "keyboard", "notifications", "sysbox"]
       },
       "height": 52,
-      "position": "top", // "top" | "bottom"
+      "position": "top", // top, bottom, left, right
       "workspaces": {
          "taskbar": true,
          // to use custom icons for apps you need to add
@@ -145,13 +145,14 @@ config.json
    },
    "osd": {
       "enabled": true,
+      "vertical": false,
       "width": 300,
-      "position": "bottom", // "top" | "top_left" | "top_right" | "bottom" | "bottom_left"| "bottom_right"
+      "position": "bottom", // top, top_left, top_right, bottom, bottom_left, bottom_right, left, right
       "timeout": 3 // in seconds
    },
    "notifications": {
       "enabled": true,
-      "position": "top", // "top" | "top_left" | "top_right" | "bottom" | "bottom_left"| "bottom_right"
+      "position": "top", // top, top_left, top_right, bottom, bottom_left, bottom_right
       "timeout": 3, // in seconds
       "width": 400,
       "list": {
@@ -194,13 +195,12 @@ theme.json
       },
       "accent": "#c88800",
       "blue": "#3584e4",
-      "teel": "#2190a4",
+      "cyan": "#2190a4",
       "green": "#3a944a",
       "yellow": "#c88800",
       "orange": "#ed5b00",
       "red": "#e62d42",
       "purple": "#9141ac",
-      "slate": "#6f8396"
    },
    "border": {
       "width": 1,

@@ -14,8 +14,8 @@ export const config = mkOptions(configFile, {
          center: opt(["clock"]),
          end: opt(["record_indicator", "tray", "keyboard", "quicksettings"]),
       },
-      height: opt(52),
-      position: opt<"top" | "bottom">("top"),
+      size: opt(52),
+      position: opt<"top" | "bottom" | "right" | "left">("top"),
       workspaces: {
          taskbar: opt<boolean>(true),
          taskbar_icons: opt({}) as Record<string, any>,
@@ -37,7 +37,9 @@ export const config = mkOptions(configFile, {
    },
    osd: {
       enabled: opt<boolean>(true),
+      vertical: opt<boolean>(false),
       width: opt(300),
+      height: opt(56),
       position: opt<
          | "top"
          | "top_left"
@@ -45,6 +47,8 @@ export const config = mkOptions(configFile, {
          | "bottom"
          | "bottom_left"
          | "bottom_right"
+         | "left"
+         | "right"
       >("bottom"),
       timeout: opt(3),
    },
@@ -95,15 +99,14 @@ export const theme = mkOptions(themeFile, {
          1: opt("#c0c0c0"),
          2: opt("#808080"),
       },
-      accent: opt("#c88800"),
+      accent: opt("#3584e4"),
       blue: opt("#3584e4"),
-      teel: opt("#2190a4"),
+      cyan: opt("#2190a4"),
       green: opt("#3a944a"),
       yellow: opt("#c88800"),
       orange: opt("#ed5b00"),
       red: opt("#e62d42"),
       purple: opt("#9141ac"),
-      slate: opt("#6f8396"),
    },
    border: {
       width: opt(1),

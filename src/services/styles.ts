@@ -4,6 +4,7 @@ import { bash, dependencies, toCssValue } from "@/src/lib/utils";
 import { Opt } from "@/src/lib/option";
 import GLib from "gi://GLib?version=2.0";
 import { config, theme } from "@/options";
+import { isVertical } from "../modules/bar/bar";
 
 const { spacing, radius, border, outline, window, bar } = theme;
 
@@ -27,6 +28,8 @@ const variables = () => [
    $("accent-light", `lighten(${theme.colors.accent.get()}, 10%)`),
    $("blue", theme.colors.blue.get()),
    $("blue-light", `lighten(${theme.colors.blue.get()}, 10%)`),
+   $("cyan", theme.colors.cyan.get()),
+   $("cyan-light", `lighten(${theme.colors.cyan.get()}, 10%)`),
    $("green", theme.colors.green.get()),
    $("green-light", `lighten(${theme.colors.green.get()}, 10%)`),
    $("yellow", theme.colors.yellow.get()),
@@ -85,6 +88,7 @@ const variables = () => [
    $("bar-shadow-spread", `${bar.shadow.spread.get()}px`),
    $("bar-shadow-color", `${bar.shadow.color.get()}`),
    $("bar-shadow-opacity", `${bar.shadow.opacity.get()}`),
+   $("bar-vertical", `${isVertical}`),
 
    $("transition", `${config.transition.get()}s`),
    $("shadow", `${theme.shadow.get()}`),

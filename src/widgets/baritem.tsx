@@ -5,6 +5,9 @@ import app from "ags/gtk4/app";
 type BarItemProps = JSX.IntrinsicElements["box"] & {
    window?: string;
    children: any;
+   orientation?: Gtk.Orientation;
+   hexpand?: boolean;
+   vexpand?: boolean;
    onPrimaryClick?: () => void;
    onSecondaryClick?: () => void;
    onMiddleClick?: () => void;
@@ -13,6 +16,9 @@ type BarItemProps = JSX.IntrinsicElements["box"] & {
 export default function BarItem({
    window = "",
    children,
+   hexpand = false,
+   vexpand = false,
+   orientation = Gtk.Orientation.HORIZONTAL,
    onPrimaryClick = () => {},
    onSecondaryClick = () => {},
    onMiddleClick = () => {},
@@ -49,7 +55,14 @@ export default function BarItem({
             }}
             button={0}
          />
-         <box class={"content"}>{children}</box>
+         <box
+            class={"content"}
+            orientation={orientation}
+            hexpand={hexpand}
+            vexpand={vexpand}
+         >
+            {children}
+         </box>
       </box>
    );
 }
