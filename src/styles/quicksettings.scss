@@ -291,7 +291,11 @@ window#quicksettings {
          }
 
          slider {
-            background: rgba($fg0, $window-opacity);
+            background: get-contrast-color(
+               $accent-light,
+               rgba($fg0, $window-opacity),
+               rgba($bg0, $window-opacity)
+            );
             margin: 4px;
             box-shadow: none;
          }
