@@ -21,6 +21,7 @@
 
   outputs =
     {
+      self,
       nixpkgs,
       astal,
       astal_niri,
@@ -29,48 +30,36 @@
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
+      shellBuildInputs = with pkgs; [
+        gjs
+        glib
+        gtk4
+        brightnessctl
+        dart-sass
+        gpu-screen-recorder
+        cliphist
+        bluez
+      ] ++ [
+        astal.packages.${system}.io
+        astal.packages.${system}.astal4
+        
+        astal_niri.packages.${system}.niri
+        ags.packages.${system}.agsFull
+      ];
     in
     {
-      packages.${system}.default = pkgs.stdenvNoCC.mkDerivation {
+      packages.${system}.default = pkgs.stdenv.mkDerivation {
         name = "delta-shell";
         src = ./.;
 
         nativeBuildInputs = with pkgs; [
           wrapGAppsHook
           gobject-introspection
-          esbuild
+          meson
+          ninja
         ];
 
-        buildInputs =
-          (with pkgs; [
-            gjs
-            glib
-            gtk4
-            brightnessctl
-            dart-sass
-            gpu-screen-recorder
-            cliphist
-            bluez
-          ])
-          ++ (with astal.packages.${system}; [
-            io
-            astal4
-          ])
-          ++ [
-            astal_niri.packages.${system}.niri
-            ags.packages.${system}.agsFull
-          ];
-
-        installPhase = ''
-          mkdir -p $out/bin
-
-          esbuild \
-            --bundle src/app.js \
-            --outfile=$out/bin/my-shell \
-            --format=esm \
-            --sourcemap=inline \
-            --external:gi://\*
-        '';
+        buildInputs = shellBuildInputs;
       };
     };
 }
