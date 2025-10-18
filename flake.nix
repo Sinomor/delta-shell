@@ -33,9 +33,8 @@
       runtimeDeps =
         with pkgs;
         [
-          gjs
+          gjs 
           gtk4
-          glib
           brightnessctl
           dart-sass
           gpu-screen-recorder
@@ -80,7 +79,7 @@
       };
 
       devShells.${system}.default = pkgs.mkShell {
-        name = "delta-shell-dev";
+        buildInputs = runtimeDeps;
 
         inputsFrom = [ self.packages.${system}.default ];
       };
