@@ -124,7 +124,7 @@ function WorkspaceButton({ ws }: { ws: AstalNiri.Workspace }) {
 
 function Workspaces({ output }: { output: AstalNiri.Output }) {
    const workspaces = createBinding(output, "workspaces").as((workspaces) =>
-      workspaces.sort((a, b) => a.id - b.id),
+      workspaces.sort((a, b) => a.idx - b.idx),
    );
 
    return (
