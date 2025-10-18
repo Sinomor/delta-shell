@@ -30,10 +30,13 @@
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
+
+      pname = "delta-shell";
+
       runtimeDeps =
         with pkgs;
         [
-          gjs 
+          gjs
           gtk4
           brightnessctl
           dart-sass
@@ -43,6 +46,7 @@
           libsoup_3
           libadwaita
           gobject-introspection
+          geoclue2
         ]
         ++ (with astal.packages.${system}; [
           io
@@ -64,24 +68,22 @@
         ];
     in
     {
-      packages.${system}.default = pkgs.stdenv.mkDerivation {
-        name = "delta-shell";
+      packages.${system}.default = pkgs.stdenv.mkDerivation rec {
+        name = "${pname}";
         src = ./.;
 
         nativeBuildInputs = with pkgs; [
           wrapGAppsHook
-          gobject-introspection
           meson
           ninja
         ];
 
         buildInputs = runtimeDeps;
-      };
 
-      devShells.${system}.default = pkgs.mkShell {
-        buildInputs = runtimeDeps;
-
-        inputsFrom = [ self.packages.${system}.default ];
+        postInstall = ''
+          wrapProgram $out/bin/${pname} \
+            --prefix PATH : ${pkgs.lib.makeBinPath runtimeDeps}
+        '';
       };
     };
 }
