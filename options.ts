@@ -37,7 +37,9 @@ export const config = mkOptions(configFile, {
    },
    osd: {
       enabled: opt<boolean>(true),
+      vertical: opt<boolean>(false),
       width: opt(300),
+      height: opt(56),
       position: opt<
          | "top"
          | "top_left"
@@ -45,6 +47,8 @@ export const config = mkOptions(configFile, {
          | "bottom"
          | "bottom_left"
          | "bottom_right"
+         | "left"
+         | "right"
       >("bottom"),
       timeout: opt(3),
    },
