@@ -1,7 +1,7 @@
 import app from "ags/gtk4/app";
 import GLib from "gi://GLib";
 import { createPoll } from "ags/time";
-import { For, onCleanup } from "ags";
+import { onCleanup, With } from "ags";
 import { hide_all_windows, windows_names } from "@/windows";
 import { toggleWindow } from "@/src/lib/utils";
 import { config } from "@/options";
@@ -29,9 +29,21 @@ export function Clock() {
       >
          {isVertical ? (
             <box orientation={Gtk.Orientation.VERTICAL}>
-               <For each={time.as((t) => [...t.split(" ")])}>
-                  {(part: string) => <label hexpand label={part} />}
-               </For>
+               <With value={time}>
+                  {(time) => (
+                     <box
+                        orientation={
+                           isVertical
+                              ? Gtk.Orientation.VERTICAL
+                              : Gtk.Orientation.HORIZONTAL
+                        }
+                     >
+                        {time.split(" ").map((part) => (
+                           <label hexpand label={part} />
+                        ))}
+                     </box>
+                  )}
+               </With>
             </box>
          ) : (
             <label label={time} />
