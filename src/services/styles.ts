@@ -28,6 +28,8 @@ const variables = () => [
    $("accent-light", `lighten(${theme.colors.accent.get()}, 10%)`),
    $("blue", theme.colors.blue.get()),
    $("blue-light", `lighten(${theme.colors.blue.get()}, 10%)`),
+   $("cyan", theme.colors.cyan.get()),
+   $("cyan-light", `lighten(${theme.colors.cyan.get()}, 10%)`),
    $("green", theme.colors.green.get()),
    $("green-light", `lighten(${theme.colors.green.get()}, 10%)`),
    $("yellow", theme.colors.yellow.get()),

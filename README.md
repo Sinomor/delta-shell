@@ -195,13 +195,12 @@ theme.json
       },
       "accent": "#c88800",
       "blue": "#3584e4",
-      "teel": "#2190a4",
+      "cyan": "#2190a4",
       "green": "#3a944a",
       "yellow": "#c88800",
       "orange": "#ed5b00",
       "red": "#e62d42",
       "purple": "#9141ac",
-      "slate": "#6f8396"
    },
    "border": {
       "width": 1,
