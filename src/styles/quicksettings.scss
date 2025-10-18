@@ -288,6 +288,7 @@ window#quicksettings {
 
          &:checked {
             background: rgba($accent, $window-opacity);
+            border-radius: $widget-radius;
          }
 
          slider {
@@ -296,6 +297,7 @@ window#quicksettings {
                rgba($fg0, $window-opacity),
                rgba($bg0, $window-opacity)
             );
+            border-radius: $widget-radius;
             margin: 4px;
             box-shadow: none;
          }
