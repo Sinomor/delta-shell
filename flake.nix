@@ -33,7 +33,7 @@
 
       pname = "delta-shell";
 
-      runtimeDeps =
+      pkgsass =
         with pkgs;
         [
           gjs
@@ -47,6 +47,7 @@
           libadwaita
           gobject-introspection
           geoclue2
+          glib-networking
         ]
         ++ (with astal.packages.${system}; [
           io
@@ -78,11 +79,11 @@
           ninja
         ];
 
-        buildInputs = runtimeDeps;
+        buildInputs = pkgsass;
 
         postInstall = ''
           wrapProgram $out/bin/${pname} \
-            --prefix PATH : ${pkgs.lib.makeBinPath runtimeDeps}
+            --prefix PATH : ${pkgs.lib.makeBinPath pkgsass}
         '';
       };
     };
