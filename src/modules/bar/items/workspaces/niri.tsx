@@ -110,11 +110,7 @@ function WorkspaceButton({ ws }: { ws: AstalNiri.Workspace }) {
       >
          <label class={"workspace"} label={ws.idx.toString()} />
          {config.bar.workspaces.taskbar.get() && (
-            <For
-               each={createBinding(ws, "windows").as((clients) =>
-                  clients.sort((a, b) => a.id - b.id),
-               )}
-            >
+            <For each={createBinding(ws, "windows").as((clients) => clients)}>
                {(client: AstalNiri.Window) => <AppButton client={client} />}
             </For>
          )}
