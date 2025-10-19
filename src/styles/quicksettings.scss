@@ -3,7 +3,7 @@ window#quicksettings {
    color: $fg0;
    font-size: $font-size;
 
-   .main {
+   stack {
       background: rgba($bg0, $window-opacity);
       border: $window-border-width solid $window-border-color;
       padding: $window-padding;
@@ -285,6 +285,7 @@ window#quicksettings {
          outline: none;
          min-height: 20px;
          min-width: 45px;
+         background: rgba($bg2, $window-opacity);
 
          &:checked {
             background: rgba($accent, $window-opacity);
@@ -293,7 +294,7 @@ window#quicksettings {
 
          slider {
             background: get-contrast-color(
-               $accent-light,
+               $accent,
                rgba($fg0, $window-opacity),
                rgba($bg0, $window-opacity)
             );

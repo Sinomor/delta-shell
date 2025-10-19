@@ -21,7 +21,11 @@ export function RecordIndicator() {
                   : Gtk.Orientation.HORIZONTAL
             }
          >
-            <box class={"record-indicator"} valign={Gtk.Align.CENTER} />
+            <box
+               class={"record-indicator"}
+               valign={Gtk.Align.CENTER}
+               halign={Gtk.Align.CENTER}
+            />
             <label
                label={createBinding(screenRecord, "timer").as((time) => {
                   const sec = time % 60;
