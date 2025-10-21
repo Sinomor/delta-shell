@@ -272,11 +272,20 @@ function NotificationsButton() {
 }
 
 export function Qs_Buttons() {
-   const getVisibleButtons = () =>
-      config.quicksettings.buttons
-         .get()
-         .map((button) => Buttons[button]?.())
-         .filter(Boolean);
+   const getVisibleButtons = () => {
+      const buttons = config.quicksettings.buttons.get();
+      const visible = [];
+
+      for (const button of buttons) {
+         const Widget = Buttons[button];
+         if (Widget) visible.push(Widget());
+         else console.error(`Failed create qsbutton: unknown name ${button}`);
+      }
+
+      return visible;
+   };
+
+   const buttons = getVisibleButtons();
 
    return (
       <Adw.WrapBox
@@ -286,8 +295,8 @@ export function Qs_Buttons() {
          widthRequest={440 - theme.window.padding.get() * 2}
          naturalLineLength={440 - theme.window.padding.get() * 2}
       >
-         {getVisibleButtons()}
-         {getVisibleButtons().length % 2 !== 0 && <box widthRequest={200} />}
+         {buttons}
+         {buttons.length % 2 !== 0 && <box widthRequest={200} />}
       </Adw.WrapBox>
    );
 }

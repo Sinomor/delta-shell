@@ -13,7 +13,7 @@ export const config = mkOptions(configFile, {
          start: opt(["launcher", "workspaces"]),
          center: opt(["clock"]),
          end: opt(["record_indicator", "tray", "keyboard", "quicksettings"]),
-      },
+      } as Record<string, any>,
       size: opt(52),
       position: opt<"top" | "bottom" | "right" | "left">("top"),
       workspaces: {
