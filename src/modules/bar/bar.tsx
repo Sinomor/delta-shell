@@ -17,6 +17,7 @@ import { Bluetooth } from "./items/bluetooth";
 import { Battery } from "./items/battery";
 import { QuickSettings } from "./items/quicksettings";
 import { Clipboard } from "./items/clipboard";
+import { PowerMenu } from "./items/power";
 
 const { position, modules } = config.bar;
 const { spacing } = theme.bar;
@@ -42,6 +43,7 @@ export function BarModule({
       battery: () => <Battery />,
       quicksettings: () => <QuickSettings />,
       clipboard: () => <Clipboard />,
+      powermenu: () => <PowerMenu />,
    } as Record<string, any>;
 
    const getModules = (string: string) => {

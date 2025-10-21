@@ -150,6 +150,8 @@ window#bar {
          }
 
          button {
+            padding: 0;
+            padding: $bar-button-padding;
             background: rgba($bar-button-bg, $bar-button-opacity);
 
             &:hover {

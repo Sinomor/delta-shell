@@ -109,7 +109,7 @@ config.json
       // available modules: launcher, workspaces, clock,
       // record_indicator, tray, keyboard, quicksettings,
       // weather, notifications, volume, network, bluetooth,
-      // battery, clipboard
+      // battery, clipboard, powermenu
       "modules": {
          "start": ["launcher", "workspaces"],
          "center": ["clock"],
