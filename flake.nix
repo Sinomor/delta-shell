@@ -15,7 +15,7 @@
     ags = {
       url = "github:aylur/ags";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.astal.follows = "astal";
+      inputs.astal.follows = "astal_niri"; # Changed to follow astal_niri
     };
   };
 
@@ -30,6 +30,7 @@
     let
       system = "x86_64-linux";
       pkgs = import nixpkgs { inherit system; };
+      lib = pkgs.lib;
 
       pname = "delta-shell";
 
@@ -70,7 +71,7 @@
     in
     {
       packages.${system}.default = pkgs.stdenv.mkDerivation rec {
-        name = "${pname}";
+        name = "${pname}"; # Reverted to include pname
         src = ./.;
 
         nativeBuildInputs = with pkgs; [
