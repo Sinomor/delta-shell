@@ -143,7 +143,11 @@ window#bar {
       }
 
       .items {
-         padding: 6px 0;
+         @if $bar-vertical {
+            padding: 0 6px;
+         } @else {
+            padding: 6px 0;
+         }
 
          button {
             background: rgba($bar-button-bg, $bar-button-opacity);
