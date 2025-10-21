@@ -89,6 +89,7 @@ const variables = () => [
    $("bar-shadow-color", `${bar.shadow.color.get()}`),
    $("bar-shadow-opacity", `${bar.shadow.opacity.get()}`),
    $("bar-vertical", `${isVertical}`),
+   $("bar-size", `${config.bar.size.get()}px`),
 
    $("transition", `${config.transition.get()}s`),
    $("shadow", `${theme.shadow.get()}`),
