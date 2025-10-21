@@ -34,38 +34,40 @@
 
       pname = "delta-shell";
 
-      buildDependencies = with pkgs; [
-        gjs
-        gtk4
-        brightnessctl
-        dart-sass
-        gpu-screen-recorder
-        cliphist
-        bluez
-        libsoup_3
-        libadwaita
-        gobject-introspection
-        geoclue2
-        glib-networking
-      ]
-      ++ (with astal.packages.${system}; [
-        io
-        astal4
-        apps
-        hyprland
-        battery
-        bluetooth
-        mpris
-        network
-        notifd
-        powerprofiles
-        tray
-        wireplumber
-      ])
-      ++ [
-        astal_niri.packages.${system}.niri
-        ags.packages.${system}.agsFull
-      ];
+      buildDependencies =
+        with pkgs;
+        [
+          gjs
+          gtk4
+          brightnessctl
+          dart-sass
+          gpu-screen-recorder
+          cliphist
+          bluez
+          libsoup_3
+          libadwaita
+          gobject-introspection
+          geoclue2
+          glib-networking
+        ]
+        ++ (with astal.packages.${system}; [
+          io
+          astal4
+          apps
+          hyprland
+          battery
+          bluetooth
+          mpris
+          network
+          notifd
+          powerprofiles
+          tray
+          wireplumber
+        ])
+        ++ [
+          astal_niri.packages.${system}.niri
+          ags.packages.${system}.agsFull
+        ];
     in
     {
       packages.${system}.default = pkgs.stdenv.mkDerivation rec {
