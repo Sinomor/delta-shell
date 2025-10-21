@@ -30,7 +30,6 @@
     let
       system = "x86_64-linux";
       pkgs = import nixpkgs { inherit system; };
-      lib = pkgs.lib;
 
       pname = "delta-shell";
 
@@ -71,7 +70,7 @@
     in
     {
       packages.${system}.default = pkgs.stdenv.mkDerivation rec {
-        name = "${pname}"; # Reverted to include pname
+        name = "${pname}";
         src = ./.;
 
         nativeBuildInputs = with pkgs; [
