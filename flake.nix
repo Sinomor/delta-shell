@@ -15,7 +15,7 @@
     ags = {
       url = "github:aylur/ags";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.astal.follows = "astal_niri"; # Changed to follow astal_niri
+      inputs.astal.follows = "astal_niri";
     };
   };
 
@@ -71,7 +71,7 @@
     in
     {
       packages.${system}.default = pkgs.stdenv.mkDerivation rec {
-        name = "${pname}"; # Reverted to include pname
+        name = "${pname}";
         src = ./.;
 
         nativeBuildInputs = with pkgs; [

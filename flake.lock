@@ -3,7 +3,7 @@
     "ags": {
       "inputs": {
         "astal": [
-          "astal"
+          "astal_niri"
         ],
         "nixpkgs": [
           "nixpkgs"
