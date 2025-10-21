@@ -1,10 +1,10 @@
 window#bar {
    all: unset;
    color: $fg0;
-   margin: $bar-margin;
    font-size: $font-size;
 
    .main {
+      margin: $bar-margin;
       background: rgba($bar-bg, $bar-opacity);
       @if $bar-opacity != 0 {
          box-shadow: $bar-shadow-offset
@@ -12,27 +12,31 @@ window#bar {
             $bar-shadow-spread
             rgba($bar-shadow-color, $bar-shadow-opacity);
       }
+      @if $bar-vertical {
+         min-width: $bar-size;
+      } @else {
+         min-height: $bar-size;
+      }
+      @if all-zero($bar-margin) {
+         @if $bar-position == "top" {
+            border-bottom: $bar-border-width solid $bar-border-color;
+         } @else if $bar-position == "bottom" {
+            border-top: $bar-border-width solid $bar-border-color;
+         } @else if $bar-position == "left" {
+            border-right: $bar-border-width solid $bar-border-color;
+         } @else if $bar-position == "right" {
+            border-left: $bar-border-width solid $bar-border-color;
+         }
+      } @else {
+         border-radius: $widget-radius;
+         border: $bar-border-width solid $bar-border-color;
+      }
    }
 
    tooltip {
       background: rgba($bg0, $bar-opacity);
       border: $border-width solid $border-color;
       border-radius: $widget-radius;
-   }
-
-   @if all-zero($bar-margin) {
-      @if $bar-position == "top" {
-         border-bottom: $bar-border-width solid $bar-border-color;
-      } @else if $bar-position == "bottom" {
-         border-top: $bar-border-width solid $bar-border-color;
-      } @else if $bar-position == "left" {
-         border-right: $bar-border-width solid $bar-border-color;
-      } @else if $bar-position == "right" {
-         border-left: $bar-border-width solid $bar-border-color;
-      }
-   } @else {
-      border-radius: $widget-radius;
-      border: $bar-border-width solid $bar-border-color;
    }
 
    .modules-start {
@@ -139,9 +143,15 @@ window#bar {
       }
 
       .items {
-         padding: 6px 0;
+         @if $bar-vertical {
+            padding: 0 6px;
+         } @else {
+            padding: 6px 0;
+         }
 
          button {
+            padding: 0;
+            padding: $bar-button-padding;
             background: rgba($bar-button-bg, $bar-button-opacity);
 
             &:hover {
@@ -177,11 +187,11 @@ window#bar_shadow {
 
    .shadow {
       @if $bar-vertical {
-         margin-top: $bar-margin-top;
-         margin-bottom: $bar-margin-bottom;
+         margin-top: $bar-margin-top + $widget-radius;
+         margin-bottom: $bar-margin-bottom + $widget-radius;
       } @else {
-         margin-right: $bar-margin-right;
-         margin-left: $bar-margin-left;
+         margin-right: $bar-margin-right + $widget-radius;
+         margin-left: $bar-margin-left + $widget-radius;
       }
 
       @if $shadow and $bar-opacity != 0 {

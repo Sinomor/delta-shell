@@ -17,6 +17,7 @@ import { Bluetooth } from "./items/bluetooth";
 import { Battery } from "./items/battery";
 import { QuickSettings } from "./items/quicksettings";
 import { Clipboard } from "./items/clipboard";
+import { PowerMenu } from "./items/power";
 
 const { position, modules } = config.bar;
 const { spacing } = theme.bar;
@@ -42,7 +43,21 @@ export function BarModule({
       battery: () => <Battery />,
       quicksettings: () => <QuickSettings />,
       clipboard: () => <Clipboard />,
+      powermenu: () => <PowerMenu />,
    } as Record<string, any>;
+
+   const getModules = (string: string) => {
+      const baritems = modules[string].get();
+      const items = [];
+
+      for (const baritem of baritems) {
+         const Widget = Bar_Items[baritem];
+         if (Widget) items.push(Widget());
+         else console.error(`Failed create baritem: unknown name ${baritem}`);
+      }
+
+      return items;
+   };
 
    function Start() {
       return (
@@ -57,12 +72,7 @@ export function BarModule({
             }
             $={(self) => self.get_first_child()?.add_css_class("first-child")}
          >
-            <For each={modules.start}>
-               {(module: string) => {
-                  const Widget = Bar_Items[module];
-                  return Widget ? <Widget /> : <box />;
-               }}
-            </For>
+            {getModules("start")}
          </box>
       );
    }
@@ -79,12 +89,7 @@ export function BarModule({
                   : Gtk.Orientation.HORIZONTAL
             }
          >
-            <For each={modules.center}>
-               {(module: string) => {
-                  const Widget = Bar_Items[module];
-                  return Widget ? <Widget /> : <box />;
-               }}
-            </For>
+            {getModules("center")}
          </box>
       );
    }
@@ -102,12 +107,7 @@ export function BarModule({
             }
             $={(self) => self.get_last_child()?.add_css_class("last-child")}
          >
-            <For each={modules.end}>
-               {(module: string) => {
-                  const Widget = Bar_Items[module];
-                  return Widget ? <Widget /> : <box />;
-               }}
-            </For>
+            {getModules("end")}
          </box>
       );
    }
