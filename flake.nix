@@ -71,7 +71,7 @@
     in
     {
       packages.${system}.default = pkgs.stdenv.mkDerivation rec {
-        name = pname;
+        name = "${pname}"; # Reverted to include pname
         src = ./.;
 
         nativeBuildInputs = with pkgs; [
