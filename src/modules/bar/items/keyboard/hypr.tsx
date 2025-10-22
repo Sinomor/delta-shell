@@ -4,7 +4,6 @@ import BarItem from "@/src/widgets/baritem";
 import { createState, onCleanup } from "ags";
 import AstalHyprland from "gi://AstalHyprland?version=0.1";
 import { isVertical } from "../../bar";
-const hyprland = AstalHyprland.get_default();
 
 const [layout_name, layout_name_set] = createState("?");
 
@@ -45,6 +44,7 @@ function updateLayout() {
 if (compositor.get() === "hyprland") updateLayout();
 
 export function Keyboard_Hypr() {
+   const hyprland = AstalHyprland.get_default();
    let hyprlandconnect: number;
 
    onCleanup(() => {
