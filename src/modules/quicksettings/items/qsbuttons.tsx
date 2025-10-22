@@ -146,11 +146,27 @@ function InternetButton() {
 
 function ScreenRecordButton() {
    const screenRecord = ScreenRecord.get_default();
+   const progress = createComputed(
+      [
+         createBinding(screenRecord, "recording"),
+         createBinding(screenRecord, "timer"),
+      ],
+      (recording, time) => {
+         if (recording) {
+            const sec = time % 60;
+            const min = Math.floor(time / 60);
+            return `${min}:${sec < 10 ? "0" + sec : sec}`;
+         } else return "None";
+      },
+   );
 
    return (
       <QSButton
          icon={icons.video}
          label={"Screen Record"}
+         subtitle={progress.as((progress) =>
+            progress !== "None" ? progress : "None",
+         )}
          onClicked={() => {
             if (screenRecord.recording) screenRecord.stop();
             else screenRecord.start();
