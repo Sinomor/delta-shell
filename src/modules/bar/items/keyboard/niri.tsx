@@ -4,7 +4,6 @@ import { createState, onCleanup } from "ags";
 import { compositor } from "@/options";
 import BarItem from "@/src/widgets/baritem";
 import { isVertical } from "../../bar";
-const niri = AstalNiri.get_default();
 
 const [layout_name, layout_name_set] = createState("?");
 
@@ -26,6 +25,7 @@ function updateLayout() {
 if (compositor.get() === "niri") updateLayout();
 
 export function Keyboard_Niri() {
+   const niri = AstalNiri.get_default();
    let niriconnect: number;
 
    onCleanup(() => {

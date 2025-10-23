@@ -57,12 +57,6 @@ function Header({ showArrow = false }: { showArrow?: boolean }) {
          >
             <ScanningIndicator />
          </button>
-         <switch
-            class={"toggle"}
-            valign={Gtk.Align.CENTER}
-            active={weather.running}
-            onNotifyActive={() => weather.toggle()}
-         />
       </box>
    );
 }

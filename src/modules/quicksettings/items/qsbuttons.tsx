@@ -41,7 +41,7 @@ function PowerProfilesButton() {
          icon={activeprofile.as((profile) => icons.powerprofiles[profile])}
          label={"Power"}
          subtitle={activeprofile.as((profile) => profiles_names[profile])}
-         showArrow={true}
+         arrow={"separate"}
          onClicked={() => {
             const setprofile = activeprofile.as((profile) => {
                if (profile == "performance" || profile == "power-saver") {
@@ -129,7 +129,7 @@ function InternetButton() {
             wifi.scan();
             qs_page_set("network");
          }}
-         showArrow={network.wifi !== null}
+         arrow={"separate"}
          ArrowClasses={enabled.as((p) => {
             const classes = ["arrow"];
             p && classes.push("active");
@@ -146,11 +146,27 @@ function InternetButton() {
 
 function ScreenRecordButton() {
    const screenRecord = ScreenRecord.get_default();
+   const progress = createComputed(
+      [
+         createBinding(screenRecord, "recording"),
+         createBinding(screenRecord, "timer"),
+      ],
+      (recording, time) => {
+         if (recording) {
+            const sec = time % 60;
+            const min = Math.floor(time / 60);
+            return `${min}:${sec < 10 ? "0" + sec : sec}`;
+         } else return "None";
+      },
+   );
 
    return (
       <QSButton
          icon={icons.video}
          label={"Screen Record"}
+         subtitle={progress.as((progress) =>
+            progress !== "None" ? progress : "None",
+         )}
          onClicked={() => {
             if (screenRecord.recording) screenRecord.stop();
             else screenRecord.start();
@@ -186,7 +202,7 @@ function BluetoothButton() {
          subtitle={deviceConnected((text) =>
             text !== "No device" ? text : "None",
          )}
-         showArrow={true}
+         arrow={"separate"}
          onClicked={() => bluetooth.toggle()}
          onArrowClicked={() => qs_page_set("bluetooth")}
          ArrowClasses={powered.as((p) => {
@@ -228,19 +244,9 @@ function WeatherButton() {
          icon={icon.as((icon) => icon)}
          label={"Weather"}
          subtitle={temp.as((temp) => (temp !== "None" ? temp : "None"))}
-         showArrow={true}
-         onClicked={() => weather.toggle()}
-         onArrowClicked={() => qs_page_set("weather")}
-         ArrowClasses={weather.running.as((p) => {
-            const classes = ["arrow"];
-            p && classes.push("active");
-            return classes;
-         })}
-         ButtonClasses={weather.running.as((p) => {
-            const classes = ["qs-button-box-arrow"];
-            p && classes.push("active");
-            return classes;
-         })}
+         arrow={"inside"}
+         onClicked={() => qs_page_set("weather")}
+         ButtonClasses={["qs-button-box-arrow"]}
       />
    );
 }
@@ -254,7 +260,7 @@ function NotificationsButton() {
          subtitle={createBinding(notifd, "notifications").as((notifs) =>
             notifs.length === 0 ? "None" : notifs.length.toString(),
          )}
-         showArrow={true}
+         arrow={"separate"}
          onClicked={() => notifd.set_dont_disturb(!notifd.dontDisturb)}
          onArrowClicked={() => qs_page_set("notificationslist")}
          ArrowClasses={enabled.as((p) => {

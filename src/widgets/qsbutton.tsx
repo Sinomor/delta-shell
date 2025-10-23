@@ -8,7 +8,7 @@ type QSButtonProps = {
    icon: string | Accessor<string>;
    label: string;
    subtitle?: Accessor<string>;
-   showArrow?: boolean;
+   arrow?: "none" | "separate" | "inside";
    onClicked: () => void;
    onArrowClicked?: () => void;
    ButtonClasses: string[] | Accessor<string[]>;
@@ -16,33 +16,27 @@ type QSButtonProps = {
    maxWidthChars?: number;
 };
 
-export function QSButton(props: QSButtonProps) {
-   const {
-      icon,
-      label,
-      subtitle,
-      onClicked,
-      showArrow = false,
-      onArrowClicked = () => {},
-      ButtonClasses,
-      ArrowClasses,
-      maxWidthChars = 10,
-   } = props;
-
+export function QSButton({
+   icon,
+   label,
+   subtitle,
+   onClicked,
+   arrow = "none",
+   onArrowClicked = () => {},
+   ButtonClasses,
+   ArrowClasses,
+   maxWidthChars = 10,
+}: QSButtonProps) {
    return (
       <Adw.Clamp class={"qs-button"} maximumSize={200}>
          <box widthRequest={200}>
             <button
                onClicked={onClicked}
                cssClasses={ButtonClasses}
-               hexpand={true}
+               hexpand
                focusOnClick={false}
             >
-               <box
-                  spacing={10}
-                  halign={Gtk.Align.START}
-                  valign={Gtk.Align.CENTER}
-               >
+               <box spacing={10} hexpand valign={Gtk.Align.CENTER}>
                   <image pixelSize={22} iconName={icon} />
                   <box orientation={Gtk.Orientation.VERTICAL}>
                      <label
@@ -64,9 +58,19 @@ export function QSButton(props: QSButtonProps) {
                         />
                      )}
                   </box>
+                  {arrow === "inside" && (
+                     <image
+                        iconName={icons.arrow.right}
+                        class={"arrow-label"}
+                        pixelSize={22}
+                        hexpand
+                        valign={Gtk.Align.CENTER}
+                        halign={Gtk.Align.END}
+                     />
+                  )}
                </box>
             </button>
-            {showArrow && (
+            {arrow === "separate" && (
                <button
                   onClicked={onArrowClicked}
                   cssClasses={ArrowClasses}
