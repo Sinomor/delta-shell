@@ -41,7 +41,7 @@ function PowerProfilesButton() {
          icon={activeprofile.as((profile) => icons.powerprofiles[profile])}
          label={"Power"}
          subtitle={activeprofile.as((profile) => profiles_names[profile])}
-         showArrow={true}
+         arrow={"separate"}
          onClicked={() => {
             const setprofile = activeprofile.as((profile) => {
                if (profile == "performance" || profile == "power-saver") {
@@ -129,7 +129,7 @@ function InternetButton() {
             wifi.scan();
             qs_page_set("network");
          }}
-         showArrow={network.wifi !== null}
+         arrow={"separate"}
          ArrowClasses={enabled.as((p) => {
             const classes = ["arrow"];
             p && classes.push("active");
@@ -202,7 +202,7 @@ function BluetoothButton() {
          subtitle={deviceConnected((text) =>
             text !== "No device" ? text : "None",
          )}
-         showArrow={true}
+         arrow={"separate"}
          onClicked={() => bluetooth.toggle()}
          onArrowClicked={() => qs_page_set("bluetooth")}
          ArrowClasses={powered.as((p) => {
@@ -244,7 +244,7 @@ function WeatherButton() {
          icon={icon.as((icon) => icon)}
          label={"Weather"}
          subtitle={temp.as((temp) => (temp !== "None" ? temp : "None"))}
-         showArrow={true}
+         arrow={"separate"}
          onClicked={() => weather.toggle()}
          onArrowClicked={() => qs_page_set("weather")}
          ArrowClasses={weather.running.as((p) => {
@@ -270,7 +270,7 @@ function NotificationsButton() {
          subtitle={createBinding(notifd, "notifications").as((notifs) =>
             notifs.length === 0 ? "None" : notifs.length.toString(),
          )}
-         showArrow={true}
+         arrow={"separate"}
          onClicked={() => notifd.set_dont_disturb(!notifd.dontDisturb)}
          onArrowClicked={() => qs_page_set("notificationslist")}
          ArrowClasses={enabled.as((p) => {
