@@ -244,19 +244,9 @@ function WeatherButton() {
          icon={icon.as((icon) => icon)}
          label={"Weather"}
          subtitle={temp.as((temp) => (temp !== "None" ? temp : "None"))}
-         arrow={"separate"}
-         onClicked={() => weather.toggle()}
-         onArrowClicked={() => qs_page_set("weather")}
-         ArrowClasses={weather.running.as((p) => {
-            const classes = ["arrow"];
-            p && classes.push("active");
-            return classes;
-         })}
-         ButtonClasses={weather.running.as((p) => {
-            const classes = ["qs-button-box-arrow"];
-            p && classes.push("active");
-            return classes;
-         })}
+         arrow={"inside"}
+         onClicked={() => qs_page_set("weather")}
+         ButtonClasses={["qs-button-box-arrow"]}
       />
    );
 }
