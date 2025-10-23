@@ -26,7 +26,8 @@ export function Workspaces_Niri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
       });
 
       const appInfo = getAppInfo(client.app_id);
-      const iconName = apps_icons[client.app_id] || appInfo.iconName;
+      const iconName =
+         apps_icons[client.app_id] || appInfo?.iconName || icons.apps_default;
 
       const indicatorValign = config.bar.position.as((p) => {
          switch (p) {

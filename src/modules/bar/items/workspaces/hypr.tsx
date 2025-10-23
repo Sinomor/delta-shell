@@ -33,7 +33,8 @@ export function Workspaces_Hypr({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
       );
 
       const appInfo = getAppInfo(client.class);
-      const iconName = apps_icons[client.class] || appInfo.iconName;
+      const iconName =
+         apps_icons[client.class] || appInfo?.iconName || icons.apps_default;
 
       const indicatorValign = config.bar.position.as((p) => {
          switch (p) {
