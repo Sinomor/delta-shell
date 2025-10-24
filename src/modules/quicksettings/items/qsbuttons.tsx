@@ -34,6 +34,7 @@ const Buttons = {
    notifications: () =>
       config.notifications.enabled.get() && <NotificationsButton />,
    volume: () => <VolumeButton />,
+   microphone: () => <MicrophoneButton />,
 } as Record<string, any>;
 
 function VolumeButton() {
@@ -53,6 +54,39 @@ function VolumeButton() {
          label={"Volume"}
          subtitle={level.as((level) => (level !== "None" ? level : "None"))}
          onClicked={() => speaker.set_mute(!speaker.get_mute())}
+         onArrowClicked={() => qs_page_set("volume")}
+         arrow={"separate"}
+         ArrowClasses={mute.as((p) => {
+            const classes = ["arrow"];
+            !p && classes.push("active");
+            return classes;
+         })}
+         ButtonClasses={mute.as((p) => {
+            const classes = ["qs-button-box-arrow"];
+            !p && classes.push("active");
+            return classes;
+         })}
+      />
+   );
+}
+
+function MicrophoneButton() {
+   const microphone = wp.get_default_microphone();
+   const mute = createBinding(microphone, "mute");
+   const level = createComputed(
+      [createBinding(microphone, "volume"), mute],
+      (volume, mute) => {
+         if (mute) return "None";
+         else return `${Math.floor(volume * 100)}%`;
+      },
+   );
+
+   return (
+      <QSButton
+         icon={icons.microphone.default}
+         label={"Microphone"}
+         subtitle={level.as((level) => (level !== "None" ? level : "None"))}
+         onClicked={() => microphone.set_mute(!microphone.get_mute())}
          onArrowClicked={() => qs_page_set("volume")}
          arrow={"separate"}
          ArrowClasses={mute.as((p) => {
