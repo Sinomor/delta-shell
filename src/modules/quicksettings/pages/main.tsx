@@ -1,5 +1,5 @@
 import { Gtk } from "ags/gtk4";
-import { Sliders } from "../items/sliders";
+import { QSSliders } from "../items/sliders";
 import { MprisPlayers } from "../items/media";
 import { Qs_Buttons } from "../items/qsbuttons";
 import { BatteryIcon, icons } from "@/src/lib/icons";
@@ -87,7 +87,7 @@ export function MainPage() {
       >
          <Header />
          <Qs_Buttons />
-         <Sliders />
+         <QSSliders />
          <MprisPlayers />
       </box>
    );
