@@ -12,7 +12,7 @@ export const config = mkOptions(configFile, {
       modules: {
          start: opt(["launcher", "workspaces"]),
          center: opt(["clock"]),
-         end: opt(["record_indicator", "tray", "keyboard", "quicksettings"]),
+         end: opt(["recordindicator", "tray", "keyboard", "quicksettings"]),
       } as Record<string, any>,
       size: opt(52),
       position: opt<"top" | "bottom" | "right" | "left">("top"),
