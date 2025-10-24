@@ -26,6 +26,7 @@ export const config = mkOptions(configFile, {
    },
    quicksettings: {
       buttons: opt(["network", "bluetooth", "notifications", "screenrecord"]),
+      sliders: opt(["volume", "brightness"]),
    },
    launcher: {
       clipboard: {

@@ -133,7 +133,9 @@ config.json
    "quicksettings": {
       // available buttons: network, bluetooth, notifications,
       // weather, screenrecord
-      "buttons": ["network", "bluetooth", "notifications", "screenrecord"]
+      "buttons": ["network", "bluetooth", "notifications", "screenrecord"],
+      // available sliders: volume, brightness
+      "sliders": ["volume", "brightness"]
    }
    "launcher": {
       "clipboard": {
