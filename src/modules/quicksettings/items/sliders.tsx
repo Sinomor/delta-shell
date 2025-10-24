@@ -26,7 +26,7 @@ function BrightnessBox() {
 }
 
 function VolumeBox() {
-   const speaker = AstalWp.get_default()?.audio!.defaultSpeaker!;
+   const speaker = AstalWp.get_default()?.get_default_speaker();
    const level = createBinding(speaker, "volume");
 
    return (

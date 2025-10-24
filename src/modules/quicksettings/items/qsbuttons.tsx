@@ -1,8 +1,9 @@
 import { Gtk } from "ags/gtk4";
-import { getNetworkIconBinding, icons } from "@/src/lib/icons";
+import { getNetworkIconBinding, icons, VolumeIcon } from "@/src/lib/icons";
 import AstalNetwork from "gi://AstalNetwork?version=0.1";
 import AstalBluetooth from "gi://AstalBluetooth?version=0.1";
 import AstalPowerProfiles from "gi://AstalPowerProfiles?version=0.1";
+import AstalWp from "gi://AstalWp?version=0.1";
 import { createBinding, createComputed, For } from "ags";
 import { resetCss } from "@/src/services/styles";
 import { QSButton } from "@/src/widgets/qsbutton";
@@ -19,6 +20,7 @@ const network = AstalNetwork.get_default();
 const bluetooth = AstalBluetooth.get_default();
 const powerprofile = AstalPowerProfiles.get_default();
 const weather = WeatherService.get_default();
+const wp = AstalWp.get_default();
 const notifd = AstalNotifd.get_default();
 
 const Buttons = {
@@ -31,7 +33,41 @@ const Buttons = {
    weather: () => config.weather.enabled.get() && <WeatherButton />,
    notifications: () =>
       config.notifications.enabled.get() && <NotificationsButton />,
+   volume: () => <VolumeButton />,
 } as Record<string, any>;
+
+function VolumeButton() {
+   const speaker = wp.get_default_speaker();
+   const mute = createBinding(speaker, "mute");
+   const level = createComputed(
+      [createBinding(speaker, "volume"), mute],
+      (volume, mute) => {
+         if (mute) return "None";
+         else return `${Math.floor(volume * 100)}%`;
+      },
+   );
+
+   return (
+      <QSButton
+         icon={VolumeIcon}
+         label={"Volume"}
+         subtitle={level.as((level) => (level !== "None" ? level : "None"))}
+         onClicked={() => speaker.set_mute(!speaker.get_mute())}
+         onArrowClicked={() => qs_page_set("volume")}
+         arrow={"separate"}
+         ArrowClasses={mute.as((p) => {
+            const classes = ["arrow"];
+            !p && classes.push("active");
+            return classes;
+         })}
+         ButtonClasses={mute.as((p) => {
+            const classes = ["qs-button-box-arrow"];
+            !p && classes.push("active");
+            return classes;
+         })}
+      />
+   );
+}
 
 function PowerProfilesButton() {
    const activeprofile = createBinding(powerprofile, "activeProfile");
