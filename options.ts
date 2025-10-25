@@ -144,6 +144,7 @@ export const theme = mkOptions(themeFile, {
       bg: opt("$bg0"),
       opacity: opt(1),
       margin: opt<number[]>([0, 0, 0, 0]),
+      padding: opt(6),
       spacing: opt(6),
       border: {
          width: opt(1),

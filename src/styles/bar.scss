@@ -42,9 +42,9 @@ window#bar {
    .modules-start {
       .first-child {
          @if $bar-vertical {
-            padding-top: 6px;
+            padding-top: $bar-padding;
          } @else {
-            padding-left: 6px;
+            padding-left: $bar-padding;
          }
       }
    }
@@ -52,9 +52,9 @@ window#bar {
    .modules-end {
       .last-child {
          @if $bar-vertical {
-            padding-bottom: 6px;
+            padding-bottom: $bar-padding;
          } @else {
-            padding-right: 6px;
+            padding-right: $bar-padding;
          }
       }
    }
@@ -63,9 +63,9 @@ window#bar {
       background: transparent;
       font-weight: normal;
       @if $bar-vertical {
-         padding: 0 6px;
+         padding: 0 $bar-padding;
       } @else {
-         padding: 6px 0;
+         padding: $bar-padding 0;
       }
 
       .content {
@@ -100,7 +100,7 @@ window#bar {
    .workspace {
       @if $bar-vertical {
       } @else {
-         padding: 0 5px;
+         padding: 0 $bar-padding;
       }
    }
 
@@ -140,9 +140,9 @@ window#bar {
 
       .items {
          @if $bar-vertical {
-            padding: 0 6px;
+            padding: 0 $bar-padding;
          } @else {
-            padding: 6px 0;
+            padding: $bar-padding 0;
          }
 
          button {

@@ -73,6 +73,7 @@ const variables = () => [
    $("bar-margin-right", `${bar.margin.get()[1]}px`),
    $("bar-margin-bottom", `${bar.margin.get()[2]}px`),
    $("bar-margin-left", `${bar.margin.get()[3]}px`),
+   $("bar-padding", `${bar.padding.get()}px`),
    $("bar-border-width", `${bar.border.width.get()}px`),
    $("bar-border-color", `${bar.border.color.get()}`),
    $("bar-button-bg", `${bar.button.bg.default.get()}`),

@@ -107,7 +107,7 @@ config.json
    "transition": 0.3, // animation transition (in seconds)
    "bar": {
       // available modules: launcher, workspaces, clock,
-      // record_indicator, tray, keyboard, quicksettings,
+      // recordindicator, tray, keyboard, quicksettings,
       // weather, notifications, volume, network, bluetooth,
       // battery, clipboard, powermenu
       "modules": {
@@ -239,6 +239,7 @@ theme.json
       "bg": "$bg0",
       "opacity": 1,
       "margin": [0, 0, 0, 0], // in px, [top, right, bottom, left]
+      "padding": 6,
       "spacing": 6, // spacing between modules in bar
       "border": {
          "width": 1,
