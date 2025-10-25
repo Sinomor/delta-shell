@@ -125,11 +125,22 @@ window#bar {
             margin-top: 5px;
             border: $border-width solid $bg1;
             box-shadow: none;
+            border-radius: $widget-radius;
             @if $shadow {
                box-shadow: $bar-shadow-offset
                   $bar-shadow-blur
                   $bar-shadow-spread
                   rgba($bar-shadow-color, $bar-shadow-opacity);
+            }
+         }
+
+         modelbutton {
+            border-radius: $widget-radius;
+            background: transparent;
+
+            &:focus,
+            &:hover {
+               background: $bg1;
             }
          }
 
@@ -149,6 +160,7 @@ window#bar {
             padding: 0;
             padding: $bar-button-padding;
             background: rgba($bar-button-bg, $bar-button-opacity);
+            border-radius: $widget-radius;
 
             &:hover {
                background: $bg1;
