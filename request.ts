@@ -12,28 +12,18 @@ export default function request(
    if (args[0] == "toggle" && args[1]) {
       switch (args[1]) {
          case "applauncher":
-            if (!app.get_window(windows_names.applauncher)?.visible)
-               hide_all_windows();
             toggleWindow(windows_names.applauncher);
             break;
          case "quicksettings":
-            if (!app.get_window(windows_names.quicksettings)?.visible)
-               hide_all_windows();
             toggleWindow(windows_names.quicksettings);
             break;
          case "calendar":
-            if (!app.get_window(windows_names.calendar)?.visible)
-               hide_all_windows();
             toggleWindow(windows_names.calendar);
             break;
          case "powermenu":
-            if (!app.get_window(windows_names.powermenu)?.visible)
-               hide_all_windows();
             toggleWindow(windows_names.powermenu);
             break;
          case "clipboard":
-            if (!app.get_window(windows_names.clipboard)?.visible)
-               hide_all_windows();
             toggleWindow(windows_names.clipboard);
             break;
          case "weather":

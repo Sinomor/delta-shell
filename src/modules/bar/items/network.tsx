@@ -12,11 +12,7 @@ export function Network() {
    return (
       <BarItem
          window={windows_names.network}
-         onPrimaryClick={() => {
-            if (!app.get_window(windows_names.network)?.visible)
-               hide_all_windows();
-            toggleWindow(windows_names.network);
-         }}
+         onPrimaryClick={() => toggleWindow(windows_names.network)}
          hexpand={isVertical}
       >
          <image

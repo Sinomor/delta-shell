@@ -12,15 +12,9 @@ export function Launcher() {
    return (
       <BarItem
          window={windows_names.applauncher}
-         onPrimaryClick={() => {
-            if (!app.get_window(windows_names.applauncher)?.visible)
-               hide_all_windows();
-            toggleWindow(windows_names.applauncher);
-         }}
+         onPrimaryClick={() => toggleWindow(windows_names.applauncher)}
          onSecondaryClick={() => {
             if (!hasBarItem("clipboard")) {
-               if (!app.get_window(windows_names.clipboard)?.visible)
-                  hide_all_windows();
                toggleWindow(windows_names.clipboard);
             }
          }}

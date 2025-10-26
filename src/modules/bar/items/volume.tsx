@@ -12,11 +12,7 @@ export function Volume() {
    return (
       <BarItem
          window={windows_names.volume}
-         onPrimaryClick={() => {
-            if (!app.get_window(windows_names.volume)?.visible)
-               hide_all_windows();
-            toggleWindow(windows_names.volume);
-         }}
+         onPrimaryClick={() => toggleWindow(windows_names.volume)}
          hexpand={isVertical}
       >
          <Gtk.EventControllerScroll

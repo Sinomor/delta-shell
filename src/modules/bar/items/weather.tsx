@@ -31,11 +31,7 @@ export function Weather() {
    return (
       <BarItem
          window={windows_names.weather}
-         onPrimaryClick={() => {
-            if (!app.get_window(windows_names.weather)?.visible)
-               hide_all_windows();
-            toggleWindow(windows_names.weather);
-         }}
+         onPrimaryClick={() => toggleWindow(windows_names.weather)}
          hexpand={isVertical}
       >
          <box

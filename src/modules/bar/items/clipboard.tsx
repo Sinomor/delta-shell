@@ -12,11 +12,7 @@ export function Clipboard() {
    return (
       <BarItem
          window={windows_names.clipboard}
-         onPrimaryClick={() => {
-            if (!app.get_window(windows_names.clipboard)?.visible)
-               hide_all_windows();
-            toggleWindow(windows_names.clipboard);
-         }}
+         onPrimaryClick={() => toggleWindow(windows_names.clipboard)}
          hexpand={isVertical}
       >
          <image

@@ -12,11 +12,7 @@ export function PowerMenu() {
    return (
       <BarItem
          window={windows_names.powermenu}
-         onPrimaryClick={() => {
-            if (!app.get_window(windows_names.powermenu)?.visible)
-               hide_all_windows();
-            toggleWindow(windows_names.powermenu);
-         }}
+         onPrimaryClick={() => toggleWindow(windows_names.powermenu)}
          hexpand={isVertical}
       >
          <image

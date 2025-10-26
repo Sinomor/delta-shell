@@ -9,11 +9,7 @@ export function QuickSettings() {
    return (
       <BarItem
          window={windows_names.quicksettings}
-         onPrimaryClick={() => {
-            if (!app.get_window(windows_names.quicksettings)?.visible)
-               hide_all_windows();
-            toggleWindow(windows_names.quicksettings);
-         }}
+         onPrimaryClick={() => toggleWindow(windows_names.quicksettings)}
          hexpand={isVertical}
       >
          <image hexpand={isVertical} pixelSize={20} iconName={icons.settings} />

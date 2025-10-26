@@ -17,11 +17,7 @@ export function Notifications() {
    return (
       <BarItem
          window={windows_names.notifications_list}
-         onPrimaryClick={() => {
-            if (!app.get_window(windows_names.notifications_list)?.visible)
-               hide_all_windows();
-            toggleWindow(windows_names.notifications_list);
-         }}
+         onPrimaryClick={() => toggleWindow(windows_names.notifications_list)}
          hexpand={isVertical}
       >
          <box

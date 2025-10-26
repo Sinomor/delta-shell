@@ -135,6 +135,7 @@ export function toggleWindow(name: string) {
    if (win.visible) {
       win.hide();
    } else {
+      hide_all_windows();
       win.show();
    }
 }
@@ -243,16 +244,10 @@ export function hasBarItem(module: string) {
 export function toggleQsModule(name: string) {
    if (hasBarItem(name)) {
       const windowName = windows_names[name as keyof typeof windows_names];
-      if (!app.get_window(windowName)?.visible) {
-         hide_all_windows();
-      }
       toggleWindow(windowName);
    } else {
-      if (!app.get_window(windows_names.quicksettings)?.visible) {
-         hide_all_windows();
-      }
-      qs_page_set(name);
       toggleWindow(windows_names.quicksettings);
+      qs_page_set(name);
    }
 }
 

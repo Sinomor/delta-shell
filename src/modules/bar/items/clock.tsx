@@ -20,11 +20,7 @@ export function Clock() {
    return (
       <BarItem
          window={windows_names.calendar}
-         onPrimaryClick={() => {
-            if (!app.get_window(windows_names.calendar)?.visible)
-               hide_all_windows();
-            toggleWindow(windows_names.calendar);
-         }}
+         onPrimaryClick={() => toggleWindow(windows_names.calendar)}
          hexpand={isVertical}
       >
          {isVertical ? (
