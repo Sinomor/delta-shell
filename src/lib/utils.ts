@@ -230,7 +230,7 @@ export function hasBarItem(module: string) {
          config.bar.modules.center,
          config.bar.modules.end,
       ],
-      (start, center, end) => {
+      (start: string[], center: string[], end: string[]) => {
          return (
             start.includes(module) ||
             center.includes(module) ||
