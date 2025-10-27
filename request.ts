@@ -42,7 +42,7 @@ export default function request(
             toggleQsModule("bluetooth");
             break;
          case "power":
-            toggleQsModule("power");
+            toggleQsModule("power", "battery");
             break;
          default:
             print("Unknown request:", request);

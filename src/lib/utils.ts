@@ -241,8 +241,8 @@ export function hasBarItem(module: string) {
    ).get();
 }
 
-export function toggleQsModule(name: string) {
-   if (hasBarItem(name)) {
+export function toggleQsModule(name: string, module?: string) {
+   if (hasBarItem(module ? module : name)) {
       const windowName = windows_names[name as keyof typeof windows_names];
       toggleWindow(windowName);
    } else {

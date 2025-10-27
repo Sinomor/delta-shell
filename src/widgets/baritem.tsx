@@ -42,7 +42,7 @@ export const FunctionsList = {
    "toggle-volume": () => toggleQsModule(windows_names.volume),
    "toggle-network": () => toggleQsModule(windows_names.network),
    "toggle-bluetooth": () => toggleQsModule(windows_names.bluetooth),
-   "toggle-power": () => toggleQsModule(windows_names.power),
+   "toggle-power": () => toggleQsModule(windows_names.power, "battery"),
    "workspace-up": () => {
       const comp = compositor.get();
       if (comp === "niri") AstalNiri.msg.focus_workspace_up();
