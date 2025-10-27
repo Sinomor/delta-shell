@@ -17,7 +17,7 @@ import { Bluetooth } from "./items/bluetooth";
 import { Battery } from "./items/battery";
 import { QuickSettings } from "./items/quicksettings";
 import { Clipboard } from "./items/clipboard";
-import { PowerMenu } from "./items/power";
+import { PowerMenu } from "./items/powermenu";
 
 const { position, modules } = config.bar;
 const { spacing } = theme.bar;

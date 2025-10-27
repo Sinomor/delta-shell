@@ -7,6 +7,7 @@ export const icons = {
    search: "ds-search-symbolic",
    settings: "ds-settings-2-symbolic",
    clipboard: "ds-clipboard-symbolic",
+   keyboard: "ds-keyboard-symbolic",
    arrow: {
       left: "ds-chevron-left-symbolic",
       right: "ds-chevron-right-symbolic",

@@ -17,28 +17,30 @@ export function Notifications() {
    return (
       <BarItem
          window={windows_names.notifications_list}
-         onPrimaryClick={() => toggleWindow(windows_names.notifications_list)}
-         hexpand={isVertical}
-      >
-         <box
-            spacing={theme.bar.spacing}
-            hexpand={isVertical}
-            orientation={
-               isVertical
-                  ? Gtk.Orientation.VERTICAL
-                  : Gtk.Orientation.HORIZONTAL
-            }
-         >
-            <image
-               iconName={icons.bell}
-               pixelSize={20}
-               valign={Gtk.Align.CENTER}
-            />
-            <label
-               visible={data.as((d) => d.length > 0)}
-               label={data.as((d) => `${d.length}`)}
-            />
-         </box>
-      </BarItem>
+         onPrimaryClick={config.bar.modules.notifications["on-click"].get()}
+         onSecondaryClick={config.bar.modules.notifications[
+            "on-click-right"
+         ].get()}
+         onMiddleClick={config.bar.modules.notifications[
+            "on-click-middle"
+         ].get()}
+         data={{
+            icon: (
+               <image
+                  iconName={icons.bell}
+                  pixelSize={20}
+                  valign={Gtk.Align.CENTER}
+                  hexpand={isVertical}
+               />
+            ),
+            count: (
+               <label
+                  label={data.as((d) => `${d.length}`)}
+                  hexpand={isVertical}
+               />
+            ),
+         }}
+         format={config.bar.modules.notifications.format.get()}
+      />
    );
 }

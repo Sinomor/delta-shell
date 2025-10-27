@@ -18,39 +18,48 @@ export function Weather() {
          return {
             icon: "",
             temp: "",
+            units: "",
          };
 
       const current = data.hourly[0];
       return {
          icon: current.icon,
-         temp: isVertical
-            ? `${current.temperature}`
-            : `${current.temperature}${current.units.temperature}`,
+         temp: `${current.temperature}`,
+         units: `${current.units.temperature}`,
       };
    });
    return (
       <BarItem
          window={windows_names.weather}
-         onPrimaryClick={() => toggleWindow(windows_names.weather)}
-         hexpand={isVertical}
-      >
-         <box
-            visible={data.as((d) => d.temp !== "")}
-            spacing={theme.bar.spacing}
-            hexpand={isVertical}
-            orientation={
-               isVertical
-                  ? Gtk.Orientation.VERTICAL
-                  : Gtk.Orientation.HORIZONTAL
-            }
-         >
-            <image
-               iconName={data.as((d) => d.icon)}
-               pixelSize={20}
-               valign={Gtk.Align.CENTER}
-            />
-            <label label={data.as((d) => d.temp)} valign={Gtk.Align.CENTER} />
-         </box>
-      </BarItem>
+         onPrimaryClick={config.bar.modules.weather["on-click"].get()}
+         onSecondaryClick={config.bar.modules.weather["on-click-right"].get()}
+         onMiddleClick={config.bar.modules.weather["on-click-middle"].get()}
+         visible={data.as((d) => d.temp !== "")}
+         data={{
+            icon: (
+               <image
+                  iconName={data.as((d) => d.icon)}
+                  pixelSize={20}
+                  valign={Gtk.Align.CENTER}
+                  hexpand={isVertical}
+               />
+            ),
+            temp: (
+               <label
+                  label={data.as((d) => d.temp)}
+                  valign={Gtk.Align.CENTER}
+                  hexpand={isVertical}
+               />
+            ),
+            units: (
+               <label
+                  label={data.as((d) => d.units)}
+                  valign={Gtk.Align.CENTER}
+                  hexpand={isVertical}
+               />
+            ),
+         }}
+         format={config.bar.modules.weather.format.get()}
+      />
    );
 }

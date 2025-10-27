@@ -5,9 +5,9 @@ import { createBinding, createComputed, For } from "ags";
 import { compositor, config, theme } from "@/options";
 import { attachHoverScroll, bash, getAppInfo } from "@/src/lib/utils";
 import { icons } from "@/src/lib/icons";
-import BarItem from "@/src/widgets/baritem";
+import BarItem, { FunctionsList } from "@/src/widgets/baritem";
 import { isVertical } from "../../bar";
-const apps_icons = config.bar.workspaces.taskbar_icons.get();
+const apps_icons = config.bar.modules.workspaces["taskbar-icons"];
 
 export function Workspaces_Niri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
    const niri = AstalNiri.get_default();
@@ -102,7 +102,6 @@ export function Workspaces_Niri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
       return (
          <BarItem
             cssClasses={classNames}
-            onPrimaryClick={() => ws.focus()}
             orientation={
                isVertical
                   ? Gtk.Orientation.VERTICAL
@@ -110,8 +109,14 @@ export function Workspaces_Niri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
             }
             hexpand={isVertical}
          >
+            <Gtk.GestureClick
+               onPressed={(ctrl) => {
+                  const button = ctrl.get_current_button();
+                  if (button === Gdk.BUTTON_PRIMARY) ws.focus();
+               }}
+            />
             <label class={"workspace"} label={ws.idx.toString()} />
-            {config.bar.workspaces.taskbar.get() && (
+            {config.bar.modules.workspaces.taskbar.get() && (
                <For
                   each={createBinding(ws, "windows").as((clients) => clients)}
                >
@@ -140,9 +145,13 @@ export function Workspaces_Niri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
             $={(self) =>
                attachHoverScroll(self, ({ dy }) => {
                   if (dy < 0) {
-                     AstalNiri.msg.focus_workspace_up();
+                     FunctionsList[
+                        config.bar.modules.workspaces["on-scroll-up"].get()
+                     ]();
                   } else if (dy > 0) {
-                     AstalNiri.msg.focus_workspace_down();
+                     FunctionsList[
+                        config.bar.modules.workspaces["on-scroll-down"].get()
+                     ]();
                   }
                })
             }

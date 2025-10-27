@@ -1,9 +1,10 @@
 import AstalNiri from "gi://AstalNiri";
 import { bash } from "@/src/lib/utils";
 import { createState, onCleanup } from "ags";
-import { compositor } from "@/options";
+import { compositor, config } from "@/options";
 import BarItem from "@/src/widgets/baritem";
 import { isVertical } from "../../bar";
+import { icons } from "@/src/lib/icons";
 
 const [layout_name, layout_name_set] = createState("?");
 
@@ -34,15 +35,25 @@ export function Keyboard_Niri() {
 
    return (
       <BarItem
-         onPrimaryClick={() => bash("niri msg action switch-layout next")}
+         onPrimaryClick={config.bar.modules.keyboard["on-click"].get()}
+         onSecondaryClick={config.bar.modules.keyboard["on-click-right"].get()}
+         onMiddleClick={config.bar.modules.keyboard["on-click-middle"].get()}
          $={() => {
             niriconnect = niri.connect("keyboard-layout-switched", () => {
                updateLayout();
             });
          }}
-         hexpand={isVertical}
-      >
-         <label hexpand={isVertical} label={layout_name} />
-      </BarItem>
+         data={{
+            lang: <label hexpand={isVertical} label={layout_name} />,
+            icon: (
+               <image
+                  hexpand={isVertical}
+                  iconName={icons.keyboard}
+                  pixelSize={20}
+               />
+            ),
+         }}
+         format={config.bar.modules.keyboard.format.get()}
+      />
    );
 }

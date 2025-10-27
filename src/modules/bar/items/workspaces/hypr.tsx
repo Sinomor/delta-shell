@@ -7,7 +7,7 @@ import BarItem from "@/src/widgets/baritem";
 import { config, theme } from "@/options";
 import { attachHoverScroll, getAppInfo } from "@/src/lib/utils";
 import { isVertical } from "../../bar";
-const apps_icons = config.bar.workspaces.taskbar_icons.get();
+const apps_icons = config.bar.modules.workspaces["taskbar-icons"];
 
 export function Workspaces_Hypr({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
    const hyprland = AstalHyprland.get_default();
@@ -109,7 +109,6 @@ export function Workspaces_Hypr({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
       return (
          <BarItem
             cssClasses={classNames}
-            onPrimaryClick={() => ws.focus()}
             orientation={
                isVertical
                   ? Gtk.Orientation.VERTICAL
@@ -118,7 +117,7 @@ export function Workspaces_Hypr({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
             hexpand={isVertical}
          >
             <label class={"workspace"} label={ws.id.toString()} />
-            {config.bar.workspaces.taskbar.get() && (
+            {config.bar.modules.workspaces.taskbar.get() && (
                <For
                   each={createBinding(ws, "clients").as((clients) =>
                      clients.sort((a, b) => a.pid - b.pid),

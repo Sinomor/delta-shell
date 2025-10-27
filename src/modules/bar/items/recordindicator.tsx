@@ -1,4 +1,4 @@
-import { theme } from "@/options";
+import { config, theme } from "@/options";
 import ScreenRecord from "@/src/services/screenrecord";
 import BarItem from "@/src/widgets/baritem";
 import { createBinding } from "ags";
@@ -11,15 +11,34 @@ export function RecordIndicator() {
    return (
       <BarItem
          visible={createBinding(screenRecord, "recording")}
-         onPrimaryClick={() => screenRecord.stop().catch(() => "")}
-         hexpand={isVertical}
-      >
-         <image
-            hexpand={isVertical}
-            class={"record-indicator"}
-            iconName={icons.video}
-            pixelSize={20}
-         />
-      </BarItem>
+         onPrimaryClick={config.bar.modules.recordindicator["on-click"].get()}
+         onSecondaryClick={config.bar.modules.recordindicator[
+            "on-click-right"
+         ].get()}
+         onMiddleClick={config.bar.modules.recordindicator[
+            "on-click-middle"
+         ].get()}
+         data={{
+            icon: (
+               <image
+                  hexpand={isVertical}
+                  class={"record-indicator"}
+                  iconName={icons.video}
+                  pixelSize={20}
+               />
+            ),
+            progress: (
+               <label
+                  hexpand={isVertical}
+                  label={createBinding(screenRecord, "timer").as((time) => {
+                     const sec = time % 60;
+                     const min = Math.floor(time / 60);
+                     return `${min}:${sec < 10 ? "0" + sec : sec}`;
+                  })}
+               />
+            ),
+         }}
+         format={config.bar.modules.recordindicator.format.get()}
+      />
    );
 }
