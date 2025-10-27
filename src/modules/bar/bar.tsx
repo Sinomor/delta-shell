@@ -10,7 +10,6 @@ import { For, createState, onCleanup } from "ags";
 import { Weather } from "./items/weather";
 import { config, theme } from "@/options";
 import { windows_names } from "@/windows";
-import { Notifications } from "./items/notifications";
 import { Volume } from "./items/volume";
 import { Network } from "./items/network";
 import { Bluetooth } from "./items/bluetooth";
@@ -18,6 +17,7 @@ import { Battery } from "./items/battery";
 import { QuickSettings } from "./items/quicksettings";
 import { Clipboard } from "./items/clipboard";
 import { PowerMenu } from "./items/powermenu";
+import { NotificationsList } from "./items/notificationslist";
 
 const { position, modules } = config.bar;
 const { spacing } = theme.bar;
@@ -36,7 +36,7 @@ export function BarModule({
       keyboard: () => <Keyboard />,
       recordindicator: () => <RecordIndicator />,
       weather: () => <Weather />,
-      notifications: () => <Notifications />,
+      notificationslist: () => <NotificationsList />,
       volume: () => <Volume />,
       network: () => <Network />,
       bluetooth: () => <Bluetooth />,

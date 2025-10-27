@@ -108,7 +108,7 @@ config.json
    "bar": {
       // available modules: launcher, workspaces, clock,
       // recordindicator, tray, keyboard, quicksettings,
-      // weather, notifications, volume, network, bluetooth,
+      // weather, notificationslist, volume, network, bluetooth,
       // battery, clipboard, powermenu
       "modules": {
          "start": ["launcher", "workspaces"],

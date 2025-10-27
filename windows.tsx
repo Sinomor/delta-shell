@@ -30,7 +30,7 @@ export const windows_names = {
    verification: "verification",
    weather: "weather",
    calendar: "calendar",
-   notifications_list: "notificationslist",
+   notificationslist: "notificationslist",
    volume: "volume",
    network: "network",
    bluetooth: "bluetooth",
@@ -52,7 +52,7 @@ export function hide_all_windows() {
    config.weather.enabled.get() &&
       app.get_window(windows_names.weather)?.hide();
    config.notifications.enabled.get() &&
-      app.get_window(windows_names.notifications_list)?.hide();
+      app.get_window(windows_names.notificationslist)?.hide();
    qs_page_set("main");
 }
 
@@ -64,7 +64,7 @@ export function windows() {
    VerificationWindow();
    if (config.weather.enabled.get()) hasBarItem("weather") && WeatherWindow();
    if (config.notifications.enabled.get()) {
-      hasBarItem("notifications") && NotificationsListWindow();
+      hasBarItem("notificationslist") && NotificationsListWindow();
       NotificationsWindow();
    }
    if (config.osd.enabled.get()) OsdWindow();

@@ -10,13 +10,13 @@ import { createBinding } from "ags";
 import { isVertical } from "../bar";
 const notifd = AstalNotifd.get_default();
 
-export function Notifications() {
+export function NotificationsList() {
    if (!config.notifications.enabled.get()) return <box />;
    const data = createBinding(notifd, "notifications");
 
    return (
       <BarItem
-         window={windows_names.notifications_list}
+         window={windows_names.notificationslist}
          onPrimaryClick={config.bar.modules.notifications["on-click"].get()}
          onSecondaryClick={config.bar.modules.notifications[
             "on-click-right"
