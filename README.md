@@ -138,13 +138,15 @@ config.json
       "sliders": ["volume", "brightness"]
    }
    "launcher": {
-      "clipboard": {
-         "max_items": 50, // maximum items in clipboard
-         "image_preview": true,
-      }
       "width": 400,
-      "height": 600
+      "height": 500
    },
+   "clipboard": {
+      "max-items": 50, // maximum items in clipboard
+      "image-preview": true,
+      "width": 400,
+      "height": 500
+   }
    "osd": {
       "enabled": true,
       "vertical": false,
@@ -158,7 +160,7 @@ config.json
       "timeout": 3, // in seconds
       "width": 400,
       "list": {
-         "height": 600
+         "height": 500
       }
    },
    "weather": {

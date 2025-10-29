@@ -19,7 +19,7 @@ export default class Cliphist extends GObject.Object {
 
    constructor() {
       super();
-      this.start();
+      if (config.clipboard.enabled.get()) this.start();
    }
 
    async start() {
@@ -28,7 +28,7 @@ export default class Cliphist extends GObject.Object {
       try {
          await this.stop();
 
-         const maxItems = config.launcher.clipboard.max_items.get();
+         const maxItems = config.clipboard["max-items"].get();
          bash(`wl-paste --watch cliphist -max-items ${maxItems} store`);
          monitorFile(`${GLib.get_user_cache_dir()}/cliphist/db`, () =>
             this.update(),

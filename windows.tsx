@@ -68,7 +68,7 @@ export function windows() {
       NotificationsWindow();
    }
    if (config.osd.enabled.get()) OsdWindow();
-   ClipboardWindow();
+   if (config.clipboard.enabled.get()) ClipboardWindow();
    hasBarItem("volume") && VolumeWindow();
    hasBarItem("network") && NetworkWindow();
    hasBarItem("bluetooth") && BluetoothWindow();

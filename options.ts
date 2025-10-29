@@ -108,12 +108,15 @@ export const config = mkOptions(configFile, {
       sliders: opt(["volume", "brightness"]),
    },
    launcher: {
-      clipboard: {
-         max_items: opt(50),
-         image_preview: opt<boolean>(true),
-      },
       width: opt(400),
       height: opt(600),
+   },
+   clipboard: {
+      enabled: opt(true),
+      "max-items": opt(50),
+      "image-preview": opt<boolean>(true),
+      width: opt(500),
+      height: opt(500),
    },
    osd: {
       enabled: opt<boolean>(true),
