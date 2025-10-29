@@ -119,7 +119,6 @@ export function mkOptions<T extends GenericObject>(
 ): T & {
    configFile: string;
    handler: (deps: string[], callback: () => void) => void;
-   save: () => void;
 } {
    const defaultConfig = transformObject(object, true);
 
@@ -143,18 +142,8 @@ export function mkOptions<T extends GenericObject>(
       }
    }
 
-   const save = () => {
-      const currentState = transformObject(object);
-      writeFile(configFile, JSON.stringify(currentState, null, 2));
-   };
-
-   for (const opt of getOptions(object)) {
-      opt.subscribe(() => save());
-   }
-
    return Object.assign(object, {
       configFile,
-      save,
       handler(deps: string[], callback: () => void) {
          for (const opt of getOptions(object)) {
             if (deps.some((i) => opt.id.startsWith(i))) opt.subscribe(callback);
