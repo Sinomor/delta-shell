@@ -7,7 +7,7 @@ const configFile = `${configDir}/delta-shell/config.json`;
 const themeFile = `${configDir}/delta-shell/theme.json`;
 
 export const config = mkOptions(configFile, {
-   transition: opt(0.3),
+   transition: opt(0.2),
    bar: {
       modules: {
          start: opt(["launcher", "workspaces"]),
@@ -100,7 +100,7 @@ export const config = mkOptions(configFile, {
             "on-click-middle": opt(null),
          },
       },
-      size: opt(52),
+      size: opt(48),
       position: opt<"top" | "bottom" | "right" | "left">("top"),
    },
    quicksettings: {
@@ -241,7 +241,7 @@ export const theme = mkOptions(themeFile, {
       },
       button: {
          fg: opt("$fg0"),
-         padding: opt([0, 10]),
+         padding: opt([0, 7]),
          bg: {
             default: opt("$bg0"),
             hover: opt("$bg1"),
