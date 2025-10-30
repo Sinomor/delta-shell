@@ -8,16 +8,20 @@ import { icons } from "@/src/lib/icons";
 import BarItem, { FunctionsList } from "@/src/widgets/baritem";
 import { isVertical } from "../../bar";
 const apps_icons = config.bar.modules.workspaces["taskbar-icons"];
+const niri = compositor.get() === "niri" ? AstalNiri.get_default() : null;
 
 export function Workspaces_Niri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
-   const niri = AstalNiri.get_default();
+   if (!niri) {
+      console.warn("Workspaces_Niri: Niri compositor not active");
+      return <box />;
+   }
+
    const outputs = createBinding(niri, "outputs").as((outputs) =>
       outputs.filter((output) => output.model === gdkmonitor.model),
    );
 
    function AppButton({ client }: { client: AstalNiri.Window }) {
-      const niri = AstalNiri.get_default();
-      const classes = createBinding(niri, "focusedWindow").as((fcsClient) => {
+      const classes = createBinding(niri!, "focusedWindow").as((fcsClient) => {
          const classes = ["taskbar-button"];
          if (!fcsClient || !client.app_id || !fcsClient.app_id) return classes;
          const isFocused = fcsClient.id === client?.id;
@@ -36,7 +40,6 @@ export function Workspaces_Niri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
             case "bottom":
                return Gtk.Align.END;
             case "right":
-               return Gtk.Align.CENTER;
             case "left":
                return Gtk.Align.CENTER;
          }
@@ -45,7 +48,6 @@ export function Workspaces_Niri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
       const indicatorHalign = config.bar.position.as((p) => {
          switch (p) {
             case "top":
-               return Gtk.Align.CENTER;
             case "bottom":
                return Gtk.Align.CENTER;
             case "right":
@@ -88,7 +90,7 @@ export function Workspaces_Niri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
    }
 
    function WorkspaceButton({ ws }: { ws: AstalNiri.Workspace }) {
-      const classNames = createBinding(niri, "focusedWorkspace").as((fws) => {
+      const classNames = createBinding(niri!, "focusedWorkspace").as((fws) => {
          const classes = ["bar-item"];
 
          const active = fws?.id == ws.id;
