@@ -22,6 +22,7 @@ export function Bluetooth() {
          return false;
       },
    );
+
    return (
       <BarItem
          window={windows_names.bluetooth}
@@ -33,8 +34,44 @@ export function Bluetooth() {
             status: (
                <label
                   label={createBinding(bluetooth, "isPowered").as((v) =>
-                     v ? "Enabled" : "Disabled",
+                     v ? "On" : "Off",
                   )}
+               />
+            ),
+            "controller-address": (
+               <label
+                  label={createBinding(bluetooth, "adapter").as((adapter) =>
+                     adapter.address.toString(),
+                  )}
+               />
+            ),
+            "controller-alias": (
+               <label
+                  label={createBinding(bluetooth, "adapter").as((adapter) =>
+                     adapter.alias.toString(),
+                  )}
+               />
+            ),
+            "device-address": (
+               <label
+                  label={createBinding(bluetooth, "devices").as((d) => {
+                     for (const device of d) {
+                        if (device.connected) return device.address;
+                     }
+                     return "";
+                  })}
+                  visible={bluetoothconnected}
+               />
+            ),
+            "device-alias": (
+               <label
+                  label={createBinding(bluetooth, "devices").as((d) => {
+                     for (const device of d) {
+                        if (device.connected) return device.alias;
+                     }
+                     return "";
+                  })}
+                  visible={bluetoothconnected}
                />
             ),
          }}
