@@ -1,181 +1,103 @@
-import { getCalendarLayout } from "./layout";
 import { icons } from "@/src/lib/icons";
 import { Gtk } from "ags/gtk4";
-import { createComputed, createState, For } from "ags";
-import { hide_all_windows, windows_names } from "@/windows";
-import { config, theme } from "@/options";
+import { For } from "ags";
+import { theme } from "@/options";
+import CalendarService, { CalendarDay } from "@/src/services/calendar";
+const calendar = CalendarService.get_default();
 
-type Day = {
-   day: string;
-   today: number;
-   weekend?: number;
-};
+const WEEK_DAYS = ["M", "T", "W", "T", "F", "S", "S"];
 
-let calendarJson = getCalendarLayout(undefined, true);
-let monthshift = 0;
+function CalendarDayButton({ day }: { day: CalendarDay }) {
+   const classes = ["calendar-button"];
 
-function getDateInXMonthsTime(x: number) {
-   const currentDate = new Date();
-   let targetMonth = currentDate.getMonth() + x;
-   let targetYear = currentDate.getFullYear();
+   if (day.isToday) classes.push("today");
+   else if (day.isWeekend && day.isOtherMonth)
+      classes.push("other-month-weekend");
+   else if (day.isOtherMonth) classes.push("other-month");
+   else if (day.isWeekend) classes.push("weekend");
 
-   targetYear += Math.floor(targetMonth / 12);
-   targetMonth = ((targetMonth % 12) + 12) % 12;
-
-   let targetDate = new Date(targetYear, targetMonth, 1);
-
-   return targetDate;
-}
-
-const weekDays = [
-   { day: "M", today: 0 },
-   { day: "T", today: 0 },
-   { day: "W", today: 0 },
-   { day: "T", today: 0 },
-   { day: "F", today: 0 },
-   { day: "S", today: 0, weekend: 1 },
-   { day: "S", today: 0, weekend: 1 },
-];
-
-function CalendarDay({ day, today, weekend }: Day) {
    return (
-      <button
-         cssClasses={[
-            `calendar-button`,
-            today == 1
-               ? "today"
-               : today == -1
-                 ? "other-month"
-                 : weekend == 1
-                   ? "weekend"
-                   : "",
-         ]}
-         focusOnClick={false}
-      >
+      <button cssClasses={classes} focusOnClick={false}>
          <box halign={Gtk.Align.CENTER}>
-            <label halign={Gtk.Align.CENTER} label={String(day)} />
+            <label halign={Gtk.Align.CENTER} label={String(day.day)} />
          </box>
       </button>
    );
 }
 
-export function CalendarModule() {
-   let calendarbox: Gtk.Box;
+function WeekDayHeader({ day, index }: { day: string; index: number }) {
+   const isWeekend = index >= 5;
 
-   function addCalendarChildren(box: Gtk.Box, calendarJson: Day[][]) {
-      while (box.observe_children().get_n_items() > 0) {
-         const child = box.observe_children().get_item(0) as Gtk.Widget;
-         if (child) {
-            box.remove(child);
-            child.unparent();
-         }
-      }
+   return (
+      <button
+         cssClasses={["calendar-button", isWeekend ? "weekend" : ""]}
+         focusOnClick={false}
+      >
+         <box halign={Gtk.Align.CENTER}>
+            <label halign={Gtk.Align.CENTER} label={day} />
+         </box>
+      </button>
+   );
+}
 
-      calendarJson.forEach((row) => {
-         const rowBox = (
-            <box spacing={theme.spacing}>
-               {row.map((day: Day) => (
-                  <CalendarDay day={day.day} today={day.today} />
-               ))}
-            </box>
-         );
-         box.append(rowBox as Gtk.Widget);
-      });
-   }
-
-   function shiftCalendarXMonths(x: number) {
-      const newShift = x === 0 ? 0 : monthshift + x;
-      if (newShift === monthshift) return;
-
-      if (x === 0) monthshift = 0;
-      else monthshift += x;
-
-      const newDate =
-         monthshift === 0 ? new Date() : getDateInXMonthsTime(monthshift);
-
-      calendarJson = getCalendarLayout(newDate, monthshift === 0);
-      calendarMonthYearLabel_set(
-         `${monthshift === 0 ? "" : "• "}${newDate.toLocaleString("default", { month: "long" })} ${newDate.getFullYear()}`,
-      );
-
-      addCalendarChildren(calendarbox, calendarJson);
-   }
-
-   const [calendarMonthYearLabel, calendarMonthYearLabel_set] =
-      createState<string>("");
-
-   function MonthYear() {
-      return (
+function Header() {
+   return (
+      <box class={"header"} spacing={theme.spacing}>
          <button
             class={"monthyear"}
-            onClicked={() => shiftCalendarXMonths(0)}
+            onClicked={() => calendar.resetToToday()}
             focusOnClick={false}
-            label={calendarMonthYearLabel((m) => m)}
-            $={(self) => {
-               self.label = `${new Date().toLocaleString("default", { month: "long" })} ${new Date().getFullYear()}`;
-            }}
+            label={calendar.monthYear}
          />
-      );
-   }
+         <box hexpand />
+         <button
+            focusOnClick={false}
+            class={"monthshift"}
+            onClicked={() => calendar.prevMonth()}
+         >
+            <image iconName={icons.arrow.left} pixelSize={20} />
+         </button>
+         <button
+            focusOnClick={false}
+            class={"monthshift"}
+            onClicked={() => calendar.nextMonth()}
+         >
+            <image iconName={icons.arrow.right} pixelSize={20} />
+         </button>
+      </box>
+   );
+}
 
-   function Header() {
-      return (
-         <box class={"header"} spacing={theme.spacing}>
-            <MonthYear />
-            <box hexpand />
-            <button
-               focusOnClick={false}
-               class={"monthshift"}
-               onClicked={() => shiftCalendarXMonths(-1)}
-            >
-               <image iconName={icons.arrow.left} pixelSize={20} />
-            </button>
-            <button
-               focusOnClick={false}
-               class={"monthshift"}
-               onClicked={() => shiftCalendarXMonths(1)}
-            >
-               <image iconName={icons.arrow.right} pixelSize={20} />
-            </button>
-         </box>
-      );
-   }
-
-   function CalendarDays() {
-      return (
-         <box
-            spacing={theme.spacing}
-            class={"days"}
-            orientation={Gtk.Orientation.VERTICAL}
-            $={(self) => {
-               calendarbox = self;
-               addCalendarChildren(self, calendarJson);
-            }}
-         />
-      );
-   }
-
+export function CalendarModule() {
    return (
       <box
          $={(self) => {
-            self.connect("map", () => {
-               shiftCalendarXMonths(0);
-            });
+            self.connect("map", () => calendar.resetToToday());
          }}
          orientation={Gtk.Orientation.VERTICAL}
          spacing={theme.spacing}
       >
          <Header />
          <box class={"weekdays"} spacing={theme.spacing}>
-            {weekDays.map((day: Day) => (
-               <CalendarDay
-                  day={day.day}
-                  today={day.today}
-                  weekend={day.weekend}
-               />
+            {WEEK_DAYS.map((day, index) => (
+               <WeekDayHeader day={day} index={index} />
             ))}
          </box>
-         <CalendarDays />
+         <box
+            spacing={theme.spacing}
+            class={"days"}
+            orientation={Gtk.Orientation.VERTICAL}
+         >
+            <For each={calendar.weeks}>
+               {(week) => (
+                  <box spacing={theme.spacing}>
+                     {week.map((day) => (
+                        <CalendarDayButton day={day} />
+                     ))}
+                  </box>
+               )}
+            </For>
+         </box>
       </box>
    );
 }
