@@ -14,8 +14,6 @@ import AstalHyprland from "gi://AstalHyprland?version=0.1";
 import AstalNiri from "gi://AstalNiri?version=0.1";
 import AstalWp from "gi://AstalWp?version=0.1";
 import ScreenRecord from "@/src/services/screenrecord";
-const speaker = AstalWp.get_default()?.get_default_speaker();
-const screenRecord = ScreenRecord.get_default();
 
 type FormatData = Record<string, JSX.Element>;
 
@@ -31,6 +29,25 @@ type BarItemProps = JSX.IntrinsicElements["box"] & {
    onScrollUp?: string | null | Function;
 };
 
+let speaker: AstalWp.Endpoint | undefined;
+let screenRecord: ScreenRecord | undefined;
+let hyprland: AstalHyprland.Hyprland | undefined;
+
+function getSpeaker() {
+   if (!speaker) speaker = AstalWp.get_default()?.get_default_speaker();
+   return speaker;
+}
+
+function getScreenRecord() {
+   if (!screenRecord) screenRecord = ScreenRecord.get_default();
+   return screenRecord;
+}
+
+function getHyprland() {
+   if (!hyprland) hyprland = AstalHyprland.get_default();
+   return hyprland;
+}
+
 export const FunctionsList = {
    "toggle-launcher": () => toggleWindow(windows_names.applauncher),
    "toggle-qs": () => toggleWindow(windows_names.quicksettings),
@@ -45,23 +62,37 @@ export const FunctionsList = {
    "toggle-power": () => toggleQsModule(windows_names.power, "battery"),
    "workspace-up": () => {
       const comp = compositor.get();
-      if (comp === "niri") AstalNiri.msg.focus_workspace_up();
-      if (comp === "hyprland")
-         AstalHyprland.get_default().dispatch("workspace", "+1");
+      if (comp === "niri") {
+         AstalNiri.msg.focus_workspace_up();
+      } else if (comp === "hyprland") {
+         getHyprland()?.dispatch("workspace", "+1");
+      }
    },
    "workspace-down": () => {
       const comp = compositor.get();
-      if (comp === "niri") AstalNiri.msg.focus_workspace_down();
-      if (comp === "hyprland")
-         AstalHyprland.get_default().dispatch("workspace", "-1");
+      if (comp === "niri") {
+         AstalNiri.msg.focus_workspace_down();
+      } else if (comp === "hyprland") {
+         getHyprland()?.dispatch("workspace", "-1");
+      }
    },
-   "volume-up": () => speaker.set_volume(speaker.volume + 0.01),
-   "volume-down": () => speaker.set_volume(speaker.volume - 0.01),
-   "volume-toggle": () => speaker.set_mute(!speaker.get_mute()),
+   "volume-up": () => {
+      const spk = getSpeaker();
+      if (spk) spk.set_volume(spk.volume + 0.01);
+   },
+   "volume-down": () => {
+      const spk = getSpeaker();
+      if (spk) spk.set_volume(spk.volume - 0.01);
+   },
+   "volume-toggle": () => {
+      const spk = getSpeaker();
+      if (spk) spk.set_mute(!spk.get_mute());
+   },
    "switch-language": async () => {
       const comp = compositor.get();
-      if (comp === "niri") bash("niri msg action switch-layout next");
-      if (comp === "hyprland") {
+      if (comp === "niri") {
+         bash("niri msg action switch-layout next");
+      } else if (comp === "hyprland") {
          try {
             const json = await bash(`hyprctl devices -j`);
             const devices = JSON.parse(json);
@@ -70,7 +101,7 @@ export const FunctionsList = {
                (kb: any) => kb.main === true,
             );
 
-            if (mainKeyboard && mainKeyboard.name) {
+            if (mainKeyboard?.name) {
                bash(`hyprctl switchxkblayout ${mainKeyboard.name} next`);
             }
          } catch (error) {
@@ -79,10 +110,13 @@ export const FunctionsList = {
       }
    },
    "screenrecord-toggle": () => {
-      if (screenRecord.recording) screenRecord.stop();
-      else screenRecord.start();
+      const sr = getScreenRecord();
+      if (sr) {
+         if (sr.recording) sr.stop();
+         else sr.start();
+      }
    },
-} as Record<string, any>;
+};
 
 function parseFormat(format: string, data: FormatData): JSX.Element[] {
    const result: JSX.Element[] = [];
@@ -128,6 +162,49 @@ function parseFormat(format: string, data: FormatData): JSX.Element[] {
    return result;
 }
 
+function handleClick(
+   button: number,
+   onPrimary?: string | null | Function,
+   onSecondary?: string | null | Function,
+   onMiddle?: string | null | Function,
+) {
+   let handler: string | Function | null | undefined;
+
+   if (button === Gdk.BUTTON_PRIMARY) {
+      handler = onPrimary;
+   } else if (button === Gdk.BUTTON_SECONDARY) {
+      handler = onSecondary;
+   } else if (button === Gdk.BUTTON_MIDDLE) {
+      handler = onMiddle;
+   }
+
+   if (!handler || handler === "default") return;
+
+   if (typeof handler === "function") {
+      handler();
+   } else {
+      const func = FunctionsList[handler as keyof typeof FunctionsList];
+      if (func) func();
+   }
+}
+
+function handleScroll(
+   dy: number,
+   onUp?: string | null | Function,
+   onDown?: string | null | Function,
+) {
+   const handler = dy < 0 ? onUp : dy > 0 ? onDown : null;
+
+   if (!handler || handler === "default") return;
+
+   if (typeof handler === "function") {
+      handler();
+   } else {
+      const func = FunctionsList[handler as keyof typeof FunctionsList];
+      if (func) func();
+   }
+}
+
 export default function BarItem({
    window = "",
    children,
@@ -146,6 +223,8 @@ export default function BarItem({
       ? Gtk.Orientation.VERTICAL
       : Gtk.Orientation.HORIZONTAL;
 
+   const spacing = theme.bar.spacing.get() / 2;
+
    return (
       <box
          class={"bar-item"}
@@ -159,17 +238,9 @@ export default function BarItem({
                   }
                });
                onCleanup(() => app.disconnect(appconnect));
+
                attachHoverScroll(self, ({ dy }) => {
-                  if (dy < 0) {
-                     typeof onScrollUp === "function"
-                        ? onScrollUp()
-                        : onScrollUp !== null && FunctionsList[onScrollUp]();
-                  } else if (dy > 0) {
-                     typeof onScrollDown === "function"
-                        ? onScrollDown()
-                        : onScrollDown !== null &&
-                          FunctionsList[onScrollDown]();
-                  }
+                  handleScroll(dy, onScrollUp, onScrollDown);
                });
             }
          }}
@@ -177,28 +248,19 @@ export default function BarItem({
       >
          <Gtk.GestureClick
             onPressed={(ctrl) => {
-               const button = ctrl.get_current_button();
-               if (button === Gdk.BUTTON_PRIMARY)
-                  typeof onPrimaryClick === "function"
-                     ? onPrimaryClick()
-                     : onPrimaryClick !== null &&
-                       FunctionsList[onPrimaryClick]();
-               else if (button === Gdk.BUTTON_SECONDARY)
-                  typeof onSecondaryClick === "function"
-                     ? onSecondaryClick()
-                     : onSecondaryClick !== null &&
-                       FunctionsList[onSecondaryClick]();
-               else if (button === Gdk.BUTTON_MIDDLE)
-                  typeof onMiddleClick === "function"
-                     ? onMiddleClick()
-                     : onMiddleClick !== null && FunctionsList[onMiddleClick]();
+               handleClick(
+                  ctrl.get_current_button(),
+                  onPrimaryClick,
+                  onSecondaryClick,
+                  onMiddleClick,
+               );
             }}
             button={0}
          />
          <box
             class={"content"}
             orientation={orientation}
-            spacing={theme.bar.spacing.get() / 2}
+            spacing={spacing}
             hexpand={isVertical}
          >
             {content}
