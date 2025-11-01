@@ -86,8 +86,22 @@ export function Network() {
             ),
             status: (
                <label
-                  label={createBinding(network, "connectivity").as((v) =>
-                     v ? "On" : "Off",
+                  label={createComputed(
+                     [
+                        createBinding(network, "primary"),
+                        ...(network.wifi !== null
+                           ? [createBinding(network.wifi, "enabled")]
+                           : []),
+                     ],
+                     (primary, enabled) => {
+                        if (
+                           primary === AstalNetwork.Primary.WIRED &&
+                           network.wired.internet ===
+                              AstalNetwork.Internet.CONNECTED
+                        )
+                           return "On";
+                        return enabled ? "On" : "Off";
+                     },
                   )}
                   hexpand={isVertical}
                />
