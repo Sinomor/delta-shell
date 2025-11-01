@@ -239,6 +239,10 @@ export const theme = mkOptions(themeFile, {
          color: opt("black"),
          opacity: opt(0.4),
       },
+      separator: {
+         width: opt(1),
+         color: opt("$bg2"),
+      },
       button: {
          fg: opt("$fg0"),
          padding: opt([0, 7]),

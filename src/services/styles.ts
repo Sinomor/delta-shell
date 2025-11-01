@@ -76,6 +76,8 @@ const variables = () => [
    $("bar-padding", `${bar.padding.get()}px`),
    $("bar-border-width", `${bar.border.width.get()}px`),
    $("bar-border-color", `${bar.border.color.get()}`),
+   $("bar-separator-width", `${bar.separator.width.get()}px`),
+   $("bar-separator-color", `${bar.separator.color.get()}`),
    $("bar-button-bg", `${bar.button.bg.default.get()}`),
    $("bar-button-bg-hover", `${bar.button.bg.hover.get()}`),
    $("bar-button-bg-active", `${bar.button.bg.active.get()}`),

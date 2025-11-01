@@ -39,6 +39,20 @@ window#bar {
       border-radius: $widget-radius;
    }
 
+   separator {
+      border-radius: $widget-radius;
+      background: $bar-separator-color;
+      &.vertical {
+         margin: 0 $bar-padding;
+         min-height: $bar-separator-width;
+      }
+
+      &.horizontal {
+         margin: $bar-padding 0;
+         min-width: $bar-separator-width;
+      }
+   }
+
    .modules-start {
       .first-child {
          @if $bar-vertical {

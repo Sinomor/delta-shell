@@ -18,6 +18,7 @@ import { QuickSettings } from "./items/quicksettings";
 import { Clipboard } from "./items/clipboard";
 import { PowerMenu } from "./items/powermenu";
 import { NotificationsList } from "./items/notificationslist";
+import { Separator } from "./items/separator";
 
 const { position, modules } = config.bar;
 const { spacing } = theme.bar;
@@ -44,6 +45,7 @@ export function BarModule({
       quicksettings: () => <QuickSettings />,
       clipboard: () => <Clipboard />,
       powermenu: () => <PowerMenu />,
+      separator: () => <Separator />,
    } as Record<string, any>;
 
    const getModules = (string: string) => {
