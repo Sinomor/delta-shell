@@ -18,14 +18,18 @@ export function Weather() {
          return {
             icon: "",
             temp: "",
-            units: "",
+            wind: "",
+            "temp-units": "",
+            "wind-units": "",
          };
 
       const current = data.hourly[0];
       return {
          icon: current.icon,
          temp: `${current.temperature}`,
-         units: `${current.units.temperature}`,
+         wind: `${current.wind_speed}`,
+         "temp-units": `${current.units.temperature}`,
+         "wind-units": `${current.units.wind_speed}`,
       };
    });
    return (
@@ -40,21 +44,22 @@ export function Weather() {
                <image
                   iconName={data.as((d) => d.icon)}
                   pixelSize={20}
-                  valign={Gtk.Align.CENTER}
                   hexpand={isVertical}
                />
             ),
-            temp: (
+            temp: <label label={data.as((d) => d.temp)} hexpand={isVertical} />,
+            "wind-speed": (
+               <label label={data.as((d) => d.wind)} hexpand={isVertical} />
+            ),
+            "temp-units": (
                <label
-                  label={data.as((d) => d.temp)}
-                  valign={Gtk.Align.CENTER}
+                  label={data.as((d) => d["temp-units"])}
                   hexpand={isVertical}
                />
             ),
-            units: (
+            "wind-units": (
                <label
-                  label={data.as((d) => d.units)}
-                  valign={Gtk.Align.CENTER}
+                  label={data.as((d) => d["wind-units"])}
                   hexpand={isVertical}
                />
             ),

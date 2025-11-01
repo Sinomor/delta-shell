@@ -17,6 +17,7 @@ interface LocationData {
 
 export interface HourlyWeather {
    temperature: number;
+   wind_speed: number;
    apparent_temperature: number;
    precipitation_probability: number;
    weather_code: number;
@@ -264,6 +265,7 @@ export default class WeatherService extends GObject.Object {
             "precipitation_probability",
             "weather_code",
             "is_day",
+            "wind_speed_10m",
          ],
          daily: [
             "weather_code",
@@ -307,6 +309,7 @@ export default class WeatherService extends GObject.Object {
          for (let i = 0; i < 12; i++) {
             hourlyData.push({
                temperature: Math.round(json.hourly.temperature_2m[i]),
+               wind_speed: Math.round(json.hourly.wind_speed_10m[i]),
                apparent_temperature: Math.round(
                   json.hourly.apparent_temperature[i],
                ),

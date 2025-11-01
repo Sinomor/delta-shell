@@ -33,22 +33,8 @@ export function Bluetooth() {
             icon: <image hexpand={isVertical} iconName={icons.bluetooth} />,
             status: (
                <label
-                  label={createComputed(
-                     [
-                        createBinding(network, "primary"),
-                        ...(network.wifi !== null
-                           ? [createBinding(network.wifi, "enabled")]
-                           : []),
-                     ],
-                     (primary, enabled) => {
-                        if (
-                           primary === AstalNetwork.Primary.WIRED &&
-                           network.wired.internet ===
-                              AstalNetwork.Internet.CONNECTED
-                        )
-                           return true;
-                        return enabled;
-                     },
+                  label={createBinding(bluetooth, "isPowered").as((v) =>
+                     v ? "On" : "Off",
                   )}
                   hexpand={isVertical}
                />
