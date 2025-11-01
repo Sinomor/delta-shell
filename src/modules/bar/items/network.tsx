@@ -84,6 +84,14 @@ export function Network() {
                   iconName={getNetworkIconBinding()}
                />
             ),
+            status: (
+               <label
+                  label={createBinding(network, "connectivity").as((v) =>
+                     v ? "On" : "Off",
+                  )}
+                  hexpand={isVertical}
+               />
+            ),
             ifname: <label label={ifname} hexpand={isVertical} />,
             essid: (
                <label

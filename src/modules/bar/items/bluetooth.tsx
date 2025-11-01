@@ -36,6 +36,7 @@ export function Bluetooth() {
                   label={createBinding(bluetooth, "isPowered").as((v) =>
                      v ? "On" : "Off",
                   )}
+                  hexpand={isVertical}
                />
             ),
             "controller-address": (
@@ -43,6 +44,7 @@ export function Bluetooth() {
                   label={createBinding(bluetooth, "adapter").as((adapter) =>
                      adapter.address.toString(),
                   )}
+                  hexpand={isVertical}
                />
             ),
             "controller-alias": (
@@ -50,6 +52,7 @@ export function Bluetooth() {
                   label={createBinding(bluetooth, "adapter").as((adapter) =>
                      adapter.alias.toString(),
                   )}
+                  hexpand={isVertical}
                />
             ),
             "device-address": (
@@ -61,6 +64,7 @@ export function Bluetooth() {
                      return "";
                   })}
                   visible={bluetoothconnected}
+                  hexpand={isVertical}
                />
             ),
             "device-alias": (
@@ -72,6 +76,7 @@ export function Bluetooth() {
                      return "";
                   })}
                   visible={bluetoothconnected}
+                  hexpand={isVertical}
                />
             ),
          }}
