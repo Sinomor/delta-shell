@@ -7,7 +7,7 @@ import { attachHoverScroll, bash, getAppInfo } from "@/src/lib/utils";
 import { icons } from "@/src/lib/icons";
 import BarItem, { FunctionsList } from "@/src/widgets/baritem";
 import { isVertical } from "../../bar";
-const apps_icons = config.bar.modules.workspaces["taskbar-icons"];
+const apps_icons = config.bar.modules.workspaces["taskbar-icons"].get();
 const niri = compositor.get() === "niri" ? AstalNiri.get_default() : null;
 
 export function Workspaces_Niri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {

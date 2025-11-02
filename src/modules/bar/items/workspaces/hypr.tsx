@@ -7,7 +7,7 @@ import BarItem, { FunctionsList } from "@/src/widgets/baritem";
 import { compositor, config, theme } from "@/options";
 import { attachHoverScroll, getAppInfo } from "@/src/lib/utils";
 import { isVertical } from "../../bar";
-const apps_icons = config.bar.modules.workspaces["taskbar-icons"];
+const apps_icons = config.bar.modules.workspaces["taskbar-icons"].get();
 const hyprland =
    compositor.get() === "hyprland" ? AstalHyprland.get_default() : null;
 

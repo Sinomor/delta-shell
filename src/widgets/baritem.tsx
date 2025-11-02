@@ -116,7 +116,7 @@ export const FunctionsList = {
          else sr.start();
       }
    },
-};
+} as Record<string, any>;
 
 function parseFormat(format: string, data: FormatData): JSX.Element[] {
    const result: JSX.Element[] = [];
