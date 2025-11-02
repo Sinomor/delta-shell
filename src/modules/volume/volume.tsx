@@ -248,14 +248,17 @@ function DefaultMicrophone() {
 
 function List() {
    return (
-      <box
-         orientation={Gtk.Orientation.VERTICAL}
-         spacing={theme.spacing.get() * 2}
-      >
-         <StreamsList />
-         <DefaultOutput />
-         <DefaultMicrophone />
-      </box>
+      <Gtk.ScrolledWindow>
+         <box
+            orientation={Gtk.Orientation.VERTICAL}
+            spacing={theme.spacing.get() * 2}
+            vexpand
+         >
+            <StreamsList />
+            <DefaultOutput />
+            <DefaultMicrophone />
+         </box>
+      </Gtk.ScrolledWindow>
    );
 }
 

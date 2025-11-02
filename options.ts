@@ -7,34 +7,122 @@ const configFile = `${configDir}/delta-shell/config.json`;
 const themeFile = `${configDir}/delta-shell/theme.json`;
 
 export const config = mkOptions(configFile, {
-   transition: opt(0.3),
+   transition: opt(0.2),
    bar: {
       modules: {
          start: opt(["launcher", "workspaces"]),
          center: opt(["clock"]),
-         end: opt(["record_indicator", "tray", "keyboard", "quicksettings"]),
-      } as Record<string, any>,
-      size: opt(52),
+         end: opt(["recordindicator", "tray", "keyboard", "quicksettings"]),
+         launcher: {
+            format: opt("{icon}"),
+            "on-click": opt("toggle-launcher"),
+            "on-click-right": opt(null),
+            "on-click-middle": opt(null),
+         },
+         battery: {
+            format: opt("{icon}"),
+            "on-click": opt("toggle-power"),
+            "on-click-right": opt(null),
+            "on-click-middle": opt(null),
+         },
+         bluetooth: {
+            format: opt("{icon}"),
+            "on-click": opt("toggle-bluetooth"),
+            "on-click-right": opt(null),
+            "on-click-middle": opt(null),
+         },
+         clipboard: {
+            format: opt("{icon}"),
+            "on-click": opt("toggle-clipboard"),
+            "on-click-right": opt(null),
+            "on-click-middle": opt(null),
+         },
+         clock: {
+            format: opt("%b %d  %H:%M"),
+            "on-click": opt("toggle-calendar"),
+            "on-click-right": opt(null),
+            "on-click-middle": opt(null),
+         },
+         workspaces: {
+            taskbar: opt<boolean>(true),
+            "taskbar-icons": opt({}) as Record<string, any>,
+            "on-scroll-up": opt("workspace-up"),
+            "on-scroll-down": opt("workspace-down"),
+         },
+         keyboard: {
+            format: opt("{lang}"),
+            "on-click": opt("switch-language"),
+            "on-click-right": opt(null),
+            "on-click-middle": opt(null),
+         },
+         network: {
+            format: opt("{icon}"),
+            "on-click": opt("toggle-network"),
+            "on-click-right": opt(null),
+            "on-click-middle": opt(null),
+         },
+         volume: {
+            format: opt("{icon}"),
+            "on-click": opt("toggle-volume"),
+            "on-click-right": opt(null),
+            "on-click-middle": opt("volume-toggle"),
+            "on-scroll-up": opt("volume-up"),
+            "on-scroll-down": opt("volume-down"),
+         },
+         weather: {
+            format: opt("{icon} {temp}{units}"),
+            "on-click": opt("toggle-weather"),
+            "on-click-right": opt(null),
+            "on-click-middle": opt(null),
+         },
+         recordindicator: {
+            format: opt("{icon}"),
+            "on-click": opt("screenrecord-toggle"),
+            "on-click-right": opt(null),
+            "on-click-middle": opt(null),
+         },
+         notifications: {
+            format: opt("{icon}"),
+            "on-click": opt("toggle-notifs"),
+            "on-click-right": opt(null),
+            "on-click-middle": opt(null),
+         },
+         powermenu: {
+            format: opt("{icon}"),
+            "on-click": opt("toggle-powermenu"),
+            "on-click-right": opt(null),
+            "on-click-middle": opt(null),
+         },
+         quicksettings: {
+            format: opt("{icon}"),
+            "on-click": opt("toggle-qs"),
+            "on-click-right": opt(null),
+            "on-click-middle": opt(null),
+         },
+         cpu: {
+            format: opt("{icon} {usage}"),
+         },
+         ram: {
+            format: opt("{icon} {usage}"),
+         },
+      },
+      size: opt(48),
       position: opt<"top" | "bottom" | "right" | "left">("top"),
-      workspaces: {
-         taskbar: opt<boolean>(true),
-         taskbar_icons: opt({}) as Record<string, any>,
-      },
-      date: {
-         format: opt("%b %d  %H:%M"),
-      },
    },
    quicksettings: {
       buttons: opt(["network", "bluetooth", "notifications", "screenrecord"]),
       sliders: opt(["volume", "brightness"]),
    },
    launcher: {
-      clipboard: {
-         max_items: opt(50),
-         image_preview: opt<boolean>(true),
-      },
       width: opt(400),
       height: opt(600),
+   },
+   clipboard: {
+      enabled: opt(true),
+      "max-items": opt(50),
+      "image-preview": opt<boolean>(true),
+      width: opt(500),
+      height: opt(500),
    },
    osd: {
       enabled: opt<boolean>(true),
@@ -144,6 +232,7 @@ export const theme = mkOptions(themeFile, {
       bg: opt("$bg0"),
       opacity: opt(1),
       margin: opt<number[]>([0, 0, 0, 0]),
+      padding: opt(6),
       spacing: opt(6),
       border: {
          width: opt(1),
@@ -156,9 +245,13 @@ export const theme = mkOptions(themeFile, {
          color: opt("black"),
          opacity: opt(0.4),
       },
+      separator: {
+         width: opt(1),
+         color: opt("$bg2"),
+      },
       button: {
          fg: opt("$fg0"),
-         padding: opt([0, 10]),
+         padding: opt([0, 7]),
          bg: {
             default: opt("$bg0"),
             hover: opt("$bg1"),

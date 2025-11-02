@@ -9,8 +9,6 @@ import { createComputed } from "gnim";
 import { config } from "@/options";
 import AstalApps from "gi://AstalApps?version=0.1";
 
-export const cacheDir = `${GLib.get_user_cache_dir()}/delta-shell`;
-
 /**
  * @returns true if all of the `bins` are found
  */
@@ -135,6 +133,7 @@ export function toggleWindow(name: string) {
    if (win.visible) {
       win.hide();
    } else {
+      hide_all_windows();
       win.show();
    }
 }
@@ -230,7 +229,7 @@ export function hasBarItem(module: string) {
          config.bar.modules.center,
          config.bar.modules.end,
       ],
-      (start, center, end) => {
+      (start: string[], center: string[], end: string[]) => {
          return (
             start.includes(module) ||
             center.includes(module) ||
@@ -240,19 +239,13 @@ export function hasBarItem(module: string) {
    ).get();
 }
 
-export function toggleQsModule(name: string) {
-   if (hasBarItem(name)) {
+export function toggleQsModule(name: string, module?: string) {
+   if (hasBarItem(module ? module : name)) {
       const windowName = windows_names[name as keyof typeof windows_names];
-      if (!app.get_window(windowName)?.visible) {
-         hide_all_windows();
-      }
       toggleWindow(windowName);
    } else {
-      if (!app.get_window(windows_names.quicksettings)?.visible) {
-         hide_all_windows();
-      }
-      qs_page_set(name);
       toggleWindow(windows_names.quicksettings);
+      qs_page_set(name);
    }
 }
 

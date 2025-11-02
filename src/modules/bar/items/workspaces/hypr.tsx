@@ -3,20 +3,25 @@ import AstalHyprland from "gi://AstalHyprland?version=0.1";
 import AstalApps from "gi://AstalApps?version=0.1";
 import { createBinding, createComputed, For } from "ags";
 import { icons } from "@/src/lib/icons";
-import BarItem from "@/src/widgets/baritem";
-import { config, theme } from "@/options";
+import BarItem, { FunctionsList } from "@/src/widgets/baritem";
+import { compositor, config, theme } from "@/options";
 import { attachHoverScroll, getAppInfo } from "@/src/lib/utils";
 import { isVertical } from "../../bar";
-const apps_icons = config.bar.workspaces.taskbar_icons.get();
+const apps_icons = config.bar.modules.workspaces["taskbar-icons"].get();
+const hyprland =
+   compositor.get() === "hyprland" ? AstalHyprland.get_default() : null;
 
 export function Workspaces_Hypr({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
-   const hyprland = AstalHyprland.get_default();
+   if (!hyprland) {
+      console.warn("Workspaces_Hypr: Hyprland compositor not active");
+      return <box />;
+   }
    const monitors = createBinding(hyprland, "monitors").as((monitors) =>
       monitors.filter((monitor) => monitor.model === gdkmonitor.model),
    );
 
    function AppButton({ client }: { client: AstalHyprland.Client }) {
-      const classes = createBinding(hyprland, "focusedClient").as(
+      const classes = createBinding(hyprland!, "focusedClient").as(
          (fcsClient) => {
             const classes = ["taskbar-button"];
             if (!fcsClient || !client.class || !fcsClient.pid) return classes;
@@ -26,7 +31,7 @@ export function Workspaces_Hypr({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
          },
       );
 
-      const hasWindow = createBinding(hyprland, "clients").as((clients) =>
+      const hasWindow = createBinding(hyprland!, "clients").as((clients) =>
          clients
             .map((e) => e.class.toLowerCase())
             .includes(client.class.toLowerCase()),
@@ -95,7 +100,7 @@ export function Workspaces_Hypr({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
    }
 
    function WorkspaceButton({ ws }: { ws: AstalHyprland.Workspace }) {
-      const classNames = createBinding(hyprland, "focusedWorkspace").as(
+      const classNames = createBinding(hyprland!, "focusedWorkspace").as(
          (fws) => {
             const classes = ["bar-item"];
 
@@ -109,7 +114,6 @@ export function Workspaces_Hypr({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
       return (
          <BarItem
             cssClasses={classNames}
-            onPrimaryClick={() => ws.focus()}
             orientation={
                isVertical
                   ? Gtk.Orientation.VERTICAL
@@ -118,7 +122,7 @@ export function Workspaces_Hypr({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
             hexpand={isVertical}
          >
             <label class={"workspace"} label={ws.id.toString()} />
-            {config.bar.workspaces.taskbar.get() && (
+            {config.bar.modules.workspaces.taskbar.get() && (
                <For
                   each={createBinding(ws, "clients").as((clients) =>
                      clients.sort((a, b) => a.pid - b.pid),
@@ -134,7 +138,7 @@ export function Workspaces_Hypr({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
    }
 
    function Workspaces({ monitor }: { monitor: AstalHyprland.Monitor }) {
-      const workspaces = createBinding(hyprland, "workspaces").as(
+      const workspaces = createBinding(hyprland!, "workspaces").as(
          (workspaces) =>
             workspaces
                .filter((ws) => ws.monitor?.model === monitor.model)
@@ -154,9 +158,13 @@ export function Workspaces_Hypr({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
             $={(self) =>
                attachHoverScroll(self, ({ dy }) => {
                   if (dy < 0) {
-                     hyprland.dispatch("workspace", "+1");
+                     FunctionsList[
+                        config.bar.modules.workspaces["on-scroll-up"].get()
+                     ]();
                   } else if (dy > 0) {
-                     hyprland.dispatch("workspace", "-1");
+                     FunctionsList[
+                        config.bar.modules.workspaces["on-scroll-down"].get()
+                     ]();
                   }
                })
             }

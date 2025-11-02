@@ -1,9 +1,10 @@
-import { compositor } from "@/options";
+import { compositor, config } from "@/options";
 import { bash } from "@/src/lib/utils";
 import BarItem from "@/src/widgets/baritem";
 import { createState, onCleanup } from "ags";
 import AstalHyprland from "gi://AstalHyprland?version=0.1";
 import { isVertical } from "../../bar";
+import { icons } from "@/src/lib/icons";
 
 const [layout_name, layout_name_set] = createState("?");
 
@@ -53,22 +54,9 @@ export function Keyboard_Hypr() {
 
    return (
       <BarItem
-         onPrimaryClick={async () => {
-            try {
-               const json = await bash(`hyprctl devices -j`);
-               const devices = JSON.parse(json);
-
-               const mainKeyboard = devices.keyboards.find(
-                  (kb: any) => kb.main === true,
-               );
-
-               if (mainKeyboard && mainKeyboard.name) {
-                  bash(`hyprctl switchxkblayout ${mainKeyboard.name} next`);
-               }
-            } catch (error) {
-               console.error("Failed to switch keyboard layout:", error);
-            }
-         }}
+         onPrimaryClick={config.bar.modules.keyboard["on-click"].get()}
+         onSecondaryClick={config.bar.modules.keyboard["on-click-right"].get()}
+         onMiddleClick={config.bar.modules.keyboard["on-click-middle"].get()}
          $={() => {
             hyprlandconnect = hyprland.connect(
                "keyboard-layout",
@@ -77,9 +65,17 @@ export function Keyboard_Hypr() {
                },
             );
          }}
-         hexpand={isVertical}
-      >
-         <label hexpand={isVertical} label={layout_name} />
-      </BarItem>
+         data={{
+            lang: <label hexpand={isVertical} label={layout_name} />,
+            icon: (
+               <image
+                  hexpand={isVertical}
+                  iconName={icons.keyboard}
+                  pixelSize={20}
+               />
+            ),
+         }}
+         format={config.bar.modules.keyboard.format.get()}
+      />
    );
 }

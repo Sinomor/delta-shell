@@ -4,19 +4,29 @@ import BarItem from "@/src/widgets/baritem";
 import { hide_all_windows, windows_names } from "@/windows";
 import { toggleWindow } from "@/src/lib/utils";
 import { isVertical } from "../bar";
+import { config } from "@/options";
 
 export function QuickSettings() {
    return (
       <BarItem
          window={windows_names.quicksettings}
-         onPrimaryClick={() => {
-            if (!app.get_window(windows_names.quicksettings)?.visible)
-               hide_all_windows();
-            toggleWindow(windows_names.quicksettings);
+         onPrimaryClick={config.bar.modules.quicksettings["on-click"].get()}
+         onSecondaryClick={config.bar.modules.quicksettings[
+            "on-click-right"
+         ].get()}
+         onMiddleClick={config.bar.modules.quicksettings[
+            "on-click-middle"
+         ].get()}
+         data={{
+            icon: (
+               <image
+                  hexpand={isVertical}
+                  pixelSize={20}
+                  iconName={icons.settings}
+               />
+            ),
          }}
-         hexpand={isVertical}
-      >
-         <image hexpand={isVertical} pixelSize={20} iconName={icons.settings} />
-      </BarItem>
+         format={config.bar.modules.quicksettings.format.get()}
+      />
    );
 }

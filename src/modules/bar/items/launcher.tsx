@@ -1,10 +1,6 @@
 import { icons } from "@/src/lib/icons";
-import app from "ags/gtk4/app";
-import { Gdk, Gtk } from "ags/gtk4";
-import { onCleanup } from "ags";
 import BarItem from "@/src/widgets/baritem";
-import { hide_all_windows, windows_names } from "@/windows";
-import { hasBarItem, toggleWindow } from "@/src/lib/utils";
+import { windows_names } from "@/windows";
 import { config } from "@/options";
 import { isVertical } from "../bar";
 
@@ -12,21 +8,19 @@ export function Launcher() {
    return (
       <BarItem
          window={windows_names.applauncher}
-         onPrimaryClick={() => {
-            if (!app.get_window(windows_names.applauncher)?.visible)
-               hide_all_windows();
-            toggleWindow(windows_names.applauncher);
+         onPrimaryClick={config.bar.modules.launcher["on-click"].get()}
+         onSecondaryClick={config.bar.modules.launcher["on-click-right"].get()}
+         onMiddleClick={config.bar.modules.launcher["on-click-middle"].get()}
+         data={{
+            icon: (
+               <image
+                  hexpand={isVertical}
+                  iconName={icons.search}
+                  pixelSize={20}
+               />
+            ),
          }}
-         onSecondaryClick={() => {
-            if (!hasBarItem("clipboard")) {
-               if (!app.get_window(windows_names.clipboard)?.visible)
-                  hide_all_windows();
-               toggleWindow(windows_names.clipboard);
-            }
-         }}
-         hexpand={isVertical}
-      >
-         <image hexpand={isVertical} iconName={icons.search} pixelSize={20} />
-      </BarItem>
+         format={config.bar.modules.launcher.format.get()}
+      />
    );
 }

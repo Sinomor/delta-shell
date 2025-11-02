@@ -11,8 +11,8 @@ const width =
 export function NotificationsListWindow() {
    return (
       <BarItemPopup
-         name={windows_names.notifications_list}
-         module={"notifications"}
+         name={windows_names.notificationslist}
+         module={"notificationslist"}
          width={width}
          height={height.get()}
       >

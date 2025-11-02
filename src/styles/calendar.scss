@@ -79,4 +79,8 @@ window#calendar {
    .other-month {
       color: $fg2;
    }
+
+   .other-month-weekend {
+      color: darken($red, 25%);
+   }
 }

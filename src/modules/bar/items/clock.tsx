@@ -8,7 +8,7 @@ import { config } from "@/options";
 import BarItem from "@/src/widgets/baritem";
 import { isVertical } from "../bar";
 import { Gtk } from "ags/gtk4";
-const { format } = config.bar.date;
+const { format } = config.bar.modules.clock;
 
 export function Clock() {
    const time = createPoll(
@@ -20,12 +20,9 @@ export function Clock() {
    return (
       <BarItem
          window={windows_names.calendar}
-         onPrimaryClick={() => {
-            if (!app.get_window(windows_names.calendar)?.visible)
-               hide_all_windows();
-            toggleWindow(windows_names.calendar);
-         }}
-         hexpand={isVertical}
+         onPrimaryClick={config.bar.modules.clock["on-click"].get()}
+         onSecondaryClick={config.bar.modules.clock["on-click-right"].get()}
+         onMiddleClick={config.bar.modules.clock["on-click-middle"].get()}
       >
          {isVertical ? (
             <box orientation={Gtk.Orientation.VERTICAL}>

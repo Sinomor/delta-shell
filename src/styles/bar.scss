@@ -39,12 +39,26 @@ window#bar {
       border-radius: $widget-radius;
    }
 
+   separator {
+      border-radius: $widget-radius;
+      background: $bar-separator-color;
+      &.vertical {
+         margin: 0 $bar-padding;
+         min-height: $bar-separator-width;
+      }
+
+      &.horizontal {
+         margin: $bar-padding 0;
+         min-width: $bar-separator-width;
+      }
+   }
+
    .modules-start {
       .first-child {
          @if $bar-vertical {
-            padding-top: 6px;
+            padding-top: $bar-padding;
          } @else {
-            padding-left: 6px;
+            padding-left: $bar-padding;
          }
       }
    }
@@ -52,9 +66,9 @@ window#bar {
    .modules-end {
       .last-child {
          @if $bar-vertical {
-            padding-bottom: 6px;
+            padding-bottom: $bar-padding;
          } @else {
-            padding-right: 6px;
+            padding-right: $bar-padding;
          }
       }
    }
@@ -63,9 +77,9 @@ window#bar {
       background: transparent;
       font-weight: normal;
       @if $bar-vertical {
-         padding: 0 6px;
+         padding: 0 $bar-padding;
       } @else {
-         padding: 6px 0;
+         padding: $bar-padding 0;
       }
 
       .content {
@@ -100,7 +114,7 @@ window#bar {
    .workspace {
       @if $bar-vertical {
       } @else {
-         padding: 0 5px;
+         padding: 0 $bar-padding;
       }
    }
 
@@ -125,11 +139,22 @@ window#bar {
             margin-top: 5px;
             border: $border-width solid $bg1;
             box-shadow: none;
+            border-radius: $widget-radius;
             @if $shadow {
                box-shadow: $bar-shadow-offset
                   $bar-shadow-blur
                   $bar-shadow-spread
                   rgba($bar-shadow-color, $bar-shadow-opacity);
+            }
+         }
+
+         modelbutton {
+            border-radius: $widget-radius;
+            background: transparent;
+
+            &:focus,
+            &:hover {
+               background: $bg1;
             }
          }
 
@@ -140,15 +165,16 @@ window#bar {
 
       .items {
          @if $bar-vertical {
-            padding: 0 6px;
+            padding: 0 $bar-padding;
          } @else {
-            padding: 6px 0;
+            padding: $bar-padding 0;
          }
 
          button {
             padding: 0;
             padding: $bar-button-padding;
             background: rgba($bar-button-bg, $bar-button-opacity);
+            border-radius: $widget-radius;
 
             &:hover {
                background: $bg1;

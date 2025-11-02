@@ -1,10 +1,6 @@
 import { icons } from "@/src/lib/icons";
-import app from "ags/gtk4/app";
-import { Gdk, Gtk } from "ags/gtk4";
-import { onCleanup } from "ags";
 import BarItem from "@/src/widgets/baritem";
-import { hide_all_windows, windows_names } from "@/windows";
-import { toggleWindow } from "@/src/lib/utils";
+import { windows_names } from "@/windows";
 import { config } from "@/options";
 import { isVertical } from "../bar";
 
@@ -12,18 +8,19 @@ export function Clipboard() {
    return (
       <BarItem
          window={windows_names.clipboard}
-         onPrimaryClick={() => {
-            if (!app.get_window(windows_names.clipboard)?.visible)
-               hide_all_windows();
-            toggleWindow(windows_names.clipboard);
+         onPrimaryClick={config.bar.modules.clipboard["on-click"].get()}
+         onSecondaryClick={config.bar.modules.clipboard["on-click-right"].get()}
+         onMiddleClick={config.bar.modules.clipboard["on-click-middle"].get()}
+         data={{
+            icon: (
+               <image
+                  hexpand={isVertical}
+                  iconName={icons.clipboard}
+                  pixelSize={20}
+               />
+            ),
          }}
-         hexpand={isVertical}
-      >
-         <image
-            hexpand={isVertical}
-            iconName={icons.clipboard}
-            pixelSize={20}
-         />
-      </BarItem>
+         format={config.bar.modules.clipboard.format.get()}
+      />
    );
 }

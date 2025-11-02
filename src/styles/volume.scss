@@ -36,6 +36,34 @@ window#volume {
       }
    }
 
+   .menu {
+      &.menu > contents {
+         background: transparent;
+         box-shadow: none;
+         border-radius: $window-radius;
+         @if $shadow {
+            box-shadow: $bar-shadow-offset
+               $bar-shadow-blur
+               $bar-shadow-spread
+               rgba($bar-shadow-color, $bar-shadow-opacity);
+         }
+      }
+
+      modelbutton {
+         border-radius: $widget-radius;
+         background: transparent;
+
+         &:focus,
+         &:hover {
+            background: $bg1;
+         }
+      }
+
+      &.menu > arrow {
+         all: unset;
+      }
+   }
+
    .slider-box {
       scale {
          padding: 0;

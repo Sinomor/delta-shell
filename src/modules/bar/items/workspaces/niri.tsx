@@ -5,19 +5,23 @@ import { createBinding, createComputed, For } from "ags";
 import { compositor, config, theme } from "@/options";
 import { attachHoverScroll, bash, getAppInfo } from "@/src/lib/utils";
 import { icons } from "@/src/lib/icons";
-import BarItem from "@/src/widgets/baritem";
+import BarItem, { FunctionsList } from "@/src/widgets/baritem";
 import { isVertical } from "../../bar";
-const apps_icons = config.bar.workspaces.taskbar_icons.get();
+const apps_icons = config.bar.modules.workspaces["taskbar-icons"].get();
+const niri = compositor.get() === "niri" ? AstalNiri.get_default() : null;
 
 export function Workspaces_Niri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
-   const niri = AstalNiri.get_default();
+   if (!niri) {
+      console.warn("Workspaces_Niri: Niri compositor not active");
+      return <box />;
+   }
+
    const outputs = createBinding(niri, "outputs").as((outputs) =>
       outputs.filter((output) => output.model === gdkmonitor.model),
    );
 
    function AppButton({ client }: { client: AstalNiri.Window }) {
-      const niri = AstalNiri.get_default();
-      const classes = createBinding(niri, "focusedWindow").as((fcsClient) => {
+      const classes = createBinding(niri!, "focusedWindow").as((fcsClient) => {
          const classes = ["taskbar-button"];
          if (!fcsClient || !client.app_id || !fcsClient.app_id) return classes;
          const isFocused = fcsClient.id === client?.id;
@@ -36,7 +40,6 @@ export function Workspaces_Niri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
             case "bottom":
                return Gtk.Align.END;
             case "right":
-               return Gtk.Align.CENTER;
             case "left":
                return Gtk.Align.CENTER;
          }
@@ -45,7 +48,6 @@ export function Workspaces_Niri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
       const indicatorHalign = config.bar.position.as((p) => {
          switch (p) {
             case "top":
-               return Gtk.Align.CENTER;
             case "bottom":
                return Gtk.Align.CENTER;
             case "right":
@@ -88,7 +90,7 @@ export function Workspaces_Niri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
    }
 
    function WorkspaceButton({ ws }: { ws: AstalNiri.Workspace }) {
-      const classNames = createBinding(niri, "focusedWorkspace").as((fws) => {
+      const classNames = createBinding(niri!, "focusedWorkspace").as((fws) => {
          const classes = ["bar-item"];
 
          const active = fws?.id == ws.id;
@@ -102,7 +104,6 @@ export function Workspaces_Niri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
       return (
          <BarItem
             cssClasses={classNames}
-            onPrimaryClick={() => ws.focus()}
             orientation={
                isVertical
                   ? Gtk.Orientation.VERTICAL
@@ -110,8 +111,14 @@ export function Workspaces_Niri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
             }
             hexpand={isVertical}
          >
+            <Gtk.GestureClick
+               onPressed={(ctrl) => {
+                  const button = ctrl.get_current_button();
+                  if (button === Gdk.BUTTON_PRIMARY) ws.focus();
+               }}
+            />
             <label class={"workspace"} label={ws.idx.toString()} />
-            {config.bar.workspaces.taskbar.get() && (
+            {config.bar.modules.workspaces.taskbar.get() && (
                <For
                   each={createBinding(ws, "windows").as((clients) => clients)}
                >
@@ -140,9 +147,13 @@ export function Workspaces_Niri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
             $={(self) =>
                attachHoverScroll(self, ({ dy }) => {
                   if (dy < 0) {
-                     AstalNiri.msg.focus_workspace_up();
+                     FunctionsList[
+                        config.bar.modules.workspaces["on-scroll-up"].get()
+                     ]();
                   } else if (dy > 0) {
-                     AstalNiri.msg.focus_workspace_down();
+                     FunctionsList[
+                        config.bar.modules.workspaces["on-scroll-down"].get()
+                     ]();
                   }
                })
             }

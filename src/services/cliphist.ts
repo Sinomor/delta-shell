@@ -1,10 +1,14 @@
 import GObject, { register, getter } from "ags/gobject";
-import { bash, cacheDir, dependencies, ensureDirectory } from "@/src/lib/utils";
+import { bash, dependencies, ensureDirectory } from "@/src/lib/utils";
 import { createState } from "ags";
 import { config } from "@/options";
 import { monitorFile } from "ags/file";
 import GLib from "gi://GLib?version=2.0";
-import { subprocess } from "ags/process";
+import { execAsync, subprocess } from "ags/process";
+import Gio from "gi://Gio?version=2.0";
+import { timeout } from "ags/time";
+
+const cacheDir = GLib.get_user_cache_dir();
 
 @register({ GTypeName: "Cliphist" })
 export default class Cliphist extends GObject.Object {
@@ -16,10 +20,11 @@ export default class Cliphist extends GObject.Object {
    }
 
    #list = createState<string[]>([]);
+   #updatePending = false;
 
    constructor() {
       super();
-      this.start();
+      if (config.clipboard.enabled.get()) this.start();
    }
 
    async start() {
@@ -28,38 +33,54 @@ export default class Cliphist extends GObject.Object {
       try {
          await this.stop();
 
-         const maxItems = config.launcher.clipboard.max_items.get();
+         const maxItems = config.clipboard["max-items"].get();
          bash(`wl-paste --watch cliphist -max-items ${maxItems} store`);
-         monitorFile(`${GLib.get_user_cache_dir()}/cliphist/db`, () =>
-            this.update(),
-         );
+         monitorFile(`${cacheDir}/cliphist/db`, () => this.scheduleUpdate());
       } catch (error) {
          console.error("Failed to start clipboard monitoring:", error);
       }
    }
 
+   private scheduleUpdate() {
+      if (this.#updatePending) return;
+
+      this.#updatePending = true;
+      timeout(500, () => {
+         this.#updatePending = false;
+         this.update();
+      });
+   }
+
    async stop() {
       subprocess(`pkill -f "wl-paste.*cliphist"`);
-      bash(`rm -f ${cacheDir}/cliphist/*.png`);
+      bash(`rm -f ${cacheDir}/delta-shell/cliphist/*`);
    }
 
    async update() {
       if (!dependencies("cliphist")) return;
 
       try {
-         const list = await bash("cliphist list");
-         this.#list[1](list.split("\n").filter((line) => line.trim()));
+         const output = await execAsync(["cliphist", "list"]);
+
+         if (!output.trim()) {
+            this.#list[1]([]);
+            return;
+         }
+
+         // Простой и понятный код
+         this.#list[1](output.split("\n").filter((line) => line.trim()));
       } catch (error) {
          console.error("Failed to update clipboard history:", error);
+         this.#list[1]([]);
       }
    }
 
    async load_image(id: string) {
       if (!dependencies("cliphist")) return;
-      const imagePath = `${cacheDir}/cliphist/${id}.png`;
+      const imagePath = `${cacheDir}/delta-shell/cliphist/${id}.png`;
 
       try {
-         ensureDirectory(`${cacheDir}/cliphist`);
+         ensureDirectory(`${cacheDir}/delta-shell/cliphist`);
          await bash(`cliphist decode ${id} > ${imagePath}`);
          return imagePath;
       } catch (error) {

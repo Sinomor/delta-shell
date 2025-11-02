@@ -20,10 +20,7 @@ function Power() {
          class={"qs-header-button"}
          tooltipText={"Power Menu"}
          focusOnClick={false}
-         onClicked={() => {
-            toggleWindow(windows_names.powermenu);
-            toggleWindow(windows_names.quicksettings);
-         }}
+         onClicked={() => toggleWindow(windows_names.powermenu)}
       >
          <image iconName={icons.powermenu.shutdown} pixelSize={20} />
       </button>
