@@ -9,8 +9,6 @@ import { createComputed } from "gnim";
 import { config } from "@/options";
 import AstalApps from "gi://AstalApps?version=0.1";
 
-export const cacheDir = `${GLib.get_user_cache_dir()}/delta-shell`;
-
 /**
  * @returns true if all of the `bins` are found
  */

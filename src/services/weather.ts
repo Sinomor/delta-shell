@@ -1,5 +1,5 @@
 import GObject, { register, getter } from "ags/gobject";
-import { bash, cacheDir, dependencies, ensureDirectory } from "@/src/lib/utils";
+import { bash, dependencies, ensureDirectory } from "@/src/lib/utils";
 import { createState } from "ags";
 import { config } from "@/options";
 import GLib from "gi://GLib?version=2.0";
