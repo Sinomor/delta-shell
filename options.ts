@@ -99,6 +99,12 @@ export const config = mkOptions(configFile, {
             "on-click-right": opt(null),
             "on-click-middle": opt(null),
          },
+         cpu: {
+            format: opt("{icon} {usage}"),
+         },
+         ram: {
+            format: opt("{icon} {usage}"),
+         },
       },
       size: opt(48),
       position: opt<"top" | "bottom" | "right" | "left">("top"),

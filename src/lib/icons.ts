@@ -8,6 +8,8 @@ export const icons = {
    settings: "ds-settings-2-symbolic",
    clipboard: "ds-clipboard-symbolic",
    keyboard: "ds-keyboard-symbolic",
+   memory: "ds-memory-stick-symbolic",
+   cpu: "ds-cpu-symbolic",
    arrow: {
       left: "ds-chevron-left-symbolic",
       right: "ds-chevron-right-symbolic",

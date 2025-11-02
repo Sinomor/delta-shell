@@ -19,6 +19,8 @@ import { Clipboard } from "./items/clipboard";
 import { PowerMenu } from "./items/powermenu";
 import { NotificationsList } from "./items/notificationslist";
 import { Separator } from "./items/separator";
+import { CPU } from "./items/cpu";
+import { RAM } from "./items/ram";
 
 const { position, modules } = config.bar;
 const { spacing } = theme.bar;
@@ -46,6 +48,8 @@ export function BarModule({
       clipboard: () => <Clipboard />,
       powermenu: () => <PowerMenu />,
       separator: () => <Separator />,
+      cpu: () => <CPU />,
+      ram: () => <RAM />,
    } as Record<string, any>;
 
    const getModules = (string: string) => {

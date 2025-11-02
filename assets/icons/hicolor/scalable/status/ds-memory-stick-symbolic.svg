@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="24"
+   height="24"
+   viewBox="0 0 24 24"
+   fill="none"
+   stroke="currentColor"
+   stroke-width="2"
+   stroke-linecap="round"
+   stroke-linejoin="round"
+   version="1.1"
+   id="svg9"
+   sodipodi:docname="ds-memory-stick-symbolic.svg"
+   inkscape:version="1.4.2 (ebf0e940d0, 2025-05-08)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs9" />
+  <sodipodi:namedview
+     id="namedview9"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="35.333333"
+     inkscape:cx="11.985849"
+     inkscape:cy="12"
+     inkscape:window-width="1873"
+     inkscape:window-height="1080"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg9" />
+  <path
+     style="baseline-shift:baseline;display:inline;overflow:visible;vector-effect:none;fill:#000000;stroke:none;stroke-linecap:butt;stroke-linejoin:miter;enable-background:accumulate;stop-color:#000000;stop-opacity:1;opacity:1"
+     d="m 6,15 a 1,1 0 0 0 -1,1 v 3 a 1,1 0 0 0 1,1 1,1 0 0 0 1,-1 V 16 A 1,1 0 0 0 6,15 Z"
+     id="path1" />
+  <path
+     style="baseline-shift:baseline;display:inline;overflow:visible;vector-effect:none;fill:#000000;stroke:none;stroke-linecap:butt;stroke-linejoin:miter;enable-background:accumulate;stop-color:#000000;stop-opacity:1;opacity:1"
+     d="m 10,15 a 1,1 0 0 0 -1,1 v 3 a 1,1 0 0 0 1,1 1,1 0 0 0 1,-1 v -3 a 1,1 0 0 0 -1,-1 z"
+     id="path2" />
+  <path
+     style="baseline-shift:baseline;display:inline;overflow:visible;vector-effect:none;fill:#000000;stroke:none;stroke-linecap:butt;stroke-linejoin:miter;enable-background:accumulate;stop-color:#000000;stop-opacity:1;opacity:1"
+     d="m 14,15 a 1,1 0 0 0 -1,1 v 3 a 1,1 0 0 0 1,1 1,1 0 0 0 1,-1 v -3 a 1,1 0 0 0 -1,-1 z"
+     id="path3" />
+  <path
+     style="baseline-shift:baseline;display:inline;overflow:visible;vector-effect:none;fill:#000000;stroke:none;stroke-linecap:butt;stroke-linejoin:miter;enable-background:accumulate;stop-color:#000000;stop-opacity:1;opacity:1"
+     d="m 18,15 a 1,1 0 0 0 -1,1 v 3 a 1,1 0 0 0 1,1 1,1 0 0 0 1,-1 v -3 a 1,1 0 0 0 -1,-1 z"
+     id="path4" />
+  <path
+     style="baseline-shift:baseline;display:inline;overflow:visible;vector-effect:none;fill:#000000;stroke:none;stroke-linecap:butt;stroke-linejoin:miter;enable-background:accumulate;stop-color:#000000;stop-opacity:1;opacity:1"
+     d="M 8,8 A 1,1 0 0 0 7,9 v 2 a 1,1 0 0 0 1,1 1,1 0 0 0 1,-1 V 9 A 1,1 0 0 0 8,8 Z"
+     id="path5" />
+  <path
+     style="baseline-shift:baseline;display:inline;overflow:visible;vector-effect:none;fill:#000000;stroke:none;stroke-linecap:butt;stroke-linejoin:miter;enable-background:accumulate;stop-color:#000000;stop-opacity:1;opacity:1"
+     d="m 16,8 a 1,1 0 0 0 -1,1 v 2 a 1,1 0 0 0 1,1 1,1 0 0 0 1,-1 V 9 A 1,1 0 0 0 16,8 Z"
+     id="path6" />
+  <path
+     style="baseline-shift:baseline;display:inline;overflow:visible;vector-effect:none;fill:#000000;stroke:none;stroke-linecap:butt;stroke-linejoin:miter;enable-background:accumulate;stop-color:#000000;stop-opacity:1;opacity:1"
+     d="m 12,8 a 1,1 0 0 0 -1,1 v 2 a 1,1 0 0 0 1,1 1,1 0 0 0 1,-1 V 9 A 1,1 0 0 0 12,8 Z"
+     id="path7" />
+  <path
+     style="baseline-shift:baseline;display:inline;overflow:visible;vector-effect:none;fill:#000000;stroke:none;stroke-linecap:butt;stroke-linejoin:miter;enable-background:accumulate;stop-color:#000000;stop-opacity:1;opacity:1"
+     d="m 2,14 a 1,1 0 0 0 -1,1 1,1 0 0 0 1,1 h 20 a 1,1 0 0 0 1,-1 1,1 0 0 0 -1,-1 z"
+     id="path8" />
+  <path
+     style="baseline-shift:baseline;display:inline;overflow:visible;vector-effect:none;fill:#000000;stroke:none;stroke-linecap:butt;stroke-linejoin:miter;enable-background:accumulate;stop-color:#000000;stop-opacity:1;opacity:1"
+     d="M 4,4 C 2.3549904,4 1,5.3549904 1,7 v 1.0625 a 1.0001,1.0001 0 0 0 0.7167969,0.9589844 c 0.5398412,0.1590168 0.71875,0.5322099 0.71875,0.9609375 0,0.4287271 -0.1789088,0.7999671 -0.71875,0.9589841 A 1.0001,1.0001 0 0 0 1,11.900391 V 17 c 0,1.64501 1.3549904,3 3,3 h 16 c 1.64501,0 3,-1.35499 3,-3 v -5.0625 a 1.0001,1.0001 0 0 0 -0.716797,-0.958984 c -0.539841,-0.159017 -0.71875,-0.53221 -0.71875,-0.960938 0,-0.4287275 0.178909,-0.7999675 0.71875,-0.9589842 A 1.0001,1.0001 0 0 0 23,8.0996094 V 7 C 23,5.3549904 21.64501,4 20,4 Z m 0,2 h 16 c 0.564129,0 1,0.4358706 1,1 v 0.6542969 c -0.848827,0.5777904 -1.435547,1.4276546 -1.435547,2.3632811 0,0.935627 0.58672,1.787444 1.435547,2.365235 V 17 c 0,0.564129 -0.435871,1 -1,1 H 4 C 3.4358706,18 3,17.564129 3,17 V 12.345703 C 3.8488271,11.767913 4.4355469,10.918048 4.4355469,9.9824219 4.4355469,9.0467953 3.8488271,8.1949779 3,7.6171875 V 7 C 3,6.4358706 3.4358706,6 4,6 Z"
+     id="path9" />
+</svg>
