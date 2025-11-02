@@ -75,7 +75,7 @@
         src = ./.;
 
         nativeBuildInputs = with pkgs; [
-          wrapGAppsHook
+          wrapGAppsHook3
           meson
           ninja
         ];
