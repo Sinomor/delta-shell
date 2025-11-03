@@ -316,7 +316,7 @@ function WeatherButton() {
          subtitle={temp.as((temp) => (temp !== "None" ? temp : "None"))}
          arrow={"inside"}
          onClicked={() => qs_page_set("weather")}
-         ButtonClasses={["qs-button-box-arrow"]}
+         ButtonClasses={["qs-button-box-arrow-inside"]}
       />
    );
 }
