@@ -354,8 +354,14 @@ export function Qs_Buttons() {
 
       for (const button of buttons) {
          const Widget = Buttons[button];
-         if (Widget) visible.push(Widget());
-         else console.error(`Failed create qsbutton: unknown name ${button}`);
+         if (!Widget) {
+            console.error(`Failed create qsbutton: unknown name "${button}"`);
+            continue;
+         }
+         const result = Widget();
+         if (result !== null && result !== undefined) {
+            visible.push(result);
+         }
       }
 
       return visible;
