@@ -1,13 +1,9 @@
 import GObject, { register, getter } from "ags/gobject";
-import {
-   bash,
-   dependencies,
-   ensureDirectory,
-   notifySend,
-   now,
-} from "@/src/lib/utils";
+import { bash, dependencies, ensureDirectory, now } from "@/src/lib/utils";
 import GLib from "gi://GLib?version=2.0";
 import { interval, Timer } from "ags/time";
+import AstalNotifd from "gi://AstalNotifd?version=0.1";
+import { icons } from "../lib/icons";
 
 const HOME = GLib.get_home_dir();
 
@@ -65,15 +61,29 @@ export default class ScreenRecord extends GObject.Object {
       this.notify("recording");
       this.#interval?.cancel();
 
-      notifySend({
-         icon: "folder-videos-symbolic",
+      const notification = new AstalNotifd.Notification({
          appName: "Screen Recorder",
+         appIcon: icons.video,
          summary: "Screen recording saved",
          body: `File saved at ${this.#file}`,
-         actions: {
-            "Show in Files": () => bash(`xdg-open ${this.#recordings}`),
-            View: () => bash(`xdg-open ${this.#file}`),
-         },
       });
+
+      notification.add_action(
+         new AstalNotifd.Action({ id: "show", label: "Show in Files" }),
+      );
+      notification.add_action(
+         new AstalNotifd.Action({ id: "view", label: "View" }),
+      );
+
+      notification.connect("invoked", (_, action) => {
+         if (action === "show") bash(`xdg-open ${this.#recordings}`);
+         if (action === "view") bash(`xdg-open ${this.#file}`);
+      });
+
+      try {
+         AstalNotifd.send_notification(notification, null);
+      } catch (err) {
+         console.error(err);
+      }
    }
 }

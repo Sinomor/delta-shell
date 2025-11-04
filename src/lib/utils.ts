@@ -12,7 +12,7 @@ import AstalApps from "gi://AstalApps?version=0.1";
 /**
  * @returns true if all of the `bins` are found
  */
-export function dependencies(...bins: string[]) {
+export function dependencies(...bins: string[]): boolean {
    const missing = bins.filter((bin) => {
       try {
          exec(["which", bin]);
@@ -29,7 +29,7 @@ export function dependencies(...bins: string[]) {
    return missing.length === 0;
 }
 
-export function ensureDirectory(path: string) {
+export function ensureDirectory(path: string): void {
    if (!GLib.file_test(path, GLib.FileTest.IS_DIR)) {
       GLib.mkdir_with_parents(path, 0o755);
    }
@@ -41,7 +41,7 @@ export function ensureDirectory(path: string) {
 export async function bash(
    strings: TemplateStringsArray | string,
    ...values: unknown[]
-) {
+): Promise<string> {
    const cmd =
       typeof strings === "string"
          ? strings
@@ -55,81 +55,46 @@ export async function bash(
 
 type NotifUrgency = "low" | "normal" | "critical";
 
-export function notifySend({
-   appName,
-   appIcon,
-   urgency = "normal",
-   image,
-   icon,
-   summary,
-   body,
-   actions,
-}: {
-   appName?: string;
-   appIcon?: string;
-   urgency?: NotifUrgency;
-   image?: string;
-   icon?: string;
-   summary: string;
-   body: string;
-   actions?: {
-      [label: string]: () => void;
-   };
-}) {
-   const actionsArray = Object.entries(actions || {}).map(
-      ([label, callback], i) => ({
-         id: `${i}`,
-         label,
-         callback,
-      }),
-   );
-   bash(
-      [
-         "notify-send",
-         `-u ${urgency}`,
-         appIcon && `-i ${appIcon}`,
-         `-h "string:image-path:${!!icon ? icon : image}"`,
-         `"${summary ?? ""}"`,
-         `"${body ?? ""}"`,
-         `-a "${appName ?? ""}"`,
-         ...actionsArray.map((v) => `--action=\"${v.id}=${v.label}\"`),
-      ].join(" "),
-   )
-      .then((out) => {
-         if (!isNaN(Number(out.trim())) && out.trim() !== "") {
-            actionsArray[parseInt(out)].callback();
-         }
-      })
-      .catch(console.error);
-}
+export const now = (): string =>
+   GLib.DateTime.new_now_local().format("%Y-%m-%d_%H-%M-%S")!;
 
-export const now = () =>
-   GLib.DateTime.new_now_local().format("%Y-%m-%d_%H-%M-%S");
+const IMAGE_EXTENSIONS = [".png", ".jpg", ".jpeg", ".svg"] as const;
 
-export const isImage = (filename: string): boolean => {
-   if (GLib.file_test(filename, GLib.FileTest.EXISTS)) {
-      const imgExt = [".png", ".jpg", ".jpeg", ".svg"];
-      const filenameLower = filename.toLowerCase();
-      for (const ext of imgExt) {
-         if (filenameLower.endsWith(ext)) {
-            return true;
-         }
-      }
+export function isImage(filename: string): boolean {
+   if (!GLib.file_test(filename, GLib.FileTest.EXISTS)) {
+      return false;
    }
-   return false;
-};
 
-export function isIcon(icon?: string | null) {
-   const iconTheme = Gtk.IconTheme.get_for_display(Gdk.Display.get_default()!);
-   return icon && iconTheme.has_icon(icon);
+   const filenameLower = filename.toLowerCase();
+   return IMAGE_EXTENSIONS.some((ext) => filenameLower.endsWith(ext));
 }
 
-export function fileExists(path: string) {
+let iconThemeCache: Gtk.IconTheme | null = null;
+
+function getIconTheme(): Gtk.IconTheme {
+   if (!iconThemeCache) {
+      iconThemeCache = Gtk.IconTheme.get_for_display(
+         Gdk.Display.get_default()!,
+      );
+   }
+   return iconThemeCache;
+}
+
+export function isIcon(icon?: string | null): boolean {
+   return !!icon && getIconTheme().has_icon(icon);
+}
+
+export function fileExists(path: string): boolean {
    return GLib.file_test(path, GLib.FileTest.EXISTS);
 }
 
-export function toggleWindow(name: string) {
-   const win = app.get_window(name)!;
+export function toggleWindow(name: string): void {
+   const win = app.get_window(name);
+   if (!win) {
+      console.warn(`Window "${name}" not found`);
+      return;
+   }
+
    if (win.visible) {
       win.hide();
    } else {
@@ -138,13 +103,15 @@ export function toggleWindow(name: string) {
    }
 }
 
+interface CssValueOptions {
+   unit?: string;
+   separator?: string;
+   allowEmpty?: boolean;
+}
+
 export function toCssValue(
    value: number | number[],
-   options: {
-      unit?: string;
-      separator?: string;
-      allowEmpty?: boolean;
-   } = {},
+   options: CssValueOptions = {},
 ): string {
    const { unit = "px", separator = " ", allowEmpty = false } = options;
 
@@ -158,8 +125,7 @@ export function toCssValue(
    }
 
    if (Array.isArray(value)) {
-      const values = value.map(format).filter((v) => v !== "");
-      return values.join(separator);
+      return value.map(format).filter(Boolean).join(separator);
    }
 
    throw new Error("Invalid value type. Expected number or number[]");
@@ -168,183 +134,155 @@ export function toCssValue(
 export function ensureFileWithDefaults(
    filePath: string,
    defaultContent: string,
-) {
-   ensureDirectory(filePath.split("/").slice(0, -1).join("/"));
+): boolean {
+   const dirPath = filePath.split("/").slice(0, -1).join("/");
+   ensureDirectory(dirPath);
 
-   if (!GLib.file_test(filePath, GLib.FileTest.EXISTS)) {
-      const success = GLib.file_set_contents(filePath, defaultContent);
-      return success;
+   if (!fileExists(filePath)) {
+      return GLib.file_set_contents(filePath, defaultContent);
    }
    return true;
 }
 
-// https://github.com/JohnOberhauser/OkPanel/blob/main/ags/widget/utils/scroll.ts
-
-type ScrollHandler = (info: {
+interface ScrollInfo {
    dx: number;
    dy: number;
    hovered: boolean;
    shift: boolean;
-}) => void;
+}
 
-export function attachHoverScroll(box: Gtk.Box, onScroll: ScrollHandler) {
-   // Track hover state
+type ScrollHandler = (info: ScrollInfo) => void;
+
+export function attachHoverScroll(box: Gtk.Box, onScroll: ScrollHandler): void {
    let hovered = false;
+
    const motion = new Gtk.EventControllerMotion();
    motion.connect("enter", () => (hovered = true));
    motion.connect("leave", () => (hovered = false));
    box.add_controller(motion);
 
-   // Handle mouse wheel scrolling
-   // DISCRETE gives +/-1 steps for wheel; add SMOOTH if you want touchpads too
    const scrollCtrl = new Gtk.EventControllerScroll({
       flags:
          Gtk.EventControllerScrollFlags.VERTICAL |
-         Gtk.EventControllerScrollFlags.DISCRETE, // add SMOOTH if desired
+         Gtk.EventControllerScrollFlags.DISCRETE,
    });
 
    scrollCtrl.connect("scroll", (_ctrl, dx, dy) => {
       if (!hovered) return Gdk.EVENT_PROPAGATE;
 
-      // Optional: check modifiers (e.g., Shift to change behavior)
       const state = _ctrl.get_current_event_state?.() ?? 0;
       const shift = (state & Gdk.ModifierType.SHIFT_MASK) !== 0;
 
-      // Your action: dy < 0 is scroll up, dy > 0 is scroll down
       onScroll({ dx, dy, hovered, shift });
 
-      // Stop propagation so parent scrolled windows don't consume it
       return Gdk.EVENT_STOP;
    });
 
-   // Bubble phase usually works best so children get first crack at events
    scrollCtrl.set_propagation_phase(Gtk.PropagationPhase.BUBBLE);
    box.add_controller(scrollCtrl);
 }
 
-export function hasBarItem(module: string) {
+export function hasBarItem(module: string): boolean {
    return createComputed(
       [
          config.bar.modules.start,
          config.bar.modules.center,
          config.bar.modules.end,
       ],
-      (start: string[], center: string[], end: string[]) => {
-         return (
-            start.includes(module) ||
-            center.includes(module) ||
-            end.includes(module)
-         );
-      },
+      (start: string[], center: string[], end: string[]) =>
+         start.includes(module) ||
+         center.includes(module) ||
+         end.includes(module),
    ).get();
 }
 
-export function toggleQsModule(name: string, module?: string) {
-   if (hasBarItem(module ? module : name)) {
+export function toggleQsModule(name: string, module?: string): void {
+   const targetModule = module ?? name;
+
+   if (hasBarItem(targetModule)) {
       const windowName = windows_names[name as keyof typeof windows_names];
-      toggleWindow(windowName);
+      if (windowName) {
+         toggleWindow(windowName);
+      }
    } else {
       toggleWindow(windows_names.quicksettings);
       qs_page_set(name);
    }
 }
 
-const appInfoCache = new Map<string, any>();
+const appInfoCache = new Map<string, AstalApps.Application | null>();
 const MAX_CACHE_SIZE = 50;
 
 let appManager: AstalApps.Apps | null = null;
-const getAppManager = () => {
+
+function getAppManager(): AstalApps.Apps {
    if (!appManager) {
       appManager = new AstalApps.Apps();
    }
    return appManager;
-};
+}
 
-export function getAppInfo(appId: string) {
-   if (!appId) return null;
-
-   // Check cache first
-   if (appInfoCache.has(appId)) {
-      return appInfoCache.get(appId);
+function addToCache(key: string, value: AstalApps.Application | null): void {
+   if (appInfoCache.size >= MAX_CACHE_SIZE) {
+      const firstKey = appInfoCache.keys().next().value;
+      if (firstKey) appInfoCache.delete(firstKey);
    }
+   appInfoCache.set(key, value);
+}
 
-   // Use the single app manager instance
-   const appList = getAppManager().get_list();
+function findAppInList(
+   appId: string,
+   appList: AstalApps.Application[],
+): AstalApps.Application | null {
+   const searchTerm = appId.toLowerCase();
+
    for (const app of appList) {
       if (
-         app.entry.toLowerCase().includes(appId.toLowerCase()) ||
+         app.entry?.toLowerCase() === searchTerm ||
          app.iconName === appId ||
          app.name === appId ||
          app.wm_class === appId
       ) {
-         // Limit cache size
-         if (appInfoCache.size >= MAX_CACHE_SIZE) {
-            const firstKey = appInfoCache.keys().next().value;
-            if (firstKey) {
-               appInfoCache.delete(firstKey);
-            }
-         }
-         appInfoCache.set(appId, app);
          return app;
       }
    }
 
-   const commonKeywords = [
-      "browser",
-      "web",
-      "music",
-      "media",
-      "video",
-      "audio",
-      "terminal",
-      "editor",
-      "code",
-      "chat",
-      "mail",
-      "photo",
-      "image",
-      "settings",
-      "control",
-   ];
-
-   for (const keyword of commonKeywords) {
-      if (appId.toLowerCase().includes(keyword)) {
-         const keywordResults = getAppManager().fuzzy_query(keyword);
-         if (keywordResults.length > 0) {
-            // Limit cache size
-            if (appInfoCache.size >= MAX_CACHE_SIZE) {
-               const firstKey = appInfoCache.keys().next().value;
-               if (firstKey) {
-                  appInfoCache.delete(firstKey);
-               }
-            }
-            appInfoCache.set(appId, keywordResults[0]);
-            return keywordResults[0];
-         }
+   for (const app of appList) {
+      if (app.entry?.toLowerCase().includes(searchTerm)) {
+         return app;
       }
    }
 
-   // Cache null result to avoid repeated failed lookups
-   if (appInfoCache.size >= MAX_CACHE_SIZE) {
-      const firstKey = appInfoCache.keys().next().value;
-      if (firstKey) {
-         appInfoCache.delete(firstKey);
-      }
-   }
-   appInfoCache.set(appId, null);
    return null;
 }
 
-export function lengthStr(length: number) {
+export function getAppInfo(appId: string): AstalApps.Application | null {
+   if (!appId) return null;
+
+   if (appInfoCache.has(appId)) {
+      return appInfoCache.get(appId)!;
+   }
+
+   const manager = getAppManager();
+   const appList = manager.get_list();
+
+   const match = findAppInList(appId, appList);
+
+   addToCache(appId, match);
+   return match;
+}
+
+export function lengthStr(length: number): string {
    const hours = Math.floor(length / 3600);
    const minutes = Math.floor((length % 3600) / 60);
    const seconds = Math.floor(length % 60);
 
-   const min0 = minutes < 10 ? "0" : "";
-   const sec0 = seconds < 10 ? "0" : "";
+   const formatTime = (value: number): string =>
+      value < 10 ? `0${value}` : `${value}`;
 
    if (hours > 0) {
-      return `${hours}:${min0}${minutes}:${sec0}${seconds}`;
+      return `${hours}:${formatTime(minutes)}:${formatTime(seconds)}`;
    }
-   return `${minutes}:${sec0}${seconds}`;
+
+   return `${minutes}:${formatTime(seconds)}`;
 }

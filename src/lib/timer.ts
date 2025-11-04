@@ -1,13 +1,16 @@
 import { interval } from "ags/time";
 import GLib from "gi://GLib";
 
+type TimerCallback = () => void;
+type Unsubscribe = () => void;
+
 export class Timer {
    private _timeLeft: number;
-   private _timeout: number;
-   private _interval: any = null;
+   private readonly _timeout: number;
+   private _interval: ReturnType<typeof interval> | null = null;
    private _startTime: number = 0;
    private _isPaused: boolean = true;
-   private subscriptions = new Set<() => void>();
+   private readonly subscriptions = new Set<TimerCallback>();
 
    constructor(timeout: number) {
       this._timeout = timeout;
@@ -19,7 +22,8 @@ export class Timer {
    }
 
    set timeLeft(value: number) {
-      this._timeLeft = value;
+      if (this._timeLeft === value) return;
+      this._timeLeft = Math.max(0, value);
       this.notify();
    }
 
@@ -31,20 +35,22 @@ export class Timer {
       if (this._isPaused === value) return;
 
       this._isPaused = value;
-      if (value) {
-         this.pause();
-      } else {
-         this.resume();
-      }
+      value ? this.pause() : this.resume();
    }
 
-   notify() {
-      for (const sub of this.subscriptions) {
-         sub();
-      }
+   get timeout(): number {
+      return this._timeout;
    }
 
-   subscribe(callback: () => void): () => void {
+   get isRunning(): boolean {
+      return this._interval !== null && !this._isPaused;
+   }
+
+   private notify() {
+      this.subscriptions.forEach((callback) => callback());
+   }
+
+   subscribe(callback: TimerCallback): Unsubscribe {
       this.subscriptions.add(callback);
       return () => this.subscriptions.delete(callback);
    }
@@ -71,22 +77,21 @@ export class Timer {
    }
 
    pause() {
+      if (!this.isRunning) return;
       this._isPaused = true;
    }
 
    resume() {
-      if (!this._interval || this._timeLeft <= 0) return;
+      if (!this._interval || this._timeLeft <= 0 || !this._isPaused) return;
 
       this._isPaused = false;
-      this._startTime =
-         GLib.get_monotonic_time() - (this._timeout - this._timeLeft) * 1000;
+      const elapsedBeforePause = this._timeout - this._timeLeft;
+      this._startTime = GLib.get_monotonic_time() - elapsedBeforePause * 1000;
    }
 
    cancel() {
-      if (this._interval) {
-         this._interval.cancel();
-         this._interval = null;
-      }
+      this._interval?.cancel();
+      this._interval = null;
       this._isPaused = true;
    }
 
@@ -94,5 +99,10 @@ export class Timer {
       this.cancel();
       this._timeLeft = this._timeout;
       this.notify();
+   }
+
+   dispose() {
+      this.cancel();
+      this.subscriptions.clear();
    }
 }
