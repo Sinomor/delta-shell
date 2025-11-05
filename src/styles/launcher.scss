@@ -62,6 +62,10 @@ window#clipboard {
       padding: 10px;
    }
 
+   .image {
+      border-radius: $widget-radius;
+   }
+
    .header {
       background: rgba($bg1, $window-opacity);
       border-radius: $widget-radius;
