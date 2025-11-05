@@ -28,7 +28,7 @@ export function Battery() {
             percent: (
                <label
                   label={createBinding(battery, "percentage").as(
-                     (p) => `${Math.floor(p * 100)}%`,
+                     (p) => `${Math.floor(p * 100)}`,
                   )}
                   hexpand={isVertical}
                />
