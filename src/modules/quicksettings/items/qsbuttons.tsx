@@ -199,7 +199,7 @@ function InternetButton() {
             wifi.scan();
             qs_page_set("network");
          }}
-         arrow={"separate"}
+         arrow={network.wifi !== null ? "separate" : "none"}
          ArrowClasses={enabled.as((p) => {
             const classes = ["arrow"];
             p && classes.push("active");
