@@ -67,7 +67,8 @@ window#quicksettings {
          min-height: 66px;
 
          .qs-button-box,
-         .qs-button-box-arrow {
+         .qs-button-box-arrow,
+         .qs-button-box-arrow-inside {
             font-weight: normal;
             padding: 0;
             padding-left: 10px;
@@ -85,7 +86,8 @@ window#quicksettings {
 
          .qs-button-box,
          .qs-button-box-arrow,
-         .arrow {
+         .arrow,
+         .qs-button-box-arrow-inside {
             outline: none;
             background: rgba($bg1, $window-opacity);
 
@@ -112,7 +114,8 @@ window#quicksettings {
          }
       }
 
-      .qs-button-box {
+      .qs-button-box,
+      .qs-button-box-arrow-inside {
          border-radius: $widget-radius;
       }
 

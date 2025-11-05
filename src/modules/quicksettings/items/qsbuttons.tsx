@@ -199,7 +199,7 @@ function InternetButton() {
             wifi.scan();
             qs_page_set("network");
          }}
-         arrow={"separate"}
+         arrow={network.wifi !== null ? "separate" : "none"}
          ArrowClasses={enabled.as((p) => {
             const classes = ["arrow"];
             p && classes.push("active");
@@ -316,7 +316,7 @@ function WeatherButton() {
          subtitle={temp.as((temp) => (temp !== "None" ? temp : "None"))}
          arrow={"inside"}
          onClicked={() => qs_page_set("weather")}
-         ButtonClasses={["qs-button-box-arrow"]}
+         ButtonClasses={["qs-button-box-arrow-inside"]}
       />
    );
 }
@@ -354,8 +354,14 @@ export function Qs_Buttons() {
 
       for (const button of buttons) {
          const Widget = Buttons[button];
-         if (Widget) visible.push(Widget());
-         else console.error(`Failed create qsbutton: unknown name ${button}`);
+         if (!Widget) {
+            console.error(`Failed create qsbutton: unknown name "${button}"`);
+            continue;
+         }
+         const result = Widget();
+         if (result !== null && result !== undefined) {
+            visible.push(result);
+         }
       }
 
       return visible;

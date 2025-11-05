@@ -81,15 +81,20 @@ export function Notification({
             {n.image && fileExists(n.image) && (
                <Adw.Clamp
                   valign={Gtk.Align.START}
-                  class={"image"}
                   maximumSize={80}
                   widthRequest={80}
-                  heightRequest={90}
+                  heightRequest={80}
                >
-                  <Gtk.Picture
-                     contentFit={Gtk.ContentFit.COVER}
-                     file={Gio.file_new_for_path(n.image)}
-                  />
+                  <Adw.Clamp
+                     orientation={Gtk.Orientation.VERTICAL}
+                     maximumSize={80}
+                  >
+                     <Gtk.Picture
+                        class={"image"}
+                        contentFit={Gtk.ContentFit.COVER}
+                        file={Gio.file_new_for_path(n.image)}
+                     />
+                  </Adw.Clamp>
                </Adw.Clamp>
             )}
             {n.image && isIcon(n.image) && (

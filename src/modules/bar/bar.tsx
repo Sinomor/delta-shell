@@ -58,8 +58,14 @@ export function BarModule({
 
       for (const baritem of baritems) {
          const Widget = Bar_Items[baritem];
-         if (Widget) items.push(Widget());
-         else console.error(`Failed create baritem: unknown name ${baritem}`);
+         if (!Widget) {
+            console.error(`Failed create qsbutton: unknown name "${baritem}"`);
+            continue;
+         }
+         const result = Widget();
+         if (result !== null && result !== undefined) {
+            items.push(result);
+         }
       }
 
       return items;

@@ -37,6 +37,7 @@ export function ClipImage({
          focusOnClick={false}
       >
          <Gtk.Picture
+            class={"image"}
             halign={Gtk.Align.START}
             $={async (self) => {
                const image = await clipboard.load_image(id);
