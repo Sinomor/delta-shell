@@ -1,26 +1,33 @@
-import GObject, { register } from "ags/gobject";
-import { createState } from "ags";
 import { readFileAsync } from "ags/file";
+import GObject, { register, property } from "ags/gobject";
 import { interval } from "ags/time";
 
 const UPDATE_INTERVAL = 2000;
 
-@register({ GTypeName: "SystemStats" })
-export default class SystemStats extends GObject.Object {
-   static instance: SystemStats;
+@register({ GTypeName: "SystemInfo" })
+export default class SystemInfo extends GObject.Object {
+   static instance: SystemInfo;
 
    static get_default() {
-      if (!this.instance) this.instance = new SystemStats();
+      if (!this.instance) this.instance = new SystemInfo();
       return this.instance;
    }
 
-   #interval: ReturnType<typeof interval> | null = null;
-   #cpuUsage = createState(0);
-   #memoryAvailable = createState(0);
-   #memoryTotal = createState(0);
-   #memoryUsage = createState(0);
+   @property(Number)
+   cpuUsage = 0;
 
-   private lastCpuInfo: { idle: number; total: number } | null = null;
+   @property(Number)
+   memoryUsed = 0;
+
+   @property(Number)
+   memoryTotal = 0;
+
+   @property(Number)
+   memoryUsage = 0;
+
+   #interval: ReturnType<typeof interval> | null = null;
+   #lastCpuTotal = 0;
+   #lastCpuUsed = 0;
 
    constructor() {
       super();
@@ -43,95 +50,59 @@ export default class SystemStats extends GObject.Object {
       }
    }
 
-   get cpuUsage() {
-      return this.#cpuUsage[0];
-   }
-
-   get memoryAvailable() {
-      return this.#memoryAvailable[0];
-   }
-
-   get memoryTotal() {
-      return this.#memoryTotal[0];
-   }
-
-   get memoryUsage() {
-      return this.#memoryUsage[0];
-   }
-
-   private async recalculateCpuUsage() {
+   private async updateCpuUsage() {
       try {
-         const statFile = await readFileAsync("/proc/stat");
+         const GTop = (await import("gi://GTop")).default;
+         const cpu = new GTop.glibtop_cpu();
+         GTop.glibtop_get_cpu(cpu);
 
-         const newlineIdx = statFile.indexOf("\n");
-         if (newlineIdx === -1 || !statFile.startsWith("cpu ")) {
-            console.error("couldn't parse /proc/stat");
-            return;
-         }
+         const total = cpu.total;
+         const idle = cpu.idle;
+         const used = total - idle;
 
-         const cpuLine = statFile.substring(4, newlineIdx).trim();
-         const parts = cpuLine.split(" ");
+         if (this.#lastCpuTotal > 0) {
+            const totalDiff = total - this.#lastCpuTotal;
+            const usedDiff = used - this.#lastCpuUsed;
 
-         let total = 0;
-         const stats: number[] = [];
-
-         for (const part of parts) {
-            const val = parseInt(part, 10);
-            stats.push(val);
-            total += val;
-         }
-
-         const idle = stats[3] + stats[4];
-
-         if (this.lastCpuInfo !== null) {
-            const deltaIdle = idle - this.lastCpuInfo.idle;
-            const deltaTotal = total - this.lastCpuInfo.total;
-
-            if (deltaTotal > 0) {
-               this.#cpuUsage[1](1 - deltaIdle / deltaTotal);
+            if (totalDiff > 0) {
+               this.cpuUsage = usedDiff / totalDiff;
             }
          }
 
-         this.lastCpuInfo = { idle, total };
+         this.#lastCpuTotal = total;
+         this.#lastCpuUsed = used;
       } catch (error) {
-         console.error("Error calculating CPU usage:", error);
+         this.cpuUsage = -1;
+         console.error("Failed to get CPU usage:", error);
       }
    }
 
-   private async recalculateMemoryUsage() {
+   private async updateMemoryUsage() {
       try {
          const meminfo = await readFileAsync("/proc/meminfo");
-         const lines = meminfo.split("\n");
 
          let total: number | undefined;
          let available: number | undefined;
 
-         for (const line of lines) {
+         for (const line of meminfo.split("\n")) {
             if (!line) continue;
-            if (total !== undefined && available !== undefined) break;
 
-            const colonIdx = line.indexOf(":");
-            if (colonIdx === -1) continue;
-
-            const label = line.substring(0, colonIdx);
-
-            if (label !== "MemTotal" && label !== "MemAvailable") {
-               continue;
+            if (total && available) {
+               break;
             }
 
-            const rest = line.substring(colonIdx + 1).trim();
-            const spaceIdx = rest.indexOf(" ");
+            let [label, rest] = line.split(":");
+            rest = rest.trim();
+            console.assert(
+               rest.endsWith("kB"),
+               "memory stat has unexpected unit " + rest,
+            );
+            rest = rest.slice(0, -3);
+            const amount = parseInt(rest);
 
-            if (spaceIdx === -1) continue;
-
-            const numStr = rest.substring(0, spaceIdx);
-            const amount = parseInt(numStr, 10);
-
-            if (isNaN(amount)) continue;
-
-            if (label === "MemTotal") {
+            if (label == "MemTotal") {
                total = amount;
-            } else if (label === "MemAvailable") {
+            } else if (label == "MemAvailable") {
                available = amount;
             }
          }
@@ -141,21 +112,18 @@ export default class SystemStats extends GObject.Object {
             return;
          }
 
-         this.#memoryAvailable[1](available);
-         this.#memoryTotal[1](total);
+         this.memoryTotal = total;
 
          if (total > 0) {
-            this.#memoryUsage[1](1 - available / total);
+            this.memoryUsage = 1 - available / total;
          }
       } catch (error) {
          console.error("Error calculating memory usage:", error);
       }
    }
 
-   private async update() {
-      await Promise.all([
-         this.recalculateCpuUsage(),
-         this.recalculateMemoryUsage(),
-      ]);
+   private update() {
+      if (this.cpuUsage !== -1) this.updateCpuUsage();
+      this.updateMemoryUsage();
    }
 }

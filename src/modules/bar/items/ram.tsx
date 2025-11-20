@@ -3,21 +3,18 @@ import { isVertical } from "../bar";
 import { icons } from "@/src/lib/icons";
 import SystemStats from "@/src/services/systemstats";
 import { config } from "@/options";
+import { createBinding } from "gnim";
 
 export function RAM() {
    const systemstats = SystemStats.get_default();
 
-   const memoryUsage = systemstats.memoryUsage.as((data) => {
-      if (!data) return "";
+   const memoryUsage = createBinding(systemstats, "memoryUsage").as((data) =>
+      Math.floor(data * 100).toString(),
+   );
 
-      return Math.floor(data * 100).toString();
-   });
-
-   const memoryTotal = systemstats.memoryTotal.as((data) => {
-      if (!data) return "";
-
-      return (data / 1024 / 1024).toFixed(2).toString();
-   });
+   const memoryTotal = createBinding(systemstats, "memoryTotal").as((data) =>
+      (data / 1024 / 1024).toFixed(2).toString(),
+   );
 
    return (
       <BarItem

@@ -37,6 +37,7 @@ More information about Delta Shell you can find at [docs website](https://sinomo
 - `tuned-ppd` or `power-profiles-daemon` to switch between power profiles
 - `brightnessctl` for control screen brightness
 - `bluez` for connect to bluetooth devices
+- `libgtop` for cpu usage
 
 ## Installation
 
