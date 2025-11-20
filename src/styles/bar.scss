@@ -151,6 +151,7 @@ window#bar {
          modelbutton {
             border-radius: $widget-radius;
             background: transparent;
+            color: $fg0;
 
             &:focus,
             &:hover {

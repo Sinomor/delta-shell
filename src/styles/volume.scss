@@ -51,6 +51,7 @@ window#volume {
       }
 
       modelbutton {
+         color: $fg0;
          border-radius: $widget-radius;
 
          &:focus,
