@@ -23,6 +23,7 @@ export function ClipColor({ id, content }: { id: string; content: string }) {
                widthRequest={20}
                heightRequest={20}
                valign={Gtk.Align.CENTER}
+               class={"color"}
                css={`
                   background: ${isValid ? content : "transparent"};
                `}
