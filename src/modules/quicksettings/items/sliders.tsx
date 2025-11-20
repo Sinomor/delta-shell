@@ -73,7 +73,7 @@ function MicrophoneBox() {
 
 export function QSSliders() {
    const getVisibleButtons = () => {
-      const sliders = config.quicksettings.sliders.get();
+      const sliders = config.quicksettings.sliders;
       const visible = [];
 
       for (const slider of sliders) {

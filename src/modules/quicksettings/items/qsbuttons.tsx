@@ -30,9 +30,8 @@ const Buttons = {
       powerprofile.get_profiles().length !== 0 ? <PowerProfilesButton /> : null,
    screenrecord: () =>
       dependencies("gpu-screen-recorder") ? <ScreenRecordButton /> : null,
-   weather: () => config.weather.enabled.get() && <WeatherButton />,
-   notifications: () =>
-      config.notifications.enabled.get() && <NotificationsButton />,
+   weather: () => config.weather.enabled && <WeatherButton />,
+   notifications: () => config.notifications.enabled && <NotificationsButton />,
    volume: () => <VolumeButton />,
    microphone: () => <MicrophoneButton />,
 } as Record<string, any>;
@@ -349,7 +348,7 @@ function NotificationsButton() {
 
 export function Qs_Buttons() {
    const getVisibleButtons = () => {
-      const buttons = config.quicksettings.buttons.get();
+      const buttons = config.quicksettings.buttons;
       const visible = [];
 
       for (const button of buttons) {
@@ -374,8 +373,8 @@ export function Qs_Buttons() {
          class={"qs-buttons"}
          child_spacing={theme.spacing}
          lineSpacing={theme.spacing}
-         widthRequest={440 - theme.window.padding.get() * 2}
-         naturalLineLength={440 - theme.window.padding.get() * 2}
+         widthRequest={440 - theme.window.padding * 2}
+         naturalLineLength={440 - theme.window.padding * 2}
       >
          {buttons}
          {buttons.length % 2 !== 0 && <box widthRequest={200} />}

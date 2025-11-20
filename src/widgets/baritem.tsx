@@ -8,7 +8,7 @@ import {
    toggleWindow,
 } from "../lib/utils";
 import { compositor, theme } from "@/options";
-import { isVertical } from "../modules/bar/bar";
+import { isVertical, orientation } from "../modules/bar/bar";
 import { windows_names } from "@/windows";
 import AstalHyprland from "gi://AstalHyprland?version=0.1";
 import AstalNiri from "gi://AstalNiri?version=0.1";
@@ -219,11 +219,7 @@ export default function BarItem({
 }: BarItemProps) {
    const content = format ? parseFormat(format, data) : children;
 
-   const orientation = isVertical
-      ? Gtk.Orientation.VERTICAL
-      : Gtk.Orientation.HORIZONTAL;
-
-   const spacing = theme.bar.spacing.get() / 2;
+   const spacing = theme.bar.spacing / 2;
 
    return (
       <box

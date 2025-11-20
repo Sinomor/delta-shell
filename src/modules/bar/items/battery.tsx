@@ -13,9 +13,9 @@ export function Battery() {
    return (
       <BarItem
          window={windows_names.power}
-         onPrimaryClick={config.bar.modules.battery["on-click"].get()}
-         onSecondaryClick={config.bar.modules.battery["on-click-right"].get()}
-         onMiddleClick={config.bar.modules.battery["on-click-middle"].get()}
+         onPrimaryClick={config.bar.modules.battery["on-click"]}
+         onSecondaryClick={config.bar.modules.battery["on-click-right"]}
+         onMiddleClick={config.bar.modules.battery["on-click-middle"]}
          data={{
             icon: (
                <image
@@ -34,7 +34,7 @@ export function Battery() {
                />
             ),
          }}
-         format={config.bar.modules.battery.format.get()}
+         format={config.bar.modules.battery.format}
       />
    );
 }

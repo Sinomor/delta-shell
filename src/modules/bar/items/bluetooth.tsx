@@ -26,9 +26,9 @@ export function Bluetooth() {
    return (
       <BarItem
          window={windows_names.bluetooth}
-         onPrimaryClick={config.bar.modules.bluetooth["on-click"].get()}
-         onSecondaryClick={config.bar.modules.bluetooth["on-click-right"].get()}
-         onMiddleClick={config.bar.modules.bluetooth["on-click-middle"].get()}
+         onPrimaryClick={config.bar.modules.bluetooth["on-click"]}
+         onSecondaryClick={config.bar.modules.bluetooth["on-click-right"]}
+         onMiddleClick={config.bar.modules.bluetooth["on-click-middle"]}
          data={{
             icon: <image hexpand={isVertical} iconName={icons.bluetooth} />,
             status: (
@@ -80,7 +80,7 @@ export function Bluetooth() {
                />
             ),
          }}
-         format={config.bar.modules.bluetooth.format.get()}
+         format={config.bar.modules.bluetooth.format}
       />
    );
 }

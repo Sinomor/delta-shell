@@ -8,9 +8,9 @@ export function Clipboard() {
    return (
       <BarItem
          window={windows_names.clipboard}
-         onPrimaryClick={config.bar.modules.clipboard["on-click"].get()}
-         onSecondaryClick={config.bar.modules.clipboard["on-click-right"].get()}
-         onMiddleClick={config.bar.modules.clipboard["on-click-middle"].get()}
+         onPrimaryClick={config.bar.modules.clipboard["on-click"]}
+         onSecondaryClick={config.bar.modules.clipboard["on-click-right"]}
+         onMiddleClick={config.bar.modules.clipboard["on-click-middle"]}
          data={{
             icon: (
                <image
@@ -20,7 +20,7 @@ export function Clipboard() {
                />
             ),
          }}
-         format={config.bar.modules.clipboard.format.get()}
+         format={config.bar.modules.clipboard.format}
       />
    );
 }

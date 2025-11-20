@@ -24,7 +24,7 @@ export function CPU() {
             ),
             usage: <label label={cpuUsage} hexpand={isVertical} />,
          }}
-         format={config.bar.modules.cpu.format.get()}
+         format={config.bar.modules.cpu.format}
          visible={cpuUsage.as((d) => d !== "")}
       />
    );

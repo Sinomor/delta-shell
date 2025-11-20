@@ -65,7 +65,7 @@ function StreamsList() {
                      />
                      <box
                         orientation={Gtk.Orientation.VERTICAL}
-                        spacing={theme.spacing.get() / 2}
+                        spacing={theme.spacing / 2}
                      >
                         <label
                            label={name.as(
@@ -251,7 +251,7 @@ function List() {
       <Gtk.ScrolledWindow>
          <box
             orientation={Gtk.Orientation.VERTICAL}
-            spacing={theme.spacing.get() * 2}
+            spacing={theme.spacing * 2}
             vexpand
          >
             <StreamsList />
@@ -266,8 +266,8 @@ export function VolumeModule({ showArrow = false }: { showArrow?: boolean }) {
    return (
       <box
          class={"volume"}
-         heightRequest={500 - theme.window.padding.get() * 2}
-         widthRequest={410 - theme.window.padding.get() * 2}
+         heightRequest={500 - theme.window.padding * 2}
+         widthRequest={410 - theme.window.padding * 2}
          orientation={Gtk.Orientation.VERTICAL}
          spacing={theme.spacing}
       >

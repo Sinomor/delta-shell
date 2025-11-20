@@ -17,8 +17,7 @@ export function ClipImage({
    content: RegExpMatchArray;
 }) {
    const [_, size, unit, format, width, height] = content;
-   const maxWidth =
-      config.launcher.width.get() - theme.window.padding.get() * 2;
+   const maxWidth = config.launcher.width - theme.window.padding * 2;
    let widthPx = (Number(width) / Number(height)) * 200;
    let heightPx: number;
 

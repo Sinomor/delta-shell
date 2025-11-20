@@ -56,7 +56,7 @@ export function BarWindow({
    onCleanup(() => app.disconnect(appconnect));
 
    function anchor() {
-      switch (position.get()) {
+      switch (position) {
          case "top":
             return TOP | LEFT | RIGHT;
          case "bottom":

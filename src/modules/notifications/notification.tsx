@@ -136,10 +136,10 @@ export function Notification({
    }
 
    return (
-      <Adw.Clamp maximum_size={config.notifications.width.get()} {...props}>
+      <Adw.Clamp maximum_size={config.notifications.width} {...props}>
          <box
             orientation={Gtk.Orientation.VERTICAL}
-            widthRequest={config.notifications.width.get()}
+            widthRequest={config.notifications.width}
             cssClasses={["notification", `${urgency(n)}`]}
             spacing={theme.spacing}
          >
@@ -162,31 +162,28 @@ export function PopupNotification({
 }) {
    const [revealed, revealed_set] = createState(false);
 
-   const timer = new Timer(config.notifications.timeout.get() * 1000);
+   const timer = new Timer(config.notifications.timeout * 1000);
 
    timer.subscribe(async () => {
       revealed_set(true);
       if (timer.timeLeft <= 0) {
          revealed_set(false);
 
-         timeout(
-            config.transition.get() * 100 + 100,
-            () => onHide && onHide(n),
-         );
+         timeout(config.transition * 100 + 100, () => onHide && onHide(n));
       }
    });
 
    timer.start();
 
-   const margin = theme.window.margin.get();
+   const margin = theme.window.margin;
    return (
       <revealer
          transitionType={
-            config.notifications.position.get().includes("top")
+            config.notifications.position.includes("top")
                ? Gtk.RevealerTransitionType.SLIDE_DOWN
                : Gtk.RevealerTransitionType.SLIDE_UP
          }
-         transitionDuration={config.transition.get() * 1000}
+         transitionDuration={config.transition * 1000}
          revealChild={revealed}
       >
          <Gtk.EventControllerMotion

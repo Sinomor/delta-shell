@@ -8,9 +8,9 @@ export function Launcher() {
    return (
       <BarItem
          window={windows_names.applauncher}
-         onPrimaryClick={config.bar.modules.launcher["on-click"].get()}
-         onSecondaryClick={config.bar.modules.launcher["on-click-right"].get()}
-         onMiddleClick={config.bar.modules.launcher["on-click-middle"].get()}
+         onPrimaryClick={config.bar.modules.launcher["on-click"]}
+         onSecondaryClick={config.bar.modules.launcher["on-click-right"]}
+         onMiddleClick={config.bar.modules.launcher["on-click-middle"]}
          data={{
             icon: (
                <image
@@ -20,7 +20,7 @@ export function Launcher() {
                />
             ),
          }}
-         format={config.bar.modules.launcher.format.get()}
+         format={config.bar.modules.launcher.format}
       />
    );
 }

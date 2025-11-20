@@ -11,19 +11,15 @@ import { isVertical } from "../bar";
 const notifd = AstalNotifd.get_default();
 
 export function NotificationsList() {
-   if (!config.notifications.enabled.get()) return <box />;
+   if (!config.notifications.enabled) return <box />;
    const data = createBinding(notifd, "notifications");
 
    return (
       <BarItem
          window={windows_names.notificationslist}
-         onPrimaryClick={config.bar.modules.notifications["on-click"].get()}
-         onSecondaryClick={config.bar.modules.notifications[
-            "on-click-right"
-         ].get()}
-         onMiddleClick={config.bar.modules.notifications[
-            "on-click-middle"
-         ].get()}
+         onPrimaryClick={config.bar.modules.notifications["on-click"]}
+         onSecondaryClick={config.bar.modules.notifications["on-click-right"]}
+         onMiddleClick={config.bar.modules.notifications["on-click-middle"]}
          data={{
             icon: (
                <image
@@ -40,7 +36,7 @@ export function NotificationsList() {
                />
             ),
          }}
-         format={config.bar.modules.notifications.format.get()}
+         format={config.bar.modules.notifications.format}
       />
    );
 }

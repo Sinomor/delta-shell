@@ -18,7 +18,8 @@ const bluetooth = AstalBluetooth.get_default();
 export function QuickSettingsModule() {
    return (
       <stack
-         transitionDuration={config.transition.get() * 1000}
+         transitionDuration={config.transition * 1000}
+         class={"stack"}
          vhomogeneous={false}
          hhomogeneous={false}
          interpolate_size={true}
@@ -35,8 +36,8 @@ export function QuickSettingsModule() {
          {bluetooth.adapter !== null && <BluetoothPage />}
          <PowerPage />
          <VolumePage />
-         {config.notifications.enabled.get() && <WeatherPage />}
-         {config.notifications.enabled.get() && <NotificationsListPage />}
+         {config.notifications.enabled && <WeatherPage />}
+         {config.notifications.enabled && <NotificationsListPage />}
       </stack>
    );
 }

@@ -64,11 +64,11 @@ export default class WeatherService extends GObject.Object {
 
    constructor() {
       super();
-      if (config.weather.enabled.get()) this.start();
+      if (config.weather.enabled) this.start();
    }
 
    async start() {
-      if (config.weather.enabled.get()) {
+      if (config.weather.enabled) {
          this.updateLocation();
          this.#running[1](true);
          this.#location[0].subscribe(() => this.update());
@@ -108,7 +108,7 @@ export default class WeatherService extends GObject.Object {
    }
 
    async updateLocation() {
-      const location = config.weather.location.get();
+      const location = config.weather.location;
 
       try {
          this.#loading[1](true);

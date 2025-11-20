@@ -9,8 +9,8 @@ export function AppLauncherWindow() {
       <BarItemPopup
          name={windows_names.applauncher}
          module={"launcher"}
-         width={width.get()}
-         height={height.get()}
+         width={width}
+         height={height}
       >
          <AppLauncherModule />
       </BarItemPopup>

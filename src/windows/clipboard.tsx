@@ -10,8 +10,8 @@ export function ClipboardWindow() {
       <BarItemPopup
          name={windows_names.clipboard}
          module={hasBarItem("clipboard") ? "clipboard" : "launcher"}
-         width={width.get()}
-         height={height.get()}
+         width={width}
+         height={height}
       >
          <ClipboardModule />
       </BarItemPopup>

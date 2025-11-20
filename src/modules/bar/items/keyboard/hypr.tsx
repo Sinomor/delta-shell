@@ -54,9 +54,9 @@ export function Keyboard_Hypr() {
 
    return (
       <BarItem
-         onPrimaryClick={config.bar.modules.keyboard["on-click"].get()}
-         onSecondaryClick={config.bar.modules.keyboard["on-click-right"].get()}
-         onMiddleClick={config.bar.modules.keyboard["on-click-middle"].get()}
+         onPrimaryClick={config.bar.modules.keyboard["on-click"]}
+         onSecondaryClick={config.bar.modules.keyboard["on-click-right"]}
+         onMiddleClick={config.bar.modules.keyboard["on-click-middle"]}
          $={() => {
             hyprlandconnect = hyprland.connect(
                "keyboard-layout",
@@ -75,7 +75,7 @@ export function Keyboard_Hypr() {
                />
             ),
          }}
-         format={config.bar.modules.keyboard.format.get()}
+         format={config.bar.modules.keyboard.format}
       />
    );
 }

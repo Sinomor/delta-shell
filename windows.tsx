@@ -48,11 +48,9 @@ export function hide_all_windows() {
    hasBarItem("network") && app.get_window(windows_names.network)?.hide();
    hasBarItem("bluetooth") && app.get_window(windows_names.bluetooth)?.hide();
    hasBarItem("battery") && app.get_window(windows_names.power)?.hide();
-   config.clipboard.enabled.get() &&
-      app.get_window(windows_names.clipboard)?.hide();
-   config.weather.enabled.get() &&
-      app.get_window(windows_names.weather)?.hide();
-   config.notifications.enabled.get() &&
+   config.clipboard.enabled && app.get_window(windows_names.clipboard)?.hide();
+   config.weather.enabled && app.get_window(windows_names.weather)?.hide();
+   config.notifications.enabled &&
       app.get_window(windows_names.notificationslist)?.hide();
    qs_page_set("main");
 }
@@ -63,13 +61,13 @@ export function windows() {
    CalendarWindow();
    PowerMenuWindow();
    VerificationWindow();
-   if (config.weather.enabled.get()) hasBarItem("weather") && WeatherWindow();
-   if (config.notifications.enabled.get()) {
+   if (config.weather.enabled) hasBarItem("weather") && WeatherWindow();
+   if (config.notifications.enabled) {
       hasBarItem("notificationslist") && NotificationsListWindow();
       NotificationsWindow();
    }
-   if (config.osd.enabled.get()) OsdWindow();
-   if (config.clipboard.enabled.get()) ClipboardWindow();
+   if (config.osd.enabled) OsdWindow();
+   if (config.clipboard.enabled) ClipboardWindow();
    hasBarItem("volume") && VolumeWindow();
    hasBarItem("network") && NetworkWindow();
    hasBarItem("bluetooth") && BluetoothWindow();
@@ -83,7 +81,7 @@ export function windows() {
                gdkmonitor={monitor}
                $={(self) => onCleanup(() => self.destroy())}
             />
-            {theme.shadow.get() && (
+            {theme.shadow && (
                <BarShadowWindow
                   gdkmonitor={monitor}
                   $={(self) => onCleanup(() => self.destroy())}

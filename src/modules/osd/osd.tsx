@@ -26,7 +26,7 @@ export function OsdModule({ visible }: { visible: Accessor<boolean> }) {
       iconName_set(icon);
       count++;
 
-      timeout(config.osd.timeout.get() * 1000, () => {
+      timeout(config.osd.timeout * 1000, () => {
          count--;
          if (count === 0) {
             osd_revealed_set(false);
@@ -69,13 +69,13 @@ export function OsdModule({ visible }: { visible: Accessor<boolean> }) {
                $type={"overlay"}
                iconName={iconName((i) => i)}
                class={value((v) => `osd-icon ${v < 0.1 ? "low" : ""}`)}
-               valign={vertical.get() ? Gtk.Align.END : Gtk.Align.CENTER}
-               halign={vertical.get() ? Gtk.Align.CENTER : Gtk.Align.START}
+               valign={vertical ? Gtk.Align.END : Gtk.Align.CENTER}
+               halign={vertical ? Gtk.Align.CENTER : Gtk.Align.START}
                pixelSize={24}
             />
             <levelbar
                orientation={
-                  vertical.get()
+                  vertical
                      ? Gtk.Orientation.VERTICAL
                      : Gtk.Orientation.HORIZONTAL
                }

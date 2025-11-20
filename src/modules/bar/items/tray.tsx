@@ -43,7 +43,7 @@ export const Tray = () => {
                   ? Gtk.RevealerTransitionType.SLIDE_UP
                   : Gtk.RevealerTransitionType.SLIDE_RIGHT
             }
-            transitionDuration={config.transition.get() * 1000}
+            transitionDuration={config.transition * 1000}
          >
             <box
                class={"items"}

@@ -8,8 +8,7 @@ export function NotificationsListPage() {
          $type={"named"}
          name={"notificationslist"}
          heightRequest={
-            config.notifications.list.height.get() -
-            theme.window.padding.get() * 2
+            config.notifications.list.height - theme.window.padding * 2
          }
          class={"qs-menu-page"}
          orientation={Gtk.Orientation.VERTICAL}

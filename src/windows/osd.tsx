@@ -15,10 +15,9 @@ const { margin } = theme.window;
 export function OsdWindow() {
    const { TOP, BOTTOM, RIGHT, LEFT } = Astal.WindowAnchor;
    let win: Astal.Window;
-   const pos = position.get();
 
    function halign() {
-      switch (pos) {
+      switch (position) {
          case "top":
             return Gtk.Align.CENTER;
          case "bottom":
@@ -41,7 +40,7 @@ export function OsdWindow() {
    }
 
    function valign() {
-      switch (pos) {
+      switch (position) {
          case "top":
             return Gtk.Align.START;
          case "bottom":
@@ -64,16 +63,16 @@ export function OsdWindow() {
    }
 
    function transitionType() {
-      if (vertical.get()) {
-         if (pos.includes("right"))
+      if (vertical) {
+         if (position.includes("right"))
             return Gtk.RevealerTransitionType.SLIDE_LEFT;
-         if (pos.includes("left"))
+         if (position.includes("left"))
             return Gtk.RevealerTransitionType.SLIDE_RIGHT;
       } else {
-         if (pos === "right") return Gtk.RevealerTransitionType.SLIDE_LEFT;
-         if (pos === "left") return Gtk.RevealerTransitionType.SLIDE_RIGHT;
+         if (position === "right") return Gtk.RevealerTransitionType.SLIDE_LEFT;
+         if (position === "left") return Gtk.RevealerTransitionType.SLIDE_RIGHT;
       }
-      return pos === "top"
+      return position === "top"
          ? Gtk.RevealerTransitionType.SLIDE_DOWN
          : Gtk.RevealerTransitionType.SLIDE_UP;
    }
@@ -96,7 +95,7 @@ export function OsdWindow() {
       >
          <revealer
             transitionType={transitionType()}
-            transitionDuration={config.transition.get() * 1000}
+            transitionDuration={config.transition * 1000}
             halign={halign()}
             valign={valign()}
             revealChild={osd_revealed}

@@ -12,9 +12,9 @@ export function PowerMenu() {
    return (
       <BarItem
          window={windows_names.powermenu}
-         onPrimaryClick={config.bar.modules.powermenu["on-click"].get()}
-         onSecondaryClick={config.bar.modules.powermenu["on-click-right"].get()}
-         onMiddleClick={config.bar.modules.powermenu["on-click-middle"].get()}
+         onPrimaryClick={config.bar.modules.powermenu["on-click"]}
+         onSecondaryClick={config.bar.modules.powermenu["on-click-right"]}
+         onMiddleClick={config.bar.modules.powermenu["on-click-middle"]}
          data={{
             icon: (
                <image
@@ -24,7 +24,7 @@ export function PowerMenu() {
                />
             ),
          }}
-         format={config.bar.modules.powermenu.format.get()}
+         format={config.bar.modules.powermenu.format}
       />
    );
 }

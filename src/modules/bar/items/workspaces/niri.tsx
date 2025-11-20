@@ -7,7 +7,7 @@ import { attachHoverScroll, bash, getAppInfo } from "@/src/lib/utils";
 import { icons } from "@/src/lib/icons";
 import BarItem, { FunctionsList } from "@/src/widgets/baritem";
 import { isVertical } from "../../bar";
-const apps_icons = config.bar.modules.workspaces["taskbar-icons"].get();
+const apps_icons = config.bar.modules.workspaces["taskbar-icons"];
 const niri = compositor.get() === "niri" ? AstalNiri.get_default() : null;
 
 export function Workspaces_Niri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
@@ -33,8 +33,8 @@ export function Workspaces_Niri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
       const iconName =
          apps_icons[client.app_id] || appInfo?.iconName || icons.apps_default;
 
-      const indicatorValign = config.bar.position.as((p) => {
-         switch (p) {
+      const indicatorValign = () => {
+         switch (config.bar.position) {
             case "top":
                return Gtk.Align.START;
             case "bottom":
@@ -43,10 +43,10 @@ export function Workspaces_Niri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
             case "left":
                return Gtk.Align.CENTER;
          }
-      });
+      };
 
-      const indicatorHalign = config.bar.position.as((p) => {
-         switch (p) {
+      const indicatorHalign = () => {
+         switch (config.bar.position) {
             case "top":
             case "bottom":
                return Gtk.Align.CENTER;
@@ -55,7 +55,7 @@ export function Workspaces_Niri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
             case "left":
                return Gtk.Align.START;
          }
-      });
+      };
 
       return (
          <box cssClasses={classes}>
@@ -74,8 +74,8 @@ export function Workspaces_Niri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
                <box
                   $type={"overlay"}
                   class={"indicator"}
-                  valign={indicatorValign.get()}
-                  halign={indicatorHalign.get()}
+                  valign={indicatorValign()}
+                  halign={indicatorHalign()}
                />
                <image
                   tooltipText={client.title}
@@ -118,7 +118,7 @@ export function Workspaces_Niri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
                }}
             />
             <label class={"workspace"} label={ws.idx.toString()} />
-            {config.bar.modules.workspaces.taskbar.get() && (
+            {config.bar.modules.workspaces.taskbar && (
                <For
                   each={createBinding(ws, "windows").as((clients) => clients)}
                >
@@ -148,11 +148,11 @@ export function Workspaces_Niri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
                attachHoverScroll(self, ({ dy }) => {
                   if (dy < 0) {
                      FunctionsList[
-                        config.bar.modules.workspaces["on-scroll-up"].get()
+                        config.bar.modules.workspaces["on-scroll-up"]
                      ]();
                   } else if (dy > 0) {
                      FunctionsList[
-                        config.bar.modules.workspaces["on-scroll-down"].get()
+                        config.bar.modules.workspaces["on-scroll-down"]
                      ]();
                   }
                })

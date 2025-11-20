@@ -32,7 +32,7 @@ export function RAM() {
             usage: <label label={memoryUsage} hexpand={isVertical} />,
             total: <label label={memoryTotal} hexpand={isVertical} />,
          }}
-         format={config.bar.modules.ram.format.get()}
+         format={config.bar.modules.ram.format}
       />
    );
 }

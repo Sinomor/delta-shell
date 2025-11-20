@@ -35,9 +35,9 @@ export function Keyboard_Niri() {
 
    return (
       <BarItem
-         onPrimaryClick={config.bar.modules.keyboard["on-click"].get()}
-         onSecondaryClick={config.bar.modules.keyboard["on-click-right"].get()}
-         onMiddleClick={config.bar.modules.keyboard["on-click-middle"].get()}
+         onPrimaryClick={config.bar.modules.keyboard["on-click"]}
+         onSecondaryClick={config.bar.modules.keyboard["on-click-right"]}
+         onMiddleClick={config.bar.modules.keyboard["on-click-middle"]}
          $={() => {
             niriconnect = niri.connect("keyboard-layout-switched", () => {
                updateLayout();
@@ -53,7 +53,7 @@ export function Keyboard_Niri() {
                />
             ),
          }}
-         format={config.bar.modules.keyboard.format.get()}
+         format={config.bar.modules.keyboard.format}
       />
    );
 }

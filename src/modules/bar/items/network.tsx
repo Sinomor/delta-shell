@@ -73,9 +73,9 @@ export function Network() {
    return (
       <BarItem
          window={windows_names.network}
-         onPrimaryClick={config.bar.modules.network["on-click"].get()}
-         onSecondaryClick={config.bar.modules.network["on-click-right"].get()}
-         onMiddleClick={config.bar.modules.network["on-click-middle"].get()}
+         onPrimaryClick={config.bar.modules.network["on-click"]}
+         onSecondaryClick={config.bar.modules.network["on-click-right"]}
+         onMiddleClick={config.bar.modules.network["on-click-middle"]}
          data={{
             icon: (
                <image
@@ -129,7 +129,7 @@ export function Network() {
                />
             ),
          }}
-         format={config.bar.modules.network.format.get()}
+         format={config.bar.modules.network.format}
       />
    );
 }

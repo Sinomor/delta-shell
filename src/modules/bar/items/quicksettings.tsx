@@ -10,13 +10,9 @@ export function QuickSettings() {
    return (
       <BarItem
          window={windows_names.quicksettings}
-         onPrimaryClick={config.bar.modules.quicksettings["on-click"].get()}
-         onSecondaryClick={config.bar.modules.quicksettings[
-            "on-click-right"
-         ].get()}
-         onMiddleClick={config.bar.modules.quicksettings[
-            "on-click-middle"
-         ].get()}
+         onPrimaryClick={config.bar.modules.quicksettings["on-click"]}
+         onSecondaryClick={config.bar.modules.quicksettings["on-click-right"]}
+         onMiddleClick={config.bar.modules.quicksettings["on-click-middle"]}
          data={{
             icon: (
                <image
@@ -26,7 +22,7 @@ export function QuickSettings() {
                />
             ),
          }}
-         format={config.bar.modules.quicksettings.format.get()}
+         format={config.bar.modules.quicksettings.format}
       />
    );
 }

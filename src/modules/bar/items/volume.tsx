@@ -14,11 +14,11 @@ export function Volume() {
    return (
       <BarItem
          window={windows_names.volume}
-         onPrimaryClick={config.bar.modules.volume["on-click"].get()}
-         onSecondaryClick={config.bar.modules.volume["on-click-right"].get()}
-         onMiddleClick={config.bar.modules.volume["on-click-middle"].get()}
-         onScrollUp={config.bar.modules.volume["on-scroll-up"].get()}
-         onScrollDown={config.bar.modules.volume["on-scroll-down"].get()}
+         onPrimaryClick={config.bar.modules.volume["on-click"]}
+         onSecondaryClick={config.bar.modules.volume["on-click-right"]}
+         onMiddleClick={config.bar.modules.volume["on-click-middle"]}
+         onScrollUp={config.bar.modules.volume["on-scroll-up"]}
+         onScrollDown={config.bar.modules.volume["on-scroll-down"]}
          data={{
             icon: (
                <image
@@ -36,7 +36,7 @@ export function Volume() {
                />
             ),
          }}
-         format={config.bar.modules.volume.format.get()}
+         format={config.bar.modules.volume.format}
       />
    );
 }

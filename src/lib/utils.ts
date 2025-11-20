@@ -131,19 +131,6 @@ export function toCssValue(
    throw new Error("Invalid value type. Expected number or number[]");
 }
 
-export function ensureFileWithDefaults(
-   filePath: string,
-   defaultContent: string,
-): boolean {
-   const dirPath = filePath.split("/").slice(0, -1).join("/");
-   ensureDirectory(dirPath);
-
-   if (!fileExists(filePath)) {
-      return GLib.file_set_contents(filePath, defaultContent);
-   }
-   return true;
-}
-
 interface ScrollInfo {
    dx: number;
    dy: number;
@@ -183,17 +170,11 @@ export function attachHoverScroll(box: Gtk.Box, onScroll: ScrollHandler): void {
 }
 
 export function hasBarItem(module: string): boolean {
-   return createComputed(
-      [
-         config.bar.modules.start,
-         config.bar.modules.center,
-         config.bar.modules.end,
-      ],
-      (start: string[], center: string[], end: string[]) =>
-         start.includes(module) ||
-         center.includes(module) ||
-         end.includes(module),
-   ).get();
+   return (
+      config.bar.modules.start.includes(module) ||
+      config.bar.modules.center.includes(module) ||
+      config.bar.modules.end.includes(module)
+   );
 }
 
 export function toggleQsModule(name: string, module?: string): void {

@@ -11,13 +11,9 @@ export function RecordIndicator() {
    return (
       <BarItem
          visible={createBinding(screenRecord, "recording")}
-         onPrimaryClick={config.bar.modules.recordindicator["on-click"].get()}
-         onSecondaryClick={config.bar.modules.recordindicator[
-            "on-click-right"
-         ].get()}
-         onMiddleClick={config.bar.modules.recordindicator[
-            "on-click-middle"
-         ].get()}
+         onPrimaryClick={config.bar.modules.recordindicator["on-click"]}
+         onSecondaryClick={config.bar.modules.recordindicator["on-click-right"]}
+         onMiddleClick={config.bar.modules.recordindicator["on-click-middle"]}
          data={{
             icon: (
                <image
@@ -38,7 +34,7 @@ export function RecordIndicator() {
                />
             ),
          }}
-         format={config.bar.modules.recordindicator.format.get()}
+         format={config.bar.modules.recordindicator.format}
       />
    );
 }

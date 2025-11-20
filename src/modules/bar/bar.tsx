@@ -22,10 +22,12 @@ import { Separator } from "./items/separator";
 import { CPU } from "./items/cpu";
 import { RAM } from "./items/ram";
 
-const { position, modules } = config.bar;
+const { position, modules, size } = config.bar;
 const { spacing } = theme.bar;
-export const isVertical =
-   position.get() === "right" || position.get() === "left";
+export const isVertical = position === "right" || position === "left";
+export const orientation = isVertical
+   ? Gtk.Orientation.VERTICAL
+   : Gtk.Orientation.HORIZONTAL;
 
 export function BarModule({
    gdkmonitor,
@@ -52,8 +54,8 @@ export function BarModule({
       ram: () => <RAM />,
    } as Record<string, any>;
 
-   const getModules = (string: string) => {
-      const baritems = modules[string].get();
+   const getModules = (location: "start" | "center" | "end") => {
+      const baritems = modules[location];
       const items = [];
 
       for (const baritem of baritems) {
@@ -77,11 +79,7 @@ export function BarModule({
             $type={"start"}
             class={"modules-start"}
             spacing={spacing}
-            orientation={
-               isVertical
-                  ? Gtk.Orientation.VERTICAL
-                  : Gtk.Orientation.HORIZONTAL
-            }
+            orientation={orientation}
             $={(self) => self.get_first_child()?.add_css_class("first-child")}
          >
             {getModules("start")}
@@ -95,11 +93,7 @@ export function BarModule({
             $type={"center"}
             class={"modules-center"}
             spacing={spacing}
-            orientation={
-               isVertical
-                  ? Gtk.Orientation.VERTICAL
-                  : Gtk.Orientation.HORIZONTAL
-            }
+            orientation={orientation}
          >
             {getModules("center")}
          </box>
@@ -112,11 +106,7 @@ export function BarModule({
             $type={"end"}
             class={"modules-end"}
             spacing={spacing}
-            orientation={
-               isVertical
-                  ? Gtk.Orientation.VERTICAL
-                  : Gtk.Orientation.HORIZONTAL
-            }
+            orientation={orientation}
             $={(self) => self.get_last_child()?.add_css_class("last-child")}
          >
             {getModules("end")}
@@ -127,11 +117,8 @@ export function BarModule({
    return (
       <centerbox
          class={"main"}
-         orientation={
-            isVertical ? Gtk.Orientation.VERTICAL : Gtk.Orientation.HORIZONTAL
-         }
+         orientation={orientation}
          $={(self) => {
-            const size = config.bar.size.get();
             isVertical
                ? (self.widthRequest = size)
                : (self.heightRequest = size);

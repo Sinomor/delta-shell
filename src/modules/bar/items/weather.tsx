@@ -11,7 +11,7 @@ import { isVertical } from "../bar";
 const weather = WeatherService.get_default();
 
 export function Weather() {
-   if (!config.weather.enabled.get()) return <box />;
+   if (!config.weather.enabled) return <box />;
 
    const data = weather.data.as((data) => {
       if (!data)
@@ -35,9 +35,9 @@ export function Weather() {
    return (
       <BarItem
          window={windows_names.weather}
-         onPrimaryClick={config.bar.modules.weather["on-click"].get()}
-         onSecondaryClick={config.bar.modules.weather["on-click-right"].get()}
-         onMiddleClick={config.bar.modules.weather["on-click-middle"].get()}
+         onPrimaryClick={config.bar.modules.weather["on-click"]}
+         onSecondaryClick={config.bar.modules.weather["on-click-right"]}
+         onMiddleClick={config.bar.modules.weather["on-click-middle"]}
          visible={data.as((d) => d.temp !== "")}
          data={{
             icon: (
@@ -64,7 +64,7 @@ export function Weather() {
                />
             ),
          }}
-         format={config.bar.modules.weather.format.get()}
+         format={config.bar.modules.weather.format}
       />
    );
 }

@@ -37,7 +37,7 @@ function ClipButton({ item }: { item: string }) {
    const [id, ...contentParts] = item.split("\t");
    const content = contentParts.join(" ").trim();
    const isImage =
-      config.clipboard["image-preview"].get() && content.match(imagePattern);
+      config.clipboard["image-preview"] && content.match(imagePattern);
    const isColor = Object.entries(colorPatterns).find(([_, pattern]) =>
       pattern.test(content.trim()),
    );
@@ -146,7 +146,7 @@ function NotFound() {
 export function ClipboardModule() {
    return (
       <box
-         widthRequest={width.get() - theme.window.padding.get() * 2}
+         widthRequest={width - theme.window.padding * 2}
          orientation={Gtk.Orientation.VERTICAL}
          vexpand
          spacing={theme.spacing}

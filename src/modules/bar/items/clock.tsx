@@ -14,15 +14,15 @@ export function Clock() {
    const time = createPoll(
       "",
       1000,
-      () => GLib.DateTime.new_now_local().format(format.get())!,
+      () => GLib.DateTime.new_now_local().format(format)!,
    );
 
    return (
       <BarItem
          window={windows_names.calendar}
-         onPrimaryClick={config.bar.modules.clock["on-click"].get()}
-         onSecondaryClick={config.bar.modules.clock["on-click-right"].get()}
-         onMiddleClick={config.bar.modules.clock["on-click-middle"].get()}
+         onPrimaryClick={config.bar.modules.clock["on-click"]}
+         onSecondaryClick={config.bar.modules.clock["on-click-right"]}
+         onMiddleClick={config.bar.modules.clock["on-click-middle"]}
       >
          {isVertical ? (
             <box orientation={Gtk.Orientation.VERTICAL}>

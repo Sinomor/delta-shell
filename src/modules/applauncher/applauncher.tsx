@@ -92,7 +92,7 @@ function NotFound() {
 export function AppLauncherModule() {
    return (
       <box
-         widthRequest={width.get() - theme.window.padding.get() * 2}
+         widthRequest={width - theme.window.padding * 2}
          orientation={Gtk.Orientation.VERTICAL}
          vexpand
          spacing={theme.spacing}

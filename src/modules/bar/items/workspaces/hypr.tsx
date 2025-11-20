@@ -6,8 +6,8 @@ import { icons } from "@/src/lib/icons";
 import BarItem, { FunctionsList } from "@/src/widgets/baritem";
 import { compositor, config, theme } from "@/options";
 import { attachHoverScroll, getAppInfo } from "@/src/lib/utils";
-import { isVertical } from "../../bar";
-const apps_icons = config.bar.modules.workspaces["taskbar-icons"].get();
+import { isVertical, orientation } from "../../bar";
+const apps_icons = config.bar.modules.workspaces["taskbar-icons"];
 const hyprland =
    compositor.get() === "hyprland" ? AstalHyprland.get_default() : null;
 
@@ -41,23 +41,21 @@ export function Workspaces_Hypr({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
       const iconName =
          apps_icons[client.class] || appInfo?.iconName || icons.apps_default;
 
-      const indicatorValign = config.bar.position.as((p) => {
-         switch (p) {
+      const indicatorValign = () => {
+         switch (config.bar.position) {
             case "top":
                return Gtk.Align.START;
             case "bottom":
                return Gtk.Align.END;
             case "right":
-               return Gtk.Align.CENTER;
             case "left":
                return Gtk.Align.CENTER;
          }
-      });
+      };
 
-      const indicatorHalign = config.bar.position.as((p) => {
-         switch (p) {
+      const indicatorHalign = () => {
+         switch (config.bar.position) {
             case "top":
-               return Gtk.Align.CENTER;
             case "bottom":
                return Gtk.Align.CENTER;
             case "right":
@@ -65,7 +63,7 @@ export function Workspaces_Hypr({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
             case "left":
                return Gtk.Align.START;
          }
-      });
+      };
 
       return (
          <box cssClasses={classes}>
@@ -84,8 +82,8 @@ export function Workspaces_Hypr({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
                <box
                   $type={"overlay"}
                   class={"indicator"}
-                  valign={indicatorValign.get()}
-                  halign={indicatorHalign.get()}
+                  valign={indicatorValign()}
+                  halign={indicatorHalign()}
                />
                <image
                   tooltipText={client.title}
@@ -114,15 +112,11 @@ export function Workspaces_Hypr({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
       return (
          <BarItem
             cssClasses={classNames}
-            orientation={
-               isVertical
-                  ? Gtk.Orientation.VERTICAL
-                  : Gtk.Orientation.HORIZONTAL
-            }
+            orientation={orientation}
             hexpand={isVertical}
          >
             <label class={"workspace"} label={ws.id.toString()} />
-            {config.bar.modules.workspaces.taskbar.get() && (
+            {config.bar.modules.workspaces.taskbar && (
                <For
                   each={createBinding(ws, "clients").as((clients) =>
                      clients.sort((a, b) => a.pid - b.pid),
@@ -148,22 +142,22 @@ export function Workspaces_Hypr({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
       return (
          <box
             spacing={theme.bar.spacing}
-            orientation={
-               isVertical
-                  ? Gtk.Orientation.VERTICAL
-                  : Gtk.Orientation.HORIZONTAL
-            }
+            orientation={orientation}
             hexpand={isVertical}
             class={"workspaces"}
             $={(self) =>
                attachHoverScroll(self, ({ dy }) => {
                   if (dy < 0) {
                      FunctionsList[
-                        config.bar.modules.workspaces["on-scroll-up"].get()
+                        config.bar.modules.workspaces[
+                           "on-scroll-up"
+                        ] as keyof typeof FunctionsList
                      ]();
                   } else if (dy > 0) {
                      FunctionsList[
-                        config.bar.modules.workspaces["on-scroll-down"].get()
+                        config.bar.modules.workspaces[
+                           "on-scroll-down"
+                        ] as keyof typeof FunctionsList
                      ]();
                   }
                })

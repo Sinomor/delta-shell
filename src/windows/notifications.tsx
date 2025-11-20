@@ -23,7 +23,6 @@ const { margin } = theme.window;
 
 export function NotificationsWindow() {
    const { TOP, BOTTOM, RIGHT, LEFT } = Astal.WindowAnchor;
-   const pos = position.get();
    let contentbox: Gtk.Box;
    let win: Astal.Window;
    const [notifications, notifications_set] = createState(
@@ -69,7 +68,7 @@ export function NotificationsWindow() {
    }
 
    function halign() {
-      switch (pos) {
+      switch (position) {
          case "top":
             return Gtk.Align.CENTER;
          case "bottom":
@@ -87,7 +86,7 @@ export function NotificationsWindow() {
       }
    }
    function valign() {
-      switch (pos) {
+      switch (position) {
          case "top":
             return Gtk.Align.START;
          case "bottom":
