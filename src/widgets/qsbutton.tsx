@@ -3,6 +3,7 @@ import { icons } from "@/src/lib/icons";
 import { Gtk } from "ags/gtk4";
 import { Accessor } from "ags";
 import Adw from "gi://Adw?version=1";
+import { attachHoverScroll } from "../lib/utils";
 
 type QSButtonProps = {
    icon: string | Accessor<string>;
@@ -11,6 +12,8 @@ type QSButtonProps = {
    arrow?: "none" | "separate" | "inside";
    onClicked: () => void;
    onArrowClicked?: () => void;
+   onScrollDown?: () => void;
+   onScrollUp?: () => void;
    ButtonClasses: string[] | Accessor<string[]>;
    ArrowClasses?: string[] | Accessor<string[]>;
    maxWidthChars?: number;
@@ -23,13 +26,23 @@ export function QSButton({
    onClicked,
    arrow = "none",
    onArrowClicked = () => {},
+   onScrollUp = () => {},
+   onScrollDown = () => {},
    ButtonClasses,
    ArrowClasses,
    maxWidthChars = 10,
 }: QSButtonProps) {
    return (
       <Adw.Clamp class={"qs-button"} maximumSize={200}>
-         <box widthRequest={200}>
+         <box
+            widthRequest={200}
+            $={(self) => {
+               attachHoverScroll(self, ({ dy }) => {
+                  if (dy < 0) onScrollUp();
+                  if (dy > 0) onScrollDown();
+               });
+            }}
+         >
             <button
                onClicked={onClicked}
                cssClasses={ButtonClasses}

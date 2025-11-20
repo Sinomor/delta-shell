@@ -16,6 +16,7 @@ import { qs_page_set } from "../quicksettings";
 import { profiles_names } from "../../power/power";
 import WeatherService from "@/src/services/weather";
 import AstalNotifd from "gi://AstalNotifd?version=0.1";
+import { FunctionsList } from "@/src/widgets/baritem";
 const network = AstalNetwork.get_default();
 const bluetooth = AstalBluetooth.get_default();
 const powerprofile = AstalPowerProfiles.get_default();
@@ -54,6 +55,8 @@ function VolumeButton() {
          subtitle={level.as((level) => (level !== "None" ? level : "None"))}
          onClicked={() => speaker.set_mute(!speaker.get_mute())}
          onArrowClicked={() => qs_page_set("volume")}
+         onScrollUp={() => FunctionsList["volume-up"]()}
+         onScrollDown={() => FunctionsList["volume-down"]()}
          arrow={"separate"}
          ArrowClasses={mute.as((p) => {
             const classes = ["arrow"];
@@ -87,6 +90,8 @@ function MicrophoneButton() {
          subtitle={level.as((level) => (level !== "None" ? level : "None"))}
          onClicked={() => microphone.set_mute(!microphone.get_mute())}
          onArrowClicked={() => qs_page_set("volume")}
+         onScrollUp={() => FunctionsList["microphone-up"]()}
+         onScrollDown={() => FunctionsList["microphone-down"]()}
          arrow={"separate"}
          ArrowClasses={mute.as((p) => {
             const classes = ["arrow"];

@@ -30,12 +30,19 @@ type BarItemProps = JSX.IntrinsicElements["box"] & {
 };
 
 let speaker: AstalWp.Endpoint | undefined;
+let microphone: AstalWp.Endpoint | undefined;
 let screenRecord: ScreenRecord | undefined;
 let hyprland: AstalHyprland.Hyprland | undefined;
 
 function getSpeaker() {
    if (!speaker) speaker = AstalWp.get_default()?.get_default_speaker();
    return speaker;
+}
+
+function getMicrophone() {
+   if (!microphone)
+      microphone = AstalWp.get_default()?.get_default_microphone();
+   return microphone;
 }
 
 function getScreenRecord() {
@@ -87,6 +94,18 @@ export const FunctionsList = {
    "volume-toggle": () => {
       const spk = getSpeaker();
       if (spk) spk.set_mute(!spk.get_mute());
+   },
+   "microphone-up": () => {
+      const mcph = getMicrophone();
+      if (mcph) mcph.set_volume(mcph.volume + 0.01);
+   },
+   "microphone-down": () => {
+      const mcph = getMicrophone();
+      if (mcph) mcph.set_volume(mcph.volume - 0.01);
+   },
+   "microphone-toggle": () => {
+      const mcph = getMicrophone();
+      if (mcph) mcph.set_mute(!mcph.get_mute());
    },
    "switch-language": async () => {
       const comp = compositor.get();
