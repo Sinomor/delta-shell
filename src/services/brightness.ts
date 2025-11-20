@@ -27,6 +27,7 @@ export default class Brightness extends GObject.Object {
    #screenMax = available ? get("max") : 1;
    #screen = available ? get("get") / (get("max") || 1) : 0;
    #available = available;
+   #changing = false;
 
    @getter(Number)
    get screen() {
@@ -44,10 +45,20 @@ export default class Brightness extends GObject.Object {
       if (percent < 0) percent = 0;
       if (percent > 1) percent = 1;
 
-      bash(`brightnessctl set ${Math.floor(percent * 100)}% -q`).then(() => {
-         this.#screen = percent;
-         this.notify("screen");
-      });
+      this.#changing = true;
+      this.#screen = percent;
+      this.notify("screen");
+
+      bash(`brightnessctl set ${Math.floor(percent * 100)}% -q`)
+         .then(() => {
+            setTimeout(() => {
+               this.#changing = false;
+            }, 100);
+         })
+         .catch((err) => {
+            console.error("Failed to set brightness:", err);
+            this.#changing = false;
+         });
    }
 
    constructor() {
@@ -55,6 +66,7 @@ export default class Brightness extends GObject.Object {
 
       if (this.#available) {
          monitorFile(`/sys/class/backlight/${screen}/brightness`, async (f) => {
+            if (this.#changing) return;
             const v = await readFileAsync(f);
             this.#screen = Number(v) / this.#screenMax;
             this.notify("screen");
