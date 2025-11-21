@@ -10,6 +10,7 @@ import { timeout } from "ags/time";
 import { theme } from "@/options";
 import { qs_page_set } from "../quicksettings/quicksettings";
 import { getAppInfo } from "@/src/lib/utils";
+import Adw from "gi://Adw?version=1";
 const wp = AstalWp.get_default()!;
 
 function Header({ showArrow = false }: { showArrow?: boolean }) {
@@ -92,6 +93,34 @@ function StreamsList() {
    );
 }
 
+function createFactory(maxWidth?: number, wrap = false) {
+   const factory = new Gtk.SignalListItemFactory();
+
+   factory.connect("setup", (_, listItem: Gtk.ListItem) => {
+      const label = new Gtk.Label({
+         xalign: 0,
+         hexpand: true,
+         ...(maxWidth && {
+            ellipsize: Pango.EllipsizeMode.END,
+            maxWidthChars: maxWidth,
+         }),
+         ...(wrap && {
+            wrap: true,
+            wrapMode: Pango.WrapMode.WORD_CHAR,
+         }),
+      });
+      listItem.set_child(label);
+   });
+
+   factory.connect("bind", (_, listItem: Gtk.ListItem) => {
+      const label = listItem.get_child() as Gtk.Label;
+      const stringObject = listItem.get_item() as Gtk.StringObject;
+      label.set_label(stringObject.get_string());
+   });
+
+   return factory;
+}
+
 function DefaultOutput() {
    const audio = wp.audio!;
    const defaultOutput = audio.defaultSpeaker;
@@ -101,52 +130,29 @@ function DefaultOutput() {
    return (
       <box orientation={Gtk.Orientation.VERTICAL} spacing={theme.spacing}>
          <label label={"Output"} halign={Gtk.Align.START} />
-         <button
-            focusOnClick={false}
-            onClicked={(self) => {
-               const menu = new Gio.Menu();
-               const Popover = Gtk.PopoverMenu.new_from_model(menu);
-
-               const action = new Gio.SimpleAction({
-                  name: "select-speaker",
-                  parameter_type: new GLib.VariantType("i"),
-               });
-
-               action.connect("activate", (_, parameter) => {
-                  if (parameter === null) return;
-                  const speakerIndex = parameter.get_int32();
-
-                  if (audio.speakers[speakerIndex]) {
-                     audio.speakers[speakerIndex].set_is_default(true);
-                  }
-               });
-               app.add_action(action);
-
-               audio.speakers.forEach((speaker, index) => {
-                  menu.append(
-                     speaker.description,
-                     `app.select-speaker(${index})`,
-                  );
-               });
-
-               Popover.set_parent(dropdownbox);
-               Popover.popup();
-            }}
-            class={"dropdown"}
-         >
-            <box hexpand $={(self) => (dropdownbox = self)}>
-               <label
-                  label={createBinding(defaultOutput, "description").as(
-                     (desc) => `${desc}`,
-                  )}
-                  hexpand
-                  halign={Gtk.Align.START}
-                  ellipsize={Pango.EllipsizeMode.END}
-                  maxWidthChars={25}
-               />
-               <image iconName={icons.arrow.down} pixelSize={20} />
-            </box>
-         </button>
+         <Adw.Clamp maximumSize={410 - theme.window.padding * 2}>
+            <Gtk.DropDown
+               model={createBinding(
+                  audio,
+                  "speakers",
+               )((speakers) => {
+                  const list = new Gtk.StringList();
+                  speakers.map((speaker) => list.append(speaker.description));
+                  return list;
+               })}
+               selected={createBinding(
+                  audio,
+                  "speakers",
+               )((speakers) => {
+                  return speakers.findIndex((speaker) => speaker.isDefault);
+               })}
+               factory={createFactory(20)}
+               listFactory={createFactory()}
+               onNotifySelected={({ selected }) =>
+                  audio.speakers[selected].set_is_default(true)
+               }
+            />
+         </Adw.Clamp>
          <box
             cssClasses={["slider-box", "volume-box"]}
             spacing={theme.spacing}
@@ -178,51 +184,33 @@ function DefaultMicrophone() {
    return (
       <box orientation={Gtk.Orientation.VERTICAL} spacing={theme.spacing}>
          <label label={"Microphone"} halign={Gtk.Align.START} />
-         <button
-            onClicked={(self) => {
-               const menu = new Gio.Menu();
-               const Popover = Gtk.PopoverMenu.new_from_model(menu);
-
-               const action = new Gio.SimpleAction({
-                  name: "select-speaker",
-                  parameter_type: new GLib.VariantType("i"),
-               });
-
-               action.connect("activate", (_, parameter) => {
-                  if (parameter === null) return;
-                  const microphoneIndex = parameter.get_int32();
-
-                  if (audio.microphones[microphoneIndex]) {
-                     audio.microphones[microphoneIndex].set_is_default(true);
-                  }
-               });
-               app.add_action(action);
-
-               audio.microphones.forEach((speaker, index) => {
-                  menu.append(
-                     speaker.description,
-                     `app.select-speaker(${index})`,
+         <Adw.Clamp maximumSize={410 - theme.window.padding * 2}>
+            <Gtk.DropDown
+               model={createBinding(
+                  audio,
+                  "microphones",
+               )((microphones) => {
+                  const list = new Gtk.StringList();
+                  microphones.map((microphone) =>
+                     list.append(microphone.description),
                   );
-               });
-
-               Popover.set_parent(dropdownbox);
-               Popover.popup();
-            }}
-            class={"dropdown"}
-         >
-            <box hexpand $={(self) => (dropdownbox = self)}>
-               <label
-                  label={createBinding(defaultMicrophone, "description").as(
-                     (desc) => `${desc}`,
-                  )}
-                  hexpand
-                  halign={Gtk.Align.START}
-                  ellipsize={Pango.EllipsizeMode.END}
-                  maxWidthChars={25}
-               />
-               <image iconName={icons.arrow.down} pixelSize={20} />
-            </box>
-         </button>
+                  return list;
+               })}
+               selected={createBinding(
+                  audio,
+                  "microphones",
+               )((microphones) => {
+                  return microphones.findIndex(
+                     (microphone) => microphone.isDefault,
+                  );
+               })}
+               factory={createFactory(20)}
+               listFactory={createFactory()}
+               onNotifySelected={({ selected }) =>
+                  audio.microphones[selected].set_is_default(true)
+               }
+            />
+         </Adw.Clamp>
          <box
             cssClasses={["slider-box", "volume-box"]}
             spacing={theme.spacing}

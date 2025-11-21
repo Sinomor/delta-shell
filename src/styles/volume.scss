@@ -18,7 +18,7 @@ window#volume {
 }
 
 .volume {
-   .dropdown {
+   button {
       font-weight: normal;
       outline: none;
       background: rgba($bg1, $window-opacity);
@@ -50,9 +50,17 @@ window#volume {
          }
       }
 
-      modelbutton {
+      row {
          color: $fg0;
          border-radius: $widget-radius;
+         outline: none;
+         font-weight: normal;
+
+         &:focus {
+            transition: 0s;
+            outline-offset: -$outline-width;
+            outline: $outline-width solid $outline-color;
+         }
 
          &:focus,
          &:hover {
