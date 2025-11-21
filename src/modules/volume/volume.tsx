@@ -1,6 +1,6 @@
 import { icons, VolumeIcon } from "@/src/lib/icons";
 import { Gdk, Gtk } from "ags/gtk4";
-import { createBinding, For } from "ags";
+import { createBinding, createComputed, For } from "ags";
 import AstalWp from "gi://AstalWp?version=0.1";
 import Pango from "gi://Pango?version=1.0";
 import Gio from "gi://Gio?version=2.0";
@@ -125,32 +125,39 @@ function DefaultOutput() {
    const audio = wp.audio!;
    const defaultOutput = audio.defaultSpeaker;
    const level = createBinding(defaultOutput, "volume");
-   let dropdownbox: Gtk.Box;
+   const speakers = createBinding(audio, "speakers");
+
+   const selected = createComputed(
+      [speakers, createBinding(defaultOutput, "description")],
+      (speakers, desc) => {
+         const index = speakers.findIndex(
+            (speaker) => speaker.description === desc,
+         );
+         return Math.max(0, index);
+      },
+   );
 
    return (
       <box orientation={Gtk.Orientation.VERTICAL} spacing={theme.spacing}>
          <label label={"Output"} halign={Gtk.Align.START} />
          <Adw.Clamp maximumSize={410 - theme.window.padding * 2}>
             <Gtk.DropDown
-               model={createBinding(
-                  audio,
-                  "speakers",
-               )((speakers) => {
+               model={speakers.as((speakers) => {
                   const list = new Gtk.StringList();
                   speakers.map((speaker) => list.append(speaker.description));
                   return list;
                })}
-               selected={createBinding(
-                  audio,
-                  "speakers",
-               )((speakers) => {
-                  return speakers.findIndex((speaker) => speaker.isDefault);
-               })}
+               selected={selected}
                factory={createFactory(20)}
                listFactory={createFactory()}
-               onNotifySelected={({ selected }) =>
-                  audio.speakers[selected].set_is_default(true)
-               }
+               onNotifySelected={({ selected }) => {
+                  const speaker = audio.speakers[selected];
+                  if (speaker) {
+                     if (!speaker.isDefault) {
+                        speaker.set_is_default(true);
+                     }
+                  }
+               }}
             />
          </Adw.Clamp>
          <box
@@ -178,37 +185,41 @@ function DefaultMicrophone() {
    const audio = wp.audio!;
    const defaultMicrophone = audio.defaultMicrophone;
    const level = createBinding(defaultMicrophone, "volume");
+   const microphones = createBinding(audio, "microphones");
 
-   let dropdownbox: Gtk.Box;
+   const selected = createComputed(
+      [microphones, createBinding(defaultMicrophone, "description")],
+      (microphones, desc) => {
+         const index = microphones.findIndex(
+            (microphone) => microphone.description === desc,
+         );
+         return Math.max(0, index);
+      },
+   );
 
    return (
       <box orientation={Gtk.Orientation.VERTICAL} spacing={theme.spacing}>
          <label label={"Microphone"} halign={Gtk.Align.START} />
          <Adw.Clamp maximumSize={410 - theme.window.padding * 2}>
             <Gtk.DropDown
-               model={createBinding(
-                  audio,
-                  "microphones",
-               )((microphones) => {
+               model={microphones.as((microphones) => {
                   const list = new Gtk.StringList();
                   microphones.map((microphone) =>
                      list.append(microphone.description),
                   );
                   return list;
                })}
-               selected={createBinding(
-                  audio,
-                  "microphones",
-               )((microphones) => {
-                  return microphones.findIndex(
-                     (microphone) => microphone.isDefault,
-                  );
-               })}
+               selected={selected}
                factory={createFactory(20)}
                listFactory={createFactory()}
-               onNotifySelected={({ selected }) =>
-                  audio.microphones[selected].set_is_default(true)
-               }
+               onNotifySelected={({ selected }) => {
+                  const microphone = audio.microphones[selected];
+                  if (microphone) {
+                     if (!microphone.isDefault) {
+                        microphone.set_is_default(true);
+                     }
+                  }
+               }}
             />
          </Adw.Clamp>
          <box
