@@ -47,7 +47,16 @@ export function mkOptions<T extends Record<string, any>>(
    configFile: string,
    defaults: T,
 ): T {
-   ensureFile(configFile, JSON.stringify(defaults, null, 2));
+   ensureFile(
+      configFile,
+      JSON.stringify(
+         defaults,
+         (_, value) => {
+            if (value !== null) return value;
+         },
+         2,
+      ),
+   );
 
    if (!GLib.file_test(configFile, GLib.FileTest.EXISTS)) {
       return defaults;
