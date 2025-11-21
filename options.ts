@@ -111,6 +111,7 @@ export const config = mkOptions(configFile, {
    launcher: {
       width: 400,
       height: 500,
+      columns: 1,
    },
    clipboard: {
       enabled: true,
@@ -147,7 +148,7 @@ export const config = mkOptions(configFile, {
       timeout: 3,
       width: 400,
       list: {
-         height: 600,
+         height: 500,
       },
    },
    weather: {

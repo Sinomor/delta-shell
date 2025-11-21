@@ -5,7 +5,7 @@ import { createComputed, createState, For, onCleanup } from "ags";
 import { hide_all_windows, windows_names } from "@/windows";
 import { config, theme } from "@/options";
 import { AppButton } from "./appbutton";
-const { width } = config.launcher;
+const { width, columns } = config.launcher;
 
 const apps = new Apps.Apps();
 const [text, text_set] = createState("");
@@ -62,14 +62,33 @@ function Header() {
 }
 
 function List() {
+   const columnedList = list.as((apps) => {
+      const result: Apps.Application[][] = Array.from(
+         { length: columns },
+         () => [],
+      );
+      apps.forEach((app, index) => {
+         result[index % columns].push(app);
+      });
+      return result;
+   });
+
    return (
       <scrolledwindow class={"apps-list"} $={(self) => (scrolled = self)}>
-         <box
-            spacing={theme.spacing}
-            vexpand
-            orientation={Gtk.Orientation.VERTICAL}
-         >
-            <For each={list}>{(app) => <AppButton app={app} />}</For>
+         <box spacing={theme.spacing} vexpand>
+            <For each={columnedList}>
+               {(column) => (
+                  <box
+                     spacing={theme.spacing}
+                     hexpand
+                     orientation={Gtk.Orientation.VERTICAL}
+                  >
+                     {column.map((app) => (
+                        <AppButton app={app} />
+                     ))}
+                  </box>
+               )}
+            </For>
          </box>
       </scrolledwindow>
    );
