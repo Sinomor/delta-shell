@@ -25,9 +25,9 @@ export function NotificationsWindow() {
    const { TOP, BOTTOM, RIGHT, LEFT } = Astal.WindowAnchor;
    let contentbox: Gtk.Box;
    let win: Astal.Window;
-   const [notifications, notifications_set] = createState(
-      new Array<AstalNotifd.Notification>(),
-   );
+   const [notifications, notifications_set] = createState<
+      AstalNotifd.Notification[]
+   >([]);
    const doNotDisturb = createBinding(notifd, "dont_disturb");
 
    const notifiedHandler = notifd.connect("notified", (_, id, replaced) => {
@@ -147,11 +147,12 @@ export function NotificationsWindow() {
             halign={halign()}
             valign={valign()}
             focusable
+            marginTop={margin / 2}
             marginEnd={margin}
             marginStart={margin}
          >
             <For each={notifications}>
-               {(n) => (
+               {(n, index) => (
                   <PopupNotification
                      n={n}
                      showActions={true}

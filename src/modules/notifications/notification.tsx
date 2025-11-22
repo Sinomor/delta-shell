@@ -195,8 +195,6 @@ export function PopupNotification({
             onClose={() => (timer.timeLeft = 0)}
             margin_top={margin / 2}
             margin_bottom={margin / 2}
-            margin_start={margin}
-            margin_end={margin}
          />
       </revealer>
    );
