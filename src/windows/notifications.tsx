@@ -73,13 +73,13 @@ export function NotificationsWindow() {
             return Gtk.Align.CENTER;
          case "bottom":
             return Gtk.Align.CENTER;
-         case "top_left":
+         case "top-left":
             return Gtk.Align.START;
-         case "top_right":
+         case "top-right":
             return Gtk.Align.END;
-         case "bottom_left":
+         case "bottom-left":
             return Gtk.Align.START;
-         case "bottom_right":
+         case "bottom-right":
             return Gtk.Align.END;
          default:
             return Gtk.Align.CENTER;
@@ -91,13 +91,13 @@ export function NotificationsWindow() {
             return Gtk.Align.START;
          case "bottom":
             return Gtk.Align.END;
-         case "top_left":
+         case "top-left":
             return Gtk.Align.START;
-         case "top_right":
+         case "top-right":
             return Gtk.Align.START;
-         case "bottom_left":
+         case "bottom-left":
             return Gtk.Align.END;
-         case "bottom_right":
+         case "bottom-right":
             return Gtk.Align.END;
          default:
             return Gtk.Align.START;

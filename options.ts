@@ -135,11 +135,11 @@ export const config = mkOptions(configFile, {
       height: 56,
       position: "bottom" as
          | "top"
-         | "top_left"
-         | "top_right"
+         | "top-left"
+         | "top-right"
          | "bottom"
-         | "bottom_left"
-         | "bottom_right"
+         | "bottom-left"
+         | "bottom-right"
          | "left"
          | "right",
       timeout: 3,
@@ -147,11 +147,11 @@ export const config = mkOptions(configFile, {
    notifications: {
       position: "top" as
          | "top"
-         | "top_left"
-         | "top_right"
+         | "top-left"
+         | "top-right"
          | "bottom"
-         | "bottom_left"
-         | "bottom_right",
+         | "bottom-left"
+         | "bottom-right",
       enabled: true,
       timeout: 3,
       width: 400,

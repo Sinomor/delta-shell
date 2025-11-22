@@ -22,13 +22,13 @@ export function OsdWindow() {
             return Gtk.Align.CENTER;
          case "bottom":
             return Gtk.Align.CENTER;
-         case "top_left":
+         case "top-left":
             return Gtk.Align.START;
-         case "top_right":
+         case "top-right":
             return Gtk.Align.END;
-         case "bottom_left":
+         case "bottom-left":
             return Gtk.Align.START;
-         case "bottom_right":
+         case "bottom-right":
             return Gtk.Align.END;
          case "right":
             return Gtk.Align.END;
@@ -45,13 +45,13 @@ export function OsdWindow() {
             return Gtk.Align.START;
          case "bottom":
             return Gtk.Align.END;
-         case "top_left":
+         case "top-left":
             return Gtk.Align.START;
-         case "top_right":
+         case "top-right":
             return Gtk.Align.START;
-         case "bottom_left":
+         case "bottom-left":
             return Gtk.Align.END;
-         case "bottom_right":
+         case "bottom-right":
             return Gtk.Align.END;
          case "right":
             return Gtk.Align.CENTER;
