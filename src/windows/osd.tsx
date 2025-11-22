@@ -80,6 +80,7 @@ export function OsdWindow() {
    return (
       <window
          name={windows_names.osd}
+         namespace={windows_names.osd}
          application={app}
          anchor={TOP | BOTTOM | RIGHT | LEFT}
          layer={Astal.Layer.OVERLAY}

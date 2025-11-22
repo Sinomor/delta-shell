@@ -132,6 +132,7 @@ export function NotificationsWindow() {
    return (
       <window
          name={windows_names.notifications_popup}
+         namespace={windows_names.notifications_popup}
          visible={windowVisibility}
          anchor={TOP | BOTTOM | RIGHT | LEFT}
          $={(self) => (win = self)}
