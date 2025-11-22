@@ -10,7 +10,7 @@ import { ClipText } from "./text";
 import { ClipColor } from "./color";
 import { ClipImage } from "./image";
 const clipboard = Cliphist.get_default();
-const { width } = config.launcher;
+const { width } = config.clipboard;
 
 const colorPatterns = {
    hex: /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/,
