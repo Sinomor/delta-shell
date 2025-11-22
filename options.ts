@@ -70,6 +70,14 @@ export const config = mkOptions(configFile, {
             "on-scroll-up": "volume-up" as string | null,
             "on-scroll-down": "volume-down" as string | null,
          },
+         microphone: {
+            format: "{icon}",
+            "on-click": "toggle-volume" as string | null,
+            "on-click-right": null as string | null,
+            "on-click-middle": "microphone-toggle" as string | null,
+            "on-scroll-up": "microphone-up" as string | null,
+            "on-scroll-down": "microphone-down" as string | null,
+         },
          weather: {
             format: "{icon} {temp}{units}",
             "on-click": "toggle-weather" as string | null,

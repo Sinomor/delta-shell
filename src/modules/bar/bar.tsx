@@ -21,6 +21,7 @@ import { NotificationsList } from "./items/notificationslist";
 import { Separator } from "./items/separator";
 import { CPU } from "./items/cpu";
 import { RAM } from "./items/ram";
+import { Microphone } from "./items/microphone";
 
 const { position, modules, size } = config.bar;
 const { spacing } = theme.bar;
@@ -52,6 +53,7 @@ export function BarModule({
       separator: () => <Separator />,
       cpu: () => <CPU />,
       ram: () => <RAM />,
+      microphone: () => <Microphone />,
    } as Record<string, any>;
 
    const getModules = (location: "start" | "center" | "end") => {

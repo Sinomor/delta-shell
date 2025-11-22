@@ -1,6 +1,5 @@
 import BarItem from "@/src/widgets/baritem";
 import AstalWp from "gi://AstalWp";
-const speaker = AstalWp.get_default()?.get_default_speaker();
 import { Gtk } from "ags/gtk4";
 import { VolumeIcon } from "@/src/lib/icons";
 import { hide_all_windows, windows_names } from "@/windows";
@@ -11,6 +10,8 @@ import { config } from "@/options";
 import { createBinding } from "gnim";
 
 export function Volume() {
+   const speaker = AstalWp.get_default()?.get_default_speaker();
+
    return (
       <BarItem
          window={windows_names.volume}

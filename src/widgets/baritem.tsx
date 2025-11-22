@@ -4,6 +4,7 @@ import app from "ags/gtk4/app";
 import {
    attachHoverScroll,
    bash,
+   hasBarItem,
    toggleQsModule,
    toggleWindow,
 } from "../lib/utils";
@@ -63,7 +64,15 @@ export const FunctionsList = {
    "toggle-clipboard": () => toggleWindow(windows_names.clipboard),
    "toggle-weather": () => toggleQsModule(windows_names.weather),
    "toggle-notifs": () => toggleQsModule(windows_names.notificationslist),
-   "toggle-volume": () => toggleQsModule(windows_names.volume),
+   "toggle-volume": () =>
+      toggleQsModule(
+         windows_names.volume,
+         hasBarItem("volume")
+            ? "volume"
+            : hasBarItem("microphone")
+              ? "microphone"
+              : undefined,
+      ),
    "toggle-network": () => toggleQsModule(windows_names.network),
    "toggle-bluetooth": () => toggleQsModule(windows_names.bluetooth),
    "toggle-power": () => toggleQsModule(windows_names.power, "battery"),
