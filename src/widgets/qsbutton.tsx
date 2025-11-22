@@ -30,7 +30,7 @@ export function QSButton({
    onScrollDown = () => {},
    ButtonClasses,
    ArrowClasses,
-   maxWidthChars = 10,
+   maxWidthChars = 5,
 }: QSButtonProps) {
    return (
       <Adw.Clamp class={"qs-button"} maximumSize={200}>
@@ -55,17 +55,20 @@ export function QSButton({
                      <label
                         class={"qs-button-label"}
                         label={label}
-                        ellipsize={Pango.EllipsizeMode.END}
-                        halign={Gtk.Align.START}
+                        xalign={0}
+                        hexpand
                         valign={Gtk.Align.CENTER}
+                        ellipsize={Pango.EllipsizeMode.END}
+                        maxWidthChars={maxWidthChars}
                      />
                      {subtitle && (
                         <label
                            class={"qs-button-subtitle"}
                            label={subtitle}
-                           halign={Gtk.Align.START}
+                           xalign={0}
                            valign={Gtk.Align.CENTER}
                            visible={subtitle.as((s) => s !== "None")}
+                           hexpand
                            maxWidthChars={maxWidthChars}
                            ellipsize={Pango.EllipsizeMode.END}
                         />
