@@ -44,7 +44,7 @@ export function hide_all_windows() {
    app.get_window(windows_names.verification)?.hide();
    app.get_window(windows_names.calendar)?.hide();
    app.get_window(windows_names.quicksettings)?.hide();
-   (hasBarItem("volume") || hasBarItem("microphone")) &&
+   if (hasBarItem("volume") || hasBarItem("microphone"))
       app.get_window(windows_names.volume)?.hide();
    hasBarItem("network") && app.get_window(windows_names.network)?.hide();
    hasBarItem("bluetooth") && app.get_window(windows_names.bluetooth)?.hide();
@@ -69,7 +69,7 @@ export function windows() {
    }
    if (config.osd.enabled) OsdWindow();
    if (config.clipboard.enabled) ClipboardWindow();
-   hasBarItem("volume") || (hasBarItem("microphone") && VolumeWindow());
+   if (hasBarItem("volume") || hasBarItem("microphone")) VolumeWindow();
    hasBarItem("network") && NetworkWindow();
    hasBarItem("bluetooth") && BluetoothWindow();
    hasBarItem("battery") && PowerWindow();
