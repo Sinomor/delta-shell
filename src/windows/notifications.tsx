@@ -148,6 +148,7 @@ export function NotificationsWindow() {
             valign={valign()}
             focusable
             marginTop={margin / 2}
+            marginBottom={margin / 2}
             marginEnd={margin}
             marginStart={margin}
          >
