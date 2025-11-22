@@ -290,10 +290,10 @@ window#quicksettings {
          min-height: 20px;
          min-width: 45px;
          background: rgba($bg2, $window-opacity);
+         border-radius: $widget-radius;
 
          &:checked {
             background: rgba($accent, $window-opacity);
-            border-radius: $widget-radius;
          }
 
          slider {
