@@ -6,14 +6,14 @@ import { compositor, config, theme } from "@/options";
 import { attachHoverScroll, bash, getAppInfo } from "@/src/lib/utils";
 import { icons } from "@/src/lib/icons";
 import BarItem, { FunctionsList } from "@/src/widgets/baritem";
-import { isVertical } from "../../bar";
+import { isVertical, orientation } from "../../bar";
 const apps_icons = config.bar.modules.workspaces["taskbar-icons"];
 const niri = compositor.get() === "niri" ? AstalNiri.get_default() : null;
 
 export function Workspaces_Niri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
    if (!niri) {
       console.warn("Workspaces_Niri: Niri compositor not active");
-      return <box />;
+      return <box visible={false} />;
    }
 
    const outputs = createBinding(niri, "outputs").as((outputs) =>
@@ -101,14 +101,12 @@ export function Workspaces_Niri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
          return classes;
       });
 
+      const windows = createBinding(ws, "windows");
+
       return (
          <BarItem
             cssClasses={classNames}
-            orientation={
-               isVertical
-                  ? Gtk.Orientation.VERTICAL
-                  : Gtk.Orientation.HORIZONTAL
-            }
+            orientation={orientation}
             hexpand={isVertical}
          >
             <Gtk.GestureClick
@@ -117,11 +115,9 @@ export function Workspaces_Niri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
                   if (button === Gdk.BUTTON_PRIMARY) ws.focus();
                }}
             />
-            <label class={"workspace"} label={ws.idx.toString()} />
+            <label label={ws.idx.toString()} />
             {config.bar.modules.workspaces.taskbar && (
-               <For
-                  each={createBinding(ws, "windows").as((clients) => clients)}
-               >
+               <For each={windows}>
                   {(client: AstalNiri.Window) => <AppButton client={client} />}
                </For>
             )}
@@ -137,22 +133,22 @@ export function Workspaces_Niri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
       return (
          <box
             spacing={theme.bar.spacing}
-            orientation={
-               isVertical
-                  ? Gtk.Orientation.VERTICAL
-                  : Gtk.Orientation.HORIZONTAL
-            }
+            orientation={orientation}
             hexpand={isVertical}
             class={"workspaces"}
             $={(self) =>
                attachHoverScroll(self, ({ dy }) => {
                   if (dy < 0) {
                      FunctionsList[
-                        config.bar.modules.workspaces["on-scroll-up"]
+                        config.bar.modules.workspaces[
+                           "on-scroll-up"
+                        ] as keyof typeof FunctionsList
                      ]();
                   } else if (dy > 0) {
                      FunctionsList[
-                        config.bar.modules.workspaces["on-scroll-down"]
+                        config.bar.modules.workspaces[
+                           "on-scroll-down"
+                        ] as keyof typeof FunctionsList
                      ]();
                   }
                })
@@ -164,12 +160,7 @@ export function Workspaces_Niri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
    }
 
    return (
-      <box
-         orientation={
-            isVertical ? Gtk.Orientation.VERTICAL : Gtk.Orientation.HORIZONTAL
-         }
-         hexpand={isVertical}
-      >
+      <box orientation={orientation} hexpand={isVertical}>
          <For each={outputs}>{(output) => <Workspaces output={output} />}</For>
       </box>
    );

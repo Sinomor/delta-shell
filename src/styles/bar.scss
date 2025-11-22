@@ -111,13 +111,6 @@ window#bar {
       }
    }
 
-   .workspace {
-      @if $bar-vertical {
-      } @else {
-         padding: 0 $bar-padding;
-      }
-   }
-
    @keyframes blink {
       to {
          color: $red;
@@ -186,7 +179,6 @@ window#bar {
 
    .taskbar-button {
       background: transparent;
-      padding: $bar-button-padding;
 
       &.focused {
          .indicator {
@@ -199,7 +191,7 @@ window#bar {
          border-radius: $widget-radius;
          min-width: 4px;
          min-height: 4px;
-         background: $bg3;
+         background: lighten($bar-button-bg-active, 20%);
          transition: min-width $transition;
       }
    }

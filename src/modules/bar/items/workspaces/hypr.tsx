@@ -14,7 +14,7 @@ const hyprland =
 export function Workspaces_Hypr({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
    if (!hyprland) {
       console.warn("Workspaces_Hypr: Hyprland compositor not active");
-      return <box />;
+      return <box visible={false} />;
    }
    const monitors = createBinding(hyprland, "monitors").as((monitors) =>
       monitors.filter((monitor) => monitor.model === gdkmonitor.model),
@@ -29,12 +29,6 @@ export function Workspaces_Hypr({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
             if (isFocused) classes.push("focused");
             return classes;
          },
-      );
-
-      const hasWindow = createBinding(hyprland!, "clients").as((clients) =>
-         clients
-            .map((e) => e.class.toLowerCase())
-            .includes(client.class.toLowerCase()),
       );
 
       const appInfo = getAppInfo(client.class);
@@ -109,16 +103,24 @@ export function Workspaces_Hypr({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
          },
       );
 
+      const clients = createBinding(ws, "clients");
+
       return (
          <BarItem
             cssClasses={classNames}
             orientation={orientation}
             hexpand={isVertical}
          >
-            <label class={"workspace"} label={ws.id.toString()} />
+            <Gtk.GestureClick
+               onPressed={(ctrl) => {
+                  const button = ctrl.get_current_button();
+                  if (button === Gdk.BUTTON_PRIMARY) ws.focus();
+               }}
+            />
+            <label label={ws.id.toString()} />
             {config.bar.modules.workspaces.taskbar && (
                <For
-                  each={createBinding(ws, "clients").as((clients) =>
+                  each={clients.as((clients) =>
                      clients.sort((a, b) => a.pid - b.pid),
                   )}
                >
@@ -169,12 +171,7 @@ export function Workspaces_Hypr({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
    }
 
    return (
-      <box
-         orientation={
-            isVertical ? Gtk.Orientation.VERTICAL : Gtk.Orientation.HORIZONTAL
-         }
-         hexpand={isVertical}
-      >
+      <box orientation={orientation} hexpand={isVertical}>
          <For each={monitors}>
             {(monitor) => <Workspaces monitor={monitor} />}
          </For>

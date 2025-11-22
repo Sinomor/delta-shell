@@ -247,8 +247,6 @@ export default function BarItem({
 }: BarItemProps) {
    const content = format ? parseFormat(format, data) : children;
 
-   const spacing = theme.bar.spacing / 2;
-
    return (
       <box
          class={"bar-item"}
@@ -284,7 +282,7 @@ export default function BarItem({
          <box
             class={"content"}
             orientation={orientation}
-            spacing={spacing}
+            spacing={theme.bar.spacing}
             hexpand={isVertical}
          >
             {content}
