@@ -18,7 +18,7 @@ window#quicksettings {
 
    tooltip {
       background: rgba($bg0, $window-opacity);
-      border: $border-width solid $border-color;
+      border: $window-border-width solid $window-border-color;
       border-radius: $widget-radius;
       margin: 10px;
       @if $shadow {

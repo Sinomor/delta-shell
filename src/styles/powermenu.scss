@@ -54,7 +54,7 @@ window#verification {
       background: rgba($bg0, $window-opacity);
       padding: $window-padding;
       border-radius: $window-radius;
-      border: $border-width solid $border-color;
+      border: $window-border-width solid $window-border-color;
       box-shadow: $window-shadow-offset $window-shadow-blur
          $window-shadow-spread
          rgba($window-shadow-color, $window-shadow-opacity);

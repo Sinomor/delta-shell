@@ -195,10 +195,6 @@ export const theme = mkOptions(themeFile, {
       red: "#e62d42",
       purple: "#9141ac",
    },
-   border: {
-      width: 1,
-      color: "$bg2",
-   },
    spacing: 10,
    shadow: true,
    radius: 0,

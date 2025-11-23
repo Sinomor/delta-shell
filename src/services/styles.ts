@@ -40,9 +40,6 @@ const variables = () => [
    $("purple", theme.colors.purple),
    $("purple-light", `lighten(${theme.colors.purple}, 10%)`),
 
-   $("border-color", border.color),
-   $("border-width", `${border.width}px`),
-
    $("widget-radius", `${radius}px`),
 
    $("window-padding", `${window.padding}px`),

@@ -35,7 +35,7 @@ window#bar {
 
    tooltip {
       background: rgba($bg0, $bar-opacity);
-      border: $border-width solid $border-color;
+      border: $bar-border-width solid $bar-border-color;
       border-radius: $widget-radius;
    }
 
@@ -130,7 +130,7 @@ window#bar {
          &.menu > contents {
             background: $bg0;
             margin-top: 5px;
-            border: $border-width solid $bg1;
+            border: $bar-border-width solid $bar-border-color;
             box-shadow: none;
             border-radius: $widget-radius;
             @if $shadow {
