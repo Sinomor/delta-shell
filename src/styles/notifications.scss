@@ -48,8 +48,8 @@ window#notificationslist {
 
          &:focus {
             transition: 0s;
-            outline-offset: -$outline-width;
-            outline: $outline-width solid $outline-color;
+            outline-offset: -$window-outline-width;
+            outline: $window-outline-width solid $window-outline-color;
          }
 
          &:hover {
@@ -110,8 +110,8 @@ window#notificationslist {
 
          &:focus {
             transition: 0s;
-            outline-offset: -$outline-width;
-            outline: $outline-width solid $outline-color;
+            outline-offset: -$window-outline-width;
+            outline: $window-outline-width solid $window-outline-color;
          }
       }
    }

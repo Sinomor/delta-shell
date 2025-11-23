@@ -199,10 +199,6 @@ export const theme = mkOptions(themeFile, {
       width: 1,
       color: "$bg2",
    },
-   outline: {
-      width: 1,
-      color: "$fg1",
-   },
    spacing: 10,
    shadow: true,
    radius: 0,

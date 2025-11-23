@@ -31,8 +31,8 @@ window#volume {
 
       &:focus {
          transition: 0s;
-         outline-offset: -$outline-width;
-         outline: $outline-width solid $outline-color;
+         outline-offset: -$window-outline-width;
+         outline: $window-outline-width solid $window-outline-color;
       }
    }
 
@@ -58,8 +58,8 @@ window#volume {
 
          &:focus {
             transition: 0s;
-            outline-offset: -$outline-width;
-            outline: $outline-width solid $outline-color;
+            outline-offset: -$window-outline-width;
+            outline: $window-outline-width solid $window-outline-color;
          }
 
          &:hover {
@@ -99,8 +99,8 @@ window#volume {
          &:focus {
             trough {
                transition: 0s;
-               outline-offset: -$outline-width;
-               outline: $outline-width solid $outline-color;
+               outline-offset: -$window-outline-width;
+               outline: $window-outline-width solid $window-outline-color;
             }
          }
       }

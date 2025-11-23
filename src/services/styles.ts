@@ -5,7 +5,7 @@ import GLib from "gi://GLib?version=2.0";
 import { config, theme } from "@/options";
 import { isVertical } from "../modules/bar/bar";
 
-const { spacing, radius, border, outline, window, bar } = theme;
+const { spacing, radius, border, window, bar } = theme;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const $ = (name: string, value: string) => `$${name}: ${value};`;
@@ -41,15 +41,12 @@ const variables = () => [
    $("purple-light", `lighten(${theme.colors.purple}, 10%)`),
 
    $("border-color", border.color),
-   $("outline-color", outline.color),
-
-   $("outline-width", `${outline.width}px`),
    $("border-width", `${border.width}px`),
 
    $("widget-radius", `${radius}px`),
 
    $("window-padding", `${window.padding}px`),
-   $("window-radius", `${radius === 0 ? radius : radius + window.padding}px`),
+   $("window-radius", `${radius === 0 ? radius : radius}px`),
    $("window-opacity", `${window.opacity}`),
    $("window-border-width", `${window.border.width}px`),
    $("window-border-color", `${window.border.color}`),

@@ -44,8 +44,8 @@ window#quicksettings {
 
             &:focus {
                transition: 0s;
-               outline-offset: -$outline-width;
-               outline: $outline-width solid $outline-color;
+               outline-offset: -$window-outline-width;
+               outline: $window-outline-width solid $window-outline-color;
             }
 
             &:hover {
@@ -103,8 +103,8 @@ window#quicksettings {
 
             &:focus {
                transition: 0s;
-               outline-offset: -$outline-width;
-               outline: $outline-width solid $outline-color;
+               outline-offset: -$window-outline-width;
+               outline: $window-outline-width solid $window-outline-color;
             }
 
             &.active {
@@ -137,8 +137,8 @@ window#quicksettings {
          }
          &:focus {
             transition: 0s;
-            outline-offset: -$outline-width;
-            outline: $outline-width solid $outline-color;
+            outline-offset: -$window-outline-width;
+            outline: $window-outline-width solid $window-outline-color;
          }
       }
 
@@ -183,8 +183,8 @@ window#quicksettings {
             &:focus {
                trough {
                   transition: 0s;
-                  outline-offset: -$outline-width;
-                  outline: $outline-width solid $outline-color;
+                  outline-offset: -$window-outline-width;
+                  outline: $window-outline-width solid $window-outline-color;
                }
             }
          }
@@ -217,8 +217,8 @@ window#quicksettings {
 
                &:focus {
                   transition: 0s;
-                  outline-offset: -$outline-width;
-                  outline: $outline-width solid $outline-color;
+                  outline-offset: -$window-outline-width;
+                  outline: $window-outline-width solid $window-outline-color;
                }
             }
          }
@@ -309,8 +309,8 @@ window#quicksettings {
 
          &:focus {
             transition: 0s;
-            outline-offset: -$outline-width + 6px;
-            outline: $outline-width solid $outline-color;
+            outline-offset: -$window-outline-width + 6px;
+            outline: $window-outline-width solid $window-outline-color;
          }
       }
 
@@ -322,8 +322,8 @@ window#quicksettings {
 
          &:focus {
             transition: 0s;
-            outline-offset: -$outline-width;
-            outline: $outline-width solid $outline-color;
+            outline-offset: -$window-outline-width;
+            outline: $window-outline-width solid $window-outline-color;
          }
       }
    }
@@ -340,8 +340,8 @@ window#quicksettings {
 
       &:focus {
          transition: 0s;
-         outline-offset: -$outline-width;
-         outline: $outline-width solid $outline-color;
+         outline-offset: -$window-outline-width;
+         outline: $window-outline-width solid $window-outline-color;
       }
    }
 }
