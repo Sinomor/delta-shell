@@ -5,7 +5,7 @@ import GLib from "gi://GLib?version=2.0";
 import { config, theme } from "@/options";
 import { isVertical } from "../modules/bar/bar";
 
-const { spacing, radius, border, window, bar } = theme;
+const { spacing, radius, window, bar } = theme;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const $ = (name: string, value: string) => `$${name}: ${value};`;
