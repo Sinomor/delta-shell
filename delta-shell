@@ -1,0 +1,114 @@
+#!/bin/bash
+
+WIDGETS=("applauncher" "clipboard" "quicksettings" "powermenu" "calendar" "weather" "notificationslist" "volume" "network" "bluetooth" "power")
+
+DATADIR="@DATADIR@"
+
+if [[ "$DATADIR" == "@"DATADIR"@" ]]; then
+    DATADIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+    IS_DEV=true
+else
+    APP_ENTRY="$DATADIR/delta-shell-app"
+    IS_DEV=false
+fi
+
+is_running() {
+    pgrep -x "ags" > /dev/null
+}
+
+print_help() {
+    cat <<EOF
+Usage: $(basename "$0") <command> [options]
+
+Available Commands:
+   run            Run the shell
+   quit           Quit the shell
+   restart        Restart the shell
+   toggle         Toggle visibility of a widget
+   help           Show this help message
+
+Available widgets for toggle:
+$(printf "   %s\n" "${WIDGETS[@]}")
+
+Flags:
+   -h, --help     help for delta-shell
+
+Running mode: $([ "$IS_DEV" = true ] && echo "Development" || echo "Installed")
+EOF
+}
+
+main() {
+    if [ $# -lt 1 ]; then
+        print_help
+        exit 0
+    fi
+
+    case $1 in
+        run)
+            if is_running; then
+                echo "delta-shell is already running"
+                echo "Use '$(basename "$0") restart' to restart or '$(basename "$0") quit' to stop"
+                exit 1
+            fi
+
+            echo "Starting delta-shell..."
+            if [ "$IS_DEV" = true ]; then
+                exec ags run -d "$DATADIR" --define DATADIR=null
+            else
+                exec "$DATADIR/delta-shell-app"
+            fi
+            ;;
+        quit)
+            if ! is_running; then
+                echo "delta-shell is not running"
+                exit 1
+            fi
+
+            echo "Stopping delta-shell..."
+            ags -i delta-shell quit
+            echo "delta-shell stopped"
+            ;;
+        restart)
+            if is_running; then
+                echo "Stopping delta-shell..."
+                ags -i delta-shell quit
+            fi
+
+            echo "Starting delta-shell..."
+            if [ "$IS_DEV" = true ]; then
+                exec ags run -d "$DATADIR" --define DATADIR=null
+            else
+                exec "$DATADIR/delta-shell-app"
+            fi
+            ;;
+        toggle)
+            if [ "$#" -lt 2 ]; then
+                echo "Available widgets for toggle:"
+                printf "  - %s\n" "${WIDGETS[@]}"
+                exit 0
+            fi
+
+            if ! is_running; then
+                echo "Error: delta-shell is not running"
+                echo "Start it with: $(basename "$0") run"
+                exit 1
+            fi
+
+            ags -i delta-shell request toggle "$2"
+            ;;
+        help|-h|--help)
+            print_help
+            ;;
+        *)
+            if ! is_running; then
+                echo "Error: delta-shell is not running"
+                echo "Start it with: $(basename "$0") run"
+                exit 1
+            fi
+
+            ags -i delta-shell request "$@"
+            ;;
+    esac
+}
+
+main "$@"
