@@ -46,7 +46,7 @@ More information about Delta Shell you can find at [docs website](https://sinomo
 1. Installation dependencies and delta-shell
 
 ```bash
-yay -S delta-shell-git libastal-niri-git aylurs-gtk-shell-git libastal-meta brightnessctl dart-sass fd bluez tuned-ppd cliphist gpu-screen-recorder wl-clipboard
+yay -S delta-shell-git libastal-niri-git aylurs-gtk-shell-git libastal-meta brightnessctl dart-sass fd bluez tuned-ppd cliphist gpu-screen-recorder wl-clipboard libgtop
 ```
 
 2. Run and usage with command
@@ -85,13 +85,13 @@ delta-shell
 ```bash
 git clone https://github.com/Sinomor/delta-shell.git
 cd delta-shell
-./run-dev.sh
+./delta-shell run
 ```
 
 2. Usage with command
 
 ```bash
-astal -i delta-shell *command*
+./path/to/script/delta-shell *command*
 ```
 
 </details>
