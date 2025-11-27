@@ -12,10 +12,6 @@ else
     IS_DEV=false
 fi
 
-is_running() {
-    pgrep -x "ags" > /dev/null
-}
-
 print_help() {
     cat <<EOF
 Usage: $(basename "$0") <command> [options]
@@ -45,13 +41,6 @@ main() {
 
     case $1 in
         run)
-            if is_running; then
-                echo "delta-shell is already running"
-                echo "Use '$(basename "$0") restart' to restart or '$(basename "$0") quit' to stop"
-                exit 1
-            fi
-
-            echo "Starting delta-shell..."
             if [ "$IS_DEV" = true ]; then
                 exec ags run -d "$DATADIR" --define DATADIR=null
             else
@@ -59,22 +48,10 @@ main() {
             fi
             ;;
         quit)
-            if ! is_running; then
-                echo "delta-shell is not running"
-                exit 1
-            fi
-
-            echo "Stopping delta-shell..."
             ags -i delta-shell quit
-            echo "delta-shell stopped"
             ;;
         restart)
-            if is_running; then
-                echo "Stopping delta-shell..."
-                ags -i delta-shell quit
-            fi
-
-            echo "Starting delta-shell..."
+            ags -i delta-shell quit
             if [ "$IS_DEV" = true ]; then
                 exec ags run -d "$DATADIR" --define DATADIR=null
             else
@@ -87,25 +64,12 @@ main() {
                 printf "  - %s\n" "${WIDGETS[@]}"
                 exit 0
             fi
-
-            if ! is_running; then
-                echo "Error: delta-shell is not running"
-                echo "Start it with: $(basename "$0") run"
-                exit 1
-            fi
-
             ags -i delta-shell request toggle "$2"
             ;;
         help|-h|--help)
             print_help
             ;;
         *)
-            if ! is_running; then
-                echo "Error: delta-shell is not running"
-                echo "Start it with: $(basename "$0") run"
-                exit 1
-            fi
-
             ags -i delta-shell request "$@"
             ;;
     esac
