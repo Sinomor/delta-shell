@@ -1,7 +1,6 @@
 import { Gdk, Gtk } from "ags/gtk4";
 import AstalHyprland from "gi://AstalHyprland?version=0.1";
-import AstalApps from "gi://AstalApps?version=0.1";
-import { createBinding, createComputed, For } from "ags";
+import { createBinding, For } from "ags";
 import { icons } from "@/src/lib/icons";
 import BarItem, { FunctionsList } from "@/src/widgets/baritem";
 import { compositor, config, theme } from "@/options";
@@ -9,9 +8,9 @@ import { attachHoverScroll, getAppInfo } from "@/src/lib/utils";
 import { isVertical, orientation } from "../../bar";
 const apps_icons = config.bar.modules.workspaces["taskbar-icons"];
 const hyprland =
-   compositor.get() === "hyprland" ? AstalHyprland.get_default() : null;
+   compositor.peek() === "hyprland" ? AstalHyprland.get_default() : null;
 
-export function Workspaces_Hypr({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
+export function WorkspacesHypr({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
    if (!hyprland) {
       console.warn("Workspaces_Hypr: Hyprland compositor not active");
       return <box visible={false} />;
@@ -64,11 +63,8 @@ export function Workspaces_Hypr({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
             <Gtk.GestureClick
                onPressed={(ctrl, _, x, y) => {
                   const button = ctrl.get_current_button();
-                  if (button === Gdk.BUTTON_PRIMARY) {
-                     client.focus();
-                  } else if (button === Gdk.BUTTON_MIDDLE) {
-                     client.kill();
-                  }
+                  if (button === Gdk.BUTTON_PRIMARY) client.focus();
+                  if (button === Gdk.BUTTON_MIDDLE) client.kill();
                }}
                button={0}
             />
@@ -102,15 +98,10 @@ export function Workspaces_Hypr({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
             return classes;
          },
       );
-
       const clients = createBinding(ws, "clients");
 
       return (
-         <BarItem
-            cssClasses={classNames}
-            orientation={orientation}
-            hexpand={isVertical}
-         >
+         <BarItem cssClasses={classNames}>
             <Gtk.GestureClick
                onPressed={(ctrl) => {
                   const button = ctrl.get_current_button();
@@ -120,7 +111,7 @@ export function Workspaces_Hypr({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
             <label label={ws.id.toString()} />
             {config.bar.modules.workspaces.taskbar && (
                <For
-                  each={clients.as((clients) =>
+                  each={clients((clients) =>
                      clients.sort((a, b) => a.pid - b.pid),
                   )}
                >
@@ -146,7 +137,6 @@ export function Workspaces_Hypr({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
             spacing={theme.bar.spacing}
             orientation={orientation}
             hexpand={isVertical}
-            class={"workspaces"}
             $={(self) =>
                attachHoverScroll(self, ({ dy }) => {
                   if (dy < 0) {

@@ -8,6 +8,7 @@ import { createBinding } from "gnim";
 
 export function Microphone() {
    const microphone = AstalWp.get_default()?.get_default_microphone();
+   const volume = createBinding(microphone, "volume");
 
    return (
       <BarItem
@@ -28,9 +29,7 @@ export function Microphone() {
             percent: (
                <label
                   hexpand={isVertical}
-                  label={createBinding(microphone, "volume").as((volume) =>
-                     Math.floor(volume * 100).toString(),
-                  )}
+                  label={volume((v) => Math.floor(v * 100).toString())}
                />
             ),
          }}

@@ -1,12 +1,10 @@
-import app from "ags/gtk4/app";
-import { Astal, Gdk, Gtk } from "ags/gtk4";
+import { Gdk, Gtk } from "ags/gtk4";
 import { Workspaces } from "./items/workspaces";
 import { Clock } from "./items/clock";
 import { Launcher } from "./items/launcher";
 import { Tray } from "./items/tray";
 import { RecordIndicator } from "./items/recordindicator";
 import { Keyboard } from "./items/keyboard";
-import { For, createState, onCleanup } from "ags";
 import { Weather } from "./items/weather";
 import { config, theme } from "@/options";
 import { windows_names } from "@/windows";

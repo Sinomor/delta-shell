@@ -42,10 +42,9 @@ function updateLayout() {
       });
 }
 
-if (compositor.get() === "hyprland") updateLayout();
-
-export function Keyboard_Hypr() {
+export function KeyboardHypr() {
    const hyprland = AstalHyprland.get_default();
+   updateLayout();
    let hyprlandconnect: number;
 
    onCleanup(() => {

@@ -77,7 +77,7 @@ export const FunctionsList = {
    "toggle-bluetooth": () => toggleQsModule(windows_names.bluetooth),
    "toggle-power": () => toggleQsModule(windows_names.power, "battery"),
    "workspace-up": () => {
-      const comp = compositor.get();
+      const comp = compositor.peek();
       if (comp === "niri") {
          AstalNiri.msg.focus_workspace_up();
       } else if (comp === "hyprland") {
@@ -85,7 +85,7 @@ export const FunctionsList = {
       }
    },
    "workspace-down": () => {
-      const comp = compositor.get();
+      const comp = compositor.peek();
       if (comp === "niri") {
          AstalNiri.msg.focus_workspace_down();
       } else if (comp === "hyprland") {
@@ -117,12 +117,11 @@ export const FunctionsList = {
       if (mcph) mcph.set_mute(!mcph.get_mute());
    },
    "switch-language": async () => {
-      const comp = compositor.get();
-      if (comp === "niri") {
-         bash("niri msg action switch-layout next");
-      } else if (comp === "hyprland") {
+      const comp = compositor.peek();
+      if (comp === "niri") AstalNiri.msg.switch_layout_next();
+      if (comp === "hyprland") {
          try {
-            const json = await bash(`hyprctl devices -j`);
+            const json = await bash("hyprctl devices -j");
             const devices = JSON.parse(json);
 
             const mainKeyboard = devices.keyboards.find(
@@ -147,47 +146,31 @@ export const FunctionsList = {
 } as Record<string, any>;
 
 function parseFormat(format: string, data: FormatData): JSX.Element[] {
-   const result: JSX.Element[] = [];
-   const groups = format.split(" ").filter((group) => group.trim() !== "");
+   const regex = /\{([^}]+)\}|([^{}]+)/g;
 
-   for (const group of groups) {
-      const elements: JSX.Element[] = [];
-      let currentText = "";
+   return format
+      .split(" ")
+      .filter((group) => group.trim() !== "")
+      .map((group) => {
+         const matches = Array.from(group.matchAll(regex));
 
-      for (let i = 0; i < group.length; i++) {
-         if (group[i] === "{" && group.indexOf("}", i) > i) {
-            if (currentText) {
-               elements.push(
-                  <label label={currentText} hexpand={isVertical} />,
+         const elements = matches.map((match) => {
+            const [_, key, text] = match;
+
+            if (key) {
+               const trimmedKey = key.trim();
+               return (
+                  data[trimmedKey] || (
+                     <label label={`{${trimmedKey}}`} hexpand={isVertical} />
+                  )
                );
-               currentText = "";
             }
 
-            const end = group.indexOf("}", i);
-            const key = group.substring(i + 1, end);
+            return <label label={text} hexpand={isVertical} />;
+         });
 
-            if (data[key]) {
-               elements.push(data[key]);
-            } else {
-               elements.push(<label label={`{${key}}`} hexpand={isVertical} />);
-            }
-
-            i = end;
-         } else {
-            currentText += group[i];
-         }
-      }
-
-      if (currentText) {
-         elements.push(<label label={currentText} hexpand={isVertical} />);
-      }
-
-      if (elements.length > 0) {
-         result.push(<box>{elements}</box>);
-      }
-   }
-
-   return result;
+         return <box>{elements}</box>;
+      });
 }
 
 function handleClick(
@@ -198,13 +181,9 @@ function handleClick(
 ) {
    let handler: string | Function | null | undefined;
 
-   if (button === Gdk.BUTTON_PRIMARY) {
-      handler = onPrimary;
-   } else if (button === Gdk.BUTTON_SECONDARY) {
-      handler = onSecondary;
-   } else if (button === Gdk.BUTTON_MIDDLE) {
-      handler = onMiddle;
-   }
+   if (button === Gdk.BUTTON_PRIMARY) handler = onPrimary;
+   if (button === Gdk.BUTTON_SECONDARY) handler = onSecondary;
+   if (button === Gdk.BUTTON_MIDDLE) handler = onMiddle;
 
    if (!handler || handler === "default") return;
 

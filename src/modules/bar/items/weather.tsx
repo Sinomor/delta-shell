@@ -8,12 +8,12 @@ import { hide_all_windows, windows_names } from "@/windows";
 import { config, theme } from "@/options";
 import WeatherService from "@/src/services/weather";
 import { isVertical } from "../bar";
-const weather = WeatherService.get_default();
 
 export function Weather() {
-   if (!config.weather.enabled) return <box />;
+   if (!config.weather.enabled) return <box visible={false} />;
+   const weather = WeatherService.get_default();
 
-   const data = weather.data.as((data) => {
+   const data = weather.data((data) => {
       if (!data)
          return {
             icon: "",
@@ -26,40 +26,41 @@ export function Weather() {
       const current = data.hourly[0];
       return {
          icon: current.icon,
-         temp: `${current.temperature}`,
-         wind: `${current.wind_speed}`,
-         "temp-units": `${current.units.temperature}`,
-         "wind-units": `${current.units.wind_speed}`,
+         temp: current.temperature.toString(),
+         wind: current.wind_speed.toString(),
+         "temp-units": current.units.temperature.toString(),
+         "wind-units": current.units.wind_speed.toString(),
       };
    });
+
    return (
       <BarItem
          window={windows_names.weather}
          onPrimaryClick={config.bar.modules.weather["on-click"]}
          onSecondaryClick={config.bar.modules.weather["on-click-right"]}
          onMiddleClick={config.bar.modules.weather["on-click-middle"]}
-         visible={data.as((d) => d.temp !== "")}
+         visible={data((d) => d.temp !== "")}
          data={{
             icon: (
                <image
-                  iconName={data.as((d) => d.icon)}
+                  iconName={data((d) => d.icon)}
                   pixelSize={20}
                   hexpand={isVertical}
                />
             ),
-            temp: <label label={data.as((d) => d.temp)} hexpand={isVertical} />,
+            temp: <label label={data((d) => d.temp)} hexpand={isVertical} />,
             "wind-speed": (
-               <label label={data.as((d) => d.wind)} hexpand={isVertical} />
+               <label label={data((d) => d.wind)} hexpand={isVertical} />
             ),
             "temp-units": (
                <label
-                  label={data.as((d) => d["temp-units"])}
+                  label={data((d) => d["temp-units"])}
                   hexpand={isVertical}
                />
             ),
             "wind-units": (
                <label
-                  label={data.as((d) => d["wind-units"])}
+                  label={data((d) => d["wind-units"])}
                   hexpand={isVertical}
                />
             ),

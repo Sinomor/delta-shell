@@ -256,9 +256,6 @@ export const theme = mkOptions(themeFile, {
    },
 });
 
-export const [compositor, compositor_set] = createState<string>("");
-
-const env = GLib.getenv("XDG_CURRENT_DESKTOP");
-compositor_set(
-   env === "niri" ? "niri" : env === "Hyprland" ? "hyprland" : "unknown",
+export const [compositor, setCompositor] = createState<string>(
+   GLib.getenv("XDG_CURRENT_DESKTOP")!.toLowerCase(),
 );

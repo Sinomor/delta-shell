@@ -1,27 +1,21 @@
-import { config, theme } from "@/options";
+import { config } from "@/options";
 import { icons } from "@/src/lib/icons";
-import { toggleWindow } from "@/src/lib/utils";
 import BarItem from "@/src/widgets/baritem";
-import { hide_all_windows, windows_names } from "@/windows";
-import app from "ags/gtk4/app";
+import { windows_names } from "@/windows";
 import AstalBluetooth from "gi://AstalBluetooth";
 import { createBinding, createComputed } from "gnim";
 import { isVertical } from "../bar";
-const bluetooth = AstalBluetooth.get_default();
 
 export function Bluetooth() {
-   const bluetoothconnected = createComputed(
-      [
-         createBinding(bluetooth, "devices"),
-         createBinding(bluetooth, "isConnected"),
-      ],
-      (d, _) => {
-         for (const device of d) {
-            if (device.connected) return true;
-         }
-         return false;
-      },
-   );
+   const bluetooth = AstalBluetooth.get_default();
+   const connected = createBinding(bluetooth, "isConnected");
+   const powered = createBinding(bluetooth, "isPowered");
+   const devices = createBinding(bluetooth, "devices");
+   const adapter = createBinding(bluetooth, "adapter");
+   const device = createComputed(() => {
+      connected();
+      return devices().filter((device) => device.connected)[0];
+   });
 
    return (
       <BarItem
@@ -33,49 +27,33 @@ export function Bluetooth() {
             icon: <image hexpand={isVertical} iconName={icons.bluetooth} />,
             status: (
                <label
-                  label={createBinding(bluetooth, "isPowered").as((v) =>
-                     v ? "On" : "Off",
-                  )}
+                  label={powered((v) => (v ? "On" : "Off"))}
                   hexpand={isVertical}
                />
             ),
             "controller-address": (
                <label
-                  label={createBinding(bluetooth, "adapter").as((adapter) =>
-                     adapter.address.toString(),
-                  )}
+                  label={adapter((adapter) => adapter.address.toString())}
                   hexpand={isVertical}
                />
             ),
             "controller-alias": (
                <label
-                  label={createBinding(bluetooth, "adapter").as((adapter) =>
-                     adapter.alias.toString(),
-                  )}
+                  label={adapter((adapter) => adapter.alias.toString())}
                   hexpand={isVertical}
                />
             ),
             "device-address": (
                <label
-                  label={createBinding(bluetooth, "devices").as((d) => {
-                     for (const device of d) {
-                        if (device.connected) return device.address;
-                     }
-                     return "";
-                  })}
-                  visible={bluetoothconnected}
+                  label={device((d) => (d ? d.address.toString() : ""))}
+                  visible={connected}
                   hexpand={isVertical}
                />
             ),
             "device-alias": (
                <label
-                  label={createBinding(bluetooth, "devices").as((d) => {
-                     for (const device of d) {
-                        if (device.connected) return device.alias;
-                     }
-                     return "";
-                  })}
-                  visible={bluetoothconnected}
+                  label={device((d) => (d ? d.alias.toString() : ""))}
+                  visible={connected}
                   hexpand={isVertical}
                />
             ),

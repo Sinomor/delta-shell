@@ -1,25 +1,17 @@
 import AstalTray from "gi://AstalTray?version=0.1";
 import { icons } from "@/src/lib/icons";
-import { Gtk } from "ags/gtk4";
-import { createBinding, createState, For } from "ags";
+import { Gdk, Gtk } from "ags/gtk4";
+import { createBinding, createState, For, onCleanup } from "ags";
 import BarItem from "@/src/widgets/baritem";
-import { config } from "@/options";
-import { isVertical } from "../bar";
-const tray = AstalTray.get_default();
+import { config, theme } from "@/options";
+import { isVertical, orientation } from "../bar";
 
-export const Tray = () => {
-   const [tray_visible, tray_visible_set] = createState(false);
+export function Tray() {
+   const tray = AstalTray.get_default();
    const items = createBinding(tray, "items").as((items) =>
       items.filter((item) => item.id !== null),
    );
-
-   const init = (btn: Gtk.MenuButton, item: AstalTray.TrayItem) => {
-      btn.menuModel = item.menuModel;
-      btn.insert_action_group("dbusmenu", item.actionGroup);
-      item.connect("notify::action-group", () => {
-         btn.insert_action_group("dbusmenu", item.actionGroup);
-      });
-   };
+   const [visible, setVisible] = createState(false);
 
    function icon(visible: boolean) {
       if (isVertical) {
@@ -29,15 +21,23 @@ export const Tray = () => {
       }
    }
 
+   function position() {
+      switch (config.bar.position) {
+         case "top":
+            return Gtk.PositionType.BOTTOM;
+         case "bottom":
+            return Gtk.PositionType.TOP;
+         case "left":
+            return Gtk.PositionType.LEFT;
+         case "right":
+            return Gtk.PositionType.RIGHT;
+      }
+   }
+
    return (
-      <box
-         class={"tray"}
-         orientation={
-            isVertical ? Gtk.Orientation.VERTICAL : Gtk.Orientation.HORIZONTAL
-         }
-      >
+      <box class={"tray"} orientation={orientation} spacing={theme.bar.spacing}>
          <revealer
-            revealChild={tray_visible}
+            revealChild={visible}
             transitionType={
                isVertical
                   ? Gtk.RevealerTransitionType.SLIDE_UP
@@ -48,34 +48,102 @@ export const Tray = () => {
             <box
                class={"items"}
                hexpand={isVertical}
-               orientation={
-                  isVertical
-                     ? Gtk.Orientation.VERTICAL
-                     : Gtk.Orientation.HORIZONTAL
-               }
+               orientation={orientation}
+               spacing={theme.bar.spacing}
             >
                <For each={items}>
-                  {(item) => (
-                     <menubutton $={(self) => init(self, item)}>
-                        <image
-                           gicon={createBinding(item, "gicon")}
-                           pixelSize={20}
-                        />
-                     </menubutton>
-                  )}
+                  {(item) => {
+                     let popovermenu: Gtk.PopoverMenu;
+
+                     return (
+                        <box
+                           class={"item"}
+                           hexpand={isVertical}
+                           $={(self) => {
+                              popovermenu.connect(
+                                 "notify::visible",
+                                 ({ visible }) =>
+                                    self[
+                                       visible
+                                          ? "add_css_class"
+                                          : "remove_css_class"
+                                    ]("active"),
+                              );
+                           }}
+                        >
+                           <image
+                              gicon={item.gicon}
+                              hexpand={isVertical}
+                              tooltipMarkup={item.tooltipMarkup || item.title}
+                              pixelSize={20}
+                           />
+                           <Gtk.GestureClick
+                              onPressed={() => item.about_to_show()}
+                              onReleased={(ctrl, _, x, y) => {
+                                 const button = ctrl.get_current_button();
+                                 if (button === Gdk.BUTTON_PRIMARY) {
+                                    item.activate(x, y);
+                                 } else if (button === Gdk.BUTTON_SECONDARY) {
+                                    if (popovermenu) {
+                                       if (popovermenu.visible) {
+                                          popovermenu.popdown();
+                                       } else {
+                                          popovermenu.popup();
+                                       }
+                                    }
+                                 } else if (button === Gdk.BUTTON_MIDDLE) {
+                                    item.secondary_activate(x, y);
+                                 }
+                              }}
+                              button={0}
+                           />
+                           <Gtk.PopoverMenu
+                              menuModel={item.menuModel}
+                              position={position()}
+                              $={(self) => {
+                                 popovermenu = self;
+                                 self.insert_action_group(
+                                    "dbusmenu",
+                                    item.actionGroup,
+                                 );
+
+                                 const conns = [
+                                    item.connect(
+                                       "notify::action-group",
+                                       (item) => {
+                                          self.insert_action_group(
+                                             "dbusmenu",
+                                             item.actionGroup,
+                                          );
+                                       },
+                                    ),
+
+                                    item.connect(
+                                       "notify::menu-model",
+                                       (item) => {
+                                          self.set_menu_model(item.menuModel);
+                                       },
+                                    ),
+                                 ];
+
+                                 onCleanup(() => {
+                                    conns.map((id) => item.disconnect(id));
+                                 });
+                              }}
+                           />
+                        </box>
+                     );
+                  }}
                </For>
             </box>
          </revealer>
-         <BarItem
-            onPrimaryClick={() => tray_visible_set((v) => !v)}
-            hexpand={isVertical}
-         >
+         <button onClicked={() => setVisible((v) => !v)} class={"toggle"}>
             <image
                hexpand={isVertical}
-               iconName={tray_visible((v) => icon(v))}
+               iconName={visible((v) => icon(v))}
                pixelSize={20}
             />
-         </BarItem>
+         </button>
       </box>
    );
-};
+}

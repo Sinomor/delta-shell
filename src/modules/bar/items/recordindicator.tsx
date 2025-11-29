@@ -1,13 +1,15 @@
-import { config, theme } from "@/options";
+import { config } from "@/options";
 import ScreenRecord from "@/src/services/screenrecord";
 import BarItem from "@/src/widgets/baritem";
 import { createBinding } from "ags";
 import { Gtk } from "ags/gtk4";
 import { isVertical } from "../bar";
 import { icons } from "@/src/lib/icons";
-const screenRecord = ScreenRecord.get_default();
 
 export function RecordIndicator() {
+   const screenRecord = ScreenRecord.get_default();
+   const timer = createBinding(screenRecord, "timer");
+
    return (
       <BarItem
          visible={createBinding(screenRecord, "recording")}
@@ -26,7 +28,7 @@ export function RecordIndicator() {
             progress: (
                <label
                   hexpand={isVertical}
-                  label={createBinding(screenRecord, "timer").as((time) => {
+                  label={timer((time) => {
                      const sec = time % 60;
                      const min = Math.floor(time / 60);
                      return `${min}:${sec < 10 ? "0" + sec : sec}`;

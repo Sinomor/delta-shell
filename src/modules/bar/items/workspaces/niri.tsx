@@ -1,21 +1,19 @@
-import { Astal, Gdk, Gtk } from "ags/gtk4";
+import { Gdk, Gtk } from "ags/gtk4";
 import AstalNiri from "gi://AstalNiri";
-import AstalApps from "gi://AstalApps";
-import { createBinding, createComputed, For } from "ags";
+import { createBinding, For } from "ags";
 import { compositor, config, theme } from "@/options";
 import { attachHoverScroll, bash, getAppInfo } from "@/src/lib/utils";
 import { icons } from "@/src/lib/icons";
 import BarItem, { FunctionsList } from "@/src/widgets/baritem";
 import { isVertical, orientation } from "../../bar";
 const apps_icons = config.bar.modules.workspaces["taskbar-icons"];
-const niri = compositor.get() === "niri" ? AstalNiri.get_default() : null;
+const niri = compositor.peek() === "niri" ? AstalNiri.get_default() : null;
 
-export function Workspaces_Niri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
+export function WorkspacesNiri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
    if (!niri) {
       console.warn("Workspaces_Niri: Niri compositor not active");
       return <box visible={false} />;
    }
-
    const outputs = createBinding(niri, "outputs").as((outputs) =>
       outputs.filter((output) => output.model === gdkmonitor.model),
    );
@@ -62,11 +60,9 @@ export function Workspaces_Niri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
             <Gtk.GestureClick
                onPressed={(ctrl, _, x, y) => {
                   const button = ctrl.get_current_button();
-                  if (button === Gdk.BUTTON_PRIMARY) {
-                     client.focus(client.id);
-                  } else if (button === Gdk.BUTTON_MIDDLE) {
+                  if (button === Gdk.BUTTON_PRIMARY) client.focus(client.id);
+                  if (button === Gdk.BUTTON_MIDDLE)
                      bash(`niri msg action close-window --id ${client.id}`);
-                  }
                }}
                button={0}
             />
@@ -100,15 +96,10 @@ export function Workspaces_Niri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
 
          return classes;
       });
-
       const windows = createBinding(ws, "windows");
 
       return (
-         <BarItem
-            cssClasses={classNames}
-            orientation={orientation}
-            hexpand={isVertical}
-         >
+         <BarItem cssClasses={classNames}>
             <Gtk.GestureClick
                onPressed={(ctrl) => {
                   const button = ctrl.get_current_button();
@@ -135,7 +126,6 @@ export function Workspaces_Niri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
             spacing={theme.bar.spacing}
             orientation={orientation}
             hexpand={isVertical}
-            class={"workspaces"}
             $={(self) =>
                attachHoverScroll(self, ({ dy }) => {
                   if (dy < 0) {

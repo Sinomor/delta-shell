@@ -1,6 +1,6 @@
 import AstalNiri from "gi://AstalNiri";
 import { bash } from "@/src/lib/utils";
-import { createState, onCleanup } from "ags";
+import { createBinding, createEffect, createState, onCleanup } from "ags";
 import { compositor, config } from "@/options";
 import BarItem from "@/src/widgets/baritem";
 import { isVertical } from "../../bar";
@@ -11,22 +11,23 @@ const [layout_name, layout_name_set] = createState("?");
 function updateLayout() {
    bash(`niri msg keyboard-layouts | grep "*"`)
       .then((layout) => {
+         const match = layout.match(/\* \d+ ([A-Za-z]+)/)!;
          if (layout.includes("English")) {
             layout_name_set("En");
          } else if (layout.includes("Russian")) {
             layout_name_set("Ru");
          } else {
-            layout_name_set("?");
+            layout_name_set(match[1].substring(0, 2));
          }
       })
       .catch((err) => {
          print(`Failed to get keyboard layout: ${err}`);
       });
 }
-if (compositor.get() === "niri") updateLayout();
 
-export function Keyboard_Niri() {
+export function KeyboardNiri() {
    const niri = AstalNiri.get_default();
+   updateLayout();
    let niriconnect: number;
 
    onCleanup(() => {

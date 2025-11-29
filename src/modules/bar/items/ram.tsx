@@ -7,14 +7,8 @@ import { createBinding } from "gnim";
 
 export function RAM() {
    const systemstats = SystemStats.get_default();
-
-   const memoryUsage = createBinding(systemstats, "memoryUsage").as((data) =>
-      Math.floor(data * 100).toString(),
-   );
-
-   const memoryTotal = createBinding(systemstats, "memoryTotal").as((data) =>
-      (data / 1024 / 1024).toFixed(2).toString(),
-   );
+   const memoryUsage = createBinding(systemstats, "memoryUsage");
+   const memoryTotal = createBinding(systemstats, "memoryTotal");
 
    return (
       <BarItem
@@ -26,8 +20,20 @@ export function RAM() {
                   hexpand={isVertical}
                />
             ),
-            usage: <label label={memoryUsage} hexpand={isVertical} />,
-            total: <label label={memoryTotal} hexpand={isVertical} />,
+            usage: (
+               <label
+                  label={memoryUsage((v) => Math.floor(v * 100).toString())}
+                  hexpand={isVertical}
+               />
+            ),
+            total: (
+               <label
+                  label={memoryTotal((v) =>
+                     (v / 1024 / 1024).toFixed(2).toString(),
+                  )}
+                  hexpand={isVertical}
+               />
+            ),
          }}
          format={config.bar.modules.ram.format}
       />

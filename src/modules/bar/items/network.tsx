@@ -1,74 +1,65 @@
 import { getNetworkIconBinding } from "@/src/lib/icons";
-import { toggleWindow } from "@/src/lib/utils";
 import BarItem from "@/src/widgets/baritem";
-import { hide_all_windows, windows_names } from "@/windows";
-import app from "ags/gtk4/app";
+import { windows_names } from "@/windows";
 import AstalNetwork from "gi://AstalNetwork";
 import { createBinding, createComputed } from "gnim";
 import { isVertical } from "../bar";
 import { config } from "@/options";
-const network = AstalNetwork.get_default();
 
 export function Network() {
+   const network = AstalNetwork.get_default();
    const wifi = network.wifi;
    const wired = network.wired;
+   const primary = createBinding(network, "primary");
+   const connectivity = createBinding(network, "connectivity");
+   const device = createComputed(() => {
+      connectivity();
+      if (primary() === AstalNetwork.Primary.WIRED) {
+         if (wired.internet === AstalNetwork.Internet.CONNECTED) {
+            return wired.device;
+         }
+      }
+      if (primary() === AstalNetwork.Primary.WIFI) {
+         return wifi.device;
+      }
+   });
 
-   const ifname = createComputed(
-      [
-         createBinding(network, "primary"),
-         createBinding(network, "connectivity"),
-      ],
-      (primary, connectivity) => {
-         if (primary === AstalNetwork.Primary.WIRED) {
-            if (wired.internet === AstalNetwork.Internet.CONNECTED) {
-               return wired.device.interface;
-            }
-         }
-         if (primary === AstalNetwork.Primary.WIFI) {
-            return wifi.device.interface;
-         }
-         return "N/A";
-      },
-   );
+   const status = createComputed(() => {
+      connectivity();
+      if (
+         primary() === AstalNetwork.Primary.WIRED &&
+         network.wired.internet === AstalNetwork.Internet.CONNECTED
+      )
+         return "On";
+      if (wifi !== null) return wifi.enabled ? "On" : "Off";
+      return "";
+   });
 
-   const essid = createComputed(
-      [
-         createBinding(network, "primary"),
-         createBinding(network, "connectivity"),
-      ],
-      (primary, connectivity) => {
-         if (primary === AstalNetwork.Primary.WIFI) {
-            return wifi.ssid;
-         }
-         return "N/A";
-      },
-   );
+   const ifname = device((d) => (d ? d.interface.toString() : ""));
 
-   const strength = createComputed(
-      [
-         createBinding(network, "primary"),
-         createBinding(network, "connectivity"),
-      ],
-      (primary, connectivity) => {
-         if (primary === AstalNetwork.Primary.WIFI) {
-            return wifi.strength.toString();
-         }
-         return "N/A";
-      },
-   );
+   const essid = createComputed(() => {
+      device();
+      if (primary() === AstalNetwork.Primary.WIFI) {
+         return wifi.ssid.toString();
+      }
+      return "";
+   });
 
-   const frequency = createComputed(
-      [
-         createBinding(network, "primary"),
-         createBinding(network, "connectivity"),
-      ],
-      (primary, connectivity) => {
-         if (primary === AstalNetwork.Primary.WIFI) {
-            return `${(wifi.frequency / 1000).toFixed(1)}`;
-         }
-         return "N/A";
-      },
-   );
+   const strength = createComputed(() => {
+      device();
+      if (primary() === AstalNetwork.Primary.WIFI) {
+         return wifi.strength.toString();
+      }
+      return "";
+   });
+
+   const frequency = createComputed(() => {
+      device();
+      if (primary() === AstalNetwork.Primary.WIFI) {
+         return (wifi.frequency / 1000).toFixed(1).toString();
+      }
+      return "";
+   });
 
    return (
       <BarItem
@@ -86,45 +77,30 @@ export function Network() {
             ),
             status: (
                <label
-                  label={createComputed(
-                     [
-                        createBinding(network, "primary"),
-                        ...(network.wifi !== null
-                           ? [createBinding(network.wifi, "enabled")]
-                           : []),
-                     ],
-                     (primary, enabled) => {
-                        if (
-                           primary === AstalNetwork.Primary.WIRED &&
-                           network.wired.internet ===
-                              AstalNetwork.Internet.CONNECTED
-                        )
-                           return "On";
-                        return enabled ? "On" : "Off";
-                     },
-                  )}
+                  label={status}
                   hexpand={isVertical}
+                  visible={status((status) => status !== "")}
                />
             ),
             ifname: <label label={ifname} hexpand={isVertical} />,
             essid: (
                <label
                   label={essid}
-                  visible={essid.as((essid) => essid !== "N/A")}
+                  visible={essid((essid) => essid !== "")}
                   hexpand={isVertical}
                />
             ),
             strength: (
                <label
                   label={strength}
-                  visible={strength.as((strength) => strength !== "N/A")}
+                  visible={strength((strength) => strength !== "")}
                   hexpand={isVertical}
                />
             ),
             frequency: (
                <label
                   label={frequency}
-                  visible={frequency.as((frequency) => frequency !== "N/A")}
+                  visible={frequency((frequency) => frequency !== "")}
                   hexpand={isVertical}
                />
             ),

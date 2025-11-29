@@ -6,7 +6,7 @@ window#bar {
    .main {
       margin: $bar-margin;
       background: rgba($bar-bg, $bar-opacity);
-      @if $bar-opacity != 0 {
+      @if $shadow and $bar-opacity != 0 {
          box-shadow: $bar-shadow-offset
             $bar-shadow-blur
             $bar-shadow-spread
@@ -41,7 +41,7 @@ window#bar {
 
    separator {
       border-radius: $widget-radius;
-      background: $bar-separator-color;
+      background: rgba($bar-separator-color, $bar-opacity);
       &.vertical {
          margin: 0 $bar-padding;
          min-height: $bar-separator-width;
@@ -88,7 +88,7 @@ window#bar {
          border: $bar-button-border-width solid $bar-button-border-color;
          color: $bar-button-fg;
          padding: $bar-button-padding;
-         @if $bar-opacity == 0 {
+         @if $shadow and $bar-opacity == 0 {
             box-shadow: $bar-shadow-offset
                $bar-shadow-blur
                $bar-shadow-spread
@@ -126,18 +126,49 @@ window#bar {
    }
 
    .tray {
+      background: rgba($bar-button-bg, $bar-button-opacity);
+      border: $bar-button-border-width solid $bar-button-border-color;
+      border-radius: $widget-radius;
+      @if $bar-vertical {
+         margin: 0 $bar-padding;
+      } @else {
+         margin: $bar-padding 0;
+      }
+      @if $shadow and $bar-opacity == 0 {
+         box-shadow: $bar-shadow-offset
+            $bar-shadow-blur
+            $bar-shadow-spread
+            rgba($bar-shadow-color, $bar-shadow-opacity);
+      }
+
+      .toggle {
+         background: transparent;
+         padding: $bar-button-padding;
+
+         &:hover {
+            background: rgba($bar-button-bg-hover, $bar-button-opacity);
+         }
+      }
+
       .menu {
          &.menu > contents {
-            background: $bg0;
-            margin-top: 5px;
+            background: rgba($bg0, $window-opacity);
             border: $bar-border-width solid $bar-border-color;
-            box-shadow: none;
             border-radius: $widget-radius;
             @if $shadow {
                box-shadow: $bar-shadow-offset
                   $bar-shadow-blur
                   $bar-shadow-spread
                   rgba($bar-shadow-color, $bar-shadow-opacity);
+            }
+            @if $bar-position == "top" {
+               margin-top: 5px;
+            } @else if $bar-position == "bottom" {
+               margin-bottom: 5px;
+            } @else if $bar-position == "left" {
+               margin-left: 5px;
+            } @else if $bar-position == "right" {
+               margin-right: 5px;
             }
          }
 
@@ -146,9 +177,8 @@ window#bar {
             background: transparent;
             color: $fg0;
 
-            &:focus,
             &:hover {
-               background: $bg1;
+               background: rgba($bg1, $window-opacity);
             }
          }
 
@@ -158,20 +188,18 @@ window#bar {
       }
 
       .items {
-         @if $bar-vertical {
-            padding: 0 $bar-padding;
-         } @else {
-            padding: $bar-padding 0;
-         }
-
-         button {
-            padding: 0;
+         .item {
             padding: $bar-button-padding;
-            background: rgba($bar-button-bg, $bar-button-opacity);
+            background: transparent;
             border-radius: $widget-radius;
 
             &:hover {
-               background: $bg1;
+               background: rgba($bar-button-bg-hover, $bar-button-opacity);
+            }
+
+            &.active {
+               background: rgba($bar-button-bg-active, $bar-button-opacity);
+               transition: background $transition;
             }
          }
       }

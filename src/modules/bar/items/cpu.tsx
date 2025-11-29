@@ -7,12 +7,10 @@ import { createBinding, With } from "gnim";
 
 export function CPU() {
    const systemstats = SystemStats.get_default();
-   const cpuUsage = createBinding(systemstats, "cpuUsage").as((data) =>
-      Math.floor(data * 100).toString(),
-   );
+   const cpuUsage = createBinding(systemstats, "cpuUsage");
 
    return (
-      <With value={createBinding(systemstats, "cpuUsage")}>
+      <With value={cpuUsage}>
          {(usage) =>
             usage !== -1 ? (
                <BarItem
@@ -24,10 +22,16 @@ export function CPU() {
                            hexpand={isVertical}
                         />
                      ),
-                     usage: <label label={cpuUsage} hexpand={isVertical} />,
+                     usage: (
+                        <label
+                           label={cpuUsage((v) =>
+                              Math.floor(v * 100).toString(),
+                           )}
+                           hexpand={isVertical}
+                        />
+                     ),
                   }}
                   format={config.bar.modules.cpu.format}
-                  visible={cpuUsage.as((d) => d !== "")}
                />
             ) : (
                <box visible={false} />
