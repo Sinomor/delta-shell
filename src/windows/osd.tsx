@@ -2,12 +2,7 @@ import { config, theme } from "@/options";
 import { windows_names } from "@/windows";
 import { Astal, Gtk } from "ags/gtk4";
 import app from "ags/gtk4/app";
-import {
-   osd_revealed,
-   osd_visible,
-   osd_visible_set,
-   OsdModule,
-} from "../modules/osd/osd";
+import { OsdModule, revealed, setRevealed, visible } from "../modules/osd/osd";
 import giCairo from "cairo";
 const { position, vertical } = config.osd;
 const { margin } = theme.window;
@@ -84,7 +79,7 @@ export function OsdWindow() {
          application={app}
          anchor={TOP | BOTTOM | RIGHT | LEFT}
          layer={Astal.Layer.OVERLAY}
-         visible={osd_visible}
+         visible={visible}
          $={(self) => (win = self)}
          onNotifyVisible={({ visible }) => {
             if (visible) {
@@ -99,9 +94,9 @@ export function OsdWindow() {
             transitionDuration={config.transition * 1000}
             halign={halign()}
             valign={valign()}
-            revealChild={osd_revealed}
+            revealChild={revealed}
             onNotifyChildRevealed={({ childRevealed }) =>
-               osd_visible_set(childRevealed)
+               setRevealed(childRevealed)
             }
          >
             <box
@@ -110,7 +105,7 @@ export function OsdWindow() {
                marginEnd={margin}
                marginStart={margin}
             >
-               <OsdModule visible={osd_visible} />
+               <OsdModule visible={visible} />
             </box>
          </revealer>
       </window>

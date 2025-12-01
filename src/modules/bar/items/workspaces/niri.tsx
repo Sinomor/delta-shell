@@ -1,6 +1,6 @@
 import { Gdk, Gtk } from "ags/gtk4";
 import AstalNiri from "gi://AstalNiri";
-import { createBinding, For } from "ags";
+import { createBinding, For, With } from "ags";
 import { compositor, config, theme } from "@/options";
 import { attachHoverScroll, bash, getAppInfo } from "@/src/lib/utils";
 import { icons } from "@/src/lib/icons";
@@ -14,8 +14,8 @@ export function WorkspacesNiri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
       console.warn("Workspaces_Niri: Niri compositor not active");
       return <box visible={false} />;
    }
-   const outputs = createBinding(niri, "outputs").as((outputs) =>
-      outputs.filter((output) => output.model === gdkmonitor.model),
+   const output = createBinding(niri, "outputs").as((outputs) =>
+      outputs.find((output) => output.model === gdkmonitor.model),
    );
 
    function AppButton({ client }: { client: AstalNiri.Window }) {
@@ -151,7 +151,9 @@ export function WorkspacesNiri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
 
    return (
       <box orientation={orientation} hexpand={isVertical}>
-         <For each={outputs}>{(output) => <Workspaces output={output} />}</For>
+         <With value={output}>
+            {(output) => output && <Workspaces output={output} />}
+         </With>
       </box>
    );
 }

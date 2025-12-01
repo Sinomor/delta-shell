@@ -21,7 +21,7 @@ import { AppLauncherWindow } from "./src/windows/applauncher";
 
 export const windows_names = {
    bar: "bar",
-   bar_shadow: "bar_shadow",
+   bar_shadow: "barshadow",
    applauncher: "applauncher",
    notifications_popup: "notificationspopup",
    quicksettings: "quicksettings",
@@ -38,21 +38,14 @@ export const windows_names = {
    clipboard: "clipboard",
 };
 
-export function hide_all_windows() {
-   app.get_window(windows_names.applauncher)?.hide();
-   app.get_window(windows_names.powermenu)?.hide();
-   app.get_window(windows_names.verification)?.hide();
-   app.get_window(windows_names.calendar)?.hide();
-   app.get_window(windows_names.quicksettings)?.hide();
-   if (hasBarItem("volume") || hasBarItem("microphone"))
-      app.get_window(windows_names.volume)?.hide();
-   hasBarItem("network") && app.get_window(windows_names.network)?.hide();
-   hasBarItem("bluetooth") && app.get_window(windows_names.bluetooth)?.hide();
-   hasBarItem("battery") && app.get_window(windows_names.power)?.hide();
-   config.clipboard.enabled && app.get_window(windows_names.clipboard)?.hide();
-   config.weather.enabled && app.get_window(windows_names.weather)?.hide();
-   config.notifications.enabled &&
-      app.get_window(windows_names.notificationslist)?.hide();
+export function hideWindows() {
+   const ignore = [windows_names.bar, windows_names.bar_shadow];
+
+   app.get_windows()
+      .filter((window) => !ignore.includes(window.name))
+      .forEach((w) => {
+         app.get_window(w.name)?.hide();
+      });
    qs_page_set("main");
 }
 

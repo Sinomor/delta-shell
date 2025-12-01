@@ -3,7 +3,7 @@ import { Gtk } from "ags/gtk4";
 import { bash, dependencies, hasBarItem } from "@/src/lib/utils";
 import { icons } from "@/src/lib/icons";
 import { createComputed, createState, For, onCleanup } from "ags";
-import { hide_all_windows, windows_names } from "@/windows";
+import { hideWindows, windows_names } from "@/windows";
 import { config, theme } from "@/options";
 import Cliphist from "@/src/services/cliphist";
 import { ClipText } from "./text";
@@ -62,7 +62,7 @@ function Entry() {
       const item = list.get()[0];
       const [id, ...contentParts] = item.split("\t");
       clipboard.copy(id);
-      hide_all_windows();
+      hideWindows();
    };
 
    return (
@@ -81,7 +81,7 @@ function Entry() {
             });
          }}
          placeholderText={"Search..."}
-         onActivate={() => onEnter()}
+         onActivate={onEnter}
          onNotifyText={(self) => {
             scrolled.set_vadjustment(null);
             text_set(self.text);
@@ -135,10 +135,9 @@ function NotFound() {
          halign={Gtk.Align.CENTER}
          valign={Gtk.Align.CENTER}
          vexpand
-         class={"apps-not-found"}
-         visible={list.as((l) => l.length === 0)}
+         visible={list((l) => l.length === 0)}
       >
-         <label label={"No matches found"} />
+         <label label={"No match found"} />
       </box>
    );
 }

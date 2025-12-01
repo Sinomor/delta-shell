@@ -2,17 +2,15 @@ import app from "ags/gtk4/app";
 import Apps from "gi://AstalApps?version=0.1";
 import { Gtk } from "ags/gtk4";
 import { createComputed, createState, For, onCleanup } from "ags";
-import { hide_all_windows, windows_names } from "@/windows";
+import { hideWindows, windows_names } from "@/windows";
 import { config, theme } from "@/options";
 import { AppButton } from "./appbutton";
 const { width, columns } = config.launcher;
 
 const apps = new Apps.Apps();
-const [text, text_set] = createState("");
+const [text, setText] = createState("");
 let scrolled: Gtk.ScrolledWindow;
-const list = text.as((text) => {
-   return apps.fuzzy_query(text);
-});
+const list = text((text) => apps.fuzzy_query(text));
 
 function Entry() {
    let appconnect: number;
@@ -22,8 +20,8 @@ function Entry() {
    });
 
    const onEnter = () => {
-      list.get()[0].launch();
-      hide_all_windows();
+      list.peek()[0].launch();
+      hideWindows();
    };
 
    return (
@@ -37,17 +35,17 @@ function Entry() {
                if (winName == windows_names.applauncher && visible) {
                   scrolled.set_vadjustment(null);
                   await apps.reload();
-                  text_set("");
+                  setText("");
                   self.set_text("");
                   self.grab_focus();
                }
             });
          }}
          placeholderText={"Search..."}
-         onActivate={() => onEnter()}
+         onActivate={onEnter}
          onNotifyText={(self) => {
             scrolled.set_vadjustment(null);
-            text_set(self.text);
+            setText(self.text);
          }}
       />
    );
@@ -62,19 +60,18 @@ function Header() {
 }
 
 function List() {
-   const columnedList = list.as((apps) => {
-      const result: Apps.Application[][] = Array.from(
-         { length: columns },
-         () => [],
-      );
-      apps.forEach((app, index) => {
-         result[index % columns].push(app);
-      });
-      return result;
-   });
+   const columnedList = list((apps) =>
+      apps.reduce(
+         (result, app, index) => {
+            result[index % columns].push(app);
+            return result;
+         },
+         Array.from({ length: columns }, () => [] as Apps.Application[]),
+      ),
+   );
 
    return (
-      <scrolledwindow class={"apps-list"} $={(self) => (scrolled = self)}>
+      <scrolledwindow $={(self) => (scrolled = self)}>
          <box spacing={theme.spacing} vexpand>
             <For each={columnedList}>
                {(column) => (
@@ -100,8 +97,7 @@ function NotFound() {
          halign={Gtk.Align.CENTER}
          valign={Gtk.Align.CENTER}
          vexpand
-         class={"apps-not-found"}
-         visible={list.as((l) => l.length === 0)}
+         visible={list((l) => l.length === 0)}
       >
          <label label={"No match found"} />
       </box>

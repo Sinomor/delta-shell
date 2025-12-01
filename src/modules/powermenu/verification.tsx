@@ -1,7 +1,7 @@
 import Gtk from "gi://Gtk";
 import Powermenu from "@/src/services/powermenu";
 import { createBinding } from "ags";
-import { hide_all_windows, windows_names } from "@/windows";
+import { hideWindows, windows_names } from "@/windows";
 import { config, theme } from "@/options";
 import { bash } from "@/src/lib/utils";
 import Pango from "gi://Pango?version=1.0";
@@ -27,7 +27,7 @@ export function VerificationModule() {
                focusOnClick={false}
                onClicked={() => {
                   powermenu.cancelAction();
-                  hide_all_windows();
+                  hideWindows();
                }}
             />
             <button
@@ -35,7 +35,7 @@ export function VerificationModule() {
                focusOnClick={false}
                onClicked={() => {
                   bash(powermenu.cmd);
-                  hide_all_windows();
+                  hideWindows();
                }}
             />
          </box>

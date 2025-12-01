@@ -34,7 +34,8 @@ window#clipboard {
       }
    }
 
-   .launcher-button {
+   .appbutton,
+   .clipbutton {
       min-height: 50px;
       padding: 0 10px;
       border-radius: $widget-radius;

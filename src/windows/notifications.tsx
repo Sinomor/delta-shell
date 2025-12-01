@@ -25,7 +25,7 @@ export function NotificationsWindow() {
    const { TOP, BOTTOM, RIGHT, LEFT } = Astal.WindowAnchor;
    let contentbox: Gtk.Box;
    let win: Astal.Window;
-   const [notifications, notifications_set] = createState<
+   const [notifications, setNotifications] = createState<
       AstalNotifd.Notification[]
    >([]);
    const doNotDisturb = createBinding(notifd, "dont_disturb");
@@ -34,16 +34,16 @@ export function NotificationsWindow() {
       const notification = notifd.get_notification(id);
 
       if (replaced && notifications.get().some((n) => n.id === id)) {
-         notifications_set((ns) =>
+         setNotifications((ns) =>
             ns.map((n) => (n.id === id ? notification : n)),
          );
       } else {
-         notifications_set((ns) => [notification, ...ns]);
+         setNotifications((ns) => [notification, ...ns]);
       }
    });
 
    const resolvedHandler = notifd.connect("resolved", (_, id) => {
-      notifications_set((ns) => ns.filter((n) => n.id !== id));
+      setNotifications((ns) => ns.filter((n) => n.id !== id));
    });
 
    onCleanup(() => {
@@ -53,16 +53,13 @@ export function NotificationsWindow() {
    });
 
    const windowVisibility = createComputed(
-      [notifications, doNotDisturb],
-      (notifications, doNotDisturb) => {
-         return !doNotDisturb && notifications.length > 0;
-      },
+      () => !doNotDisturb() && notifications().length > 0,
    );
 
    function handleHideNotification(notification: AstalNotifd.Notification) {
       if (notification.transient) return notification.dismiss();
 
-      notifications_set((notifications) =>
+      setNotifications((notifications) =>
          notifications.filter((notif) => notif.id !== notification.id),
       );
    }

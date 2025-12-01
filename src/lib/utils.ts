@@ -1,4 +1,4 @@
-import { hide_all_windows, windows_names } from "@/windows";
+import { hideWindows, windows_names } from "@/windows";
 import { Gdk, Gtk } from "ags/gtk4";
 import app from "ags/gtk4/app";
 import { exec, execAsync } from "ags/process";
@@ -98,7 +98,7 @@ export function toggleWindow(name: string): void {
    if (win.visible) {
       win.hide();
    } else {
-      hide_all_windows();
+      hideWindows();
       win.show();
    }
 }

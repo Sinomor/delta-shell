@@ -4,12 +4,13 @@ import AstalNotifd from "gi://AstalNotifd";
 import GLib from "gi://GLib?version=2.0";
 import { isIcon, fileExists } from "@/src/lib/utils";
 import Gio from "gi://Gio?version=2.0";
-import { createState } from "ags";
+import { CCProps, createState } from "ags";
 import { timeout } from "ags/time";
 import { config, theme } from "@/options";
 import Adw from "gi://Adw?version=1";
 import { Timer } from "@/src/lib/timer";
 import { icons } from "@/src/lib/icons";
+const { margin } = theme.window;
 
 const time = (time: number, format = "%H:%M") =>
    GLib.DateTime.new_from_unix_local(time).format(format);
@@ -32,7 +33,7 @@ export function Notification({
    showActions = true,
    onClose,
    ...props
-}: {
+}: Partial<CCProps<Adw.Clamp, Adw.Clamp.ConstructorProps>> & {
    n: AstalNotifd.Notification;
    showActions?: boolean;
    onClose: () => void;
@@ -49,7 +50,6 @@ export function Notification({
                <image
                   class={"app-icon"}
                   iconName={n.appIcon || n.desktopEntry}
-                  visible={Boolean(n.appIcon || n.desktopEntry)}
                />
             )}
             <label
@@ -125,7 +125,7 @@ export function Notification({
 
    function Actions() {
       return (
-         <box class="actions" spacing={theme.spacing}>
+         <box class={"actions"} spacing={theme.spacing}>
             {notificationActions.map(({ label, id }) => (
                <button hexpand onClicked={() => n.invoke(id)}>
                   <label label={label} halign={Gtk.Align.CENTER} hexpand />
@@ -136,7 +136,7 @@ export function Notification({
    }
 
    return (
-      <Adw.Clamp maximum_size={config.notifications.width} {...props}>
+      <Adw.Clamp maximumSize={config.notifications.width} {...props}>
          <box
             orientation={Gtk.Orientation.VERTICAL}
             widthRequest={config.notifications.width}
@@ -160,14 +160,14 @@ export function PopupNotification({
    showActions?: boolean;
    onHide?: (notification: AstalNotifd.Notification) => void;
 }) {
-   const [revealed, revealed_set] = createState(false);
+   const [revealed, setRevealed] = createState(false);
 
    const timer = new Timer(config.notifications.timeout * 1000);
 
    timer.subscribe(async () => {
-      revealed_set(true);
+      setRevealed(true);
       if (timer.timeLeft <= 0) {
-         revealed_set(false);
+         setRevealed(false);
 
          timeout(config.transition * 100 + 100, () => onHide && onHide(n));
       }
@@ -175,7 +175,6 @@ export function PopupNotification({
 
    timer.start();
 
-   const margin = theme.window.margin;
    return (
       <revealer
          transitionType={
@@ -193,8 +192,8 @@ export function PopupNotification({
          <Notification
             n={n}
             onClose={() => (timer.timeLeft = 0)}
-            margin_top={margin / 2}
-            margin_bottom={margin / 2}
+            marginTop={margin / 2}
+            marginBottom={margin / 2}
          />
       </revealer>
    );

@@ -40,7 +40,7 @@ export function Network() {
    const essid = createComputed(() => {
       device();
       if (primary() === AstalNetwork.Primary.WIFI) {
-         return wifi.ssid.toString();
+         return wifi.ssid;
       }
       return "";
    });

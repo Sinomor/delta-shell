@@ -36,7 +36,7 @@ function Day({ day }: { day: DailyWeather }) {
          spacing={theme.spacing}
          class={"day"}
       >
-         <label label={`${formateWeekDay(day.time)}`} />
+         <label label={formateWeekDay(day.time)} />
          <image iconName={day.icon} pixelSize={32} />
          <box orientation={Gtk.Orientation.VERTICAL}>
             <label
@@ -55,7 +55,7 @@ function Day({ day }: { day: DailyWeather }) {
 }
 
 export function Days() {
-   const days = weather.data.as((data) => {
+   const days = weather.data((data) => {
       if (!data) return [];
       return data?.daily;
    });

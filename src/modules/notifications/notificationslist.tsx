@@ -8,6 +8,7 @@ import { qs_page_set } from "../quicksettings/quicksettings";
 const notifd = AstalNotifd.get_default();
 
 function Header({ showArrow = false }: { showArrow?: boolean }) {
+   const dnd = createBinding(notifd, "dontDisturb");
    return (
       <box class={"notifs-header"} spacing={theme.spacing}>
          {showArrow && (
@@ -29,9 +30,7 @@ function Header({ showArrow = false }: { showArrow?: boolean }) {
          >
             <image
                halign={Gtk.Align.CENTER}
-               iconName={createBinding(notifd, "dontDisturb").as((dnd) =>
-                  dnd ? icons.bell_off : icons.bell,
-               )}
+               iconName={dnd((v) => (v ? icons.bell_off : icons.bell))}
                pixelSize={20}
             />
          </button>
@@ -39,9 +38,7 @@ function Header({ showArrow = false }: { showArrow?: boolean }) {
             cssClasses={["qs-header-button", "notifs-clear"]}
             focusOnClick={false}
             tooltipText={"Clear all"}
-            onClicked={() => {
-               notifd.notifications.forEach((n) => n.dismiss());
-            }}
+            onClicked={() => notifd.notifications.forEach((n) => n.dismiss())}
          >
             <image
                halign={Gtk.Align.CENTER}
@@ -54,15 +51,14 @@ function Header({ showArrow = false }: { showArrow?: boolean }) {
 }
 
 function NotFound() {
+   const notifications = createBinding(notifd, "notifications");
+
    return (
       <box
          halign={Gtk.Align.CENTER}
          valign={Gtk.Align.CENTER}
-         class={"notifs-not-found"}
          vexpand
-         visible={createBinding(notifd, "notifications").as(
-            (n) => n.length === 0,
-         )}
+         visible={notifications((n) => n.length === 0)}
       >
          <label label={"Your inbox is empty"} />
       </box>

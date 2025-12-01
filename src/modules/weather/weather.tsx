@@ -1,5 +1,4 @@
 import Gtk from "gi://Gtk";
-import { hide_all_windows, windows_names } from "@/windows";
 import { createComputed, With } from "ags";
 import { Current } from "./current";
 import { icons } from "@/src/lib/icons";
@@ -11,11 +10,9 @@ import { qs_page_set } from "../quicksettings/quicksettings";
 const weather = WeatherService.get_default();
 
 function ScanningIndicator() {
-   const className = weather.loading.as((scanning) => {
+   const className = weather.loading((scanning) => {
       const classes = ["scanning"];
-      if (scanning) {
-         classes.push("active");
-      }
+      if (scanning) classes.push("active");
       return classes;
    });
 
@@ -25,7 +22,7 @@ function ScanningIndicator() {
 }
 
 function Header({ showArrow = false }: { showArrow?: boolean }) {
-   const data = weather.location.as((location) => {
+   const data = weather.location((location) => {
       if (!location)
          return {
             label: "",
@@ -48,7 +45,7 @@ function Header({ showArrow = false }: { showArrow?: boolean }) {
             </button>
          )}
          <image iconName={icons.location} pixelSize={20} />
-         <label label={data.as((d) => d.label)} />
+         <label label={data((d) => d.label)} />
          <box hexpand />
          <button
             focusOnClick={false}

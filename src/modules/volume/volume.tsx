@@ -43,13 +43,14 @@ function StreamsList() {
       <box
          orientation={Gtk.Orientation.VERTICAL}
          spacing={theme.spacing}
-         visible={streams.as((l) => l.length > 0)}
+         visible={streams((l) => l.length > 0)}
       >
          <label label={"Applications"} halign={Gtk.Align.START} />
          <For each={streams}>
             {(stream) => {
                const name = createBinding(stream, "name");
                const app = getAppInfo(stream.description);
+               const volume = createBinding(stream, "volume");
 
                return (
                   <box
@@ -69,7 +70,7 @@ function StreamsList() {
                         spacing={theme.spacing / 2}
                      >
                         <label
-                           label={name.as(
+                           label={name(
                               (name) =>
                                  `${app?.name || stream.description}: ${name}`,
                            )}
@@ -82,7 +83,7 @@ function StreamsList() {
                               stream.volume = value;
                            }}
                            hexpand
-                           value={createBinding(stream, "volume")}
+                           value={volume}
                         />
                      </box>
                   </box>
@@ -124,25 +125,23 @@ function createFactory(maxWidth?: number, wrap = false) {
 function DefaultOutput() {
    const audio = wp.audio!;
    const defaultOutput = audio.defaultSpeaker;
-   const level = createBinding(defaultOutput, "volume");
+   const volume = createBinding(defaultOutput, "volume");
    const speakers = createBinding(audio, "speakers");
+   const description = createBinding(defaultOutput, "description");
 
-   const selected = createComputed(
-      [speakers, createBinding(defaultOutput, "description")],
-      (speakers, desc) => {
-         const index = speakers.findIndex(
-            (speaker) => speaker.description === desc,
-         );
-         return Math.max(0, index);
-      },
-   );
+   const selected = createComputed(() => {
+      const index = speakers().findIndex(
+         (speaker) => speaker.description === description(),
+      );
+      return Math.max(0, index);
+   });
 
    return (
       <box orientation={Gtk.Orientation.VERTICAL} spacing={theme.spacing}>
          <label label={"Output"} halign={Gtk.Align.START} />
          <Adw.Clamp maximumSize={410 - theme.window.padding * 2}>
             <Gtk.DropDown
-               model={speakers.as((speakers) => {
+               model={speakers((speakers) => {
                   const list = new Gtk.StringList();
                   speakers.map((speaker) => list.append(speaker.description));
                   return list;
@@ -174,7 +173,7 @@ function DefaultOutput() {
             <slider
                onChangeValue={({ value }) => defaultOutput.set_volume(value)}
                hexpand
-               value={level}
+               value={volume}
             />
          </box>
       </box>
@@ -184,25 +183,23 @@ function DefaultOutput() {
 function DefaultMicrophone() {
    const audio = wp.audio!;
    const defaultMicrophone = audio.defaultMicrophone;
-   const level = createBinding(defaultMicrophone, "volume");
+   const volume = createBinding(defaultMicrophone, "volume");
    const microphones = createBinding(audio, "microphones");
+   const description = createBinding(defaultMicrophone, "description");
 
-   const selected = createComputed(
-      [microphones, createBinding(defaultMicrophone, "description")],
-      (microphones, desc) => {
-         const index = microphones.findIndex(
-            (microphone) => microphone.description === desc,
-         );
-         return Math.max(0, index);
-      },
-   );
+   const selected = createComputed(() => {
+      const index = microphones().findIndex(
+         (microphone) => microphone.description === description(),
+      );
+      return Math.max(0, index);
+   });
 
    return (
       <box orientation={Gtk.Orientation.VERTICAL} spacing={theme.spacing}>
          <label label={"Microphone"} halign={Gtk.Align.START} />
          <Adw.Clamp maximumSize={410 - theme.window.padding * 2}>
             <Gtk.DropDown
-               model={microphones.as((microphones) => {
+               model={microphones((microphones) => {
                   const list = new Gtk.StringList();
                   microphones.map((microphone) =>
                      list.append(microphone.description),
@@ -238,7 +235,7 @@ function DefaultMicrophone() {
                   defaultMicrophone.set_volume(value)
                }
                hexpand
-               value={level}
+               value={volume}
             />
          </box>
       </box>

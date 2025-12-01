@@ -78,8 +78,14 @@ export function QSSliders() {
 
       for (const slider of sliders) {
          const Widget = Sliders[slider];
-         if (Widget) visible.push(Widget());
-         else console.error(`Failed create qsslider: unknown name ${slider}`);
+         if (!Widget) {
+            console.error(`Failed create qsslider: unknown name "${slider}"`);
+            continue;
+         }
+         const result = Widget();
+         if (result !== null && result !== undefined) {
+            visible.push(result);
+         }
       }
 
       return visible;

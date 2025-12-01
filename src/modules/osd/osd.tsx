@@ -7,29 +7,29 @@ import Brightness from "@/src/services/brightness";
 import { config, theme } from "@/options";
 import { windows_names } from "@/windows";
 const { width, height, vertical } = config.osd;
-export const [osd_visible, osd_visible_set] = createState(false);
-export const [osd_revealed, osd_revealed_set] = createState(false);
+export const [visible, setVisible] = createState(false);
+export const [revealed, setRevealed] = createState(false);
 
 export function OsdModule({ visible }: { visible: Accessor<boolean> }) {
    const brightness = Brightness.get_default();
    const speaker = Wp.get_default()?.get_default_speaker();
 
    const [iconName, iconName_set] = createState("");
-   const [value, value_set] = createState(0);
+   const [value, setValue] = createState(0);
    let firstStart = true;
    let count = 0;
 
    function show(v: number, icon: string) {
-      osd_visible_set(true);
-      osd_revealed_set(true);
-      value_set(v);
+      setVisible(true);
+      setRevealed(true);
+      setValue(v);
       iconName_set(icon);
       count++;
 
       timeout(config.osd.timeout * 1000, () => {
          count--;
          if (count === 0) {
-            osd_revealed_set(false);
+            setRevealed(false);
          }
       });
    }

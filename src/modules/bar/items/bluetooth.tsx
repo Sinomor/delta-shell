@@ -12,10 +12,9 @@ export function Bluetooth() {
    const powered = createBinding(bluetooth, "isPowered");
    const devices = createBinding(bluetooth, "devices");
    const adapter = createBinding(bluetooth, "adapter");
-   const device = createComputed(() => {
-      connected();
-      return devices().filter((device) => device.connected)[0];
-   });
+   const device = createComputed(
+      () => (connected(), devices().find((device) => device.connected)),
+   );
 
    return (
       <BarItem
@@ -33,26 +32,26 @@ export function Bluetooth() {
             ),
             "controller-address": (
                <label
-                  label={adapter((adapter) => adapter.address.toString())}
+                  label={adapter((adapter) => adapter.address)}
                   hexpand={isVertical}
                />
             ),
             "controller-alias": (
                <label
-                  label={adapter((adapter) => adapter.alias.toString())}
+                  label={adapter((adapter) => adapter.alias)}
                   hexpand={isVertical}
                />
             ),
             "device-address": (
                <label
-                  label={device((d) => (d ? d.address.toString() : ""))}
+                  label={device((d) => (d ? d.address : ""))}
                   visible={connected}
                   hexpand={isVertical}
                />
             ),
             "device-alias": (
                <label
-                  label={device((d) => (d ? d.alias.toString() : ""))}
+                  label={device((d) => (d ? d.alias : ""))}
                   visible={connected}
                   hexpand={isVertical}
                />

@@ -1,6 +1,6 @@
 import { Gdk, Gtk } from "ags/gtk4";
 import AstalHyprland from "gi://AstalHyprland?version=0.1";
-import { createBinding, For } from "ags";
+import { createBinding, For, With } from "ags";
 import { icons } from "@/src/lib/icons";
 import BarItem, { FunctionsList } from "@/src/widgets/baritem";
 import { compositor, config, theme } from "@/options";
@@ -15,8 +15,8 @@ export function WorkspacesHypr({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
       console.warn("Workspaces_Hypr: Hyprland compositor not active");
       return <box visible={false} />;
    }
-   const monitors = createBinding(hyprland, "monitors").as((monitors) =>
-      monitors.filter((monitor) => monitor.model === gdkmonitor.model),
+   const monitor = createBinding(hyprland, "monitors").as((monitors) =>
+      monitors.find((monitor) => monitor.model === gdkmonitor.model),
    );
 
    function AppButton({ client }: { client: AstalHyprland.Client }) {
@@ -162,9 +162,9 @@ export function WorkspacesHypr({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
 
    return (
       <box orientation={orientation} hexpand={isVertical}>
-         <For each={monitors}>
-            {(monitor) => <Workspaces monitor={monitor} />}
-         </For>
+         <With value={monitor}>
+            {(monitor) => monitor && <Workspaces monitor={monitor} />}
+         </With>
       </box>
    );
 }

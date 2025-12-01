@@ -1,8 +1,8 @@
 import Pango from "gi://Pango?version=1.0";
 import { bash } from "@/src/lib/utils";
 import { Gdk, Gtk } from "ags/gtk4";
-import { hide_all_windows } from "@/windows";
 import Cliphist from "@/src/services/cliphist";
+import { hideWindows } from "@/windows";
 const clipboard = Cliphist.get_default();
 
 export function ClipColor({ id, content }: { id: string; content: string }) {
@@ -11,10 +11,10 @@ export function ClipColor({ id, content }: { id: string; content: string }) {
 
    return (
       <button
-         cssClasses={["launcher-button", "clipbutton", "color-content"]}
+         cssClasses={["clipbutton", "color-content"]}
          onClicked={() => {
             clipboard.copy(id);
-            hide_all_windows();
+            hideWindows();
          }}
          focusOnClick={false}
       >

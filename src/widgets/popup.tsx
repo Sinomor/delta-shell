@@ -1,10 +1,10 @@
 import { Astal, Gdk, Gtk } from "ags/gtk4";
 import app from "ags/gtk4/app";
 import { Accessor, createState } from "ags";
-import { hide_all_windows } from "@/windows";
 import Graphene from "gi://Graphene?version=1.0";
 import Adw from "gi://Adw?version=1";
 import { config, theme } from "@/options";
+import { hideWindows } from "@/windows";
 const { margin } = theme.window;
 
 type PopupProps = JSX.IntrinsicElements["window"] & {
@@ -83,7 +83,7 @@ export function Popup({
                const position = new Graphene.Point({ x, y });
 
                if (!rect.contains_point(position)) {
-                  hide_all_windows();
+                  hideWindows();
                }
             }}
          />

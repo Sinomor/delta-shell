@@ -2,7 +2,7 @@ import AstalNetwork from "gi://AstalNetwork";
 import { bash } from "@/src/lib/utils";
 import { icons, getAccessPointIcon } from "@/src/lib/icons";
 import { Gtk } from "ags/gtk4";
-import { createBinding, For } from "ags";
+import { createBinding, createComputed, For } from "ags";
 import { theme } from "@/options";
 import { qs_page_set } from "../quicksettings/quicksettings";
 const network = AstalNetwork.get_default();
@@ -10,9 +10,7 @@ const network = AstalNetwork.get_default();
 function ScanningIndicator() {
    const className = createBinding(network.wifi, "scanning").as((scanning) => {
       const classes = ["scanning"];
-      if (scanning) {
-         classes.push("active");
-      }
+      if (scanning) classes.push("active");
       return classes;
    });
 
@@ -61,7 +59,7 @@ type ItemProps = {
 };
 
 function Item({ accessPoint }: ItemProps) {
-   const isConnected = createBinding(network.wifi, "ssid").as(
+   const connected = createBinding(network.wifi, "ssid").as(
       (ssid) => ssid === accessPoint.ssid,
    );
 
@@ -77,20 +75,21 @@ function Item({ accessPoint }: ItemProps) {
             <image iconName={getAccessPointIcon(accessPoint)} pixelSize={20} />
             <label label={accessPoint.ssid} />
             <box hexpand />
-            <image
-               iconName={icons.check}
-               pixelSize={20}
-               visible={isConnected}
-            />
+            <image iconName={icons.check} pixelSize={20} visible={connected} />
          </box>
       </button>
    );
 }
 
 function List() {
-   const list = createBinding(network.wifi, "accessPoints").as((aps) =>
-      aps.filter((ap) => !!ap.ssid).sort((a, b) => b.strength - a.strength),
-   );
+   const ssid = createBinding(network.wifi, "ssid");
+   const accessPoints = createBinding(network.wifi, "accessPoints");
+   const list = createComputed(() => {
+      return accessPoints()
+         .filter((ap) => !!ap.ssid)
+         .sort((a, b) => b.strength - a.strength)
+         .sort((a, b) => Number(ssid() === b.ssid) - Number(ssid() === a.ssid));
+   });
 
    return (
       <scrolledwindow>

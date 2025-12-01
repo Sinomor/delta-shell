@@ -1,7 +1,7 @@
 import Gtk from "gi://Gtk";
 import { icons } from "@/src/lib/icons";
 import Powermenu from "@/src/services/powermenu";
-import { hide_all_windows, windows_names } from "@/windows";
+import { windows_names } from "@/windows";
 import { config, theme } from "@/options";
 const powermenu = Powermenu.get_default();
 

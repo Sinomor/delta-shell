@@ -1,4 +1,3 @@
-import { Gtk } from "ags/gtk4";
 import { getNetworkIconBinding, icons, VolumeIcon } from "@/src/lib/icons";
 import AstalNetwork from "gi://AstalNetwork?version=0.1";
 import AstalBluetooth from "gi://AstalBluetooth?version=0.1";
@@ -20,7 +19,6 @@ import { FunctionsList } from "@/src/widgets/baritem";
 const network = AstalNetwork.get_default();
 const bluetooth = AstalBluetooth.get_default();
 const powerprofile = AstalPowerProfiles.get_default();
-const weather = WeatherService.get_default();
 const wp = AstalWp.get_default();
 const notifd = AstalNotifd.get_default();
 
@@ -40,30 +38,28 @@ const Buttons = {
 function VolumeButton() {
    const speaker = wp.get_default_speaker();
    const mute = createBinding(speaker, "mute");
-   const level = createComputed(
-      [createBinding(speaker, "volume"), mute],
-      (volume, mute) => {
-         if (mute) return "None";
-         else return `${Math.floor(volume * 100)}%`;
-      },
-   );
+   const volume = createBinding(speaker, "volume");
+   const level = createComputed(() => {
+      if (mute()) return "";
+      else return `${Math.floor(volume() * 100)}%`;
+   });
 
    return (
       <QSButton
          icon={VolumeIcon}
          label={"Volume"}
-         subtitle={level.as((level) => (level !== "None" ? level : "None"))}
+         subtitle={level((level) => (level !== "" ? level : "None"))}
          onClicked={() => speaker.set_mute(!speaker.get_mute())}
          onArrowClicked={() => qs_page_set("volume")}
          onScrollUp={() => FunctionsList["volume-up"]()}
          onScrollDown={() => FunctionsList["volume-down"]()}
          arrow={"separate"}
-         ArrowClasses={mute.as((p) => {
+         ArrowClasses={mute((p) => {
             const classes = ["arrow"];
             !p && classes.push("active");
             return classes;
          })}
-         ButtonClasses={mute.as((p) => {
+         ButtonClasses={mute((p) => {
             const classes = ["qs-button-box-arrow"];
             !p && classes.push("active");
             return classes;
@@ -75,30 +71,28 @@ function VolumeButton() {
 function MicrophoneButton() {
    const microphone = wp.get_default_microphone();
    const mute = createBinding(microphone, "mute");
-   const level = createComputed(
-      [createBinding(microphone, "volume"), mute],
-      (volume, mute) => {
-         if (mute) return "None";
-         else return `${Math.floor(volume * 100)}%`;
-      },
-   );
+   const volume = createBinding(microphone, "volume");
+   const level = createComputed(() => {
+      if (mute()) return "";
+      else return `${Math.floor(volume() * 100)}%`;
+   });
 
    return (
       <QSButton
          icon={icons.microphone.default}
          label={"Microphone"}
-         subtitle={level.as((level) => (level !== "None" ? level : "None"))}
+         subtitle={level((level) => (level !== "None" ? level : "None"))}
          onClicked={() => microphone.set_mute(!microphone.get_mute())}
          onArrowClicked={() => qs_page_set("volume")}
          onScrollUp={() => FunctionsList["microphone-up"]()}
          onScrollDown={() => FunctionsList["microphone-down"]()}
          arrow={"separate"}
-         ArrowClasses={mute.as((p) => {
+         ArrowClasses={mute((p) => {
             const classes = ["arrow"];
             !p && classes.push("active");
             return classes;
          })}
-         ButtonClasses={mute.as((p) => {
+         ButtonClasses={mute((p) => {
             const classes = ["qs-button-box-arrow"];
             !p && classes.push("active");
             return classes;
@@ -112,39 +106,33 @@ function PowerProfilesButton() {
 
    return (
       <QSButton
-         icon={activeprofile.as((profile) => icons.powerprofiles[profile])}
+         icon={activeprofile((profile) => icons.powerprofiles[profile])}
          label={"Power"}
-         subtitle={activeprofile.as((profile) => profiles_names[profile])}
+         subtitle={activeprofile((profile) => profiles_names[profile])}
          arrow={"separate"}
          onClicked={() => {
-            const setprofile = activeprofile.as((profile) => {
-               if (profile == "performance" || profile == "power-saver") {
-                  return "balanced";
-               } else {
-                  return "performance";
-               }
-            });
-            powerprofile.set_active_profile(setprofile.get());
+            const active = activeprofile.peek();
+            const set =
+               active === "performance" || active === "power-saver"
+                  ? "balanced"
+                  : "performance";
+            powerprofile.set_active_profile(set);
          }}
          onArrowClicked={() => qs_page_set("power")}
-         ArrowClasses={createBinding(powerprofile, "activeProfile").as(
-            (profile) => {
-               const classes = ["arrow"];
-               if (profile == "performance" || profile == "power-saver") {
-                  classes.push("active");
-               }
-               return classes;
-            },
-         )}
-         ButtonClasses={createBinding(powerprofile, "activeProfile").as(
-            (profile) => {
-               const classes = ["qs-button-box-arrow"];
-               if (profile == "performance" || profile == "power-saver") {
-                  classes.push("active");
-               }
-               return classes;
-            },
-         )}
+         ArrowClasses={activeprofile((profile) => {
+            const classes = ["arrow"];
+            if (profile == "performance" || profile == "power-saver") {
+               classes.push("active");
+            }
+            return classes;
+         })}
+         ButtonClasses={activeprofile((profile) => {
+            const classes = ["qs-button-box-arrow"];
+            if (profile == "performance" || profile == "power-saver") {
+               classes.push("active");
+            }
+            return classes;
+         })}
       />
    );
 }
@@ -152,45 +140,36 @@ function PowerProfilesButton() {
 function InternetButton() {
    const wifi = network.wifi;
    const wired = network.wired;
-   const enabled = createComputed(
-      [
-         createBinding(network, "primary"),
-         ...(network.wifi !== null
-            ? [createBinding(network.wifi, "enabled")]
-            : []),
-      ],
-      (primary, enabled) => {
-         if (
-            primary === AstalNetwork.Primary.WIRED &&
-            network.wired.internet === AstalNetwork.Internet.CONNECTED
-         )
-            return true;
-         return enabled;
-      },
-   );
-   const subtitle = createComputed(
-      [
-         createBinding(network, "primary"),
-         createBinding(network, "connectivity"),
-      ],
-      (primary, connectivity) => {
-         if (primary === AstalNetwork.Primary.WIRED) {
-            if (wired.internet === AstalNetwork.Internet.CONNECTED) {
-               return "Wired";
-            }
+   const connectivity = createBinding(network, "connectivity");
+   const primary = createBinding(network, "primary");
+
+   const enabled = createComputed(() => {
+      connectivity();
+      if (
+         primary() === AstalNetwork.Primary.WIRED &&
+         network.wired.internet === AstalNetwork.Internet.CONNECTED
+      )
+         return true;
+      if (wifi !== null) return wifi.enabled;
+   });
+
+   const subtitle = createComputed(() => {
+      if (primary() === AstalNetwork.Primary.WIRED) {
+         if (wired.internet === AstalNetwork.Internet.CONNECTED) {
+            return "Wired";
          }
-         if (primary === AstalNetwork.Primary.WIFI) {
-            return wifi.ssid;
-         }
-         return "unknown";
-      },
-   );
+      }
+      if (primary() === AstalNetwork.Primary.WIFI) {
+         return wifi.ssid;
+      }
+      return "";
+   });
 
    return (
       <QSButton
          icon={getNetworkIconBinding()}
          label={"Internet"}
-         subtitle={subtitle((text) => (text !== "unknown" ? text : "None"))}
+         subtitle={subtitle((text) => (text !== "" ? text : "None"))}
          onClicked={() => {
             if (
                network.primary === AstalNetwork.Primary.WIFI ||
@@ -204,12 +183,12 @@ function InternetButton() {
             qs_page_set("network");
          }}
          arrow={network.wifi !== null ? "separate" : "none"}
-         ArrowClasses={enabled.as((p) => {
+         ArrowClasses={enabled((p) => {
             const classes = ["arrow"];
             p && classes.push("active");
             return classes;
          })}
-         ButtonClasses={enabled.as((p) => {
+         ButtonClasses={enabled((p) => {
             const classes = ["qs-button-box-arrow"];
             p && classes.push("active");
             return classes;
@@ -220,32 +199,30 @@ function InternetButton() {
 
 function ScreenRecordButton() {
    const screenRecord = ScreenRecord.get_default();
-   const progress = createComputed(
-      [
-         createBinding(screenRecord, "recording"),
-         createBinding(screenRecord, "timer"),
-      ],
-      (recording, time) => {
-         if (recording) {
-            const sec = time % 60;
-            const min = Math.floor(time / 60);
-            return `${min}:${sec < 10 ? "0" + sec : sec}`;
-         } else return "None";
-      },
-   );
+   const recording = createBinding(screenRecord, "recording");
+   const timer = createBinding(screenRecord, "timer");
+
+   const progress = createComputed(() => {
+      if (recording()) {
+         const time = timer();
+         const sec = time % 60;
+         const min = Math.floor(time / 60);
+         return `${min}:${sec < 10 ? "0" + sec : sec}`;
+      } else return "";
+   });
 
    return (
       <QSButton
          icon={icons.video}
          label={"Screen Record"}
          subtitle={progress.as((progress) =>
-            progress !== "None" ? progress : "None",
+            progress !== "" ? progress : "None",
          )}
          onClicked={() => {
             if (screenRecord.recording) screenRecord.stop();
             else screenRecord.start();
          }}
-         ButtonClasses={createBinding(screenRecord, "recording").as((p) => {
+         ButtonClasses={recording((p) => {
             const classes = ["qs-button-box"];
             p && classes.push("active");
             return classes;
@@ -256,35 +233,26 @@ function ScreenRecordButton() {
 
 function BluetoothButton() {
    const powered = createBinding(bluetooth, "isPowered");
-   const deviceConnected = createComputed(
-      [
-         createBinding(bluetooth, "devices"),
-         createBinding(bluetooth, "isConnected"),
-      ],
-      (d, _) => {
-         for (const device of d) {
-            if (device.connected) return device.name;
-         }
-         return "No device";
-      },
+   const connected = createBinding(bluetooth, "isConnected");
+   const devices = createBinding(bluetooth, "devices");
+   const device = createComputed(
+      () => (connected(), devices().find((device) => device.connected)),
    );
 
    return (
       <QSButton
          icon={icons.bluetooth}
          label={"Bluetooth"}
-         subtitle={deviceConnected((text) =>
-            text !== "No device" ? text : "None",
-         )}
+         subtitle={device((d) => (d ? d.alias : "None"))}
          arrow={"separate"}
          onClicked={() => bluetooth.toggle()}
          onArrowClicked={() => qs_page_set("bluetooth")}
-         ArrowClasses={powered.as((p) => {
+         ArrowClasses={powered((p) => {
             const classes = ["arrow"];
             p && classes.push("active");
             return classes;
          })}
-         ButtonClasses={powered.as((p) => {
+         ButtonClasses={powered((p) => {
             const classes = ["qs-button-box-arrow"];
             p && classes.push("active");
             return classes;
@@ -294,19 +262,18 @@ function BluetoothButton() {
 }
 
 function WeatherButton() {
-   const temp = createComputed(
-      [weather.data, weather.running],
-      (data, running) => {
-         if (!data) return "None";
+   const weather = WeatherService.get_default();
 
-         const current = data.hourly[0];
-         return running
-            ? `${current.temperature}${current.units.temperature}`
-            : "None";
-      },
-   );
+   const temp = createComputed(() => {
+      const data = weather.data();
+      if (!data) return "";
+      const current = data.hourly[0];
+      return weather.running()
+         ? `${current.temperature}${current.units.temperature}`
+         : "";
+   });
 
-   const icon = weather.data.as((data) => {
+   const icon = weather.data((data) => {
       if (!data) return icons.weather.clear.day;
 
       const current = data.hourly[0];
@@ -315,9 +282,9 @@ function WeatherButton() {
 
    return (
       <QSButton
-         icon={icon.as((icon) => icon)}
+         icon={icon}
          label={"Weather"}
-         subtitle={temp.as((temp) => (temp !== "None" ? temp : "None"))}
+         subtitle={temp((temp) => (temp !== "" ? temp : "None"))}
          arrow={"inside"}
          onClicked={() => qs_page_set("weather")}
          ButtonClasses={["qs-button-box-arrow-inside"]}
@@ -327,22 +294,24 @@ function WeatherButton() {
 
 function NotificationsButton() {
    const enabled = createBinding(notifd, "dontDisturb");
+   const notifications = createBinding(notifd, "notifications");
+
    return (
       <QSButton
          icon={icons.bell}
          label={"Notifications"}
-         subtitle={createBinding(notifd, "notifications").as((notifs) =>
-            notifs.length === 0 ? "None" : notifs.length.toString(),
+         subtitle={notifications((n) =>
+            n.length === 0 ? "None" : n.length.toString(),
          )}
          arrow={"separate"}
          onClicked={() => notifd.set_dont_disturb(!notifd.dontDisturb)}
          onArrowClicked={() => qs_page_set("notificationslist")}
-         ArrowClasses={enabled.as((p) => {
+         ArrowClasses={enabled((p) => {
             const classes = ["arrow"];
             !p && classes.push("active");
             return classes;
          })}
-         ButtonClasses={enabled.as((p) => {
+         ButtonClasses={enabled((p) => {
             const classes = ["qs-button-box-arrow"];
             !p && classes.push("active");
             return classes;

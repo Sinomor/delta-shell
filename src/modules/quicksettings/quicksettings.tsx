@@ -4,18 +4,19 @@ import { MainPage } from "./pages/main";
 import { BluetoothPage } from "./pages/bluetooth";
 import { PowerPage } from "./pages/power";
 import { VolumePage } from "./pages/volume";
-import { createState, onCleanup } from "ags";
-import { hide_all_windows, windows_names } from "@/windows";
+import { createEffect, createState, onCleanup } from "ags";
+import { windows_names } from "@/windows";
 import { config } from "@/options";
 import AstalNetwork from "gi://AstalNetwork?version=0.1";
 import AstalBluetooth from "gi://AstalBluetooth?version=0.1";
 import { WeatherPage } from "./pages/weather";
 import { NotificationsListPage } from "./pages/notificationslist";
 export const [qs_page, qs_page_set] = createState("main");
-const network = AstalNetwork.get_default();
-const bluetooth = AstalBluetooth.get_default();
 
 export function QuickSettingsModule() {
+   const network = AstalNetwork.get_default();
+   const bluetooth = AstalBluetooth.get_default();
+
    return (
       <stack
          transitionDuration={config.transition * 1000}
@@ -25,10 +26,7 @@ export function QuickSettingsModule() {
          interpolate_size={true}
          transitionType={Gtk.StackTransitionType.CROSSFADE}
          $={(self) => {
-            const unsub = qs_page.subscribe(() =>
-               self.set_visible_child_name(qs_page.get()),
-            );
-            onCleanup(() => unsub());
+            createEffect(() => self.set_visible_child_name(qs_page()));
          }}
       >
          <MainPage />
