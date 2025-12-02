@@ -39,7 +39,11 @@ export const windows_names = {
 };
 
 export function hideWindows() {
-   const ignore = [windows_names.bar, windows_names.bar_shadow];
+   const ignore = [
+      windows_names.bar,
+      windows_names.bar_shadow,
+      windows_names.osd,
+   ];
 
    app.get_windows()
       .filter((window) => !ignore.includes(window.name))
