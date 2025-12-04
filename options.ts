@@ -120,6 +120,7 @@ export const config = mkOptions(configFile, {
       width: 400,
       height: 500,
       columns: 1,
+      "sort-type": "frequency" as "frequency" | "alphabetical" | null,
    },
    clipboard: {
       enabled: true,

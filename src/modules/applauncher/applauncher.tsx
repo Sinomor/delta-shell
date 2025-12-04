@@ -5,12 +5,19 @@ import { createComputed, createState, For, onCleanup } from "ags";
 import { hideWindows, windows_names } from "@/windows";
 import { config, theme } from "@/options";
 import { AppButton } from "./appbutton";
-const { width, columns } = config.launcher;
+const { width, columns, "sort-type": sort } = config.launcher;
 
 const apps = new Apps.Apps();
 const [text, setText] = createState("");
 let scrolled: Gtk.ScrolledWindow;
-const list = text((text) => apps.fuzzy_query(text));
+const list = text((text) => {
+   if (sort === "frequency") return apps.fuzzy_query(text);
+   if (sort === "alphabetical")
+      return apps
+         .fuzzy_query(text)
+         .sort((a, b) => a.name.localeCompare(b.name));
+   return apps.fuzzy_query(text);
+});
 
 function Entry() {
    let appconnect: number;
