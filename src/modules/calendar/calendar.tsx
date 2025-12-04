@@ -1,6 +1,6 @@
 import { icons } from "@/src/lib/icons";
 import { Gtk } from "ags/gtk4";
-import { For } from "ags";
+import { createBinding, For } from "ags";
 import { theme } from "@/options";
 import CalendarService, { CalendarDay } from "@/src/services/calendar";
 const calendar = CalendarService.get_default();
@@ -41,26 +41,38 @@ function WeekDayHeader({ day, index }: { day: string; index: number }) {
 }
 
 function Header() {
+   const label = createBinding(calendar, "date").as((date: Date) => {
+      const month = date.toLocaleString("default", { month: "long" });
+      const year = date.getFullYear();
+
+      const today = new Date();
+      const isCurrentMonth =
+         date.getMonth() === today.getMonth() &&
+         date.getFullYear() === today.getFullYear();
+
+      return `${isCurrentMonth ? "" : "• "}${month} ${year}`;
+   });
+
    return (
       <box class={"header"} spacing={theme.spacing}>
          <button
             class={"monthyear"}
-            onClicked={() => calendar.resetToToday()}
+            onClicked={() => calendar.reset()}
             focusOnClick={false}
-            label={calendar.monthYear}
+            label={label}
          />
          <box hexpand />
          <button
             focusOnClick={false}
             class={"monthshift"}
-            onClicked={() => calendar.prevMonth()}
+            onClicked={() => calendar.shiftMonth(-1)}
          >
             <image iconName={icons.arrow.left} pixelSize={20} />
          </button>
          <button
             focusOnClick={false}
             class={"monthshift"}
-            onClicked={() => calendar.nextMonth()}
+            onClicked={() => calendar.shiftMonth(1)}
          >
             <image iconName={icons.arrow.right} pixelSize={20} />
          </button>
@@ -69,10 +81,12 @@ function Header() {
 }
 
 export function CalendarModule() {
+   const weeks = createBinding(calendar, "calendar");
+
    return (
       <box
          $={(self) => {
-            self.connect("map", () => calendar.resetToToday());
+            self.connect("map", () => calendar.reset());
          }}
          orientation={Gtk.Orientation.VERTICAL}
          spacing={theme.spacing}
@@ -88,7 +102,7 @@ export function CalendarModule() {
             class={"days"}
             orientation={Gtk.Orientation.VERTICAL}
          >
-            <For each={calendar.weeks}>
+            <For each={weeks}>
                {(week) => (
                   <box spacing={theme.spacing}>
                      {week.map((day) => (
