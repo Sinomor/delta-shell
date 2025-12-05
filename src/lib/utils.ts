@@ -53,6 +53,42 @@ export async function bash(
    });
 }
 
+/**
+ * Directly uses Gio.Subprocess to invoke bash and return the output in bytes.
+ */
+export async function bashRaw(
+   strings: TemplateStringsArray | string,
+   stdin_buffer?: Uint8Array,
+   ...values: unknown[]
+): Promise<Uint8Array | undefined> {
+   const cmd =
+      typeof strings === "string"
+         ? strings
+         : strings.flatMap((str, i) => str + `${values[i] ?? ""}`).join("");
+
+   const flags =
+      Gio.SubprocessFlags.STDOUT_PIPE |
+      Gio.SubprocessFlags.STDERR_PIPE |
+      (stdin_buffer ? Gio.SubprocessFlags.STDIN_PIPE : 0);
+
+   const proc = Gio.Subprocess.new(["bash", "-c", cmd], flags);
+
+   return new Promise<Uint8Array>((resolve, reject) => {
+      proc.communicate_async(stdin_buffer ?? null, null, (_: unknown, res: Gio.AsyncResult) => {
+         try {
+            const [, out, err] = proc.communicate_finish(res)
+            if (proc.get_successful()) {
+               return resolve(out?.get_data() ?? new Uint8Array());
+            } else {
+               reject(err?.get_data() ?? new Uint8Array());
+            }
+         } catch (error) {
+            reject(error)
+         }
+      })
+   });
+}
+
 type NotifUrgency = "low" | "normal" | "critical";
 
 export const now = (): string =>
