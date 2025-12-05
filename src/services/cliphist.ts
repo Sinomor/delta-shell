@@ -91,7 +91,17 @@ export default class Cliphist extends GObject.Object {
    async copy(id: string) {
       if (!dependencies("cliphist")) return;
       try {
-         return await bash(`cliphist decode ${id} | wl-copy`);
+         // Funny workaround for wl-copy acting weird with a single character being piped to it
+         // Use wl-copy directly if the decoded content is only one character, otherwise
+         // we may pipe to it as usual
+         let bytes = await bash(`cliphist decode ${id} | xxd -p -c 256`);
+         let bytes_to_text = `echo -n "${bytes}" | xxd -r -p`;
+
+         if (bytes.trim().length <= 2) {
+            return await bash(`wl-copy $(${bytes_to_text})`);
+         }
+         
+         return await bash(`${bytes_to_text} | wl-copy`);
       } catch (error) {
          console.error("Failed to copy item:", error);
       }
