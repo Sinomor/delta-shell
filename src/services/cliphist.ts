@@ -1,5 +1,5 @@
 import GObject, { register, getter } from "ags/gobject";
-import { bash, dependencies, ensureDirectory } from "@/src/lib/utils";
+import { bash, bashRaw, dependencies, ensureDirectory } from "@/src/lib/utils";
 import { createState } from "ags";
 import { config } from "@/options";
 import { monitorFile } from "ags/file";
@@ -91,7 +91,19 @@ export default class Cliphist extends GObject.Object {
    async copy(id: string) {
       if (!dependencies("cliphist")) return;
       try {
-         return await bash(`cliphist decode ${id} | wl-copy`);
+         // Funny workaround for wl-copy acting weird with a single character being piped to it
+         // Use wl-copy directly if the decoded content is only one character, otherwise
+         // we may pipe to it as usual
+         const cliphist_bytes = await bashRaw(`cliphist decode ${id}`);
+         if (!cliphist_bytes) 
+            return;
+         
+         if (cliphist_bytes.length <= 1) {
+            const char = String.fromCharCode(cliphist_bytes[0]);
+            return await bash(`wl-copy ${char}`);
+         }
+         
+         return await bashRaw(`wl-copy`, cliphist_bytes);
       } catch (error) {
          console.error("Failed to copy item:", error);
       }
