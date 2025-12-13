@@ -6,7 +6,6 @@ import { attachHoverScroll, bash, getAppInfo } from "@/src/lib/utils";
 import { icons } from "@/src/lib/icons";
 import BarItem, { FunctionsList } from "@/src/widgets/baritem";
 import { isVertical, orientation } from "../../bar";
-const apps_icons = config.bar.modules.workspaces["taskbar-icons"];
 const niri = compositor.peek() === "niri" ? AstalNiri.get_default() : null;
 
 export function WorkspacesNiri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
@@ -19,6 +18,12 @@ export function WorkspacesNiri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
    );
 
    function AppButton({ client }: { client: AstalNiri.Window }) {
+      const apps_icons = config.bar.modules.workspaces["taskbar-icons"];
+      const appInfo = getAppInfo(client.app_id);
+      const format = config.bar.modules.workspaces["app-format"];
+      const iconName =
+         apps_icons[client.app_id] || appInfo?.iconName || icons.apps_default;
+      const title = createBinding(client, "title");
       const classes = createBinding(niri!, "focusedWindow").as((fcsClient) => {
          const classes = ["taskbar-button"];
          if (!fcsClient || !client.app_id || !fcsClient.app_id) return classes;
@@ -27,96 +32,134 @@ export function WorkspacesNiri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
          return classes;
       });
 
-      const appInfo = getAppInfo(client.app_id);
-      const iconName =
-         apps_icons[client.app_id] || appInfo?.iconName || icons.apps_default;
+      const hasIndicator = format.includes("{indicator}");
 
-      const indicatorValign = () => {
-         switch (config.bar.position) {
-            case "top":
-               return Gtk.Align.START;
-            case "bottom":
-               return Gtk.Align.END;
-            case "right":
-            case "left":
-               return Gtk.Align.CENTER;
-         }
-      };
+      const formatWithoutIndicator = format
+         .replace(/\{indicator\}\s*/g, "")
+         .trim();
+      const mainFormat = formatWithoutIndicator
+         ? formatWithoutIndicator
+         : "{icon}";
 
-      const indicatorHalign = () => {
-         switch (config.bar.position) {
-            case "top":
-            case "bottom":
-               return Gtk.Align.CENTER;
-            case "right":
-               return Gtk.Align.END;
-            case "left":
-               return Gtk.Align.START;
-         }
-      };
+      const indicatorValign =
+         config.bar.position === "top"
+            ? Gtk.Align.START
+            : config.bar.position === "bottom"
+              ? Gtk.Align.END
+              : Gtk.Align.CENTER;
+
+      const indicatorHalign =
+         config.bar.position === "left"
+            ? Gtk.Align.START
+            : config.bar.position === "right"
+              ? Gtk.Align.END
+              : Gtk.Align.CENTER;
 
       return (
-         <box cssClasses={classes}>
-            <Gtk.GestureClick
-               onPressed={(ctrl, _, x, y) => {
-                  const button = ctrl.get_current_button();
-                  if (button === Gdk.BUTTON_PRIMARY) client.focus(client.id);
-                  if (button === Gdk.BUTTON_MIDDLE)
-                     bash(`niri msg action close-window --id ${client.id}`);
-               }}
-               button={0}
-            />
-            <overlay hexpand={isVertical}>
+         <overlay hexpand={isVertical} cssClasses={classes}>
+            {hasIndicator && (
                <box
                   $type={"overlay"}
                   class={"indicator"}
-                  valign={indicatorValign()}
-                  halign={indicatorHalign()}
+                  valign={indicatorValign}
+                  halign={indicatorHalign}
+                  vexpand
+                  hexpand
                />
-               <image
-                  tooltipText={client.title}
-                  halign={Gtk.Align.CENTER}
-                  valign={Gtk.Align.CENTER}
-                  iconName={iconName}
-                  pixelSize={20}
-               />
-            </overlay>
-         </box>
+            )}
+            <BarItem
+               format={mainFormat}
+               onPrimaryClick={() => client.focus(client.id)}
+               onMiddleClick={() =>
+                  bash(`niri msg action close-window --id ${client.id}`)
+               }
+               data={{
+                  icon: (
+                     <image
+                        iconName={iconName}
+                        pixelSize={20}
+                        hexpand={isVertical}
+                     />
+                  ),
+                  title: <label label={title} hexpand={isVertical} />,
+                  name: (
+                     <label
+                        label={appInfo?.name.trim() || client.app_id}
+                        hexpand={isVertical}
+                     />
+                  ),
+               }}
+               tooltipText={title}
+            />
+         </overlay>
       );
    }
 
    function WorkspaceButton({ ws }: { ws: AstalNiri.Workspace }) {
+      const format = config.bar.modules.workspaces["workspace-format"];
+      const windows = createBinding(ws, "windows");
+      const windowCount = windows((w) => w.length);
       const classNames = createBinding(niri!, "focusedWorkspace").as((fws) => {
-         const classes = ["bar-item"];
-
+         const classes = ["bar-item", "workspace"];
          const active = fws?.id == ws.id;
-         if (active) {
-            classes.push("active");
-         }
-
+         if (active) classes.push("active");
          return classes;
       });
-      const windows = createBinding(ws, "windows");
 
-      return (
-         <BarItem cssClasses={classNames}>
+      return format === "" ? (
+         <box
+            cssClasses={classNames}
+            valign={Gtk.Align.CENTER}
+            halign={Gtk.Align.CENTER}
+         >
             <Gtk.GestureClick
-               onPressed={(ctrl) => {
+               onPressed={(ctrl, _, x, y) => {
                   const button = ctrl.get_current_button();
                   if (button === Gdk.BUTTON_PRIMARY) ws.focus();
                }}
             />
-            <label label={ws.idx.toString()} />
-            {config.bar.modules.workspaces.taskbar && (
-               <For each={windows}>
-                  {(client: AstalNiri.Window) => <AppButton client={client} />}
-               </For>
-            )}
-         </BarItem>
+         </box>
+      ) : (
+         <BarItem
+            cssClasses={classNames}
+            onPrimaryClick={() => ws.focus()}
+            format={format}
+            data={{
+               id: <label label={ws.idx.toString()} hexpand={isVertical} />,
+               name: <label label={ws.name} hexpand={isVertical} />,
+               count: (
+                  <label
+                     label={windowCount((c) => c.toString())}
+                     hexpand={isVertical}
+                  />
+               ),
+               windows: (
+                  <box>
+                     <With value={windowCount}>
+                        {(count) =>
+                           count !== 0 && (
+                              <box
+                                 orientation={orientation}
+                                 spacing={theme.bar.spacing}
+                              >
+                                 <For each={windows}>
+                                    {(client: AstalNiri.Window) => (
+                                       <AppButton client={client} />
+                                    )}
+                                 </For>
+                              </box>
+                           )
+                        }
+                     </With>
+                  </box>
+               ),
+            }}
+         />
       );
    }
 
    function Workspaces({ output }: { output: AstalNiri.Output }) {
+      const format = config.bar.modules.workspaces["workspace-format"];
       const workspaces = createBinding(output, "workspaces").as((workspaces) =>
          workspaces.sort((a, b) => a.idx - b.idx),
       );
@@ -126,6 +169,7 @@ export function WorkspacesNiri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
             spacing={theme.bar.spacing}
             orientation={orientation}
             hexpand={isVertical}
+            cssClasses={["workspaces", format === "" ? "compact" : ""]}
             $={(self) =>
                attachHoverScroll(self, ({ dy }) => {
                   if (dy < 0) {
@@ -144,7 +188,21 @@ export function WorkspacesNiri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
                })
             }
          >
-            <For each={workspaces}>{(ws) => <WorkspaceButton ws={ws} />}</For>
+            {format === "" ? (
+               <box
+                  class={"content"}
+                  orientation={orientation}
+                  spacing={theme.bar.spacing}
+               >
+                  <For each={workspaces}>
+                     {(ws) => <WorkspaceButton ws={ws} />}
+                  </For>
+               </box>
+            ) : (
+               <For each={workspaces}>
+                  {(ws) => <WorkspaceButton ws={ws} />}
+               </For>
+            )}
          </box>
       );
    }

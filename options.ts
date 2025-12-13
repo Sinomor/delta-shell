@@ -45,7 +45,8 @@ export const config = mkOptions(configFile, {
             "on-click-middle": null as string | null,
          },
          workspaces: {
-            taskbar: true,
+            "workspace-format": "{id}",
+            "app-format": "{indicator} {icon}",
             "taskbar-icons": {} as Record<string, string>,
             "on-scroll-up": "workspace-up" as string | null,
             "on-scroll-down": "workspace-down" as string | null,

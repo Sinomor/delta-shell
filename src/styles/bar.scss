@@ -117,6 +117,56 @@ window#bar {
       }
    }
 
+   .workspaces {
+      &.compact {
+         @if $bar-vertical {
+            padding: 0 $bar-padding;
+         } @else {
+            padding: $bar-padding 0;
+         }
+         .content {
+            padding: $bar-button-padding;
+            background: $bar-button-bg;
+            border-radius: $widget-radius;
+            .workspace {
+               all: unset;
+
+               @if $bar-vertical {
+                  min-height: 20px;
+                  min-width: 14px;
+               } @else {
+                  min-width: 20px;
+                  min-height: 14px;
+               }
+               border-radius: $widget-radius;
+               background: $bar-button-bg-hover;
+               &.active {
+                  background: $accent;
+                  @if $bar-vertical {
+                     min-height: 30px;
+                  } @else {
+                     min-width: 30px;
+                  }
+                  transition: background $transition;
+               }
+            }
+         }
+         &:hover {
+            .content {
+               background: $bar-button-bg-hover;
+               transition: background $transition;
+               .workspace {
+                  background: lighten($bar-button-bg-hover, 10%);
+                  &.active {
+                     background: $accent-light;
+                  }
+                  transition: background $transition;
+               }
+            }
+         }
+      }
+   }
+
    .record-indicator {
       animation-name: blink;
       animation-duration: 0.5s;
@@ -221,6 +271,10 @@ window#bar {
          min-height: 4px;
          background: lighten($bar-button-bg-active, 20%);
          transition: min-width $transition;
+      }
+
+      .content {
+         padding: 0;
       }
    }
 }

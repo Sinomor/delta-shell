@@ -60,11 +60,11 @@ export async function bashRaw(
    strings: TemplateStringsArray | string,
    stdin_buffer?: Uint8Array,
    ...values: unknown[]
-): Promise<Uint8Array | undefined> {
+): Promise<Uint8Array> {
    const cmd =
       typeof strings === "string"
          ? strings
-         : strings.flatMap((str, i) => str + `${values[i] ?? ""}`).join("");
+         : strings.reduce((acc, str, i) => acc + str + (values[i] ?? ""), "");
 
    const flags =
       Gio.SubprocessFlags.STDOUT_PIPE |
@@ -73,19 +73,22 @@ export async function bashRaw(
 
    const proc = Gio.Subprocess.new(["bash", "-c", cmd], flags);
 
-   return new Promise<Uint8Array>((resolve, reject) => {
-      proc.communicate_async(stdin_buffer ?? null, null, (_: unknown, res: Gio.AsyncResult) => {
+   return new Promise((resolve, reject) => {
+      const input = stdin_buffer ? GLib.Bytes.new(stdin_buffer) : null;
+
+      proc.communicate_async(input, null, (_, res) => {
          try {
-            const [, out, err] = proc.communicate_finish(res)
+            const [, out, err] = proc.communicate_finish(res);
+
             if (proc.get_successful()) {
-               return resolve(out?.get_data() ?? new Uint8Array());
+               resolve(out?.get_data() ?? new Uint8Array());
             } else {
                reject(err?.get_data() ?? new Uint8Array());
             }
          } catch (error) {
-            reject(error)
+            reject(error);
          }
-      })
+      });
    });
 }
 
@@ -258,7 +261,8 @@ function findAppInList(
          app.entry?.toLowerCase() === searchTerm ||
          app.iconName === appId ||
          app.name === appId ||
-         app.wm_class === appId
+         app.wm_class === appId ||
+         app.iconName === config.bar.modules.workspaces["taskbar-icons"][appId]
       ) {
          return app;
       }

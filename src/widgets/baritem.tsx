@@ -159,15 +159,18 @@ function parseFormat(format: string, data: FormatData): JSX.Element[] {
 
             if (key) {
                const trimmedKey = key.trim();
-               return (
-                  data[trimmedKey] || (
-                     <label label={`{${trimmedKey}}`} hexpand={isVertical} />
-                  )
-               );
+               if (data && trimmedKey in data) {
+                  return data[trimmedKey];
+               }
+               return <label label={`{${trimmedKey}}`} hexpand={isVertical} />;
             }
 
             return <label label={text} hexpand={isVertical} />;
          });
+
+         if (elements.length === 1) {
+            return elements[0];
+         }
 
          return <box>{elements}</box>;
       });
