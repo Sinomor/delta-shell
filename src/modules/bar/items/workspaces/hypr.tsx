@@ -137,21 +137,14 @@ export function WorkspacesHypr({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
                   />
                ),
                windows: (
-                  <box>
-                     <With value={clientsCount}>
-                        {(count) =>
-                           count !== 0 && (
-                              <box
-                                 orientation={orientation}
-                                 spacing={theme.bar.spacing}
-                              >
-                                 <For each={clients}>
-                                    {(client) => <AppButton client={client} />}
-                                 </For>
-                              </box>
-                           )
-                        }
-                     </With>
+                  <box
+                     orientation={orientation}
+                     spacing={theme.bar.spacing}
+                     visible={clientsCount((c) => c > 0)}
+                  >
+                     <For each={clients}>
+                        {(client) => <AppButton client={client} />}
+                     </For>
                   </box>
                ),
             }}

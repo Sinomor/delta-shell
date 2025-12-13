@@ -134,23 +134,16 @@ export function WorkspacesNiri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
                   />
                ),
                windows: (
-                  <box>
-                     <With value={windowCount}>
-                        {(count) =>
-                           count !== 0 && (
-                              <box
-                                 orientation={orientation}
-                                 spacing={theme.bar.spacing}
-                              >
-                                 <For each={windows}>
-                                    {(client: AstalNiri.Window) => (
-                                       <AppButton client={client} />
-                                    )}
-                                 </For>
-                              </box>
-                           )
-                        }
-                     </With>
+                  <box
+                     orientation={orientation}
+                     spacing={theme.bar.spacing}
+                     visible={windowCount((c) => c > 0)}
+                  >
+                     <For each={windows}>
+                        {(client: AstalNiri.Window) => (
+                           <AppButton client={client} />
+                        )}
+                     </For>
                   </box>
                ),
             }}
