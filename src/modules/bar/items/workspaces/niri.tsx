@@ -1,6 +1,6 @@
 import { Gdk, Gtk } from "ags/gtk4";
 import AstalNiri from "gi://AstalNiri";
-import { createBinding, For, With } from "ags";
+import { createBinding, createComputed, For, With } from "ags";
 import { compositor, config, theme } from "@/options";
 import { attachHoverScroll, bash, getAppInfo } from "@/src/lib/utils";
 import { icons } from "@/src/lib/icons";
@@ -99,9 +99,16 @@ export function WorkspacesNiri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
       const format = config.bar.modules.workspaces["workspace-format"];
       const windows = createBinding(ws, "windows");
       const windowCount = windows((w) => w.length);
-      const classNames = createBinding(niri!, "focusedWorkspace").as((fws) => {
+      const focusedWorkspace = createBinding(niri!, "focusedWorkspace");
+      const visible = createComputed(() => {
+         if (config.bar.modules.workspaces["hide-empty"]) {
+            return windowCount() > 0 || focusedWorkspace().id === ws.id;
+         }
+         return true;
+      });
+      const classNames = focusedWorkspace((fws) => {
          const classes = ["bar-item", "workspace"];
-         const active = fws?.id == ws.id;
+         const active = fws.id == ws.id;
          if (active) classes.push("active");
          return classes;
       });
@@ -111,6 +118,7 @@ export function WorkspacesNiri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
             cssClasses={classNames}
             valign={Gtk.Align.CENTER}
             halign={Gtk.Align.CENTER}
+            visible={visible}
          >
             <Gtk.GestureClick
                onPressed={(ctrl, _, x, y) => {
@@ -124,6 +132,7 @@ export function WorkspacesNiri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
             cssClasses={classNames}
             onPrimaryClick={() => ws.focus()}
             format={format}
+            visible={visible}
             data={{
                id: <label label={ws.idx.toString()} hexpand={isVertical} />,
                name: <label label={ws.name} hexpand={isVertical} />,

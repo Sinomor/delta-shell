@@ -1,6 +1,6 @@
 import { Gdk, Gtk } from "ags/gtk4";
 import AstalHyprland from "gi://AstalHyprland?version=0.1";
-import { createBinding, For, With } from "ags";
+import { createBinding, createComputed, For, With } from "ags";
 import { icons } from "@/src/lib/icons";
 import BarItem, { FunctionsList } from "@/src/widgets/baritem";
 import { compositor, config, theme } from "@/options";
@@ -100,14 +100,19 @@ export function WorkspacesHypr({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
       const format = config.bar.modules.workspaces["workspace-format"];
       const clients = createBinding(ws, "clients");
       const clientsCount = clients((w) => w.length);
-      const classNames = createBinding(hyprland!, "focusedWorkspace").as(
-         (fws) => {
-            const classes = ["bar-item", "workspace"];
-            const active = fws?.id == ws.id;
-            if (active) classes.push("active");
-            return classes;
-         },
-      );
+      const focusedWorkspace = createBinding(hyprland!, "focusedWorkspace");
+      const visible = createComputed(() => {
+         if (config.bar.modules.workspaces["hide-empty"]) {
+            return clientsCount() > 0 || focusedWorkspace().id === ws.id;
+         }
+         return true;
+      });
+      const classNames = focusedWorkspace((fws) => {
+         const classes = ["bar-item", "workspace"];
+         const active = fws.id == ws.id;
+         if (active) classes.push("active");
+         return classes;
+      });
 
       return format === "" ? (
          <box
