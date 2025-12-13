@@ -54,7 +54,8 @@ window#bar {
    }
 
    .modules-start {
-      .first-child {
+      > *:first-child .bar-item,
+      > .bar-item:first-child {
          @if $bar-vertical {
             padding-top: $bar-padding;
          } @else {
@@ -64,7 +65,8 @@ window#bar {
    }
 
    .modules-end {
-      .last-child {
+      > *:last-child .bar-item,
+      > .bar-item:last-child {
          @if $bar-vertical {
             padding-bottom: $bar-padding;
          } @else {

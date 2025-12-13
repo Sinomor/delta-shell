@@ -80,7 +80,6 @@ export function BarModule({
             class={"modules-start"}
             spacing={spacing}
             orientation={orientation}
-            $={(self) => self.get_first_child()?.add_css_class("first-child")}
          >
             {getModules("start")}
          </box>
@@ -107,7 +106,6 @@ export function BarModule({
             class={"modules-end"}
             spacing={spacing}
             orientation={orientation}
-            $={(self) => self.get_last_child()?.add_css_class("last-child")}
          >
             {getModules("end")}
          </box>
