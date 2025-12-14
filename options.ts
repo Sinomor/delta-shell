@@ -121,6 +121,7 @@ export const config = mkOptions(configFile, {
    launcher: {
       width: 400,
       height: 500,
+      centered: false,
       columns: 1,
       "sort-type": "frequency" as "frequency" | "alphabetical" | null,
    },
