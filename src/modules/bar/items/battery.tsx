@@ -7,15 +7,16 @@ import { isVertical } from "../bar";
 import { config } from "@/options";
 
 export function Battery() {
+   const conf = config.bar.modules.battery;
    const battery = AstalBattery.get_default();
    const percentage = createBinding(battery, "percentage");
 
    return (
       <BarItem
          window={windows_names.power}
-         onPrimaryClick={config.bar.modules.battery["on-click"]}
-         onSecondaryClick={config.bar.modules.battery["on-click-right"]}
-         onMiddleClick={config.bar.modules.battery["on-click-middle"]}
+         onPrimaryClick={conf["on-click"]}
+         onSecondaryClick={conf["on-click-right"]}
+         onMiddleClick={conf["on-click-middle"]}
          visible={createBinding(battery, "isPresent")}
          data={{
             icon: (
@@ -32,7 +33,7 @@ export function Battery() {
                />
             ),
          }}
-         format={config.bar.modules.battery.format}
+         format={conf.format}
       />
    );
 }

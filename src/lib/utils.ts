@@ -307,3 +307,33 @@ export function lengthStr(length: number): string {
 
    return `${minutes}:${formatTime(seconds)}`;
 }
+
+type FormatPartDetails = {
+   key: string;
+   limit: number | null;
+   strict: boolean;
+};
+
+export function truncateByFormat(
+   value: string,
+   key: string,
+   formatString: string,
+): string {
+   const escapedKey = key.replace(`/[.*+?^${key}()|[\]\\]/g`, "\\$&");
+   const match = formatString.match(`{${escapedKey}(?::(\\d+)(!)?)}`);
+
+   if (!match) return value;
+
+   const limitStr = match[1];
+   const strictFlag = match[2];
+
+   if (!limitStr) return value;
+
+   const limit = parseInt(limitStr, 10);
+   const strict = strictFlag === "!";
+
+   if (value.length <= limit) return value;
+   const truncated = value.substring(0, limit).trim();
+
+   return strict ? truncated : truncated + "...";
+}

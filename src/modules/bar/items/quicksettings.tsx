@@ -5,12 +5,14 @@ import { isVertical } from "../bar";
 import { config } from "@/options";
 
 export function QuickSettings() {
+   const conf = config.bar.modules.quicksettings;
+
    return (
       <BarItem
          window={windows_names.quicksettings}
-         onPrimaryClick={config.bar.modules.quicksettings["on-click"]}
-         onSecondaryClick={config.bar.modules.quicksettings["on-click-right"]}
-         onMiddleClick={config.bar.modules.quicksettings["on-click-middle"]}
+         onPrimaryClick={conf["on-click"]}
+         onSecondaryClick={conf["on-click-right"]}
+         onMiddleClick={conf["on-click-middle"]}
          data={{
             icon: (
                <image
@@ -20,7 +22,7 @@ export function QuickSettings() {
                />
             ),
          }}
-         format={config.bar.modules.quicksettings.format}
+         format={conf.format}
       />
    );
 }

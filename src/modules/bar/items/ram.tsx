@@ -6,6 +6,7 @@ import { config } from "@/options";
 import { createBinding } from "gnim";
 
 export function RAM() {
+   const conf = config.bar.modules.ram;
    const systemstats = SystemStats.get_default();
    const memoryUsage = createBinding(systemstats, "memoryUsage");
    const memoryTotal = createBinding(systemstats, "memoryTotal");
@@ -35,7 +36,7 @@ export function RAM() {
                />
             ),
          }}
-         format={config.bar.modules.ram.format}
+         format={conf.format}
       />
    );
 }

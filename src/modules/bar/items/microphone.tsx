@@ -7,17 +7,18 @@ import { config } from "@/options";
 import { createBinding } from "gnim";
 
 export function Microphone() {
+   const conf = config.bar.modules.microphone;
    const microphone = AstalWp.get_default()?.get_default_microphone();
    const volume = createBinding(microphone, "volume");
 
    return (
       <BarItem
          window={windows_names.volume}
-         onPrimaryClick={config.bar.modules.microphone["on-click"]}
-         onSecondaryClick={config.bar.modules.microphone["on-click-right"]}
-         onMiddleClick={config.bar.modules.microphone["on-click-middle"]}
-         onScrollUp={config.bar.modules.microphone["on-scroll-up"]}
-         onScrollDown={config.bar.modules.microphone["on-scroll-down"]}
+         onPrimaryClick={conf["on-click"]}
+         onSecondaryClick={conf["on-click-right"]}
+         onMiddleClick={conf["on-click-middle"]}
+         onScrollUp={conf["on-scroll-up"]}
+         onScrollDown={conf["on-scroll-down"]}
          data={{
             icon: (
                <image
@@ -33,7 +34,7 @@ export function Microphone() {
                />
             ),
          }}
-         format={config.bar.modules.microphone.format}
+         format={conf.format}
       />
    );
 }

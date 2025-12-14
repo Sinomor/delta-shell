@@ -5,12 +5,14 @@ import { config } from "@/options";
 import { isVertical } from "../bar";
 
 export function PowerMenu() {
+   const conf = config.bar.modules.powermenu;
+
    return (
       <BarItem
          window={windows_names.powermenu}
-         onPrimaryClick={config.bar.modules.powermenu["on-click"]}
-         onSecondaryClick={config.bar.modules.powermenu["on-click-right"]}
-         onMiddleClick={config.bar.modules.powermenu["on-click-middle"]}
+         onPrimaryClick={conf["on-click"]}
+         onSecondaryClick={conf["on-click-right"]}
+         onMiddleClick={conf["on-click-middle"]}
          data={{
             icon: (
                <image
@@ -20,7 +22,7 @@ export function PowerMenu() {
                />
             ),
          }}
-         format={config.bar.modules.powermenu.format}
+         format={conf.format}
       />
    );
 }

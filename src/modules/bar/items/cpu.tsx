@@ -6,37 +6,29 @@ import { config } from "@/options";
 import { createBinding, With } from "gnim";
 
 export function CPU() {
+   const conf = config.bar.modules.cpu;
    const systemstats = SystemStats.get_default();
    const cpuUsage = createBinding(systemstats, "cpuUsage");
 
    return (
-      <With value={cpuUsage}>
-         {(usage) =>
-            usage !== -1 ? (
-               <BarItem
-                  data={{
-                     icon: (
-                        <image
-                           iconName={icons.cpu}
-                           pixelSize={20}
-                           hexpand={isVertical}
-                        />
-                     ),
-                     usage: (
-                        <label
-                           label={cpuUsage((v) =>
-                              Math.floor(v * 100).toString(),
-                           )}
-                           hexpand={isVertical}
-                        />
-                     ),
-                  }}
-                  format={config.bar.modules.cpu.format}
+      <BarItem
+         visible={cpuUsage((u) => u !== -1)}
+         data={{
+            icon: (
+               <image
+                  iconName={icons.cpu}
+                  pixelSize={20}
+                  hexpand={isVertical}
                />
-            ) : (
-               <box visible={false} />
-            )
-         }
-      </With>
+            ),
+            usage: (
+               <label
+                  label={cpuUsage((v) => Math.floor(v * 100).toString())}
+                  hexpand={isVertical}
+               />
+            ),
+         }}
+         format={conf.format}
+      />
    );
 }

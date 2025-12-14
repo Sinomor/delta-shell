@@ -2,7 +2,12 @@ import { Gdk, Gtk } from "ags/gtk4";
 import AstalNiri from "gi://AstalNiri";
 import { createBinding, createComputed, For, With } from "ags";
 import { compositor, config, theme } from "@/options";
-import { attachHoverScroll, bash, getAppInfo } from "@/src/lib/utils";
+import {
+   attachHoverScroll,
+   bash,
+   getAppInfo,
+   truncateByFormat,
+} from "@/src/lib/utils";
 import { icons } from "@/src/lib/icons";
 import BarItem, { FunctionsList } from "@/src/widgets/baritem";
 import { isVertical, orientation } from "../../bar";
@@ -13,14 +18,14 @@ export function WorkspacesNiri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
       console.warn("Workspaces_Niri: Niri compositor not active");
       return <box visible={false} />;
    }
+   const conf = config.bar.modules.workspaces;
    const output = createBinding(niri, "outputs").as((outputs) =>
       outputs.find((output) => output.model === gdkmonitor.model),
    );
 
    function AppButton({ client }: { client: AstalNiri.Window }) {
-      const apps_icons = config.bar.modules.workspaces["taskbar-icons"];
+      const apps_icons = conf["taskbar-icons"];
       const appInfo = getAppInfo(client.app_id);
-      const format = config.bar.modules.workspaces["app-format"];
       const iconName =
          apps_icons[client.app_id] || appInfo?.iconName || icons.apps_default;
       const title = createBinding(client, "title");
@@ -32,9 +37,9 @@ export function WorkspacesNiri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
          return classes;
       });
 
-      const hasIndicator = format.includes("{indicator}");
+      const hasIndicator = conf["app-format"].includes("{indicator}");
 
-      const formatWithoutIndicator = format
+      const formatWithoutIndicator = conf["app-format"]
          .replace(/\{indicator\}\s*/g, "")
          .trim();
       const mainFormat = formatWithoutIndicator
@@ -81,10 +86,21 @@ export function WorkspacesNiri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
                         hexpand={isVertical}
                      />
                   ),
-                  title: <label label={title} hexpand={isVertical} />,
+                  title: (
+                     <label
+                        label={title((t) =>
+                           truncateByFormat(t, "title", mainFormat),
+                        )}
+                        hexpand={isVertical}
+                     />
+                  ),
                   name: (
                      <label
-                        label={appInfo?.name.trim() || client.app_id}
+                        label={truncateByFormat(
+                           appInfo?.name.trim() || client.app_id,
+                           "name",
+                           mainFormat,
+                        )}
                         hexpand={isVertical}
                      />
                   ),
@@ -96,12 +112,11 @@ export function WorkspacesNiri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
    }
 
    function WorkspaceButton({ ws }: { ws: AstalNiri.Workspace }) {
-      const format = config.bar.modules.workspaces["workspace-format"];
       const windows = createBinding(ws, "windows");
       const windowCount = windows((w) => w.length);
       const focusedWorkspace = createBinding(niri!, "focusedWorkspace");
       const visible = createComputed(() => {
-         if (config.bar.modules.workspaces["hide-empty"]) {
+         if (conf["hide-empty"]) {
             return windowCount() > 0 || focusedWorkspace().id === ws.id;
          }
          return true;
@@ -113,7 +128,7 @@ export function WorkspacesNiri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
          return classes;
       });
 
-      return format === "" ? (
+      return conf["workspace-format"] === "" ? (
          <box
             cssClasses={classNames}
             valign={Gtk.Align.CENTER}
@@ -131,7 +146,7 @@ export function WorkspacesNiri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
          <BarItem
             cssClasses={classNames}
             onPrimaryClick={() => ws.focus()}
-            format={format}
+            format={conf["workspace-format"]}
             visible={visible}
             data={{
                id: <label label={ws.idx.toString()} hexpand={isVertical} />,
@@ -161,7 +176,6 @@ export function WorkspacesNiri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
    }
 
    function Workspaces({ output }: { output: AstalNiri.Output }) {
-      const format = config.bar.modules.workspaces["workspace-format"];
       const workspaces = createBinding(output, "workspaces").as((workspaces) =>
          workspaces.sort((a, b) => a.idx - b.idx),
       );
@@ -171,26 +185,25 @@ export function WorkspacesNiri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
             spacing={theme.bar.spacing}
             orientation={orientation}
             hexpand={isVertical}
-            cssClasses={["workspaces", format === "" ? "compact" : ""]}
+            cssClasses={[
+               "workspaces",
+               conf["workspace-format"] === "" ? "compact" : "",
+            ]}
             $={(self) =>
                attachHoverScroll(self, ({ dy }) => {
                   if (dy < 0) {
                      FunctionsList[
-                        config.bar.modules.workspaces[
-                           "on-scroll-up"
-                        ] as keyof typeof FunctionsList
+                        conf["on-scroll-up"] as keyof typeof FunctionsList
                      ]();
                   } else if (dy > 0) {
                      FunctionsList[
-                        config.bar.modules.workspaces[
-                           "on-scroll-down"
-                        ] as keyof typeof FunctionsList
+                        conf["on-scroll-down"] as keyof typeof FunctionsList
                      ]();
                   }
                })
             }
          >
-            {format === "" ? (
+            {conf["workspace-format"] === "" ? (
                <box
                   class={"content"}
                   orientation={orientation}

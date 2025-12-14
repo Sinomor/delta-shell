@@ -4,7 +4,11 @@ import { createBinding, createComputed, For, With } from "ags";
 import { icons } from "@/src/lib/icons";
 import BarItem, { FunctionsList } from "@/src/widgets/baritem";
 import { compositor, config, theme } from "@/options";
-import { attachHoverScroll, getAppInfo } from "@/src/lib/utils";
+import {
+   attachHoverScroll,
+   getAppInfo,
+   truncateByFormat,
+} from "@/src/lib/utils";
 import { isVertical, orientation } from "../../bar";
 const hyprland =
    compositor.peek() === "hyprland" ? AstalHyprland.get_default() : null;
@@ -14,14 +18,14 @@ export function WorkspacesHypr({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
       console.warn("Workspaces_Hypr: Hyprland compositor not active");
       return <box visible={false} />;
    }
+   const conf = config.bar.modules.workspaces;
    const monitor = createBinding(hyprland, "monitors").as((monitors) =>
       monitors.find((monitor) => monitor.model === gdkmonitor.model),
    );
 
    function AppButton({ client }: { client: AstalHyprland.Client }) {
-      const apps_icons = config.bar.modules.workspaces["taskbar-icons"];
+      const apps_icons = conf["taskbar-icons"];
       const appInfo = getAppInfo(client.class);
-      const format = config.bar.modules.workspaces["app-format"];
       const iconName =
          apps_icons[client.class] || appInfo?.iconName || icons.apps_default;
       const title = createBinding(client, "title");
@@ -35,9 +39,9 @@ export function WorkspacesHypr({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
          },
       );
 
-      const hasIndicator = format.includes("{indicator}");
+      const hasIndicator = conf["app-format"].includes("{indicator}");
 
-      const formatWithoutIndicator = format
+      const formatWithoutIndicator = conf["app-format"]
          .replace(/\{indicator\}\s*/g, "")
          .trim();
       const mainFormat = formatWithoutIndicator
@@ -82,10 +86,21 @@ export function WorkspacesHypr({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
                         hexpand={isVertical}
                      />
                   ),
-                  title: <label label={title} hexpand={isVertical} />,
+                  title: (
+                     <label
+                        label={title((t) =>
+                           truncateByFormat(t, "title", mainFormat),
+                        )}
+                        hexpand={isVertical}
+                     />
+                  ),
                   name: (
                      <label
-                        label={appInfo?.name.trim() || client.class}
+                        label={truncateByFormat(
+                           appInfo?.name.trim() || client.class,
+                           "name",
+                           mainFormat,
+                        )}
                         hexpand={isVertical}
                      />
                   ),
@@ -97,12 +112,11 @@ export function WorkspacesHypr({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
    }
 
    function WorkspaceButton({ ws }: { ws: AstalHyprland.Workspace }) {
-      const format = config.bar.modules.workspaces["workspace-format"];
       const clients = createBinding(ws, "clients");
       const clientsCount = clients((w) => w.length);
       const focusedWorkspace = createBinding(hyprland!, "focusedWorkspace");
       const visible = createComputed(() => {
-         if (config.bar.modules.workspaces["hide-empty"]) {
+         if (conf["hide-empty"]) {
             return clientsCount() > 0 || focusedWorkspace().id === ws.id;
          }
          return true;
@@ -114,7 +128,7 @@ export function WorkspacesHypr({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
          return classes;
       });
 
-      return format === "" ? (
+      return conf["workspace-format"] === "" ? (
          <box
             cssClasses={classNames}
             valign={Gtk.Align.CENTER}
@@ -131,7 +145,7 @@ export function WorkspacesHypr({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
          <BarItem
             cssClasses={classNames}
             onPrimaryClick={() => ws.focus()}
-            format={format}
+            format={conf["workspace-format"]}
             data={{
                id: <label label={ws.id.toString()} hexpand={isVertical} />,
                name: <label label={ws.name} hexpand={isVertical} />,
@@ -158,7 +172,6 @@ export function WorkspacesHypr({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
    }
 
    function Workspaces({ monitor }: { monitor: AstalHyprland.Monitor }) {
-      const format = config.bar.modules.workspaces["workspace-format"];
       const workspaces = createBinding(hyprland!, "workspaces").as(
          (workspaces) =>
             workspaces
@@ -171,26 +184,25 @@ export function WorkspacesHypr({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
             spacing={theme.bar.spacing}
             orientation={orientation}
             hexpand={isVertical}
-            cssClasses={["workspaces", format === "" ? "compact" : ""]}
+            cssClasses={[
+               "workspaces",
+               conf["workspace-format"] === "" ? "compact" : "",
+            ]}
             $={(self) =>
                attachHoverScroll(self, ({ dy }) => {
                   if (dy < 0) {
                      FunctionsList[
-                        config.bar.modules.workspaces[
-                           "on-scroll-up"
-                        ] as keyof typeof FunctionsList
+                        conf["on-scroll-up"] as keyof typeof FunctionsList
                      ]();
                   } else if (dy > 0) {
                      FunctionsList[
-                        config.bar.modules.workspaces[
-                           "on-scroll-down"
-                        ] as keyof typeof FunctionsList
+                        conf["on-scroll-down"] as keyof typeof FunctionsList
                      ]();
                   }
                })
             }
          >
-            {format === "" ? (
+            {conf["workspace-format"] === "" ? (
                <box
                   class={"content"}
                   orientation={orientation}

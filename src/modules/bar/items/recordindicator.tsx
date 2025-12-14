@@ -7,15 +7,16 @@ import { isVertical } from "../bar";
 import { icons } from "@/src/lib/icons";
 
 export function RecordIndicator() {
+   const conf = config.bar.modules.recordindicator;
    const screenRecord = ScreenRecord.get_default();
    const timer = createBinding(screenRecord, "timer");
 
    return (
       <BarItem
          visible={createBinding(screenRecord, "recording")}
-         onPrimaryClick={config.bar.modules.recordindicator["on-click"]}
-         onSecondaryClick={config.bar.modules.recordindicator["on-click-right"]}
-         onMiddleClick={config.bar.modules.recordindicator["on-click-middle"]}
+         onPrimaryClick={conf["on-click"]}
+         onSecondaryClick={conf["on-click-right"]}
+         onMiddleClick={conf["on-click-middle"]}
          data={{
             icon: (
                <image
@@ -36,7 +37,7 @@ export function RecordIndicator() {
                />
             ),
          }}
-         format={config.bar.modules.recordindicator.format}
+         format={conf.format}
       />
    );
 }

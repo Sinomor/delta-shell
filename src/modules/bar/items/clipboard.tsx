@@ -5,12 +5,14 @@ import { config } from "@/options";
 import { isVertical } from "../bar";
 
 export function Clipboard() {
+   const conf = config.bar.modules.clipboard;
+
    return (
       <BarItem
          window={windows_names.clipboard}
-         onPrimaryClick={config.bar.modules.clipboard["on-click"]}
-         onSecondaryClick={config.bar.modules.clipboard["on-click-right"]}
-         onMiddleClick={config.bar.modules.clipboard["on-click-middle"]}
+         onPrimaryClick={conf["on-click"]}
+         onSecondaryClick={conf["on-click-right"]}
+         onMiddleClick={conf["on-click-middle"]}
          data={{
             icon: (
                <image
@@ -20,7 +22,7 @@ export function Clipboard() {
                />
             ),
          }}
-         format={config.bar.modules.clipboard.format}
+         format={conf.format}
       />
    );
 }

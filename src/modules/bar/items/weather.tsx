@@ -1,16 +1,12 @@
-import app from "ags/gtk4/app";
-import GLib from "gi://GLib";
-import { createBinding, createComputed, onCleanup, With } from "ags";
 import BarItem from "@/src/widgets/baritem";
-import { Gtk } from "ags/gtk4";
-import { toggleWindow } from "@/src/lib/utils";
-import { hide_all_windows, windows_names } from "@/windows";
+import { windows_names } from "@/windows";
 import { config, theme } from "@/options";
 import WeatherService from "@/src/services/weather";
 import { isVertical } from "../bar";
 
 export function Weather() {
    if (!config.weather.enabled) return <box visible={false} />;
+   const conf = config.bar.modules.weather;
    const weather = WeatherService.get_default();
 
    const data = weather.data((data) => {
@@ -36,9 +32,9 @@ export function Weather() {
    return (
       <BarItem
          window={windows_names.weather}
-         onPrimaryClick={config.bar.modules.weather["on-click"]}
-         onSecondaryClick={config.bar.modules.weather["on-click-right"]}
-         onMiddleClick={config.bar.modules.weather["on-click-middle"]}
+         onPrimaryClick={conf["on-click"]}
+         onSecondaryClick={conf["on-click-right"]}
+         onMiddleClick={conf["on-click-middle"]}
          visible={data((d) => d.temp !== "")}
          data={{
             icon: (
@@ -65,7 +61,7 @@ export function Weather() {
                />
             ),
          }}
-         format={config.bar.modules.weather.format}
+         format={conf.format}
       />
    );
 }

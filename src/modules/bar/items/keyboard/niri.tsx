@@ -26,6 +26,7 @@ function updateLayout() {
 }
 
 export function KeyboardNiri() {
+   const conf = config.bar.modules.keyboard;
    const niri = AstalNiri.get_default();
    updateLayout();
    let niriconnect: number;
@@ -36,9 +37,9 @@ export function KeyboardNiri() {
 
    return (
       <BarItem
-         onPrimaryClick={config.bar.modules.keyboard["on-click"]}
-         onSecondaryClick={config.bar.modules.keyboard["on-click-right"]}
-         onMiddleClick={config.bar.modules.keyboard["on-click-middle"]}
+         onPrimaryClick={conf["on-click"]}
+         onSecondaryClick={conf["on-click-right"]}
+         onMiddleClick={conf["on-click-middle"]}
          $={() => {
             niriconnect = niri.connect("keyboard-layout-switched", () => {
                updateLayout();
@@ -54,7 +55,7 @@ export function KeyboardNiri() {
                />
             ),
          }}
-         format={config.bar.modules.keyboard.format}
+         format={conf.format}
       />
    );
 }

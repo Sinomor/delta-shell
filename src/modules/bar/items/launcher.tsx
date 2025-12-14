@@ -5,12 +5,14 @@ import { config } from "@/options";
 import { isVertical } from "../bar";
 
 export function Launcher() {
+   const conf = config.bar.modules.launcher;
+
    return (
       <BarItem
          window={windows_names.applauncher}
-         onPrimaryClick={config.bar.modules.launcher["on-click"]}
-         onSecondaryClick={config.bar.modules.launcher["on-click-right"]}
-         onMiddleClick={config.bar.modules.launcher["on-click-middle"]}
+         onPrimaryClick={conf["on-click"]}
+         onSecondaryClick={conf["on-click-right"]}
+         onMiddleClick={conf["on-click-middle"]}
          data={{
             icon: (
                <image
@@ -20,7 +22,7 @@ export function Launcher() {
                />
             ),
          }}
-         format={config.bar.modules.launcher.format}
+         format={conf.format}
       />
    );
 }

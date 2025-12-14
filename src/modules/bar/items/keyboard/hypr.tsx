@@ -43,6 +43,7 @@ function updateLayout() {
 }
 
 export function KeyboardHypr() {
+   const conf = config.bar.modules.keyboard;
    const hyprland = AstalHyprland.get_default();
    updateLayout();
    let hyprlandconnect: number;
@@ -53,9 +54,9 @@ export function KeyboardHypr() {
 
    return (
       <BarItem
-         onPrimaryClick={config.bar.modules.keyboard["on-click"]}
-         onSecondaryClick={config.bar.modules.keyboard["on-click-right"]}
-         onMiddleClick={config.bar.modules.keyboard["on-click-middle"]}
+         onPrimaryClick={conf["on-click"]}
+         onSecondaryClick={conf["on-click-right"]}
+         onMiddleClick={conf["on-click-middle"]}
          $={() => {
             hyprlandconnect = hyprland.connect(
                "keyboard-layout",
@@ -74,7 +75,7 @@ export function KeyboardHypr() {
                />
             ),
          }}
-         format={config.bar.modules.keyboard.format}
+         format={conf.format}
       />
    );
 }

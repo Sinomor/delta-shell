@@ -5,6 +5,7 @@ import AstalNetwork from "gi://AstalNetwork";
 import { createBinding, createComputed } from "gnim";
 import { isVertical } from "../bar";
 import { config } from "@/options";
+import { truncateByFormat } from "@/src/lib/utils";
 
 export function Network() {
    const network = AstalNetwork.get_default();
@@ -12,6 +13,7 @@ export function Network() {
    const wired = network.wired;
    const primary = createBinding(network, "primary");
    const connectivity = createBinding(network, "connectivity");
+   const format = config.bar.modules.network.format;
    const device = createComputed(() => {
       connectivity();
       if (primary() === AstalNetwork.Primary.WIRED) {
@@ -35,12 +37,14 @@ export function Network() {
       return "";
    });
 
-   const ifname = device((d) => (d ? d.interface.toString() : ""));
+   const ifname = device((d) =>
+      d ? truncateByFormat(d.interface, "ifname", format) : "",
+   );
 
    const essid = createComputed(() => {
       device();
       if (primary() === AstalNetwork.Primary.WIFI) {
-         return wifi.ssid;
+         return truncateByFormat(wifi.ssid, "essid", format);
       }
       return "";
    });
@@ -48,7 +52,7 @@ export function Network() {
    const strength = createComputed(() => {
       device();
       if (primary() === AstalNetwork.Primary.WIFI) {
-         return wifi.strength.toString();
+         return truncateByFormat(wifi.strength.toString(), "strength", format);
       }
       return "";
    });
@@ -56,7 +60,8 @@ export function Network() {
    const frequency = createComputed(() => {
       device();
       if (primary() === AstalNetwork.Primary.WIFI) {
-         return (wifi.frequency / 1000).toFixed(1).toString();
+         const frequency = (wifi.frequency / 1000).toFixed(1).toString();
+         return truncateByFormat(frequency, "frequency", format);
       }
       return "";
    });
@@ -105,7 +110,7 @@ export function Network() {
                />
             ),
          }}
-         format={config.bar.modules.network.format}
+         format={format}
       />
    );
 }

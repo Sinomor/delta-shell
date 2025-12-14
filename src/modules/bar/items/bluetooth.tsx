@@ -5,8 +5,10 @@ import { windows_names } from "@/windows";
 import AstalBluetooth from "gi://AstalBluetooth";
 import { createBinding, createComputed } from "gnim";
 import { isVertical } from "../bar";
+import { truncateByFormat } from "@/src/lib/utils";
 
 export function Bluetooth() {
+   const conf = config.bar.modules.bluetooth;
    const bluetooth = AstalBluetooth.get_default();
    const connected = createBinding(bluetooth, "isConnected");
    const powered = createBinding(bluetooth, "isPowered");
@@ -19,9 +21,9 @@ export function Bluetooth() {
    return (
       <BarItem
          window={windows_names.bluetooth}
-         onPrimaryClick={config.bar.modules.bluetooth["on-click"]}
-         onSecondaryClick={config.bar.modules.bluetooth["on-click-right"]}
-         onMiddleClick={config.bar.modules.bluetooth["on-click-middle"]}
+         onPrimaryClick={conf["on-click"]}
+         onSecondaryClick={conf["on-click-right"]}
+         onMiddleClick={conf["on-click-middle"]}
          data={{
             icon: <image hexpand={isVertical} iconName={icons.bluetooth} />,
             status: (
@@ -32,32 +34,52 @@ export function Bluetooth() {
             ),
             "controller-address": (
                <label
-                  label={adapter((adapter) => adapter.address)}
+                  label={adapter((a) =>
+                     truncateByFormat(
+                        a.address,
+                        "controller-address",
+                        conf.format,
+                     ),
+                  )}
                   hexpand={isVertical}
                />
             ),
             "controller-alias": (
                <label
-                  label={adapter((adapter) => adapter.alias)}
+                  label={adapter((a) =>
+                     truncateByFormat(a.alias, "controller-alias", conf.format),
+                  )}
                   hexpand={isVertical}
                />
             ),
             "device-address": (
                <label
-                  label={device((d) => (d ? d.address : ""))}
+                  label={device((d) =>
+                     d
+                        ? truncateByFormat(
+                             d.address,
+                             "device-address",
+                             conf.format,
+                          )
+                        : "",
+                  )}
                   visible={connected}
                   hexpand={isVertical}
                />
             ),
             "device-alias": (
                <label
-                  label={device((d) => (d ? d.alias : ""))}
+                  label={device((d) =>
+                     d
+                        ? truncateByFormat(d.alias, "device-alias", conf.format)
+                        : "",
+                  )}
                   visible={connected}
                   hexpand={isVertical}
                />
             ),
          }}
-         format={config.bar.modules.bluetooth.format}
+         format={conf.format}
       />
    );
 }

@@ -146,7 +146,7 @@ export const FunctionsList = {
 } as Record<string, any>;
 
 function parseFormat(format: string, data: FormatData): JSX.Element[] {
-   const regex = /\{([^}]+)\}|([^{}]+)/g;
+   const regex = /\{([^:}]+):?([^}]*)\}|([^{}]+)/g;
 
    return format
       .split(" ")
@@ -155,7 +155,7 @@ function parseFormat(format: string, data: FormatData): JSX.Element[] {
          const matches = Array.from(group.matchAll(regex));
 
          const elements = matches.map((match) => {
-            const [_, key, text] = match;
+            const [_, key, size, text] = match;
 
             if (key) {
                const trimmedKey = key.trim();
