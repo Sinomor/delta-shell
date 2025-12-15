@@ -37,9 +37,9 @@ export function WorkspacesNiri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
          return classes;
       });
 
-      const hasIndicator = conf["app-format"].includes("{indicator}");
+      const hasIndicator = conf["window-format"].includes("{indicator}");
 
-      const formatWithoutIndicator = conf["app-format"]
+      const formatWithoutIndicator = conf["window-format"]
          .replace(/\{indicator\}\s*/g, "")
          .trim();
       const mainFormat = formatWithoutIndicator

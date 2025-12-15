@@ -39,9 +39,9 @@ export function WorkspacesHypr({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
          },
       );
 
-      const hasIndicator = conf["app-format"].includes("{indicator}");
+      const hasIndicator = conf["window-format"].includes("{indicator}");
 
-      const formatWithoutIndicator = conf["app-format"]
+      const formatWithoutIndicator = conf["window-format"]
          .replace(/\{indicator\}\s*/g, "")
          .trim();
       const mainFormat = formatWithoutIndicator

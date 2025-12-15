@@ -46,7 +46,7 @@ export const config = mkOptions(configFile, {
          },
          workspaces: {
             "workspace-format": "{id}",
-            "app-format": "{indicator} {icon}",
+            "window-format": "{indicator} {icon}",
             "taskbar-icons": {} as Record<string, string>,
             "hide-empty": false,
             "on-scroll-up": "workspace-up" as string | null,
