@@ -18,7 +18,7 @@ window#volume {
 }
 
 .volume {
-   button {
+   .dropdown {
       font-weight: normal;
       outline: none;
       background: rgba($bg1, $window-opacity);
@@ -36,8 +36,8 @@ window#volume {
       }
    }
 
-   .menu {
-      &.menu > contents {
+   popover {
+      contents {
          background: rgba($bg0, $window-opacity);
          border: $window-border-width solid $window-border-color;
          padding: $window-padding;
@@ -50,7 +50,8 @@ window#volume {
          }
       }
 
-      row {
+      button {
+         background: transparent;
          color: $fg0;
          border-radius: $widget-radius;
          outline: none;
@@ -65,10 +66,6 @@ window#volume {
          &:hover {
             background: $bg1;
          }
-      }
-
-      &.menu > arrow {
-         all: unset;
       }
    }
 

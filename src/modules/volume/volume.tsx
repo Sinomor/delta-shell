@@ -129,36 +129,52 @@ function DefaultOutput() {
    const speakers = createBinding(audio, "speakers");
    const description = createBinding(defaultOutput, "description");
 
-   const selected = createComputed(() => {
-      const index = speakers().findIndex(
-         (speaker) => speaker.description === description(),
-      );
-      return Math.max(0, index);
-   });
+   let popover: Gtk.Popover;
 
    return (
       <box orientation={Gtk.Orientation.VERTICAL} spacing={theme.spacing}>
          <label label={"Output"} halign={Gtk.Align.START} />
-         <Adw.Clamp maximumSize={410 - theme.window.padding * 2}>
-            <Gtk.DropDown
-               model={speakers((speakers) => {
-                  const list = new Gtk.StringList();
-                  speakers.map((speaker) => list.append(speaker.description));
-                  return list;
-               })}
-               selected={selected}
-               factory={createFactory(20)}
-               listFactory={createFactory()}
-               onNotifySelected={({ selected }) => {
-                  const speaker = audio.speakers[selected];
-                  if (speaker) {
-                     if (!speaker.isDefault) {
-                        speaker.set_is_default(true);
-                     }
-                  }
-               }}
-            />
-         </Adw.Clamp>
+         <button
+            onClicked={(self) => {
+               popover.set_parent(self);
+               popover.popup();
+            }}
+            class={"dropdown"}
+            focusOnClick={false}
+         >
+            <box hexpand>
+               <label
+                  label={description}
+                  hexpand
+                  halign={Gtk.Align.START}
+                  ellipsize={Pango.EllipsizeMode.END}
+                  maxWidthChars={25}
+               />
+               <image iconName={icons.arrow.down} pixelSize={20} />
+            </box>
+         </button>
+         <popover hasArrow={false} $={(self) => (popover = self)}>
+            <box
+               orientation={Gtk.Orientation.VERTICAL}
+               spacing={theme.spacing / 2}
+            >
+               <For each={speakers}>
+                  {(speaker) => (
+                     <button
+                        onClicked={() => {
+                           speaker.set_is_default(true);
+                           popover.hide();
+                        }}
+                     >
+                        <label
+                           label={speaker.description}
+                           halign={Gtk.Align.START}
+                        />
+                     </button>
+                  )}
+               </For>
+            </box>
+         </popover>
          <box
             cssClasses={["slider-box", "volume-box"]}
             spacing={theme.spacing}
@@ -187,38 +203,52 @@ function DefaultMicrophone() {
    const microphones = createBinding(audio, "microphones");
    const description = createBinding(defaultMicrophone, "description");
 
-   const selected = createComputed(() => {
-      const index = microphones().findIndex(
-         (microphone) => microphone.description === description(),
-      );
-      return Math.max(0, index);
-   });
+   let popover: Gtk.Popover;
 
    return (
       <box orientation={Gtk.Orientation.VERTICAL} spacing={theme.spacing}>
          <label label={"Microphone"} halign={Gtk.Align.START} />
-         <Adw.Clamp maximumSize={410 - theme.window.padding * 2}>
-            <Gtk.DropDown
-               model={microphones((microphones) => {
-                  const list = new Gtk.StringList();
-                  microphones.map((microphone) =>
-                     list.append(microphone.description),
-                  );
-                  return list;
-               })}
-               selected={selected}
-               factory={createFactory(20)}
-               listFactory={createFactory()}
-               onNotifySelected={({ selected }) => {
-                  const microphone = audio.microphones[selected];
-                  if (microphone) {
-                     if (!microphone.isDefault) {
-                        microphone.set_is_default(true);
-                     }
-                  }
-               }}
-            />
-         </Adw.Clamp>
+         <button
+            onClicked={(self) => {
+               popover.set_parent(self);
+               popover.popup();
+            }}
+            class={"dropdown"}
+            focusOnClick={false}
+         >
+            <box hexpand>
+               <label
+                  label={description}
+                  hexpand
+                  halign={Gtk.Align.START}
+                  ellipsize={Pango.EllipsizeMode.END}
+                  maxWidthChars={25}
+               />
+               <image iconName={icons.arrow.down} pixelSize={20} />
+            </box>
+         </button>
+         <popover hasArrow={false} $={(self) => (popover = self)}>
+            <box
+               orientation={Gtk.Orientation.VERTICAL}
+               spacing={theme.spacing / 2}
+            >
+               <For each={microphones}>
+                  {(microphone) => (
+                     <button
+                        onClicked={() => {
+                           microphone.set_is_default(true);
+                           popover.hide();
+                        }}
+                     >
+                        <label
+                           label={microphone.description}
+                           halign={Gtk.Align.START}
+                        />
+                     </button>
+                  )}
+               </For>
+            </box>
+         </popover>
          <box
             cssClasses={["slider-box", "volume-box"]}
             spacing={theme.spacing}
