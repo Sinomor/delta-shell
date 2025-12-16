@@ -4,12 +4,12 @@ import { interval } from "ags/time";
 
 const UPDATE_INTERVAL = 2000;
 
-@register({ GTypeName: "SystemInfo" })
-export default class SystemInfo extends GObject.Object {
-   static instance: SystemInfo;
+@register({ GTypeName: "SystemMonitor" })
+export default class SystemMonitor extends GObject.Object {
+   static instance: SystemMonitor;
 
    static get_default() {
-      if (!this.instance) this.instance = new SystemInfo();
+      if (!this.instance) this.instance = new SystemMonitor();
       return this.instance;
    }
 
@@ -72,8 +72,12 @@ export default class SystemInfo extends GObject.Object {
          this.#lastCpuTotal = total;
          this.#lastCpuUsed = used;
       } catch (error) {
-         this.cpuUsage = -1;
-         console.error("Failed to get CPU usage:", error);
+         if (this.cpuUsage !== -1) {
+            console.warn(
+               "SystemMonitor: CPU monitoring unavailable (GTop not found or failed to load)",
+            );
+            this.cpuUsage = -1;
+         }
       }
    }
 
@@ -108,7 +112,9 @@ export default class SystemInfo extends GObject.Object {
          }
 
          if (total === undefined || available === undefined) {
-            console.error("couldn't parse /proc/meminfo");
+            console.error(
+               "SystemMonitor: failed to parse /proc/meminfo (missing MemTotal or MemAvailable)",
+            );
             return;
          }
 
@@ -118,7 +124,10 @@ export default class SystemInfo extends GObject.Object {
             this.memoryUsage = 1 - available / total;
          }
       } catch (error) {
-         console.error("Error calculating memory usage:", error);
+         console.error(
+            "SystemMonitor: failed to read memory usage from /proc/meminfo:",
+            error,
+         );
       }
    }
 

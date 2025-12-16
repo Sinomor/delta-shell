@@ -106,7 +106,13 @@ const style_files = [
 ];
 
 export async function resetCss() {
-   if (!dependencies("sass")) return;
+   if (!dependencies("sass")) {
+      console.error(
+         "Styles: sass compiler not found, cannot compile stylesheets",
+      );
+      return;
+   }
+   console.log("Styles: compiling stylesheets");
 
    try {
       const vars = `${GLib.get_tmp_dir()}/delta-shell/variables.scss`;
@@ -120,11 +126,12 @@ export async function resetCss() {
       await bash(`sass ${scss} ${css}`);
 
       app.apply_css(css, true);
+      console.log("Styles: successfully applied");
    } catch (error) {
       if (error instanceof Error) {
          logError(error);
       } else {
-         console.error(error);
+         console.error("Styles: compilation failed:", error);
       }
    }
 }

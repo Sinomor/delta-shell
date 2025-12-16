@@ -15,7 +15,7 @@ import { VolumeWindow } from "./src/windows/volume";
 import { NetworkWindow } from "./src/windows/network";
 import { BluetoothWindow } from "./src/windows/bluetooth";
 import { PowerWindow } from "./src/windows/power";
-import { hasBarItem } from "./src/lib/utils";
+import { dependencies, hasBarItem } from "./src/lib/utils";
 import { ClipboardWindow } from "./src/windows/clipboard";
 import { AppLauncherWindow } from "./src/windows/applauncher";
 
@@ -65,7 +65,8 @@ export function windows() {
       NotificationsWindow();
    }
    if (config.osd.enabled) OsdWindow();
-   if (config.clipboard.enabled) ClipboardWindow();
+   if (dependencies("wl-paste", "cliphist"))
+      config.clipboard.enabled && ClipboardWindow();
    if (hasBarItem("volume") || hasBarItem("microphone")) VolumeWindow();
    hasBarItem("network") && NetworkWindow();
    hasBarItem("bluetooth") && BluetoothWindow();

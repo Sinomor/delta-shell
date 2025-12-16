@@ -83,10 +83,23 @@ function Item({ device }: ItemProps) {
          class={"page-button"}
          onClicked={() => {
             if (!bluetooth.isPowered) {
+               console.log("Bluetooth: powering on adapter");
                bluetooth.toggle();
             }
+
+            console.log(`Bluetooth: connecting to '${device.name}'`);
+
             timeout(100, () => {
-               device.connect_device(() => {});
+               device.connect_device((result, error) => {
+                  if (error) {
+                     console.error(
+                        `Bluetooth: failed to connect to '${device.name}':`,
+                        error,
+                     );
+                  } else {
+                     console.log(`Bluetooth: connected to '${device.name}'`);
+                  }
+               });
             });
          }}
          focusOnClick={false}

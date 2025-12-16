@@ -14,7 +14,7 @@ import { windows_names } from "@/windows";
 import AstalHyprland from "gi://AstalHyprland?version=0.1";
 import AstalNiri from "gi://AstalNiri?version=0.1";
 import AstalWp from "gi://AstalWp?version=0.1";
-import ScreenRecord from "@/src/services/screenrecord";
+import ScreenRecorder from "@/src/services/screenrecorder";
 
 type FormatData = Record<string, JSX.Element>;
 
@@ -32,7 +32,7 @@ type BarItemProps = JSX.IntrinsicElements["box"] & {
 
 let speaker: AstalWp.Endpoint | undefined;
 let microphone: AstalWp.Endpoint | undefined;
-let screenRecord: ScreenRecord | undefined;
+let screenRecord: ScreenRecorder | undefined;
 let hyprland: AstalHyprland.Hyprland | undefined;
 
 function getSpeaker() {
@@ -46,8 +46,8 @@ function getMicrophone() {
    return microphone;
 }
 
-function getScreenRecord() {
-   if (!screenRecord) screenRecord = ScreenRecord.get_default();
+function getScreenRecorder() {
+   if (!screenRecord) screenRecord = ScreenRecorder.get_default();
    return screenRecord;
 }
 
@@ -137,7 +137,7 @@ export const FunctionsList = {
       }
    },
    "screenrecord-toggle": () => {
-      const sr = getScreenRecord();
+      const sr = getScreenRecorder();
       if (sr) {
          if (sr.recording) sr.stop();
          else sr.start();

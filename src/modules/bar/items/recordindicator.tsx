@@ -1,5 +1,5 @@
 import { config } from "@/options";
-import ScreenRecord from "@/src/services/screenrecord";
+import ScreenRecorder from "@/src/services/screenrecorder";
 import BarItem from "@/src/widgets/baritem";
 import { createBinding } from "ags";
 import { Gtk } from "ags/gtk4";
@@ -8,7 +8,7 @@ import { icons } from "@/src/lib/icons";
 
 export function RecordIndicator() {
    const conf = config.bar.modules.recordindicator;
-   const screenRecord = ScreenRecord.get_default();
+   const screenRecord = ScreenRecorder.get_default();
    const timer = createBinding(screenRecord, "timer");
 
    return (

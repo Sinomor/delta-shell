@@ -61,7 +61,9 @@ export function BarModule({
       for (const baritem of baritems) {
          const Widget = Bar_Items[baritem];
          if (!Widget) {
-            console.error(`Failed create qsbutton: unknown name "${baritem}"`);
+            console.error(
+               `Bar: unknown module '${baritem}' in ${location} section`,
+            );
             continue;
          }
          const result = Widget();

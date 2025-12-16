@@ -7,7 +7,12 @@ import { createBinding } from "ags";
 import { isVertical } from "../bar";
 
 export function NotificationsList() {
-   if (!config.notifications.enabled) return <box visible={false} />;
+   if (!config.notifications.enabled) {
+      console.warn(
+         "Bar: module notificationslist requires config.notifications.enabled = true",
+      );
+      return <box visible={false} />;
+   }
    const conf = config.bar.modules.notifications;
    const notifd = AstalNotifd.get_default();
    const notifications = createBinding(notifd, "notifications");

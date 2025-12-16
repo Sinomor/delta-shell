@@ -4,8 +4,8 @@ import app from "ags/gtk4/app";
 import { createState } from "ags";
 import { hideWindows } from "@/windows";
 import { config, theme } from "@/options";
-import Cliphist from "@/src/services/cliphist";
-const clipboard = Cliphist.get_default();
+import Clipboard from "@/src/services/clipboard";
+const clipboard = Clipboard.get_default();
 
 export function ClipImage({
    id,

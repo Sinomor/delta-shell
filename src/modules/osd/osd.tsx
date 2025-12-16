@@ -11,6 +11,7 @@ export const [visible, setVisible] = createState(false);
 export const [revealed, setRevealed] = createState(false);
 
 export function OsdModule({ visible }: { visible: Accessor<boolean> }) {
+   console.log("OSD: initializing module");
    const brightness = Brightness.get_default();
    const speaker = Wp.get_default()?.get_default_speaker();
 
@@ -46,6 +47,8 @@ export function OsdModule({ visible }: { visible: Accessor<boolean> }) {
                   },
                );
                onCleanup(() => brightness.disconnect(brightnessconnect));
+            } else {
+               console.warn("OSD: brightness monitoring unavailable");
             }
             timeout(500, () => (firstStart = false));
             if (speaker) {

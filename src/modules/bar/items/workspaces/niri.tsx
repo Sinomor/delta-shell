@@ -15,7 +15,7 @@ const niri = compositor.peek() === "niri" ? AstalNiri.get_default() : null;
 
 export function WorkspacesNiri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
    if (!niri) {
-      console.warn("Workspaces_Niri: Niri compositor not active");
+      console.warn("Bar: workspaces module skipped: niri is not active");
       return <box visible={false} />;
    }
    const conf = config.bar.modules.workspaces;

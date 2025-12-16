@@ -66,9 +66,19 @@ function Item({ accessPoint }: ItemProps) {
    return (
       <button
          class={"page-button"}
-         onClicked={() =>
+         onClicked={() => {
+            console.log(`Network: connecting to '${accessPoint.ssid}'`);
             bash(`nmcli device wifi connect ${accessPoint.bssid}`)
-         }
+               .then(() =>
+                  console.log(`Network: connected to '${accessPoint.ssid}'`),
+               )
+               .catch((err) =>
+                  console.error(
+                     `Network: failed to connect to '${accessPoint.ssid}':`,
+                     err,
+                  ),
+               );
+         }}
          focusOnClick={false}
       >
          <box spacing={theme.spacing}>
@@ -105,6 +115,8 @@ function List() {
 }
 
 export function NetworkModule({ showArrow = false }: { showArrow?: boolean }) {
+   console.log("Network: initializing module");
+
    return (
       <box
          class={"network"}

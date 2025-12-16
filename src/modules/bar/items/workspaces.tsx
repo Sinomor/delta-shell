@@ -13,7 +13,10 @@ export function Workspaces({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
                   return <WorkspacesNiri gdkmonitor={gdkmonitor} />;
                if (comp === "hyprland")
                   return <WorkspacesHypr gdkmonitor={gdkmonitor} />;
-               return <box />;
+               console.warn(
+                  `Bar: workspaces module skipped: compositor ${compositor} not supported`,
+               );
+               return <box visible={false} />;
             }}
          </With>
       </box>

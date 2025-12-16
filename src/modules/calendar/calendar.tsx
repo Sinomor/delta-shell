@@ -2,8 +2,8 @@ import { icons } from "@/src/lib/icons";
 import { Gtk } from "ags/gtk4";
 import { createBinding, For } from "ags";
 import { theme } from "@/options";
-import CalendarService, { CalendarDay } from "@/src/services/calendar";
-const calendar = CalendarService.get_default();
+import Calendar, { CalendarDay } from "@/src/services/calendar";
+const calendar = Calendar.get_default();
 
 const WEEK_DAYS = ["M", "T", "W", "T", "F", "S", "S"];
 

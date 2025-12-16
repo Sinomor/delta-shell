@@ -1,14 +1,14 @@
 import BarItem from "@/src/widgets/baritem";
 import { isVertical } from "../bar";
 import { icons } from "@/src/lib/icons";
-import SystemStats from "@/src/services/systemstats";
+import SystemMonitor from "@/src/services/systemmonitor";
 import { config } from "@/options";
 import { createBinding, With } from "gnim";
 
 export function CPU() {
    const conf = config.bar.modules.cpu;
-   const systemstats = SystemStats.get_default();
-   const cpuUsage = createBinding(systemstats, "cpuUsage");
+   const systemmonitor = SystemMonitor.get_default();
+   const cpuUsage = createBinding(systemmonitor, "cpuUsage");
 
    return (
       <BarItem

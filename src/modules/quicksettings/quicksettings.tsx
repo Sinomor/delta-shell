@@ -14,6 +14,7 @@ import { NotificationsListPage } from "./pages/notificationslist";
 export const [qs_page, qs_page_set] = createState("main");
 
 export function QuickSettingsModule() {
+   console.log("QuickSettings: initializing module");
    const network = AstalNetwork.get_default();
    const bluetooth = AstalBluetooth.get_default();
 
@@ -26,7 +27,11 @@ export function QuickSettingsModule() {
          interpolate_size={true}
          transitionType={Gtk.StackTransitionType.CROSSFADE}
          $={(self) => {
-            createEffect(() => self.set_visible_child_name(qs_page()));
+            createEffect(() => {
+               const page = qs_page();
+               console.log(`QuickSettings: switching to page ${page}`);
+               self.set_visible_child_name(page);
+            });
          }}
       >
          <MainPage />

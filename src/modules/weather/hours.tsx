@@ -3,8 +3,8 @@ import { For } from "ags";
 import { icons } from "@/src/lib/icons";
 import { theme } from "@/options";
 import { HourlyWeather } from "@/src/services/weather";
-import WeatherService from "@/src/services/weather";
-const weather = WeatherService.get_default();
+import Weather from "@/src/services/weather";
+const weather = Weather.get_default();
 
 function formatHour(timestamp: number): string {
    const date = new Date(timestamp * 1000);

@@ -6,8 +6,13 @@ import { bash, dependencies } from "@/src/lib/utils";
 let screen = "";
 try {
    screen = exec(`bash -c "ls -w1 /sys/class/backlight | head -1"`).trim();
+   if (screen) {
+      console.log(`Brightness: detected backlight device ${screen}`);
+   }
 } catch (error) {
-   console.warn("No backlight devices found");
+   console.warn(
+      "Brightness: no backlight devices found in /sys/class/backlight",
+   );
 }
 
 const available = dependencies("brightnessctl") && screen !== "";
@@ -56,7 +61,10 @@ export default class Brightness extends GObject.Object {
             }, 100);
          })
          .catch((err) => {
-            console.error("Failed to set brightness:", err);
+            console.error(
+               `Brightness: failed to set brightness to ${Math.floor(percent * 100)}%:`,
+               err,
+            );
             this.#changing = false;
          });
    }

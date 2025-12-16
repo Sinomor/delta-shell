@@ -1,10 +1,11 @@
 import AstalNiri from "gi://AstalNiri";
 import { bash } from "@/src/lib/utils";
-import { createBinding, createEffect, createState, onCleanup } from "ags";
+import { createBinding, createState, onCleanup } from "ags";
 import { compositor, config } from "@/options";
 import BarItem from "@/src/widgets/baritem";
 import { isVertical } from "../../bar";
 import { icons } from "@/src/lib/icons";
+const niri = compositor.peek() === "niri" ? AstalNiri.get_default() : null;
 
 const [layout_name, layout_name_set] = createState("?");
 
@@ -26,8 +27,11 @@ function updateLayout() {
 }
 
 export function KeyboardNiri() {
+   if (!niri) {
+      console.warn("Bar: keyboard module skipped: niri is not active");
+      return <box visible={false} />;
+   }
    const conf = config.bar.modules.keyboard;
-   const niri = AstalNiri.get_default();
    updateLayout();
    let niriconnect: number;
 

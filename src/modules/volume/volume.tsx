@@ -289,6 +289,8 @@ function List() {
 }
 
 export function VolumeModule({ showArrow = false }: { showArrow?: boolean }) {
+   console.log("Volume: initializing module");
+
    return (
       <box
          class={"volume"}

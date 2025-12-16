@@ -7,13 +7,13 @@ import { createBinding, createComputed, For } from "ags";
 import { resetCss } from "@/src/services/styles";
 import { QSButton } from "@/src/widgets/qsbutton";
 import { config, theme } from "@/options";
-import ScreenRecord from "@/src/services/screenrecord";
+import ScreenRecorder from "@/src/services/screenrecorder";
 import { timeout } from "ags/time";
 import Adw from "gi://Adw?version=1";
 import { dependencies } from "@/src/lib/utils";
 import { qs_page_set } from "../quicksettings";
 import { profiles_names } from "../../power/power";
-import WeatherService from "@/src/services/weather";
+import Weather from "@/src/services/weather";
 import AstalNotifd from "gi://AstalNotifd?version=0.1";
 import { FunctionsList } from "@/src/widgets/baritem";
 const network = AstalNetwork.get_default();
@@ -198,7 +198,7 @@ function InternetButton() {
 }
 
 function ScreenRecordButton() {
-   const screenRecord = ScreenRecord.get_default();
+   const screenRecord = ScreenRecorder.get_default();
    const recording = createBinding(screenRecord, "recording");
    const timer = createBinding(screenRecord, "timer");
 
@@ -262,7 +262,7 @@ function BluetoothButton() {
 }
 
 function WeatherButton() {
-   const weather = WeatherService.get_default();
+   const weather = Weather.get_default();
 
    const temp = createComputed(() => {
       const data = weather.data();

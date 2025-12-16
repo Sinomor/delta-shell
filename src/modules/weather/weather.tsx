@@ -5,9 +5,9 @@ import { icons } from "@/src/lib/icons";
 import { Days } from "./days";
 import { Hours } from "./hours";
 import { config, theme } from "@/options";
-import WeatherService from "@/src/services/weather";
+import Weather from "@/src/services/weather";
 import { qs_page_set } from "../quicksettings/quicksettings";
-const weather = WeatherService.get_default();
+const weather = Weather.get_default();
 
 function ScanningIndicator() {
    const className = weather.loading((scanning) => {
@@ -59,6 +59,8 @@ function Header({ showArrow = false }: { showArrow?: boolean }) {
 }
 
 export function WeatherModule({ showArrow = false }: { showArrow?: boolean }) {
+   console.log("Weather: initializing module");
+
    return (
       <box
          class={"weather"}

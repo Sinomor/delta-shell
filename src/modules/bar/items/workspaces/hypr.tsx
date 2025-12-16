@@ -15,7 +15,7 @@ const hyprland =
 
 export function WorkspacesHypr({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
    if (!hyprland) {
-      console.warn("Workspaces_Hypr: Hyprland compositor not active");
+      console.warn("Bar: workspaces module skipped: hyprland is not active");
       return <box visible={false} />;
    }
    const conf = config.bar.modules.workspaces;

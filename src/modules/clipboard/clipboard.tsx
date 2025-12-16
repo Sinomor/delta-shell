@@ -1,15 +1,15 @@
 import app from "ags/gtk4/app";
 import { Gtk } from "ags/gtk4";
-import { bash, dependencies, hasBarItem } from "@/src/lib/utils";
+import { bash, hasBarItem } from "@/src/lib/utils";
 import { icons } from "@/src/lib/icons";
 import { createComputed, createState, For, onCleanup } from "ags";
 import { hideWindows, windows_names } from "@/windows";
 import { config, theme } from "@/options";
-import Cliphist from "@/src/services/cliphist";
+import Clipboard from "@/src/services/clipboard";
 import { ClipText } from "./text";
 import { ClipColor } from "./color";
 import { ClipImage } from "./image";
-const clipboard = Cliphist.get_default();
+const clipboard = Clipboard.get_default();
 const { width } = config.clipboard;
 
 const colorPatterns = {
@@ -143,6 +143,8 @@ function NotFound() {
 }
 
 export function ClipboardModule() {
+   console.log("Clipboard: initializing module");
+
    return (
       <box
          widthRequest={width - theme.window.padding * 2}

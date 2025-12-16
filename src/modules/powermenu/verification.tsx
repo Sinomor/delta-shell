@@ -1,12 +1,12 @@
 import Gtk from "gi://Gtk";
-import Powermenu from "@/src/services/powermenu";
+import PowerMenu from "@/src/services/powermenu";
 import { createBinding } from "ags";
 import { hideWindows, windows_names } from "@/windows";
 import { config, theme } from "@/options";
 import { bash } from "@/src/lib/utils";
 import Pango from "gi://Pango?version=1.0";
 import Adw from "gi://Adw?version=1";
-const powermenu = Powermenu.get_default();
+const powermenu = PowerMenu.get_default();
 
 export function VerificationModule() {
    return (

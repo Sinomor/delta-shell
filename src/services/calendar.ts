@@ -8,12 +8,12 @@ export type CalendarDay = {
    isOtherMonth: boolean;
 };
 
-@register({ GTypeName: "CalendarService" })
-export default class CalendarService extends GObject.Object {
-   static instance: CalendarService;
+@register({ GTypeName: "Calendar" })
+export default class Calendar extends GObject.Object {
+   static instance: Calendar;
 
    static get_default() {
-      if (!this.instance) this.instance = new CalendarService();
+      if (!this.instance) this.instance = new Calendar();
       return this.instance;
    }
 

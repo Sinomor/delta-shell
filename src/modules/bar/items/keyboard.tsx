@@ -10,7 +10,10 @@ export function Keyboard() {
             {(comp) => {
                if (comp === "niri") return <KeyboardNiri />;
                if (comp === "hyprland") return <KeyboardHypr />;
-               return <box />;
+               console.warn(
+                  `Bar: keyboard module skipped: compositor ${compositor} not supported`,
+               );
+               return <box visible={false} />;
             }}
          </With>
       </box>

@@ -5,7 +5,12 @@ import WeatherService from "@/src/services/weather";
 import { isVertical } from "../bar";
 
 export function Weather() {
-   if (!config.weather.enabled) return <box visible={false} />;
+   if (!config.weather.enabled) {
+      console.warn(
+         "Bar: module weather requires config.weather.enabled = true",
+      );
+      return <box visible={false} />;
+   }
    const conf = config.bar.modules.weather;
    const weather = WeatherService.get_default();
 

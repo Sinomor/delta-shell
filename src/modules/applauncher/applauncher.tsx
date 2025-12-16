@@ -27,7 +27,10 @@ function Entry() {
    });
 
    const onEnter = () => {
-      list.peek()[0].launch();
+      const firstApp = list.peek()[0];
+
+      console.log(`AppLauncher: launching ${firstApp.name}`);
+      firstApp.launch();
       hideWindows();
    };
 
@@ -112,6 +115,8 @@ function NotFound() {
 }
 
 export function AppLauncherModule() {
+   console.log("AppLauncher: initializing module");
+
    return (
       <box
          widthRequest={width - theme.window.padding * 2}

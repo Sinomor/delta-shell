@@ -1,7 +1,7 @@
 import { Gtk } from "ags/gtk4";
 import { With } from "ags";
-import WeatherService from "@/src/services/weather";
-const weather = WeatherService.get_default();
+import Weather from "@/src/services/weather";
+const weather = Weather.get_default();
 
 function getDescription(weatherCode: number) {
    const descriptions = {

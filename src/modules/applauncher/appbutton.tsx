@@ -9,6 +9,7 @@ export function AppButton({ app }: { app: AstalApps.Application }) {
          class={"appbutton"}
          onClicked={() => {
             app.launch();
+            console.log(`AppLauncher: launching ${app.name}`);
             hideWindows();
          }}
          focusOnClick={false}
