@@ -2,12 +2,7 @@ import { config, theme } from "@/options";
 import { windows_names } from "@/windows";
 import { Astal, Gtk } from "ags/gtk4";
 import app from "ags/gtk4/app";
-import {
-   osd_revealed,
-   osd_visible,
-   osd_visible_set,
-   OsdModule,
-} from "../modules/osd/osd";
+import { OsdModule, revealed, setRevealed, visible } from "../modules/osd/osd";
 import giCairo from "cairo";
 const { position, vertical } = config.osd;
 const { margin } = theme.window;
@@ -15,21 +10,20 @@ const { margin } = theme.window;
 export function OsdWindow() {
    const { TOP, BOTTOM, RIGHT, LEFT } = Astal.WindowAnchor;
    let win: Astal.Window;
-   const pos = position.get();
 
    function halign() {
-      switch (pos) {
+      switch (position) {
          case "top":
             return Gtk.Align.CENTER;
          case "bottom":
             return Gtk.Align.CENTER;
-         case "top_left":
+         case "top-left":
             return Gtk.Align.START;
-         case "top_right":
+         case "top-right":
             return Gtk.Align.END;
-         case "bottom_left":
+         case "bottom-left":
             return Gtk.Align.START;
-         case "bottom_right":
+         case "bottom-right":
             return Gtk.Align.END;
          case "right":
             return Gtk.Align.END;
@@ -41,18 +35,18 @@ export function OsdWindow() {
    }
 
    function valign() {
-      switch (pos) {
+      switch (position) {
          case "top":
             return Gtk.Align.START;
          case "bottom":
             return Gtk.Align.END;
-         case "top_left":
+         case "top-left":
             return Gtk.Align.START;
-         case "top_right":
+         case "top-right":
             return Gtk.Align.START;
-         case "bottom_left":
+         case "bottom-left":
             return Gtk.Align.END;
-         case "bottom_right":
+         case "bottom-right":
             return Gtk.Align.END;
          case "right":
             return Gtk.Align.CENTER;
@@ -64,16 +58,16 @@ export function OsdWindow() {
    }
 
    function transitionType() {
-      if (vertical.get()) {
-         if (pos.includes("right"))
+      if (vertical) {
+         if (position.includes("right"))
             return Gtk.RevealerTransitionType.SLIDE_LEFT;
-         if (pos.includes("left"))
+         if (position.includes("left"))
             return Gtk.RevealerTransitionType.SLIDE_RIGHT;
       } else {
-         if (pos === "right") return Gtk.RevealerTransitionType.SLIDE_LEFT;
-         if (pos === "left") return Gtk.RevealerTransitionType.SLIDE_RIGHT;
+         if (position === "right") return Gtk.RevealerTransitionType.SLIDE_LEFT;
+         if (position === "left") return Gtk.RevealerTransitionType.SLIDE_RIGHT;
       }
-      return pos === "top"
+      return position === "top"
          ? Gtk.RevealerTransitionType.SLIDE_DOWN
          : Gtk.RevealerTransitionType.SLIDE_UP;
    }
@@ -81,10 +75,11 @@ export function OsdWindow() {
    return (
       <window
          name={windows_names.osd}
+         namespace={windows_names.osd}
          application={app}
          anchor={TOP | BOTTOM | RIGHT | LEFT}
          layer={Astal.Layer.OVERLAY}
-         visible={osd_visible}
+         visible={visible}
          $={(self) => (win = self)}
          onNotifyVisible={({ visible }) => {
             if (visible) {
@@ -96,12 +91,12 @@ export function OsdWindow() {
       >
          <revealer
             transitionType={transitionType()}
-            transitionDuration={config.transition.get() * 1000}
+            transitionDuration={config.transition * 1000}
             halign={halign()}
             valign={valign()}
-            revealChild={osd_revealed}
+            revealChild={revealed}
             onNotifyChildRevealed={({ childRevealed }) =>
-               osd_visible_set(childRevealed)
+               setRevealed(childRevealed)
             }
          >
             <box
@@ -110,7 +105,7 @@ export function OsdWindow() {
                marginEnd={margin}
                marginStart={margin}
             >
-               <OsdModule visible={osd_visible} />
+               <OsdModule visible={visible} />
             </box>
          </revealer>
       </window>

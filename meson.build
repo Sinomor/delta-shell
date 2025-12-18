@@ -3,7 +3,7 @@ project(
   version: '0.1',
   default_options: [
     'prefix=/usr',
-  ]
+  ],
 )
 
 prefix = get_option('prefix')
@@ -30,7 +30,7 @@ custom_target(
 )
 
 configure_file(
-  input: files('run.sh'),
+  input: files('delta-shell'),
   output: meson.project_name(),
   configuration: {'DATADIR': datadir},
   install: true,

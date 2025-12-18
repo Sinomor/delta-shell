@@ -29,12 +29,13 @@ window#clipboard {
 
       &:focus {
          transition: 0s;
-         outline-offset: -$outline-width;
-         outline: $outline-width solid $outline-color;
+         outline-offset: -$window-outline-width;
+         outline: $window-outline-width solid $window-outline-color;
       }
    }
 
-   .launcher-button {
+   .appbutton,
+   .clipbutton {
       min-height: 50px;
       padding: 0 10px;
       border-radius: $widget-radius;
@@ -48,8 +49,8 @@ window#clipboard {
 
       &:focus {
          transition: 0s;
-         outline-offset: -$outline-width;
-         outline: $outline-width solid $outline-color;
+         outline-offset: -$window-outline-width;
+         outline: $window-outline-width solid $window-outline-color;
       }
 
       .name,
@@ -62,7 +63,8 @@ window#clipboard {
       padding: 10px;
    }
 
-   .image {
+   .image,
+   .color {
       border-radius: $widget-radius;
    }
 

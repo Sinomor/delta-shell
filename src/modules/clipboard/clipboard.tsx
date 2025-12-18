@@ -1,16 +1,16 @@
 import app from "ags/gtk4/app";
 import { Gtk } from "ags/gtk4";
-import { bash, dependencies, hasBarItem } from "@/src/lib/utils";
+import { bash, hasBarItem } from "@/src/lib/utils";
 import { icons } from "@/src/lib/icons";
 import { createComputed, createState, For, onCleanup } from "ags";
-import { hide_all_windows, windows_names } from "@/windows";
+import { hideWindows, windows_names } from "@/windows";
 import { config, theme } from "@/options";
-import Cliphist from "@/src/services/cliphist";
+import Clipboard from "@/src/services/clipboard";
 import { ClipText } from "./text";
 import { ClipColor } from "./color";
 import { ClipImage } from "./image";
-const clipboard = Cliphist.get_default();
-const { width } = config.launcher;
+const clipboard = Clipboard.get_default();
+const { width } = config.clipboard;
 
 const colorPatterns = {
    hex: /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/,
@@ -20,7 +20,7 @@ const colorPatterns = {
    hsla: /^hsla\(\s*(\d{1,3})\s*,\s*(\d{1,3}%)\s*,\s*(\d{1,3}%)\s*,\s*([01]?\.\d+|\d{1,3}%?)\s*\)$/,
 };
 
-const imagePattern = /\[\[ binary data (\d+) (KiB|MiB) (\w+) (\d+)x(\d+) \]\]/;
+const imagePattern = /\[\[ binary data \d+ ([KMGT]i)?B \w+ \d+x\d+ \]\]/;
 
 const [text, text_set] = createState("");
 let scrolled: Gtk.ScrolledWindow;
@@ -37,7 +37,7 @@ function ClipButton({ item }: { item: string }) {
    const [id, ...contentParts] = item.split("\t");
    const content = contentParts.join(" ").trim();
    const isImage =
-      config.clipboard["image-preview"].get() && content.match(imagePattern);
+      config.clipboard["image-preview"] && content.match(imagePattern);
    const isColor = Object.entries(colorPatterns).find(([_, pattern]) =>
       pattern.test(content.trim()),
    );
@@ -62,7 +62,7 @@ function Entry() {
       const item = list.get()[0];
       const [id, ...contentParts] = item.split("\t");
       clipboard.copy(id);
-      hide_all_windows();
+      hideWindows();
    };
 
    return (
@@ -81,7 +81,7 @@ function Entry() {
             });
          }}
          placeholderText={"Search..."}
-         onActivate={() => onEnter()}
+         onActivate={onEnter}
          onNotifyText={(self) => {
             scrolled.set_vadjustment(null);
             text_set(self.text);
@@ -135,18 +135,19 @@ function NotFound() {
          halign={Gtk.Align.CENTER}
          valign={Gtk.Align.CENTER}
          vexpand
-         class={"apps-not-found"}
-         visible={list.as((l) => l.length === 0)}
+         visible={list((l) => l.length === 0)}
       >
-         <label label={"No matches found"} />
+         <label label={"No match found"} />
       </box>
    );
 }
 
 export function ClipboardModule() {
+   console.log("Clipboard: initializing module");
+
    return (
       <box
-         widthRequest={width.get() - theme.window.padding.get() * 2}
+         widthRequest={width - theme.window.padding * 2}
          orientation={Gtk.Orientation.VERTICAL}
          vexpand
          spacing={theme.spacing}

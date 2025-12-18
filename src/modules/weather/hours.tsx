@@ -3,8 +3,8 @@ import { For } from "ags";
 import { icons } from "@/src/lib/icons";
 import { theme } from "@/options";
 import { HourlyWeather } from "@/src/services/weather";
-import WeatherService from "@/src/services/weather";
-const weather = WeatherService.get_default();
+import Weather from "@/src/services/weather";
+const weather = Weather.get_default();
 
 function formatHour(timestamp: number): string {
    const date = new Date(timestamp * 1000);
@@ -25,7 +25,7 @@ function Hour({ hour }: { hour: HourlyWeather }) {
          spacing={theme.spacing}
          class={"hour"}
       >
-         <label label={`${formatHour(hour.time)}`} />
+         <label label={formatHour(hour.time)} />
          <image iconName={hour.icon} pixelSize={32} />
          <label label={`${hour.temperature}${hour.units.temperature}`} />
          <box visible={hour.precipitation_probability !== 0}>
@@ -37,7 +37,7 @@ function Hour({ hour }: { hour: HourlyWeather }) {
 }
 
 export function Hours() {
-   const hours = weather.data.as((data) => {
+   const hours = weather.data((data) => {
       if (!data) return [];
       return data?.hourly;
    });

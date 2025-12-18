@@ -3,8 +3,8 @@ import { DailyWeather } from "@/src/services/weather";
 import { For } from "ags";
 import { icons } from "@/src/lib/icons";
 import { theme } from "@/options";
-import WeatherService from "@/src/services/weather";
-const weather = WeatherService.get_default();
+import Weather from "@/src/services/weather";
+const weather = Weather.get_default();
 
 function formatDate(timestamp: number): string {
    const date = new Date(timestamp * 1000);
@@ -36,7 +36,7 @@ function Day({ day }: { day: DailyWeather }) {
          spacing={theme.spacing}
          class={"day"}
       >
-         <label label={`${formateWeekDay(day.time)}`} />
+         <label label={formateWeekDay(day.time)} />
          <image iconName={day.icon} pixelSize={32} />
          <box orientation={Gtk.Orientation.VERTICAL}>
             <label
@@ -55,7 +55,7 @@ function Day({ day }: { day: DailyWeather }) {
 }
 
 export function Days() {
-   const days = weather.data.as((data) => {
+   const days = weather.data((data) => {
       if (!data) return [];
       return data?.daily;
    });

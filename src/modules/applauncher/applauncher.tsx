@@ -2,15 +2,20 @@ import app from "ags/gtk4/app";
 import Apps from "gi://AstalApps?version=0.1";
 import { Gtk } from "ags/gtk4";
 import { createComputed, createState, For, onCleanup } from "ags";
-import { hide_all_windows, windows_names } from "@/windows";
+import { hideWindows, windows_names } from "@/windows";
 import { config, theme } from "@/options";
 import { AppButton } from "./appbutton";
-const { width } = config.launcher;
+const { width, columns, "sort-type": sort } = config.launcher;
 
 const apps = new Apps.Apps();
-const [text, text_set] = createState("");
+const [text, setText] = createState("");
 let scrolled: Gtk.ScrolledWindow;
-const list = text.as((text) => {
+const list = text((text) => {
+   if (sort === "frequency") return apps.fuzzy_query(text);
+   if (sort === "alphabetical")
+      return apps
+         .fuzzy_query(text)
+         .sort((a, b) => a.name.localeCompare(b.name));
    return apps.fuzzy_query(text);
 });
 
@@ -22,8 +27,11 @@ function Entry() {
    });
 
    const onEnter = () => {
-      list.get()[0].launch();
-      hide_all_windows();
+      const firstApp = list.peek()[0];
+
+      console.log(`AppLauncher: launching ${firstApp.name}`);
+      firstApp.launch();
+      hideWindows();
    };
 
    return (
@@ -37,17 +45,17 @@ function Entry() {
                if (winName == windows_names.applauncher && visible) {
                   scrolled.set_vadjustment(null);
                   await apps.reload();
-                  text_set("");
+                  setText("");
                   self.set_text("");
                   self.grab_focus();
                }
             });
          }}
          placeholderText={"Search..."}
-         onActivate={() => onEnter()}
+         onActivate={onEnter}
          onNotifyText={(self) => {
             scrolled.set_vadjustment(null);
-            text_set(self.text);
+            setText(self.text);
          }}
       />
    );
@@ -62,14 +70,32 @@ function Header() {
 }
 
 function List() {
+   const columnedList = list((apps) =>
+      apps.reduce(
+         (result, app, index) => {
+            result[index % columns].push(app);
+            return result;
+         },
+         Array.from({ length: columns }, () => [] as Apps.Application[]),
+      ),
+   );
+
    return (
-      <scrolledwindow class={"apps-list"} $={(self) => (scrolled = self)}>
-         <box
-            spacing={theme.spacing}
-            vexpand
-            orientation={Gtk.Orientation.VERTICAL}
-         >
-            <For each={list}>{(app) => <AppButton app={app} />}</For>
+      <scrolledwindow $={(self) => (scrolled = self)}>
+         <box spacing={theme.spacing} vexpand>
+            <For each={columnedList}>
+               {(column) => (
+                  <box
+                     spacing={theme.spacing}
+                     hexpand
+                     orientation={Gtk.Orientation.VERTICAL}
+                  >
+                     {column.map((app) => (
+                        <AppButton app={app} />
+                     ))}
+                  </box>
+               )}
+            </For>
          </box>
       </scrolledwindow>
    );
@@ -81,8 +107,7 @@ function NotFound() {
          halign={Gtk.Align.CENTER}
          valign={Gtk.Align.CENTER}
          vexpand
-         class={"apps-not-found"}
-         visible={list.as((l) => l.length === 0)}
+         visible={list((l) => l.length === 0)}
       >
          <label label={"No match found"} />
       </box>
@@ -90,9 +115,11 @@ function NotFound() {
 }
 
 export function AppLauncherModule() {
+   console.log("AppLauncher: initializing module");
+
    return (
       <box
-         widthRequest={width.get() - theme.window.padding.get() * 2}
+         widthRequest={width - theme.window.padding * 2}
          orientation={Gtk.Orientation.VERTICAL}
          vexpand
          spacing={theme.spacing}

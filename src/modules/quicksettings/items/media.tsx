@@ -24,6 +24,7 @@ function MediaPlayer({ player }: { player: AstalMpris.Player }) {
          ? icons.player.pause
          : icons.player.play,
    );
+   const app = getAppInfo(player.entry);
 
    function Content() {
       return (
@@ -36,7 +37,7 @@ function MediaPlayer({ player }: { player: AstalMpris.Player }) {
             <box spacing={theme.spacing}>
                <box hexpand />
                <image
-                  iconName={getAppInfo(player.entry).iconName}
+                  iconName={app?.iconName || icons.player.icon}
                   pixelSize={22}
                />
                <label label={player.identity} />
@@ -139,11 +140,11 @@ function CustomIndicator({ carousel }: { carousel: Adw.Carousel }) {
          $type={"overlay"}
          class={"indicator"}
          spacing={theme.spacing}
-         visible={nPages.as((p) => p > 1)}
+         visible={nPages((p) => p > 1)}
          halign={Gtk.Align.START}
          valign={Gtk.Align.START}
       >
-         <For each={nPages.as((n) => Array.from({ length: n }, (_, i) => i))}>
+         <For each={nPages((n) => Array.from({ length: n }, (_, i) => i))}>
             {(index) => (
                <box
                   class={position.as((pos) =>
@@ -162,7 +163,7 @@ export function MprisPlayers() {
    return (
       <overlay
          heightRequest={160}
-         visible={list.as((players) => players.length !== 0)}
+         visible={list((players) => players.length !== 0)}
       >
          <Adw.Carousel
             spacing={theme.spacing}

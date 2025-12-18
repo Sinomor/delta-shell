@@ -31,36 +31,41 @@ window#volume {
 
       &:focus {
          transition: 0s;
-         outline-offset: -$outline-width;
-         outline: $outline-width solid $outline-color;
+         outline-offset: -$window-outline-width;
+         outline: $window-outline-width solid $window-outline-color;
       }
    }
 
-   .menu {
-      &.menu > contents {
-         background: transparent;
-         box-shadow: none;
+   popover {
+      contents {
+         background: rgba($bg0, $window-opacity);
+         border: $window-border-width solid $window-border-color;
+         padding: $window-padding;
          border-radius: $window-radius;
          @if $shadow {
-            box-shadow: $bar-shadow-offset
-               $bar-shadow-blur
-               $bar-shadow-spread
-               rgba($bar-shadow-color, $bar-shadow-opacity);
+            box-shadow: $window-shadow-offset
+               $window-shadow-blur
+               $window-shadow-spread
+               rgba($window-shadow-color, $window-shadow-opacity);
          }
       }
 
-      modelbutton {
-         border-radius: $widget-radius;
+      button {
          background: transparent;
+         color: $fg0;
+         border-radius: $widget-radius;
+         outline: none;
+         font-weight: normal;
 
-         &:focus,
+         &:focus {
+            transition: 0s;
+            outline-offset: -$window-outline-width;
+            outline: $window-outline-width solid $window-outline-color;
+         }
+
          &:hover {
             background: $bg1;
          }
-      }
-
-      &.menu > arrow {
-         all: unset;
       }
    }
 
@@ -91,8 +96,8 @@ window#volume {
          &:focus {
             trough {
                transition: 0s;
-               outline-offset: -$outline-width;
-               outline: $outline-width solid $outline-color;
+               outline-offset: -$window-outline-width;
+               outline: $window-outline-width solid $window-outline-color;
             }
          }
       }

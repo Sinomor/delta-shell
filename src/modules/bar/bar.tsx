@@ -1,12 +1,10 @@
-import app from "ags/gtk4/app";
-import { Astal, Gdk, Gtk } from "ags/gtk4";
+import { Gdk, Gtk } from "ags/gtk4";
 import { Workspaces } from "./items/workspaces";
 import { Clock } from "./items/clock";
 import { Launcher } from "./items/launcher";
 import { Tray } from "./items/tray";
 import { RecordIndicator } from "./items/recordindicator";
 import { Keyboard } from "./items/keyboard";
-import { For, createState, onCleanup } from "ags";
 import { Weather } from "./items/weather";
 import { config, theme } from "@/options";
 import { windows_names } from "@/windows";
@@ -21,11 +19,14 @@ import { NotificationsList } from "./items/notificationslist";
 import { Separator } from "./items/separator";
 import { CPU } from "./items/cpu";
 import { RAM } from "./items/ram";
+import { Microphone } from "./items/microphone";
 
-const { position, modules } = config.bar;
+const { position, modules, size } = config.bar;
 const { spacing } = theme.bar;
-export const isVertical =
-   position.get() === "right" || position.get() === "left";
+export const isVertical = position === "right" || position === "left";
+export const orientation = isVertical
+   ? Gtk.Orientation.VERTICAL
+   : Gtk.Orientation.HORIZONTAL;
 
 export function BarModule({
    gdkmonitor,
@@ -50,16 +51,19 @@ export function BarModule({
       separator: () => <Separator />,
       cpu: () => <CPU />,
       ram: () => <RAM />,
+      microphone: () => <Microphone />,
    } as Record<string, any>;
 
-   const getModules = (string: string) => {
-      const baritems = modules[string].get();
+   const getModules = (location: "start" | "center" | "end") => {
+      const baritems = modules[location];
       const items = [];
 
       for (const baritem of baritems) {
          const Widget = Bar_Items[baritem];
          if (!Widget) {
-            console.error(`Failed create qsbutton: unknown name "${baritem}"`);
+            console.error(
+               `Bar: unknown module '${baritem}' in ${location} section`,
+            );
             continue;
          }
          const result = Widget();
@@ -77,12 +81,7 @@ export function BarModule({
             $type={"start"}
             class={"modules-start"}
             spacing={spacing}
-            orientation={
-               isVertical
-                  ? Gtk.Orientation.VERTICAL
-                  : Gtk.Orientation.HORIZONTAL
-            }
-            $={(self) => self.get_first_child()?.add_css_class("first-child")}
+            orientation={orientation}
          >
             {getModules("start")}
          </box>
@@ -95,11 +94,7 @@ export function BarModule({
             $type={"center"}
             class={"modules-center"}
             spacing={spacing}
-            orientation={
-               isVertical
-                  ? Gtk.Orientation.VERTICAL
-                  : Gtk.Orientation.HORIZONTAL
-            }
+            orientation={orientation}
          >
             {getModules("center")}
          </box>
@@ -112,12 +107,7 @@ export function BarModule({
             $type={"end"}
             class={"modules-end"}
             spacing={spacing}
-            orientation={
-               isVertical
-                  ? Gtk.Orientation.VERTICAL
-                  : Gtk.Orientation.HORIZONTAL
-            }
-            $={(self) => self.get_last_child()?.add_css_class("last-child")}
+            orientation={orientation}
          >
             {getModules("end")}
          </box>
@@ -127,11 +117,8 @@ export function BarModule({
    return (
       <centerbox
          class={"main"}
-         orientation={
-            isVertical ? Gtk.Orientation.VERTICAL : Gtk.Orientation.HORIZONTAL
-         }
+         orientation={orientation}
          $={(self) => {
-            const size = config.bar.size.get();
             isVertical
                ? (self.widthRequest = size)
                : (self.heightRequest = size);

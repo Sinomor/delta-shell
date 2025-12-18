@@ -1,9 +1,9 @@
 import Pango from "gi://Pango?version=1.0";
 import { bash } from "@/src/lib/utils";
 import { Gdk, Gtk } from "ags/gtk4";
-import { hide_all_windows } from "@/windows";
-import Cliphist from "@/src/services/cliphist";
-const clipboard = Cliphist.get_default();
+import { hideWindows } from "@/windows";
+import Clipboard from "@/src/services/clipboard";
+const clipboard = Clipboard.get_default();
 
 export function ClipColor({ id, content }: { id: string; content: string }) {
    const gdkColor = new Gdk.RGBA();
@@ -11,10 +11,10 @@ export function ClipColor({ id, content }: { id: string; content: string }) {
 
    return (
       <button
-         cssClasses={["launcher-button", "clipbutton", "color-content"]}
+         cssClasses={["clipbutton", "color-content"]}
          onClicked={() => {
             clipboard.copy(id);
-            hide_all_windows();
+            hideWindows();
          }}
          focusOnClick={false}
       >
@@ -23,6 +23,7 @@ export function ClipColor({ id, content }: { id: string; content: string }) {
                widthRequest={20}
                heightRequest={20}
                valign={Gtk.Align.CENTER}
+               class={"color"}
                css={`
                   background: ${isValid ? content : "transparent"};
                `}

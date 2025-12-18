@@ -1,76 +1,79 @@
-import GObject, { register } from "ags/gobject";
-import { createState } from "ags";
+import GObject, { register, property, getter, setter } from "ags/gobject";
 
 export type CalendarDay = {
+   date: Date;
    day: number;
    isToday: boolean;
    isWeekend: boolean;
    isOtherMonth: boolean;
 };
 
-@register({ GTypeName: "CalendarService" })
-export default class CalendarService extends GObject.Object {
-   static instance: CalendarService;
+@register({ GTypeName: "Calendar" })
+export default class Calendar extends GObject.Object {
+   static instance: Calendar;
 
    static get_default() {
-      if (!this.instance) this.instance = new CalendarService();
+      if (!this.instance) this.instance = new Calendar();
       return this.instance;
    }
 
-   #currentDate = createState(new Date());
+   private _date: Date = new Date();
 
    constructor() {
       super();
    }
 
-   private getCalendarDays(date: Date): CalendarDay[][] {
-      const year = date.getFullYear();
-      const month = date.getMonth();
+   @getter(Object)
+   get date() {
+      return new Date(this._date);
+   }
 
-      const firstDay = new Date(year, month, 1);
-      const lastDay = new Date(year, month + 1, 0);
+   @setter(Date)
+   set date(d: Date) {
+      if (this._date.getTime() === d.getTime()) return;
+      this._date = d;
+      this.notify("date");
+      this.notify("month");
+      this.notify("year");
+      this.notify("calendar");
+   }
 
-      const firstDayOfWeek = (firstDay.getDay() + 6) % 7;
-      const daysInMonth = lastDay.getDate();
+   @getter(Number) get month() {
+      return this._date.getMonth();
+   }
+   @getter(Number) get year() {
+      return this._date.getFullYear();
+   }
 
-      const prevMonthLastDay = new Date(year, month, 0).getDate();
+   @getter(Object)
+   get calendar() {
+      const year = this.year;
+      const month = this.month;
+      const now = new Date();
 
-      const today = new Date();
-      const isCurrentMonth =
-         today.getFullYear() === year && today.getMonth() === month;
-      const todayDate = today.getDate();
+      const startOfMonth = new Date(year, month, 1);
+      const startDayOfWeek = (startOfMonth.getDay() + 6) % 7;
 
       const days: CalendarDay[] = [];
 
-      for (let i = firstDayOfWeek - 1; i >= 0; i--) {
-         const dayIndex = days.length % 7;
-         days.push({
-            day: prevMonthLastDay - i,
-            isToday: false,
-            isWeekend: dayIndex >= 5,
-            isOtherMonth: true,
-         });
-      }
+      const currentIterDate = new Date(year, month, 1 - startDayOfWeek);
 
-      for (let day = 1; day <= daysInMonth; day++) {
-         const dayIndex = days.length % 7;
-         days.push({
-            day,
-            isToday: isCurrentMonth && day === todayDate,
-            isWeekend: dayIndex >= 5,
-            isOtherMonth: false,
-         });
-      }
+      for (let i = 0; i < 42; i++) {
+         const isToday =
+            currentIterDate.getDate() === now.getDate() &&
+            currentIterDate.getMonth() === now.getMonth() &&
+            currentIterDate.getFullYear() === now.getFullYear();
 
-      const remainingDays = 42 - days.length;
-      for (let day = 1; day <= remainingDays; day++) {
-         const dayIndex = days.length % 7;
          days.push({
-            day,
-            isToday: false,
-            isWeekend: dayIndex >= 5,
-            isOtherMonth: true,
+            date: new Date(currentIterDate),
+            day: currentIterDate.getDate(),
+            isToday,
+            isWeekend:
+               currentIterDate.getDay() === 0 || currentIterDate.getDay() === 6,
+            isOtherMonth: currentIterDate.getMonth() !== month,
          });
+
+         currentIterDate.setDate(currentIterDate.getDate() + 1);
       }
 
       const weeks: CalendarDay[][] = [];
@@ -81,50 +84,11 @@ export default class CalendarService extends GObject.Object {
       return weeks;
    }
 
-   get date() {
-      return this.#currentDate[0];
+   shiftMonth(delta: number) {
+      this.date = new Date(this.year, this.month + delta, 1);
    }
 
-   get weeks() {
-      return this.#currentDate[0]((date) => this.getCalendarDays(date));
-   }
-
-   get monthYear() {
-      return this.#currentDate[0]((date) => {
-         const month = date.toLocaleString("default", { month: "long" });
-         const year = date.getFullYear();
-         const today = new Date();
-         const isToday =
-            date.getMonth() === today.getMonth() &&
-            date.getFullYear() === today.getFullYear();
-
-         return `${isToday ? "" : "• "}${month} ${year}`;
-      });
-   }
-
-   get isCurrentMonth() {
-      return this.#currentDate[0]((date) => {
-         const today = new Date();
-         return (
-            date.getMonth() === today.getMonth() &&
-            date.getFullYear() === today.getFullYear()
-         );
-      });
-   }
-
-   nextMonth() {
-      this.#currentDate[1]((prevDate) => {
-         return new Date(prevDate.getFullYear(), prevDate.getMonth() + 1, 1);
-      });
-   }
-
-   prevMonth() {
-      this.#currentDate[1]((prevDate) => {
-         return new Date(prevDate.getFullYear(), prevDate.getMonth() - 1, 1);
-      });
-   }
-
-   resetToToday() {
-      this.#currentDate[1](new Date());
+   reset() {
+      this.date = new Date();
    }
 }

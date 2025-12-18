@@ -1,149 +1,73 @@
-import { readFile, writeFile, monitorFile, readFileAsync } from "ags/file";
-import { ensureDirectory, ensureFileWithDefaults } from "@/src/lib/utils";
-import Gio from "gi://Gio?version=2.0";
+import { readFile } from "ags/file";
 import GLib from "gi://GLib?version=2.0";
-import { Accessor } from "ags";
 
-type GenericObject = Record<string, any>;
-
-export class Opt<T = unknown> extends Accessor<T> {
-   #subscribers = new Set<() => void>();
-   #value: T;
-   initial: T;
-   id = "";
-
-   constructor(initial: T) {
-      super(
-         () => this.#value,
-         (callback) => {
-            this.#subscribers.add(callback);
-            return () => this.#subscribers.delete(callback);
-         },
-      );
-
-      this.#value = initial;
-      this.initial = initial;
+function ensureFile(path: string, content: string): void {
+   const dir = path.split("/").slice(0, -1).join("/");
+   if (!GLib.file_test(dir, GLib.FileTest.IS_DIR)) {
+      GLib.mkdir_with_parents(dir, 0o755);
    }
-
-   set(value: T) {
-      if (this.#value !== value) {
-         this.#value = value;
-         this.#subscribers.forEach((cb) => cb());
-      }
+   if (!GLib.file_test(path, GLib.FileTest.EXISTS)) {
+      GLib.file_set_contents(path, content);
    }
 }
 
-export const opt = <T>(initial: T): Opt<T> => new Opt(initial);
-
-function getNestedValue(obj: GenericObject, keyPath: string): any {
-   const keys = keyPath.split(".");
-   let current: GenericObject = obj;
-
-   for (const key of keys) {
-      if (current && Object.prototype.hasOwnProperty.call(current, key)) {
-         current = current[key];
-      } else {
-         return undefined;
-      }
+function deepMerge<T>(target: T, source: Partial<T>): T {
+   if (typeof target !== "object" || target === null) {
+      return source as T;
+   }
+   if (typeof source !== "object" || source === null) {
+      return target;
    }
 
-   return current;
-}
+   const result: any = Array.isArray(target) ? [...target] : { ...target };
 
-function setNestedValue<T>(
-   obj: GenericObject,
-   keyPath: string,
-   value: T,
-): void {
-   const keys = keyPath.split(".");
-   let current: GenericObject = obj;
+   for (const key in source) {
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
+         const sourceValue = source[key];
+         const targetValue = result[key];
 
-   for (let i = 0; i < keys.length - 1; i++) {
-      const key = keys[i];
-
-      if (!current[key]) {
-         current[key] = {};
-      }
-
-      current = current[key];
-   }
-
-   current[keys[keys.length - 1]] = value;
-}
-
-function getOptions(object: GenericObject, path = ""): Opt[] {
-   return Object.keys(object).flatMap((key) => {
-      const obj = object[key];
-      const id = path ? path + "." + key : key;
-
-      if (obj instanceof Opt) {
-         obj.id = id;
-         return obj;
-      }
-
-      if (typeof obj === "object" && obj !== null) {
-         return getOptions(obj, id);
-      }
-
-      return [];
-   });
-}
-
-function transformObject(obj: any, initial?: boolean): any {
-   if (obj instanceof Opt) {
-      return initial ? obj.initial : obj.get();
-   }
-
-   if (typeof obj !== "object" || obj === null) return obj;
-
-   const newObj: GenericObject = {};
-
-   Object.keys(obj).forEach((key) => {
-      const transformed = transformObject(obj[key], initial);
-      if (transformed !== undefined) {
-         newObj[key] = transformed;
-      }
-   });
-
-   const length = Object.keys(newObj).length;
-   return length > 0 ? newObj : undefined;
-}
-
-export function mkOptions<T extends GenericObject>(
-   configFile: string,
-   object: T,
-): T & {
-   configFile: string;
-   handler: (deps: string[], callback: () => void) => void;
-} {
-   const defaultConfig = transformObject(object, true);
-
-   ensureFileWithDefaults(configFile, JSON.stringify(defaultConfig, null, 2));
-
-   let currentConfig = defaultConfig;
-   if (GLib.file_test(configFile, GLib.FileTest.EXISTS)) {
-      try {
-         currentConfig = JSON.parse(readFile(configFile));
-      } catch (e) {
-         console.error("Error parsing config:", e);
-      }
-   }
-
-   for (const opt of getOptions(object)) {
-      const value = getNestedValue(currentConfig, opt.id);
-      if (value !== undefined) {
-         opt.set(value);
-      } else {
-         opt.set(opt.initial);
-      }
-   }
-
-   return Object.assign(object, {
-      configFile,
-      handler(deps: string[], callback: () => void) {
-         for (const opt of getOptions(object)) {
-            if (deps.some((i) => opt.id.startsWith(i))) opt.subscribe(callback);
+         if (Array.isArray(sourceValue)) {
+            result[key] = [...sourceValue];
+         } else if (
+            typeof sourceValue === "object" &&
+            sourceValue !== null &&
+            !Array.isArray(sourceValue)
+         ) {
+            result[key] = deepMerge(targetValue || {}, sourceValue);
+         } else {
+            result[key] = sourceValue;
          }
-      },
-   });
+      }
+   }
+
+   return result;
+}
+
+export function mkOptions<T extends Record<string, any>>(
+   configFile: string,
+   defaults: T,
+): T {
+   ensureFile(
+      configFile,
+      JSON.stringify(
+         defaults,
+         (_, value) => {
+            if (value !== null) return value;
+         },
+         2,
+      ),
+   );
+
+   if (!GLib.file_test(configFile, GLib.FileTest.EXISTS)) {
+      return defaults;
+   }
+
+   try {
+      const content = readFile(configFile);
+      const loaded = JSON.parse(content);
+      return deepMerge(defaults, loaded);
+   } catch (err) {
+      console.error(`Failed to load config from ${configFile}:`, err);
+      return defaults;
+   }
 }

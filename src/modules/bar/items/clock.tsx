@@ -1,47 +1,37 @@
-import app from "ags/gtk4/app";
 import GLib from "gi://GLib";
 import { createPoll } from "ags/time";
-import { onCleanup, With } from "ags";
-import { hide_all_windows, windows_names } from "@/windows";
-import { toggleWindow } from "@/src/lib/utils";
+import { With } from "ags";
+import { windows_names } from "@/windows";
 import { config } from "@/options";
 import BarItem from "@/src/widgets/baritem";
-import { isVertical } from "../bar";
-import { Gtk } from "ags/gtk4";
-const { format } = config.bar.modules.clock;
+import { isVertical, orientation } from "../bar";
 
 export function Clock() {
+   const conf = config.bar.modules.clock;
+
    const time = createPoll(
       "",
       1000,
-      () => GLib.DateTime.new_now_local().format(format.get())!,
+      () => GLib.DateTime.new_now_local().format(conf.format)!,
    );
 
    return (
       <BarItem
          window={windows_names.calendar}
-         onPrimaryClick={config.bar.modules.clock["on-click"].get()}
-         onSecondaryClick={config.bar.modules.clock["on-click-right"].get()}
-         onMiddleClick={config.bar.modules.clock["on-click-middle"].get()}
+         onPrimaryClick={conf["on-click"]}
+         onSecondaryClick={conf["on-click-right"]}
+         onMiddleClick={conf["on-click-middle"]}
       >
          {isVertical ? (
-            <box orientation={Gtk.Orientation.VERTICAL}>
-               <With value={time}>
-                  {(time) => (
-                     <box
-                        orientation={
-                           isVertical
-                              ? Gtk.Orientation.VERTICAL
-                              : Gtk.Orientation.HORIZONTAL
-                        }
-                     >
-                        {time.split(" ").map((part) => (
-                           <label hexpand label={part} />
-                        ))}
-                     </box>
-                  )}
-               </With>
-            </box>
+            <With value={time}>
+               {(time) => (
+                  <box orientation={orientation}>
+                     {time.split(" ").map((part) => (
+                        <label hexpand label={part} />
+                     ))}
+                  </box>
+               )}
+            </With>
          ) : (
             <label label={time} />
          )}

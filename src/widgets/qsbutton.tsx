@@ -3,6 +3,7 @@ import { icons } from "@/src/lib/icons";
 import { Gtk } from "ags/gtk4";
 import { Accessor } from "ags";
 import Adw from "gi://Adw?version=1";
+import { attachHoverScroll } from "../lib/utils";
 
 type QSButtonProps = {
    icon: string | Accessor<string>;
@@ -11,6 +12,8 @@ type QSButtonProps = {
    arrow?: "none" | "separate" | "inside";
    onClicked: () => void;
    onArrowClicked?: () => void;
+   onScrollDown?: () => void;
+   onScrollUp?: () => void;
    ButtonClasses: string[] | Accessor<string[]>;
    ArrowClasses?: string[] | Accessor<string[]>;
    maxWidthChars?: number;
@@ -23,13 +26,23 @@ export function QSButton({
    onClicked,
    arrow = "none",
    onArrowClicked = () => {},
+   onScrollUp = () => {},
+   onScrollDown = () => {},
    ButtonClasses,
    ArrowClasses,
-   maxWidthChars = 10,
+   maxWidthChars = 5,
 }: QSButtonProps) {
    return (
       <Adw.Clamp class={"qs-button"} maximumSize={200}>
-         <box widthRequest={200}>
+         <box
+            widthRequest={200}
+            $={(self) => {
+               attachHoverScroll(self, ({ dy }) => {
+                  if (dy < 0) onScrollUp();
+                  if (dy > 0) onScrollDown();
+               });
+            }}
+         >
             <button
                onClicked={onClicked}
                cssClasses={ButtonClasses}
@@ -42,17 +55,20 @@ export function QSButton({
                      <label
                         class={"qs-button-label"}
                         label={label}
-                        ellipsize={Pango.EllipsizeMode.END}
-                        halign={Gtk.Align.START}
+                        xalign={0}
+                        hexpand
                         valign={Gtk.Align.CENTER}
+                        ellipsize={Pango.EllipsizeMode.END}
+                        maxWidthChars={maxWidthChars}
                      />
                      {subtitle && (
                         <label
                            class={"qs-button-subtitle"}
                            label={subtitle}
-                           halign={Gtk.Align.START}
+                           xalign={0}
                            valign={Gtk.Align.CENTER}
                            visible={subtitle.as((s) => s !== "None")}
+                           hexpand
                            maxWidthChars={maxWidthChars}
                            ellipsize={Pango.EllipsizeMode.END}
                         />

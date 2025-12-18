@@ -15,13 +15,13 @@ import { VolumeWindow } from "./src/windows/volume";
 import { NetworkWindow } from "./src/windows/network";
 import { BluetoothWindow } from "./src/windows/bluetooth";
 import { PowerWindow } from "./src/windows/power";
-import { hasBarItem } from "./src/lib/utils";
+import { dependencies, hasBarItem } from "./src/lib/utils";
 import { ClipboardWindow } from "./src/windows/clipboard";
 import { AppLauncherWindow } from "./src/windows/applauncher";
 
 export const windows_names = {
    bar: "bar",
-   bar_shadow: "bar_shadow",
+   bar_shadow: "barshadow",
    applauncher: "applauncher",
    notifications_popup: "notificationspopup",
    quicksettings: "quicksettings",
@@ -38,22 +38,18 @@ export const windows_names = {
    clipboard: "clipboard",
 };
 
-export function hide_all_windows() {
-   app.get_window(windows_names.applauncher)?.hide();
-   app.get_window(windows_names.powermenu)?.hide();
-   app.get_window(windows_names.verification)?.hide();
-   app.get_window(windows_names.calendar)?.hide();
-   app.get_window(windows_names.quicksettings)?.hide();
-   hasBarItem("volume") && app.get_window(windows_names.volume)?.hide();
-   hasBarItem("network") && app.get_window(windows_names.network)?.hide();
-   hasBarItem("bluetooth") && app.get_window(windows_names.bluetooth)?.hide();
-   hasBarItem("battery") && app.get_window(windows_names.power)?.hide();
-   config.clipboard.enabled.get() &&
-      app.get_window(windows_names.clipboard)?.hide();
-   config.weather.enabled.get() &&
-      app.get_window(windows_names.weather)?.hide();
-   config.notifications.enabled.get() &&
-      app.get_window(windows_names.notificationslist)?.hide();
+export function hideWindows() {
+   const ignore = [
+      windows_names.bar,
+      windows_names.bar_shadow,
+      windows_names.osd,
+   ];
+
+   app.get_windows()
+      .filter((window) => !ignore.includes(window.name))
+      .forEach((w) => {
+         app.get_window(w.name)?.hide();
+      });
    qs_page_set("main");
 }
 
@@ -63,14 +59,15 @@ export function windows() {
    CalendarWindow();
    PowerMenuWindow();
    VerificationWindow();
-   if (config.weather.enabled.get()) hasBarItem("weather") && WeatherWindow();
-   if (config.notifications.enabled.get()) {
+   if (config.weather.enabled) hasBarItem("weather") && WeatherWindow();
+   if (config.notifications.enabled) {
       hasBarItem("notificationslist") && NotificationsListWindow();
       NotificationsWindow();
    }
-   if (config.osd.enabled.get()) OsdWindow();
-   if (config.clipboard.enabled.get()) ClipboardWindow();
-   hasBarItem("volume") && VolumeWindow();
+   if (config.osd.enabled) OsdWindow();
+   if (dependencies("wl-paste", "cliphist"))
+      config.clipboard.enabled && ClipboardWindow();
+   if (hasBarItem("volume") || hasBarItem("microphone")) VolumeWindow();
    hasBarItem("network") && NetworkWindow();
    hasBarItem("bluetooth") && BluetoothWindow();
    hasBarItem("battery") && PowerWindow();
@@ -83,7 +80,7 @@ export function windows() {
                gdkmonitor={monitor}
                $={(self) => onCleanup(() => self.destroy())}
             />
-            {theme.shadow.get() && (
+            {theme.shadow && (
                <BarShadowWindow
                   gdkmonitor={monitor}
                   $={(self) => onCleanup(() => self.destroy())}

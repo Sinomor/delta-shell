@@ -1,24 +1,25 @@
 import BarItem from "@/src/widgets/baritem";
 import AstalWp from "gi://AstalWp";
-const speaker = AstalWp.get_default()?.get_default_speaker();
 import { Gtk } from "ags/gtk4";
 import { VolumeIcon } from "@/src/lib/icons";
-import { hide_all_windows, windows_names } from "@/windows";
-import { toggleWindow } from "@/src/lib/utils";
-import app from "ags/gtk4/app";
+import { windows_names } from "@/windows";
 import { isVertical } from "../bar";
 import { config } from "@/options";
 import { createBinding } from "gnim";
 
 export function Volume() {
+   const conf = config.bar.modules.volume;
+   const speaker = AstalWp.get_default()?.get_default_speaker();
+   const volume = createBinding(speaker, "volume");
+
    return (
       <BarItem
          window={windows_names.volume}
-         onPrimaryClick={config.bar.modules.volume["on-click"].get()}
-         onSecondaryClick={config.bar.modules.volume["on-click-right"].get()}
-         onMiddleClick={config.bar.modules.volume["on-click-middle"].get()}
-         onScrollUp={config.bar.modules.volume["on-scroll-up"].get()}
-         onScrollDown={config.bar.modules.volume["on-scroll-down"].get()}
+         onPrimaryClick={conf["on-click"]}
+         onSecondaryClick={conf["on-click-right"]}
+         onMiddleClick={conf["on-click-middle"]}
+         onScrollUp={conf["on-scroll-up"]}
+         onScrollDown={conf["on-scroll-down"]}
          data={{
             icon: (
                <image
@@ -30,13 +31,11 @@ export function Volume() {
             percent: (
                <label
                   hexpand={isVertical}
-                  label={createBinding(speaker, "volume").as((volume) =>
-                     Math.floor(volume * 100).toString(),
-                  )}
+                  label={volume((v) => Math.floor(v * 100).toString())}
                />
             ),
          }}
-         format={config.bar.modules.volume.format.get()}
+         format={conf.format}
       />
    );
 }

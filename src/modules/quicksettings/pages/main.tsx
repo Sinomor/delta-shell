@@ -4,15 +4,12 @@ import { MprisPlayers } from "../items/media";
 import { Qs_Buttons } from "../items/qsbuttons";
 import { BatteryIcon, icons } from "@/src/lib/icons";
 import AstalBattery from "gi://AstalBattery?version=0.1";
-import app from "ags/gtk4/app";
-import { bash, dependencies, toggleWindow } from "@/src/lib/utils";
+import { bash, toggleWindow } from "@/src/lib/utils";
 import { createBinding } from "ags";
 import { timeout } from "ags/time";
-import ScreenRecord from "@/src/services/screenrecord";
 import { config, theme } from "@/options";
 import { windows_names } from "@/windows";
 const battery = AstalBattery.get_default();
-const screenRecord = ScreenRecord.get_default();
 
 function Power() {
    return (

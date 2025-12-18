@@ -1,7 +1,7 @@
 import { Gtk } from "ags/gtk4";
 import { With } from "ags";
-import WeatherService from "@/src/services/weather";
-const weather = WeatherService.get_default();
+import Weather from "@/src/services/weather";
+const weather = Weather.get_default();
 
 function getDescription(weatherCode: number) {
    const descriptions = {
@@ -39,7 +39,7 @@ function getDescription(weatherCode: number) {
 }
 
 export function Current() {
-   const data = weather.data.as((data) => {
+   const data = weather.data((data) => {
       if (!data)
          return {
             feels: "",
@@ -51,25 +51,25 @@ export function Current() {
       const current = data.hourly[0];
       return {
          feels: `Feels like ${current.apparent_temperature}${current.units.temperature}`,
-         temp: `${current.temperature}`,
-         units: `${current.units.temperature}`,
+         temp: current.temperature.toString(),
+         units: current.units.temperature.toString(),
          desc: getDescription(current.weather_code),
       };
    });
 
    return (
       <box orientation={Gtk.Orientation.VERTICAL} class={"current"}>
-         <label label={data.as((d) => d.desc)} />
+         <label label={data((d) => d.desc)} />
          <box halign={Gtk.Align.CENTER}>
             <label label={data.as((d) => d.temp)} class={"temp"} />
             <label
-               label={data.as((d) => d.units)}
+               label={data((d) => d.units)}
                valign={Gtk.Align.START}
                class={"units"}
                marginTop={10}
             />
          </box>
-         <label label={data.as((d) => d.feels)} />
+         <label label={data((d) => d.feels)} />
       </box>
    );
 }

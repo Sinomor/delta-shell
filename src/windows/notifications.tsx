@@ -23,28 +23,27 @@ const { margin } = theme.window;
 
 export function NotificationsWindow() {
    const { TOP, BOTTOM, RIGHT, LEFT } = Astal.WindowAnchor;
-   const pos = position.get();
    let contentbox: Gtk.Box;
    let win: Astal.Window;
-   const [notifications, notifications_set] = createState(
-      new Array<AstalNotifd.Notification>(),
-   );
+   const [notifications, setNotifications] = createState<
+      AstalNotifd.Notification[]
+   >([]);
    const doNotDisturb = createBinding(notifd, "dont_disturb");
 
    const notifiedHandler = notifd.connect("notified", (_, id, replaced) => {
       const notification = notifd.get_notification(id);
 
       if (replaced && notifications.get().some((n) => n.id === id)) {
-         notifications_set((ns) =>
+         setNotifications((ns) =>
             ns.map((n) => (n.id === id ? notification : n)),
          );
       } else {
-         notifications_set((ns) => [notification, ...ns]);
+         setNotifications((ns) => [notification, ...ns]);
       }
    });
 
    const resolvedHandler = notifd.connect("resolved", (_, id) => {
-      notifications_set((ns) => ns.filter((n) => n.id !== id));
+      setNotifications((ns) => ns.filter((n) => n.id !== id));
    });
 
    onCleanup(() => {
@@ -54,51 +53,48 @@ export function NotificationsWindow() {
    });
 
    const windowVisibility = createComputed(
-      [notifications, doNotDisturb],
-      (notifications, doNotDisturb) => {
-         return !doNotDisturb && notifications.length > 0;
-      },
+      () => !doNotDisturb() && notifications().length > 0,
    );
 
    function handleHideNotification(notification: AstalNotifd.Notification) {
       if (notification.transient) return notification.dismiss();
 
-      notifications_set((notifications) =>
+      setNotifications((notifications) =>
          notifications.filter((notif) => notif.id !== notification.id),
       );
    }
 
    function halign() {
-      switch (pos) {
+      switch (position) {
          case "top":
             return Gtk.Align.CENTER;
          case "bottom":
             return Gtk.Align.CENTER;
-         case "top_left":
+         case "top-left":
             return Gtk.Align.START;
-         case "top_right":
+         case "top-right":
             return Gtk.Align.END;
-         case "bottom_left":
+         case "bottom-left":
             return Gtk.Align.START;
-         case "bottom_right":
+         case "bottom-right":
             return Gtk.Align.END;
          default:
             return Gtk.Align.CENTER;
       }
    }
    function valign() {
-      switch (pos) {
+      switch (position) {
          case "top":
             return Gtk.Align.START;
          case "bottom":
             return Gtk.Align.END;
-         case "top_left":
+         case "top-left":
             return Gtk.Align.START;
-         case "top_right":
+         case "top-right":
             return Gtk.Align.START;
-         case "bottom_left":
+         case "bottom-left":
             return Gtk.Align.END;
-         case "bottom_right":
+         case "bottom-right":
             return Gtk.Align.END;
          default:
             return Gtk.Align.START;
@@ -133,6 +129,7 @@ export function NotificationsWindow() {
    return (
       <window
          name={windows_names.notifications_popup}
+         namespace={windows_names.notifications_popup}
          visible={windowVisibility}
          anchor={TOP | BOTTOM | RIGHT | LEFT}
          $={(self) => (win = self)}
@@ -148,11 +145,13 @@ export function NotificationsWindow() {
             halign={halign()}
             valign={valign()}
             focusable
+            marginTop={margin / 2}
+            marginBottom={margin / 2}
             marginEnd={margin}
             marginStart={margin}
          >
             <For each={notifications}>
-               {(n) => (
+               {(n, index) => (
                   <PopupNotification
                      n={n}
                      showActions={true}

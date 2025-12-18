@@ -1,10 +1,10 @@
 import { Astal, Gdk, Gtk } from "ags/gtk4";
 import app from "ags/gtk4/app";
 import { Accessor, createState } from "ags";
-import { hide_all_windows } from "@/windows";
 import Graphene from "gi://Graphene?version=1.0";
 import Adw from "gi://Adw?version=1";
 import { config, theme } from "@/options";
+import { hideWindows } from "@/windows";
 const { margin } = theme.window;
 
 type PopupProps = JSX.IntrinsicElements["window"] & {
@@ -25,13 +25,13 @@ export function Popup({
    name,
    width,
    height,
-   margin_top = margin.get(),
-   margin_bottom = margin.get(),
-   margin_start = margin.get(),
-   margin_end = margin.get(),
+   margin_top = margin,
+   margin_bottom = margin,
+   margin_start = margin,
+   margin_end = margin,
    gdkmonitor,
    transitionType = Gtk.RevealerTransitionType.SLIDE_DOWN,
-   transitionDuration = config.transition.get(),
+   transitionDuration = config.transition,
    halign = Gtk.Align.CENTER,
    valign = Gtk.Align.CENTER,
    ...props
@@ -81,10 +81,9 @@ export function Popup({
             onPressed={({ widget }, _, x, y) => {
                const [, rect] = children.compute_bounds(widget);
                const position = new Graphene.Point({ x, y });
-               console.log(rect.get_width(), rect.get_height());
 
                if (!rect.contains_point(position)) {
-                  hide_all_windows();
+                  hideWindows();
                }
             }}
          />

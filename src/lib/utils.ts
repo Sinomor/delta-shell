@@ -1,4 +1,4 @@
-import { hide_all_windows, windows_names } from "@/windows";
+import { hideWindows, windows_names } from "@/windows";
 import { Gdk, Gtk } from "ags/gtk4";
 import app from "ags/gtk4/app";
 import { exec, execAsync } from "ags/process";
@@ -53,6 +53,45 @@ export async function bash(
    });
 }
 
+/**
+ * Directly uses Gio.Subprocess to invoke bash and return the output in bytes.
+ */
+export async function bashRaw(
+   strings: TemplateStringsArray | string,
+   stdin_buffer?: Uint8Array,
+   ...values: unknown[]
+): Promise<Uint8Array> {
+   const cmd =
+      typeof strings === "string"
+         ? strings
+         : strings.reduce((acc, str, i) => acc + str + (values[i] ?? ""), "");
+
+   const flags =
+      Gio.SubprocessFlags.STDOUT_PIPE |
+      Gio.SubprocessFlags.STDERR_PIPE |
+      (stdin_buffer ? Gio.SubprocessFlags.STDIN_PIPE : 0);
+
+   const proc = Gio.Subprocess.new(["bash", "-c", cmd], flags);
+
+   return new Promise((resolve, reject) => {
+      const input = stdin_buffer ? GLib.Bytes.new(stdin_buffer) : null;
+
+      proc.communicate_async(input, null, (_, res) => {
+         try {
+            const [, out, err] = proc.communicate_finish(res);
+
+            if (proc.get_successful()) {
+               resolve(out?.get_data() ?? new Uint8Array());
+            } else {
+               reject(err?.get_data() ?? new Uint8Array());
+            }
+         } catch (error) {
+            reject(error);
+         }
+      });
+   });
+}
+
 type NotifUrgency = "low" | "normal" | "critical";
 
 export const now = (): string =>
@@ -98,7 +137,7 @@ export function toggleWindow(name: string): void {
    if (win.visible) {
       win.hide();
    } else {
-      hide_all_windows();
+      hideWindows();
       win.show();
    }
 }
@@ -129,19 +168,6 @@ export function toCssValue(
    }
 
    throw new Error("Invalid value type. Expected number or number[]");
-}
-
-export function ensureFileWithDefaults(
-   filePath: string,
-   defaultContent: string,
-): boolean {
-   const dirPath = filePath.split("/").slice(0, -1).join("/");
-   ensureDirectory(dirPath);
-
-   if (!fileExists(filePath)) {
-      return GLib.file_set_contents(filePath, defaultContent);
-   }
-   return true;
 }
 
 interface ScrollInfo {
@@ -183,17 +209,11 @@ export function attachHoverScroll(box: Gtk.Box, onScroll: ScrollHandler): void {
 }
 
 export function hasBarItem(module: string): boolean {
-   return createComputed(
-      [
-         config.bar.modules.start,
-         config.bar.modules.center,
-         config.bar.modules.end,
-      ],
-      (start: string[], center: string[], end: string[]) =>
-         start.includes(module) ||
-         center.includes(module) ||
-         end.includes(module),
-   ).get();
+   return (
+      config.bar.modules.start.includes(module) ||
+      config.bar.modules.center.includes(module) ||
+      config.bar.modules.end.includes(module)
+   );
 }
 
 export function toggleQsModule(name: string, module?: string): void {
@@ -241,7 +261,8 @@ function findAppInList(
          app.entry?.toLowerCase() === searchTerm ||
          app.iconName === appId ||
          app.name === appId ||
-         app.wm_class === appId
+         app.wm_class === appId ||
+         app.iconName === config.bar.modules.workspaces["taskbar-icons"][appId]
       ) {
          return app;
       }
@@ -285,4 +306,34 @@ export function lengthStr(length: number): string {
    }
 
    return `${minutes}:${formatTime(seconds)}`;
+}
+
+type FormatPartDetails = {
+   key: string;
+   limit: number | null;
+   strict: boolean;
+};
+
+export function truncateByFormat(
+   value: string,
+   key: string,
+   formatString: string,
+): string {
+   const escapedKey = key.replace(`/[.*+?^${key}()|[\]\\]/g`, "\\$&");
+   const match = formatString.match(`{${escapedKey}(?::(\\d+)(!)?)}`);
+
+   if (!match) return value;
+
+   const limitStr = match[1];
+   const strictFlag = match[2];
+
+   if (!limitStr) return value;
+
+   const limit = parseInt(limitStr, 10);
+   const strict = strictFlag === "!";
+
+   if (value.length <= limit) return value;
+   const truncated = value.substring(0, limit).trim();
+
+   return strict ? truncated : truncated + "...";
 }

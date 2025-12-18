@@ -6,7 +6,7 @@ window#bar {
    .main {
       margin: $bar-margin;
       background: rgba($bar-bg, $bar-opacity);
-      @if $bar-opacity != 0 {
+      @if $shadow and $bar-opacity != 0 {
          box-shadow: $bar-shadow-offset
             $bar-shadow-blur
             $bar-shadow-spread
@@ -35,13 +35,13 @@ window#bar {
 
    tooltip {
       background: rgba($bg0, $bar-opacity);
-      border: $border-width solid $border-color;
+      border: $bar-border-width solid $bar-border-color;
       border-radius: $widget-radius;
    }
 
    separator {
       border-radius: $widget-radius;
-      background: $bar-separator-color;
+      background: rgba($bar-separator-color, $bar-opacity);
       &.vertical {
          margin: 0 $bar-padding;
          min-height: $bar-separator-width;
@@ -54,7 +54,8 @@ window#bar {
    }
 
    .modules-start {
-      .first-child {
+      > *:first-child .bar-item,
+      > .bar-item:first-child {
          @if $bar-vertical {
             padding-top: $bar-padding;
          } @else {
@@ -64,7 +65,8 @@ window#bar {
    }
 
    .modules-end {
-      .last-child {
+      > *:last-child .bar-item,
+      > .bar-item:last-child {
          @if $bar-vertical {
             padding-bottom: $bar-padding;
          } @else {
@@ -88,7 +90,7 @@ window#bar {
          border: $bar-button-border-width solid $bar-button-border-color;
          color: $bar-button-fg;
          padding: $bar-button-padding;
-         @if $bar-opacity == 0 {
+         @if $shadow and $bar-opacity == 0 {
             box-shadow: $bar-shadow-offset
                $bar-shadow-blur
                $bar-shadow-spread
@@ -111,16 +113,59 @@ window#bar {
       }
    }
 
-   .workspace {
-      @if $bar-vertical {
-      } @else {
-         padding: 0 $bar-padding;
-      }
-   }
-
    @keyframes blink {
       to {
          color: $red;
+      }
+   }
+
+   .workspaces {
+      &.compact {
+         @if $bar-vertical {
+            padding: 0 $bar-padding;
+         } @else {
+            padding: $bar-padding 0;
+         }
+         .content {
+            padding: $bar-button-padding;
+            background: $bar-button-bg;
+            border-radius: $widget-radius;
+            .workspace {
+               all: unset;
+
+               @if $bar-vertical {
+                  min-height: 20px;
+                  min-width: 14px;
+               } @else {
+                  min-width: 20px;
+                  min-height: 14px;
+               }
+               border-radius: $widget-radius;
+               background: $bar-button-bg-hover;
+               &.active {
+                  background: $accent;
+                  @if $bar-vertical {
+                     min-height: 30px;
+                  } @else {
+                     min-width: 30px;
+                  }
+                  transition: background $transition;
+               }
+            }
+         }
+         &:hover {
+            .content {
+               background: $bar-button-bg-hover;
+               transition: background $transition;
+               .workspace {
+                  background: lighten($bar-button-bg-hover, 10%);
+                  &.active {
+                     background: $accent-light;
+                  }
+                  transition: background $transition;
+               }
+            }
+         }
       }
    }
 
@@ -133,12 +178,34 @@ window#bar {
    }
 
    .tray {
+      background: rgba($bar-button-bg, $bar-button-opacity);
+      border: $bar-button-border-width solid $bar-button-border-color;
+      border-radius: $widget-radius;
+      @if $bar-vertical {
+         margin: 0 $bar-padding;
+      } @else {
+         margin: $bar-padding 0;
+      }
+      @if $shadow and $bar-opacity == 0 {
+         box-shadow: $bar-shadow-offset
+            $bar-shadow-blur
+            $bar-shadow-spread
+            rgba($bar-shadow-color, $bar-shadow-opacity);
+      }
+
+      .toggle {
+         background: transparent;
+         padding: $bar-button-padding;
+
+         &:hover {
+            background: rgba($bar-button-bg-hover, $bar-button-opacity);
+         }
+      }
+
       .menu {
          &.menu > contents {
-            background: $bg0;
-            margin-top: 5px;
-            border: $border-width solid $bg1;
-            box-shadow: none;
+            background: rgba($bg0, $window-opacity);
+            border: $bar-border-width solid $bar-border-color;
             border-radius: $widget-radius;
             @if $shadow {
                box-shadow: $bar-shadow-offset
@@ -146,15 +213,24 @@ window#bar {
                   $bar-shadow-spread
                   rgba($bar-shadow-color, $bar-shadow-opacity);
             }
+            @if $bar-position == "top" {
+               margin-top: 5px;
+            } @else if $bar-position == "bottom" {
+               margin-bottom: 5px;
+            } @else if $bar-position == "left" {
+               margin-left: 5px;
+            } @else if $bar-position == "right" {
+               margin-right: 5px;
+            }
          }
 
          modelbutton {
             border-radius: $widget-radius;
             background: transparent;
+            color: $fg0;
 
-            &:focus,
             &:hover {
-               background: $bg1;
+               background: rgba($bg1, $window-opacity);
             }
          }
 
@@ -164,20 +240,18 @@ window#bar {
       }
 
       .items {
-         @if $bar-vertical {
-            padding: 0 $bar-padding;
-         } @else {
-            padding: $bar-padding 0;
-         }
-
-         button {
-            padding: 0;
+         .item {
             padding: $bar-button-padding;
-            background: rgba($bar-button-bg, $bar-button-opacity);
+            background: transparent;
             border-radius: $widget-radius;
 
             &:hover {
-               background: $bg1;
+               background: rgba($bar-button-bg-hover, $bar-button-opacity);
+            }
+
+            &.active {
+               background: rgba($bar-button-bg-active, $bar-button-opacity);
+               transition: background $transition;
             }
          }
       }
@@ -185,7 +259,6 @@ window#bar {
 
    .taskbar-button {
       background: transparent;
-      padding: $bar-button-padding;
 
       &.focused {
          .indicator {
@@ -198,13 +271,17 @@ window#bar {
          border-radius: $widget-radius;
          min-width: 4px;
          min-height: 4px;
-         background: $bg3;
+         background: lighten($bar-button-bg-active, 20%);
          transition: min-width $transition;
+      }
+
+      .content {
+         padding: 0;
       }
    }
 }
 
-window#bar_shadow {
+window#barshadow {
    all: unset;
 
    .shadow {

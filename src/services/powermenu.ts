@@ -16,12 +16,12 @@ const commands = {
    shutdown: "shutdown now",
 };
 
-@register({ GTypeName: "Powermenu" })
-export default class Powermenu extends GObject.Object {
-   static instance: Powermenu;
+@register({ GTypeName: "PowerMenu" })
+export default class PowerMenu extends GObject.Object {
+   static instance: PowerMenu;
 
    static get_default() {
-      if (!this.instance) this.instance = new Powermenu();
+      if (!this.instance) this.instance = new PowerMenu();
       return this.instance;
    }
 

@@ -7,29 +7,30 @@ import Brightness from "@/src/services/brightness";
 import { config, theme } from "@/options";
 import { windows_names } from "@/windows";
 const { width, height, vertical } = config.osd;
-export const [osd_visible, osd_visible_set] = createState(false);
-export const [osd_revealed, osd_revealed_set] = createState(false);
+export const [visible, setVisible] = createState(false);
+export const [revealed, setRevealed] = createState(false);
 
 export function OsdModule({ visible }: { visible: Accessor<boolean> }) {
+   console.log("OSD: initializing module");
    const brightness = Brightness.get_default();
    const speaker = Wp.get_default()?.get_default_speaker();
 
    const [iconName, iconName_set] = createState("");
-   const [value, value_set] = createState(0);
+   const [value, setValue] = createState(0);
    let firstStart = true;
    let count = 0;
 
    function show(v: number, icon: string) {
-      osd_visible_set(true);
-      osd_revealed_set(true);
-      value_set(v);
+      setVisible(true);
+      setRevealed(true);
+      setValue(v);
       iconName_set(icon);
       count++;
 
-      timeout(config.osd.timeout.get() * 1000, () => {
+      timeout(config.osd.timeout * 1000, () => {
          count--;
          if (count === 0) {
-            osd_revealed_set(false);
+            setRevealed(false);
          }
       });
    }
@@ -46,6 +47,8 @@ export function OsdModule({ visible }: { visible: Accessor<boolean> }) {
                   },
                );
                onCleanup(() => brightness.disconnect(brightnessconnect));
+            } else {
+               console.warn("OSD: brightness monitoring unavailable");
             }
             timeout(500, () => (firstStart = false));
             if (speaker) {
@@ -69,13 +72,13 @@ export function OsdModule({ visible }: { visible: Accessor<boolean> }) {
                $type={"overlay"}
                iconName={iconName((i) => i)}
                class={value((v) => `osd-icon ${v < 0.1 ? "low" : ""}`)}
-               valign={vertical.get() ? Gtk.Align.END : Gtk.Align.CENTER}
-               halign={vertical.get() ? Gtk.Align.CENTER : Gtk.Align.START}
+               valign={vertical ? Gtk.Align.END : Gtk.Align.CENTER}
+               halign={vertical ? Gtk.Align.CENTER : Gtk.Align.START}
                pixelSize={24}
             />
             <levelbar
                orientation={
-                  vertical.get()
+                  vertical
                      ? Gtk.Orientation.VERTICAL
                      : Gtk.Orientation.HORIZONTAL
                }

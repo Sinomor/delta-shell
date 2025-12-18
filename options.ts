@@ -1,282 +1,265 @@
-import { Astal } from "ags/gtk4";
-import { mkOptions, opt } from "./src/lib/option";
 import GLib from "gi://GLib?version=2.0";
 import { createState } from "ags";
-export const configDir = GLib.get_user_config_dir();
+import { mkOptions } from "./src/lib/option";
+const configDir = GLib.get_user_config_dir();
 const configFile = `${configDir}/delta-shell/config.json`;
 const themeFile = `${configDir}/delta-shell/theme.json`;
 
 export const config = mkOptions(configFile, {
-   transition: opt(0.2),
+   transition: 0.2,
    bar: {
+      size: 48,
+      position: "top" as "top" | "bottom" | "left" | "right",
       modules: {
-         start: opt(["launcher", "workspaces"]),
-         center: opt(["clock"]),
-         end: opt(["recordindicator", "tray", "keyboard", "quicksettings"]),
+         start: ["launcher", "workspaces"],
+         center: ["clock"],
+         end: ["recordindicator", "tray", "keyboard", "quicksettings"],
          launcher: {
-            format: opt("{icon}"),
-            "on-click": opt("toggle-launcher"),
-            "on-click-right": opt(null),
-            "on-click-middle": opt(null),
+            format: "{icon}",
+            "on-click": "toggle-launcher" as string | null,
+            "on-click-right": null as string | null,
+            "on-click-middle": null as string | null,
          },
          battery: {
-            format: opt("{icon}"),
-            "on-click": opt("toggle-power"),
-            "on-click-right": opt(null),
-            "on-click-middle": opt(null),
+            format: "{icon}",
+            "on-click": "toggle-power" as string | null,
+            "on-click-right": null as string | null,
+            "on-click-middle": null as string | null,
          },
          bluetooth: {
-            format: opt("{icon}"),
-            "on-click": opt("toggle-bluetooth"),
-            "on-click-right": opt(null),
-            "on-click-middle": opt(null),
+            format: "{icon}",
+            "on-click": "toggle-bluetooth" as string | null,
+            "on-click-right": null as string | null,
+            "on-click-middle": null as string | null,
          },
          clipboard: {
-            format: opt("{icon}"),
-            "on-click": opt("toggle-clipboard"),
-            "on-click-right": opt(null),
-            "on-click-middle": opt(null),
+            format: "{icon}",
+            "on-click": "toggle-clipboard" as string | null,
+            "on-click-right": null as string | null,
+            "on-click-middle": null as string | null,
          },
          clock: {
-            format: opt("%b %d  %H:%M"),
-            "on-click": opt("toggle-calendar"),
-            "on-click-right": opt(null),
-            "on-click-middle": opt(null),
+            format: "%b %d  %H:%M",
+            "on-click": "toggle-calendar" as string | null,
+            "on-click-right": null as string | null,
+            "on-click-middle": null as string | null,
          },
          workspaces: {
-            taskbar: opt<boolean>(true),
-            "taskbar-icons": opt({}) as Record<string, any>,
-            "on-scroll-up": opt("workspace-up"),
-            "on-scroll-down": opt("workspace-down"),
+            "workspace-format": "{id}",
+            "window-format": "{indicator} {icon}",
+            "taskbar-icons": {} as Record<string, string>,
+            "hide-empty": false,
+            "on-scroll-up": "workspace-up" as string | null,
+            "on-scroll-down": "workspace-down" as string | null,
          },
          keyboard: {
-            format: opt("{lang}"),
-            "on-click": opt("switch-language"),
-            "on-click-right": opt(null),
-            "on-click-middle": opt(null),
+            format: "{lang}",
+            "on-click": "switch-language" as string | null,
+            "on-click-right": null as string | null,
+            "on-click-middle": null as string | null,
          },
          network: {
-            format: opt("{icon}"),
-            "on-click": opt("toggle-network"),
-            "on-click-right": opt(null),
-            "on-click-middle": opt(null),
+            format: "{icon}",
+            "on-click": "toggle-network" as string | null,
+            "on-click-right": null as string | null,
+            "on-click-middle": null as string | null,
          },
          volume: {
-            format: opt("{icon}"),
-            "on-click": opt("toggle-volume"),
-            "on-click-right": opt(null),
-            "on-click-middle": opt("volume-toggle"),
-            "on-scroll-up": opt("volume-up"),
-            "on-scroll-down": opt("volume-down"),
+            format: "{icon}",
+            "on-click": "toggle-volume" as string | null,
+            "on-click-right": null as string | null,
+            "on-click-middle": "volume-toggle" as string | null,
+            "on-scroll-up": "volume-up" as string | null,
+            "on-scroll-down": "volume-down" as string | null,
+         },
+         microphone: {
+            format: "{icon}",
+            "on-click": "toggle-volume" as string | null,
+            "on-click-right": null as string | null,
+            "on-click-middle": "microphone-toggle" as string | null,
+            "on-scroll-up": "microphone-up" as string | null,
+            "on-scroll-down": "microphone-down" as string | null,
          },
          weather: {
-            format: opt("{icon} {temp}{units}"),
-            "on-click": opt("toggle-weather"),
-            "on-click-right": opt(null),
-            "on-click-middle": opt(null),
+            format: "{icon} {temp}{units}",
+            "on-click": "toggle-weather" as string | null,
+            "on-click-right": null as string | null,
+            "on-click-middle": null as string | null,
          },
          recordindicator: {
-            format: opt("{icon}"),
-            "on-click": opt("screenrecord-toggle"),
-            "on-click-right": opt(null),
-            "on-click-middle": opt(null),
+            format: "{icon}",
+            "on-click": "screenrecord-toggle" as string | null,
+            "on-click-right": null as string | null,
+            "on-click-middle": null as string | null,
          },
          notifications: {
-            format: opt("{icon}"),
-            "on-click": opt("toggle-notifs"),
-            "on-click-right": opt(null),
-            "on-click-middle": opt(null),
+            format: "{icon}",
+            "on-click": "toggle-notifs" as string | null,
+            "on-click-right": null as string | null,
+            "on-click-middle": null as string | null,
          },
          powermenu: {
-            format: opt("{icon}"),
-            "on-click": opt("toggle-powermenu"),
-            "on-click-right": opt(null),
-            "on-click-middle": opt(null),
+            format: "{icon}",
+            "on-click": "toggle-powermenu" as string | null,
+            "on-click-right": null as string | null,
+            "on-click-middle": null as string | null,
          },
          quicksettings: {
-            format: opt("{icon}"),
-            "on-click": opt("toggle-qs"),
-            "on-click-right": opt(null),
-            "on-click-middle": opt(null),
+            format: "{icon}",
+            "on-click": "toggle-qs" as string | null,
+            "on-click-right": null as string | null,
+            "on-click-middle": null as string | null,
          },
-         cpu: {
-            format: opt("{icon} {usage}"),
-         },
-         ram: {
-            format: opt("{icon} {usage}"),
-         },
+         cpu: { format: "{icon} {usage}" },
+         ram: { format: "{icon} {usage}" },
       },
-      size: opt(48),
-      position: opt<"top" | "bottom" | "right" | "left">("top"),
    },
    quicksettings: {
-      buttons: opt(["network", "bluetooth", "notifications", "screenrecord"]),
-      sliders: opt(["volume", "brightness"]),
+      buttons: ["network", "bluetooth", "notifications", "screenrecord"],
+      sliders: ["volume", "brightness"],
    },
    launcher: {
-      width: opt(400),
-      height: opt(600),
+      width: 400,
+      height: 500,
+      centered: false,
+      columns: 1,
+      "sort-type": "frequency" as "frequency" | "alphabetical" | null,
    },
    clipboard: {
-      enabled: opt(true),
-      "max-items": opt(50),
-      "image-preview": opt<boolean>(true),
-      width: opt(500),
-      height: opt(500),
+      enabled: true,
+      "max-items": 50,
+      "image-preview": true,
+      width: 400,
+      height: 500,
    },
    osd: {
-      enabled: opt<boolean>(true),
-      vertical: opt<boolean>(false),
-      width: opt(300),
-      height: opt(56),
-      position: opt<
+      enabled: true,
+      vertical: false,
+      width: 300,
+      height: 56,
+      position: "bottom" as
          | "top"
-         | "top_left"
-         | "top_right"
+         | "top-left"
+         | "top-right"
          | "bottom"
-         | "bottom_left"
-         | "bottom_right"
+         | "bottom-left"
+         | "bottom-right"
          | "left"
-         | "right"
-      >("bottom"),
-      timeout: opt(3),
+         | "right",
+      timeout: 3,
    },
    notifications: {
-      position: opt<
+      position: "top" as
          | "top"
-         | "top_left"
-         | "top_right"
+         | "top-left"
+         | "top-right"
          | "bottom"
-         | "bottom_left"
-         | "bottom_right"
-      >("top"),
-      enabled: opt<boolean>(true),
-      timeout: opt(3),
-      width: opt(400),
+         | "bottom-left"
+         | "bottom-right",
+      enabled: true,
+      timeout: 3,
+      width: 400,
       list: {
-         height: opt(600),
+         height: 500,
       },
    },
    weather: {
-      enabled: opt<boolean>(true),
-      location: opt<{
-         auto: boolean;
-         coords: { latitude: string; longitude: string } | null | undefined;
-         city: string | null | undefined;
-      }>({
+      enabled: true,
+      location: {
          auto: false,
-         coords: null,
-         city: "Minsk",
-      }),
+         coords: null as { latitude: string; longitude: string } | null,
+         city: "Minsk" as string | null,
+      },
    },
 });
 
 export const theme = mkOptions(themeFile, {
    font: {
-      size: opt(14),
-      name: opt("Rubik"),
+      size: 14,
+      name: "Rubik",
    },
    colors: {
       bg: {
-         0: opt("#1d1d20"),
-         1: opt("#28282c"),
-         2: opt("#36363a"),
-         3: opt("#48484b"),
+         0: "#1d1d20",
+         1: "#28282c",
+         2: "#36363a",
+         3: "#48484b",
       },
       fg: {
-         0: opt("#ffffff"),
-         1: opt("#c0c0c0"),
-         2: opt("#808080"),
+         0: "#ffffff",
+         1: "#c0c0c0",
+         2: "#808080",
       },
-      accent: opt("#3584e4"),
-      blue: opt("#3584e4"),
-      cyan: opt("#2190a4"),
-      green: opt("#3a944a"),
-      yellow: opt("#c88800"),
-      orange: opt("#ed5b00"),
-      red: opt("#e62d42"),
-      purple: opt("#9141ac"),
+      accent: "#3584e4",
+      blue: "#3584e4",
+      cyan: "#2190a4",
+      green: "#3a944a",
+      yellow: "#c88800",
+      orange: "#ed5b00",
+      red: "#e62d42",
+      purple: "#9141ac",
    },
-   border: {
-      width: opt(1),
-      color: opt("$bg2"),
-   },
-   outline: {
-      width: opt(1),
-      color: opt("$fg1"),
-   },
-   spacing: opt(10),
-   shadow: opt<boolean>(true),
-   radius: opt(0),
+   spacing: 10,
+   shadow: true,
+   radius: 0,
    window: {
-      padding: opt(15),
-      opacity: opt(1),
-      margin: opt(10),
+      padding: 15,
+      opacity: 1,
+      margin: 10,
       border: {
-         width: opt(1),
-         color: opt("$bg2"),
+         width: 1,
+         color: "$bg2",
       },
       outline: {
-         width: opt(1),
-         color: opt("$fg1"),
+         width: 1,
+         color: "$fg1",
       },
       shadow: {
-         offset: opt([0, 0]),
-         blur: opt(10),
-         spread: opt(0),
-         color: opt("black"),
-         opacity: opt(0.4),
+         offset: [0, 0],
+         blur: 10,
+         spread: 0,
+         color: "black",
+         opacity: 0.4,
       },
    },
    bar: {
-      bg: opt("$bg0"),
-      opacity: opt(1),
-      margin: opt<number[]>([0, 0, 0, 0]),
-      padding: opt(6),
-      spacing: opt(6),
+      bg: "$bg0",
+      opacity: 1,
+      margin: [0, 0, 0, 0],
+      padding: 6,
+      spacing: 6,
       border: {
-         width: opt(1),
-         color: opt("$bg2"),
+         width: 1,
+         color: "$bg2",
       },
       shadow: {
-         offset: opt([0, 0]),
-         blur: opt(10),
-         spread: opt(0),
-         color: opt("black"),
-         opacity: opt(0.4),
+         offset: [0, 0],
+         blur: 10,
+         spread: 0,
+         color: "black",
+         opacity: 0.4,
       },
       separator: {
-         width: opt(1),
-         color: opt("$bg2"),
+         width: 1,
+         color: "$bg2",
       },
       button: {
-         fg: opt("$fg0"),
-         padding: opt([0, 7]),
+         fg: "$fg0",
+         padding: [0, 7],
          bg: {
-            default: opt("$bg0"),
-            hover: opt("$bg1"),
-            active: opt("$bg2"),
+            default: "$bg0",
+            hover: "$bg1",
+            active: "$bg2",
          },
-         opacity: opt(1),
+         opacity: 1,
          border: {
-            width: opt(0),
-            color: opt("$bg2"),
+            width: 0,
+            color: "$bg2",
          },
       },
    },
 });
 
-export const [compositor, compositor_set] = createState<string>("");
-
-function getCompositor() {
-   const env = GLib.getenv("XDG_SESSION_DESKTOP");
-   switch (env) {
-      case "niri":
-         return "niri";
-      case "Hyprland":
-         return "hyprland";
-      default:
-         return "unknown";
-   }
-}
-compositor_set(getCompositor());
+export const [compositor, setCompositor] = createState<string>(
+   GLib.getenv("XDG_CURRENT_DESKTOP")!.toLowerCase(),
+);

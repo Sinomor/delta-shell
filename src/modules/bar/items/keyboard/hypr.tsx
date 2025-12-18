@@ -5,6 +5,8 @@ import { createState, onCleanup } from "ags";
 import AstalHyprland from "gi://AstalHyprland?version=0.1";
 import { isVertical } from "../../bar";
 import { icons } from "@/src/lib/icons";
+const hyprland =
+   compositor.peek() === "hyprland" ? AstalHyprland.get_default() : null;
 
 const [layout_name, layout_name_set] = createState("?");
 
@@ -42,10 +44,13 @@ function updateLayout() {
       });
 }
 
-if (compositor.get() === "hyprland") updateLayout();
-
-export function Keyboard_Hypr() {
-   const hyprland = AstalHyprland.get_default();
+export function KeyboardHypr() {
+   if (!hyprland) {
+      console.warn("Bar: keyboard module skipped: hyprland is not active");
+      return <box visible={false} />;
+   }
+   const conf = config.bar.modules.keyboard;
+   updateLayout();
    let hyprlandconnect: number;
 
    onCleanup(() => {
@@ -54,9 +59,9 @@ export function Keyboard_Hypr() {
 
    return (
       <BarItem
-         onPrimaryClick={config.bar.modules.keyboard["on-click"].get()}
-         onSecondaryClick={config.bar.modules.keyboard["on-click-right"].get()}
-         onMiddleClick={config.bar.modules.keyboard["on-click-middle"].get()}
+         onPrimaryClick={conf["on-click"]}
+         onSecondaryClick={conf["on-click-right"]}
+         onMiddleClick={conf["on-click-middle"]}
          $={() => {
             hyprlandconnect = hyprland.connect(
                "keyboard-layout",
@@ -75,7 +80,7 @@ export function Keyboard_Hypr() {
                />
             ),
          }}
-         format={config.bar.modules.keyboard.format.get()}
+         format={conf.format}
       />
    );
 }

@@ -1,0 +1,78 @@
+#!/bin/bash
+
+WIDGETS=("applauncher" "clipboard" "quicksettings" "powermenu" "calendar" "weather" "notificationslist" "volume" "network" "bluetooth" "power")
+
+DATADIR="@DATADIR@"
+
+if [[ "$DATADIR" == "@"DATADIR"@" ]]; then
+    DATADIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+    IS_DEV=true
+else
+    APP_ENTRY="$DATADIR/delta-shell-app"
+    IS_DEV=false
+fi
+
+print_help() {
+    cat <<EOF
+Usage: $(basename "$0") <command> [options]
+
+Available Commands:
+   run            Run the shell
+   quit           Quit the shell
+   restart        Restart the shell
+   toggle         Toggle visibility of a widget
+   help           Show this help message
+
+Available widgets for toggle:
+$(printf "   %s\n" "${WIDGETS[@]}")
+
+Flags:
+   -h, --help     help for delta-shell
+
+Running mode: $([ "$IS_DEV" = true ] && echo "Development" || echo "Installed")
+EOF
+}
+
+main() {
+    if [ $# -lt 1 ]; then
+        print_help
+        exit 0
+    fi
+
+    case $1 in
+        run)
+            if [ "$IS_DEV" = true ]; then
+                exec ags run -d "$DATADIR" --define DATADIR=null
+            else
+                exec "$DATADIR/delta-shell-app"
+            fi
+            ;;
+        quit)
+            ags -i delta-shell quit
+            ;;
+        restart)
+            ags -i delta-shell quit
+            if [ "$IS_DEV" = true ]; then
+                exec ags run -d "$DATADIR" --define DATADIR=null
+            else
+                exec "$DATADIR/delta-shell-app"
+            fi
+            ;;
+        toggle)
+            if [ "$#" -lt 2 ]; then
+                echo "Available widgets for toggle:"
+                printf "  - %s\n" "${WIDGETS[@]}"
+                exit 0
+            fi
+            ags -i delta-shell request toggle "$2"
+            ;;
+        help|-h|--help)
+            print_help
+            ;;
+        *)
+            ags -i delta-shell request "$@"
+            ;;
+    esac
+}
+
+main "$@"

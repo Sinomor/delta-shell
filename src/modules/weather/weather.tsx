@@ -1,21 +1,18 @@
 import Gtk from "gi://Gtk";
-import { hide_all_windows, windows_names } from "@/windows";
 import { createComputed, With } from "ags";
 import { Current } from "./current";
 import { icons } from "@/src/lib/icons";
 import { Days } from "./days";
 import { Hours } from "./hours";
 import { config, theme } from "@/options";
-import WeatherService from "@/src/services/weather";
+import Weather from "@/src/services/weather";
 import { qs_page_set } from "../quicksettings/quicksettings";
-const weather = WeatherService.get_default();
+const weather = Weather.get_default();
 
 function ScanningIndicator() {
-   const className = weather.loading.as((scanning) => {
+   const className = weather.loading((scanning) => {
       const classes = ["scanning"];
-      if (scanning) {
-         classes.push("active");
-      }
+      if (scanning) classes.push("active");
       return classes;
    });
 
@@ -25,7 +22,7 @@ function ScanningIndicator() {
 }
 
 function Header({ showArrow = false }: { showArrow?: boolean }) {
-   const data = weather.location.as((location) => {
+   const data = weather.location((location) => {
       if (!location)
          return {
             label: "",
@@ -48,7 +45,7 @@ function Header({ showArrow = false }: { showArrow?: boolean }) {
             </button>
          )}
          <image iconName={icons.location} pixelSize={20} />
-         <label label={data.as((d) => d.label)} />
+         <label label={data((d) => d.label)} />
          <box hexpand />
          <button
             focusOnClick={false}
@@ -62,11 +59,13 @@ function Header({ showArrow = false }: { showArrow?: boolean }) {
 }
 
 export function WeatherModule({ showArrow = false }: { showArrow?: boolean }) {
+   console.log("Weather: initializing module");
+
    return (
       <box
          class={"weather"}
          spacing={theme.spacing}
-         widthRequest={345 - theme.window.padding.get() * 2}
+         widthRequest={345 - theme.window.padding * 2}
          heightRequest={550}
          orientation={Gtk.Orientation.VERTICAL}
       >

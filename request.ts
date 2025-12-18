@@ -1,9 +1,9 @@
 import app from "ags/gtk4/app";
-import ScreenRecord from "./src/services/screenrecord";
-import { hide_all_windows, windows_names } from "./windows";
+import ScreenRecorder from "./src/services/screenrecorder";
+import { windows_names } from "./windows";
 import { hasBarItem, toggleQsModule, toggleWindow } from "./src/lib/utils";
 import { config } from "./options";
-const screenrecord = ScreenRecord.get_default();
+const screenrecorder = ScreenRecorder.get_default();
 
 export default function request(
    args: string[],
@@ -53,7 +53,7 @@ export default function request(
    } else {
       switch (args[0]) {
          case "screenrecord":
-            screenrecord.start();
+            screenrecorder.start();
             break;
          default:
             print("Unknown request:", request);

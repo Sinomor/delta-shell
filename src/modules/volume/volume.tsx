@@ -1,6 +1,6 @@
 import { icons, VolumeIcon } from "@/src/lib/icons";
 import { Gdk, Gtk } from "ags/gtk4";
-import { createBinding, For } from "ags";
+import { createBinding, createComputed, For } from "ags";
 import AstalWp from "gi://AstalWp?version=0.1";
 import Pango from "gi://Pango?version=1.0";
 import Gio from "gi://Gio?version=2.0";
@@ -10,6 +10,7 @@ import { timeout } from "ags/time";
 import { theme } from "@/options";
 import { qs_page_set } from "../quicksettings/quicksettings";
 import { getAppInfo } from "@/src/lib/utils";
+import Adw from "gi://Adw?version=1";
 const wp = AstalWp.get_default()!;
 
 function Header({ showArrow = false }: { showArrow?: boolean }) {
@@ -42,13 +43,14 @@ function StreamsList() {
       <box
          orientation={Gtk.Orientation.VERTICAL}
          spacing={theme.spacing}
-         visible={streams.as((l) => l.length > 0)}
+         visible={streams((l) => l.length > 0)}
       >
          <label label={"Applications"} halign={Gtk.Align.START} />
          <For each={streams}>
             {(stream) => {
                const name = createBinding(stream, "name");
                const app = getAppInfo(stream.description);
+               const volume = createBinding(stream, "volume");
 
                return (
                   <box
@@ -65,10 +67,10 @@ function StreamsList() {
                      />
                      <box
                         orientation={Gtk.Orientation.VERTICAL}
-                        spacing={theme.spacing.get() / 2}
+                        spacing={theme.spacing / 2}
                      >
                         <label
-                           label={name.as(
+                           label={name(
                               (name) =>
                                  `${app?.name || stream.description}: ${name}`,
                            )}
@@ -81,7 +83,7 @@ function StreamsList() {
                               stream.volume = value;
                            }}
                            hexpand
-                           value={createBinding(stream, "volume")}
+                           value={volume}
                         />
                      </box>
                   </box>
@@ -92,53 +94,57 @@ function StreamsList() {
    );
 }
 
+function createFactory(maxWidth?: number, wrap = false) {
+   const factory = new Gtk.SignalListItemFactory();
+
+   factory.connect("setup", (_, listItem: Gtk.ListItem) => {
+      const label = new Gtk.Label({
+         xalign: 0,
+         hexpand: true,
+         ...(maxWidth && {
+            ellipsize: Pango.EllipsizeMode.END,
+            maxWidthChars: maxWidth,
+         }),
+         ...(wrap && {
+            wrap: true,
+            wrapMode: Pango.WrapMode.WORD_CHAR,
+         }),
+      });
+      listItem.set_child(label);
+   });
+
+   factory.connect("bind", (_, listItem: Gtk.ListItem) => {
+      const label = listItem.get_child() as Gtk.Label;
+      const stringObject = listItem.get_item() as Gtk.StringObject;
+      label.set_label(stringObject.get_string());
+   });
+
+   return factory;
+}
+
 function DefaultOutput() {
    const audio = wp.audio!;
    const defaultOutput = audio.defaultSpeaker;
-   const level = createBinding(defaultOutput, "volume");
-   let dropdownbox: Gtk.Box;
+   const volume = createBinding(defaultOutput, "volume");
+   const speakers = createBinding(audio, "speakers");
+   const description = createBinding(defaultOutput, "description");
+
+   let popover: Gtk.Popover;
 
    return (
       <box orientation={Gtk.Orientation.VERTICAL} spacing={theme.spacing}>
          <label label={"Output"} halign={Gtk.Align.START} />
          <button
-            focusOnClick={false}
             onClicked={(self) => {
-               const menu = new Gio.Menu();
-               const Popover = Gtk.PopoverMenu.new_from_model(menu);
-
-               const action = new Gio.SimpleAction({
-                  name: "select-speaker",
-                  parameter_type: new GLib.VariantType("i"),
-               });
-
-               action.connect("activate", (_, parameter) => {
-                  if (parameter === null) return;
-                  const speakerIndex = parameter.get_int32();
-
-                  if (audio.speakers[speakerIndex]) {
-                     audio.speakers[speakerIndex].set_is_default(true);
-                  }
-               });
-               app.add_action(action);
-
-               audio.speakers.forEach((speaker, index) => {
-                  menu.append(
-                     speaker.description,
-                     `app.select-speaker(${index})`,
-                  );
-               });
-
-               Popover.set_parent(dropdownbox);
-               Popover.popup();
+               popover.set_parent(self);
+               popover.popup();
             }}
             class={"dropdown"}
+            focusOnClick={false}
          >
-            <box hexpand $={(self) => (dropdownbox = self)}>
+            <box hexpand>
                <label
-                  label={createBinding(defaultOutput, "description").as(
-                     (desc) => `${desc}`,
-                  )}
+                  label={description}
                   hexpand
                   halign={Gtk.Align.START}
                   ellipsize={Pango.EllipsizeMode.END}
@@ -147,6 +153,28 @@ function DefaultOutput() {
                <image iconName={icons.arrow.down} pixelSize={20} />
             </box>
          </button>
+         <popover hasArrow={false} $={(self) => (popover = self)}>
+            <box
+               orientation={Gtk.Orientation.VERTICAL}
+               spacing={theme.spacing / 2}
+            >
+               <For each={speakers}>
+                  {(speaker) => (
+                     <button
+                        onClicked={() => {
+                           speaker.set_is_default(true);
+                           popover.hide();
+                        }}
+                     >
+                        <label
+                           label={speaker.description}
+                           halign={Gtk.Align.START}
+                        />
+                     </button>
+                  )}
+               </For>
+            </box>
+         </popover>
          <box
             cssClasses={["slider-box", "volume-box"]}
             spacing={theme.spacing}
@@ -161,7 +189,7 @@ function DefaultOutput() {
             <slider
                onChangeValue={({ value }) => defaultOutput.set_volume(value)}
                hexpand
-               value={level}
+               value={volume}
             />
          </box>
       </box>
@@ -171,50 +199,26 @@ function DefaultOutput() {
 function DefaultMicrophone() {
    const audio = wp.audio!;
    const defaultMicrophone = audio.defaultMicrophone;
-   const level = createBinding(defaultMicrophone, "volume");
+   const volume = createBinding(defaultMicrophone, "volume");
+   const microphones = createBinding(audio, "microphones");
+   const description = createBinding(defaultMicrophone, "description");
 
-   let dropdownbox: Gtk.Box;
+   let popover: Gtk.Popover;
 
    return (
       <box orientation={Gtk.Orientation.VERTICAL} spacing={theme.spacing}>
          <label label={"Microphone"} halign={Gtk.Align.START} />
          <button
             onClicked={(self) => {
-               const menu = new Gio.Menu();
-               const Popover = Gtk.PopoverMenu.new_from_model(menu);
-
-               const action = new Gio.SimpleAction({
-                  name: "select-speaker",
-                  parameter_type: new GLib.VariantType("i"),
-               });
-
-               action.connect("activate", (_, parameter) => {
-                  if (parameter === null) return;
-                  const microphoneIndex = parameter.get_int32();
-
-                  if (audio.microphones[microphoneIndex]) {
-                     audio.microphones[microphoneIndex].set_is_default(true);
-                  }
-               });
-               app.add_action(action);
-
-               audio.microphones.forEach((speaker, index) => {
-                  menu.append(
-                     speaker.description,
-                     `app.select-speaker(${index})`,
-                  );
-               });
-
-               Popover.set_parent(dropdownbox);
-               Popover.popup();
+               popover.set_parent(self);
+               popover.popup();
             }}
             class={"dropdown"}
+            focusOnClick={false}
          >
-            <box hexpand $={(self) => (dropdownbox = self)}>
+            <box hexpand>
                <label
-                  label={createBinding(defaultMicrophone, "description").as(
-                     (desc) => `${desc}`,
-                  )}
+                  label={description}
                   hexpand
                   halign={Gtk.Align.START}
                   ellipsize={Pango.EllipsizeMode.END}
@@ -223,6 +227,28 @@ function DefaultMicrophone() {
                <image iconName={icons.arrow.down} pixelSize={20} />
             </box>
          </button>
+         <popover hasArrow={false} $={(self) => (popover = self)}>
+            <box
+               orientation={Gtk.Orientation.VERTICAL}
+               spacing={theme.spacing / 2}
+            >
+               <For each={microphones}>
+                  {(microphone) => (
+                     <button
+                        onClicked={() => {
+                           microphone.set_is_default(true);
+                           popover.hide();
+                        }}
+                     >
+                        <label
+                           label={microphone.description}
+                           halign={Gtk.Align.START}
+                        />
+                     </button>
+                  )}
+               </For>
+            </box>
+         </popover>
          <box
             cssClasses={["slider-box", "volume-box"]}
             spacing={theme.spacing}
@@ -239,7 +265,7 @@ function DefaultMicrophone() {
                   defaultMicrophone.set_volume(value)
                }
                hexpand
-               value={level}
+               value={volume}
             />
          </box>
       </box>
@@ -251,7 +277,7 @@ function List() {
       <Gtk.ScrolledWindow>
          <box
             orientation={Gtk.Orientation.VERTICAL}
-            spacing={theme.spacing.get() * 2}
+            spacing={theme.spacing * 2}
             vexpand
          >
             <StreamsList />
@@ -263,11 +289,13 @@ function List() {
 }
 
 export function VolumeModule({ showArrow = false }: { showArrow?: boolean }) {
+   console.log("Volume: initializing module");
+
    return (
       <box
          class={"volume"}
-         heightRequest={500 - theme.window.padding.get() * 2}
-         widthRequest={410 - theme.window.padding.get() * 2}
+         heightRequest={500 - theme.window.padding * 2}
+         widthRequest={410 - theme.window.padding * 2}
          orientation={Gtk.Orientation.VERTICAL}
          spacing={theme.spacing}
       >

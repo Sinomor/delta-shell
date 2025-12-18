@@ -4,16 +4,17 @@ import app from "ags/gtk4/app";
 import {
    attachHoverScroll,
    bash,
+   hasBarItem,
    toggleQsModule,
    toggleWindow,
 } from "../lib/utils";
 import { compositor, theme } from "@/options";
-import { isVertical } from "../modules/bar/bar";
+import { isVertical, orientation } from "../modules/bar/bar";
 import { windows_names } from "@/windows";
 import AstalHyprland from "gi://AstalHyprland?version=0.1";
 import AstalNiri from "gi://AstalNiri?version=0.1";
 import AstalWp from "gi://AstalWp?version=0.1";
-import ScreenRecord from "@/src/services/screenrecord";
+import ScreenRecorder from "@/src/services/screenrecorder";
 
 type FormatData = Record<string, JSX.Element>;
 
@@ -30,7 +31,8 @@ type BarItemProps = JSX.IntrinsicElements["box"] & {
 };
 
 let speaker: AstalWp.Endpoint | undefined;
-let screenRecord: ScreenRecord | undefined;
+let microphone: AstalWp.Endpoint | undefined;
+let screenRecord: ScreenRecorder | undefined;
 let hyprland: AstalHyprland.Hyprland | undefined;
 
 function getSpeaker() {
@@ -38,8 +40,14 @@ function getSpeaker() {
    return speaker;
 }
 
-function getScreenRecord() {
-   if (!screenRecord) screenRecord = ScreenRecord.get_default();
+function getMicrophone() {
+   if (!microphone)
+      microphone = AstalWp.get_default()?.get_default_microphone();
+   return microphone;
+}
+
+function getScreenRecorder() {
+   if (!screenRecord) screenRecord = ScreenRecorder.get_default();
    return screenRecord;
 }
 
@@ -56,12 +64,20 @@ export const FunctionsList = {
    "toggle-clipboard": () => toggleWindow(windows_names.clipboard),
    "toggle-weather": () => toggleQsModule(windows_names.weather),
    "toggle-notifs": () => toggleQsModule(windows_names.notificationslist),
-   "toggle-volume": () => toggleQsModule(windows_names.volume),
+   "toggle-volume": () =>
+      toggleQsModule(
+         windows_names.volume,
+         hasBarItem("volume")
+            ? "volume"
+            : hasBarItem("microphone")
+              ? "microphone"
+              : undefined,
+      ),
    "toggle-network": () => toggleQsModule(windows_names.network),
    "toggle-bluetooth": () => toggleQsModule(windows_names.bluetooth),
    "toggle-power": () => toggleQsModule(windows_names.power, "battery"),
    "workspace-up": () => {
-      const comp = compositor.get();
+      const comp = compositor.peek();
       if (comp === "niri") {
          AstalNiri.msg.focus_workspace_up();
       } else if (comp === "hyprland") {
@@ -69,7 +85,7 @@ export const FunctionsList = {
       }
    },
    "workspace-down": () => {
-      const comp = compositor.get();
+      const comp = compositor.peek();
       if (comp === "niri") {
          AstalNiri.msg.focus_workspace_down();
       } else if (comp === "hyprland") {
@@ -88,13 +104,24 @@ export const FunctionsList = {
       const spk = getSpeaker();
       if (spk) spk.set_mute(!spk.get_mute());
    },
+   "microphone-up": () => {
+      const mcph = getMicrophone();
+      if (mcph) mcph.set_volume(mcph.volume + 0.01);
+   },
+   "microphone-down": () => {
+      const mcph = getMicrophone();
+      if (mcph) mcph.set_volume(mcph.volume - 0.01);
+   },
+   "microphone-toggle": () => {
+      const mcph = getMicrophone();
+      if (mcph) mcph.set_mute(!mcph.get_mute());
+   },
    "switch-language": async () => {
-      const comp = compositor.get();
-      if (comp === "niri") {
-         bash("niri msg action switch-layout next");
-      } else if (comp === "hyprland") {
+      const comp = compositor.peek();
+      if (comp === "niri") AstalNiri.msg.switch_layout_next();
+      if (comp === "hyprland") {
          try {
-            const json = await bash(`hyprctl devices -j`);
+            const json = await bash("hyprctl devices -j");
             const devices = JSON.parse(json);
 
             const mainKeyboard = devices.keyboards.find(
@@ -110,7 +137,7 @@ export const FunctionsList = {
       }
    },
    "screenrecord-toggle": () => {
-      const sr = getScreenRecord();
+      const sr = getScreenRecorder();
       if (sr) {
          if (sr.recording) sr.stop();
          else sr.start();
@@ -119,47 +146,34 @@ export const FunctionsList = {
 } as Record<string, any>;
 
 function parseFormat(format: string, data: FormatData): JSX.Element[] {
-   const result: JSX.Element[] = [];
-   const groups = format.split(" ").filter((group) => group.trim() !== "");
+   const regex = /\{([^:}]+):?([^}]*)\}|([^{}]+)/g;
 
-   for (const group of groups) {
-      const elements: JSX.Element[] = [];
-      let currentText = "";
+   return format
+      .split(" ")
+      .filter((group) => group.trim() !== "")
+      .map((group) => {
+         const matches = Array.from(group.matchAll(regex));
 
-      for (let i = 0; i < group.length; i++) {
-         if (group[i] === "{" && group.indexOf("}", i) > i) {
-            if (currentText) {
-               elements.push(
-                  <label label={currentText} hexpand={isVertical} />,
-               );
-               currentText = "";
+         const elements = matches.map((match) => {
+            const [_, key, size, text] = match;
+
+            if (key) {
+               const trimmedKey = key.trim();
+               if (data && trimmedKey in data) {
+                  return data[trimmedKey];
+               }
+               return <label label={`{${trimmedKey}}`} hexpand={isVertical} />;
             }
 
-            const end = group.indexOf("}", i);
-            const key = group.substring(i + 1, end);
+            return <label label={text} hexpand={isVertical} />;
+         });
 
-            if (data[key]) {
-               elements.push(data[key]);
-            } else {
-               elements.push(<label label={`{${key}}`} hexpand={isVertical} />);
-            }
-
-            i = end;
-         } else {
-            currentText += group[i];
+         if (elements.length === 1) {
+            return elements[0];
          }
-      }
 
-      if (currentText) {
-         elements.push(<label label={currentText} hexpand={isVertical} />);
-      }
-
-      if (elements.length > 0) {
-         result.push(<box>{elements}</box>);
-      }
-   }
-
-   return result;
+         return <box>{elements}</box>;
+      });
 }
 
 function handleClick(
@@ -170,13 +184,9 @@ function handleClick(
 ) {
    let handler: string | Function | null | undefined;
 
-   if (button === Gdk.BUTTON_PRIMARY) {
-      handler = onPrimary;
-   } else if (button === Gdk.BUTTON_SECONDARY) {
-      handler = onSecondary;
-   } else if (button === Gdk.BUTTON_MIDDLE) {
-      handler = onMiddle;
-   }
+   if (button === Gdk.BUTTON_PRIMARY) handler = onPrimary;
+   if (button === Gdk.BUTTON_SECONDARY) handler = onSecondary;
+   if (button === Gdk.BUTTON_MIDDLE) handler = onMiddle;
 
    if (!handler || handler === "default") return;
 
@@ -219,12 +229,6 @@ export default function BarItem({
 }: BarItemProps) {
    const content = format ? parseFormat(format, data) : children;
 
-   const orientation = isVertical
-      ? Gtk.Orientation.VERTICAL
-      : Gtk.Orientation.HORIZONTAL;
-
-   const spacing = theme.bar.spacing.get() / 2;
-
    return (
       <box
          class={"bar-item"}
@@ -260,7 +264,7 @@ export default function BarItem({
          <box
             class={"content"}
             orientation={orientation}
-            spacing={spacing}
+            spacing={theme.bar.spacing}
             hexpand={isVertical}
          >
             {content}

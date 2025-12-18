@@ -1,19 +1,19 @@
 import { icons } from "@/src/lib/icons";
 import { Gtk } from "ags/gtk4";
 import AstalBluetooth from "gi://AstalBluetooth?version=0.1";
-import { interval, timeout } from "ags/time";
+import { timeout } from "ags/time";
 import { createBinding, createComputed, For } from "ags";
 import { theme } from "@/options";
 import { qs_page, qs_page_set } from "../quicksettings/quicksettings";
+import app from "ags/gtk4/app";
+import { windows_names } from "@/windows";
 const bluetooth = AstalBluetooth.get_default();
 
 function ScanningIndicator() {
    const className = createBinding(bluetooth.adapter, "discovering").as(
       (scanning) => {
          const classes = ["scanning"];
-         if (scanning) {
-            classes.push("active");
-         }
+         if (scanning) classes.push("active");
          return classes;
       },
    );
@@ -58,9 +58,13 @@ function Header({ showArrow = false }: { showArrow?: boolean }) {
             class={"toggle"}
             valign={Gtk.Align.CENTER}
             active={createBinding(bluetooth, "isPowered")}
-            onNotifyActive={() =>
-               qs_page.get() === "bluetooth" && bluetooth.toggle()
-            }
+            onNotifyActive={({ state }) => {
+               if (
+                  qs_page.peek() === "bluetooth" ||
+                  app.get_window(windows_names.bluetooth)?.visible
+               )
+                  bluetooth.adapter.set_powered(state);
+            }}
          />
       </box>
    );
@@ -71,9 +75,7 @@ type ItemProps = {
 };
 
 function Item({ device }: ItemProps) {
-   const isConnected = createBinding(device, "connected").as(
-      (connected) => connected,
-   );
+   const connected = createBinding(device, "connected");
    const percentage = createBinding(device, "batteryPercentage");
 
    return (
@@ -81,10 +83,23 @@ function Item({ device }: ItemProps) {
          class={"page-button"}
          onClicked={() => {
             if (!bluetooth.isPowered) {
+               console.log("Bluetooth: powering on adapter");
                bluetooth.toggle();
             }
+
+            console.log(`Bluetooth: connecting to '${device.name}'`);
+
             timeout(100, () => {
-               device.connect_device(() => {});
+               device.connect_device((result, error) => {
+                  if (error) {
+                     console.error(
+                        `Bluetooth: failed to connect to '${device.name}':`,
+                        error,
+                     );
+                  } else {
+                     console.log(`Bluetooth: connected to '${device.name}'`);
+                  }
+               });
             });
          }}
          focusOnClick={false}
@@ -99,21 +114,13 @@ function Item({ device }: ItemProps) {
             />
             <label label={device.name} />
             <label
-               class={"bluetooth-device-percentage"}
                label={percentage.as((p) => `${Math.round(p * 100)}%`)}
-               visible={createComputed(
-                  [percentage, isConnected],
-                  (percentage, isConnected) => {
-                     return isConnected && percentage > 0;
-                  },
-               )}
+               visible={createComputed(() => {
+                  return connected() && percentage() > 0;
+               })}
             />
             <box hexpand />
-            <image
-               iconName={icons.check}
-               pixelSize={20}
-               visible={isConnected}
-            />
+            <image iconName={icons.check} pixelSize={20} visible={connected} />
          </box>
       </button>
    );
@@ -147,8 +154,8 @@ export function BluetoothModule({
    return (
       <box
          class={"bluetooth"}
-         heightRequest={500 - theme.window.padding.get() * 2}
-         widthRequest={410 - theme.window.padding.get() * 2}
+         heightRequest={500 - theme.window.padding * 2}
+         widthRequest={410 - theme.window.padding * 2}
          orientation={Gtk.Orientation.VERTICAL}
          spacing={theme.spacing}
       >

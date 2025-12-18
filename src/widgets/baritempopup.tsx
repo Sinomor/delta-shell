@@ -26,21 +26,18 @@ export function BarItemPopup({
    gdkmonitor,
    height,
    margin,
-   transitionDuration = config.transition.get(),
+   transitionDuration = config.transition,
    ...props
 }: BarItemPopupProps) {
    const { bar } = config;
-   const bar_pos = bar.position.get();
-   const bar_margin = theme.bar.margin.get();
+   const bar_pos = bar.position;
+   const bar_margin = theme.bar.margin;
 
-   const module_pos = createComputed(
-      [bar.modules.start, bar.modules.center, bar.modules.end],
-      (start, center, end) => {
-         if (start.includes(module)) return "start";
-         if (center.includes(module)) return "center";
-         if (end.includes(module)) return "end";
-      },
-   ).get();
+   const module_pos = bar.modules.start.includes(module)
+      ? "start"
+      : bar.modules.center.includes(module)
+        ? "center"
+        : "end";
 
    function halign() {
       if (isVertical) {

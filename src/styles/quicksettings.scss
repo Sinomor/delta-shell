@@ -3,7 +3,7 @@ window#quicksettings {
    color: $fg0;
    font-size: $font-size;
 
-   stack {
+   .stack {
       background: rgba($bg0, $window-opacity);
       border: $window-border-width solid $window-border-color;
       padding: $window-padding;
@@ -18,7 +18,7 @@ window#quicksettings {
 
    tooltip {
       background: rgba($bg0, $window-opacity);
-      border: $border-width solid $border-color;
+      border: $window-border-width solid $window-border-color;
       border-radius: $widget-radius;
       margin: 10px;
       @if $shadow {
@@ -44,8 +44,8 @@ window#quicksettings {
 
             &:focus {
                transition: 0s;
-               outline-offset: -$outline-width;
-               outline: $outline-width solid $outline-color;
+               outline-offset: -$window-outline-width;
+               outline: $window-outline-width solid $window-outline-color;
             }
 
             &:hover {
@@ -64,7 +64,7 @@ window#quicksettings {
          color: $fg0;
 
          outline: none;
-         min-height: 66px;
+         min-height: 60px;
 
          .qs-button-box,
          .qs-button-box-arrow,
@@ -103,8 +103,8 @@ window#quicksettings {
 
             &:focus {
                transition: 0s;
-               outline-offset: -$outline-width;
-               outline: $outline-width solid $outline-color;
+               outline-offset: -$window-outline-width;
+               outline: $window-outline-width solid $window-outline-color;
             }
 
             &.active {
@@ -137,8 +137,8 @@ window#quicksettings {
          }
          &:focus {
             transition: 0s;
-            outline-offset: -$outline-width;
-            outline: $outline-width solid $outline-color;
+            outline-offset: -$window-outline-width;
+            outline: $window-outline-width solid $window-outline-color;
          }
       }
 
@@ -183,8 +183,8 @@ window#quicksettings {
             &:focus {
                trough {
                   transition: 0s;
-                  outline-offset: -$outline-width;
-                  outline: $outline-width solid $outline-color;
+                  outline-offset: -$window-outline-width;
+                  outline: $window-outline-width solid $window-outline-color;
                }
             }
          }
@@ -217,8 +217,8 @@ window#quicksettings {
 
                &:focus {
                   transition: 0s;
-                  outline-offset: -$outline-width;
-                  outline: $outline-width solid $outline-color;
+                  outline-offset: -$window-outline-width;
+                  outline: $window-outline-width solid $window-outline-color;
                }
             }
          }
@@ -290,10 +290,10 @@ window#quicksettings {
          min-height: 20px;
          min-width: 45px;
          background: rgba($bg2, $window-opacity);
+         border-radius: $widget-radius;
 
          &:checked {
             background: rgba($accent, $window-opacity);
-            border-radius: $widget-radius;
          }
 
          slider {
@@ -309,8 +309,8 @@ window#quicksettings {
 
          &:focus {
             transition: 0s;
-            outline-offset: -$outline-width + 6px;
-            outline: $outline-width solid $outline-color;
+            outline-offset: -$window-outline-width + 6px;
+            outline: $window-outline-width solid $window-outline-color;
          }
       }
 
@@ -322,8 +322,8 @@ window#quicksettings {
 
          &:focus {
             transition: 0s;
-            outline-offset: -$outline-width;
-            outline: $outline-width solid $outline-color;
+            outline-offset: -$window-outline-width;
+            outline: $window-outline-width solid $window-outline-color;
          }
       }
    }
@@ -340,8 +340,8 @@ window#quicksettings {
 
       &:focus {
          transition: 0s;
-         outline-offset: -$outline-width;
-         outline: $outline-width solid $outline-color;
+         outline-offset: -$window-outline-width;
+         outline: $window-outline-width solid $window-outline-color;
       }
    }
 }

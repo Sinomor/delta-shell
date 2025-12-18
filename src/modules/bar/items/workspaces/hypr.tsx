@@ -1,26 +1,34 @@
 import { Gdk, Gtk } from "ags/gtk4";
 import AstalHyprland from "gi://AstalHyprland?version=0.1";
-import AstalApps from "gi://AstalApps?version=0.1";
-import { createBinding, createComputed, For } from "ags";
+import { createBinding, createComputed, For, With } from "ags";
 import { icons } from "@/src/lib/icons";
 import BarItem, { FunctionsList } from "@/src/widgets/baritem";
 import { compositor, config, theme } from "@/options";
-import { attachHoverScroll, getAppInfo } from "@/src/lib/utils";
-import { isVertical } from "../../bar";
-const apps_icons = config.bar.modules.workspaces["taskbar-icons"].get();
+import {
+   attachHoverScroll,
+   getAppInfo,
+   truncateByFormat,
+} from "@/src/lib/utils";
+import { isVertical, orientation } from "../../bar";
 const hyprland =
-   compositor.get() === "hyprland" ? AstalHyprland.get_default() : null;
+   compositor.peek() === "hyprland" ? AstalHyprland.get_default() : null;
 
-export function Workspaces_Hypr({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
+export function WorkspacesHypr({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
    if (!hyprland) {
-      console.warn("Workspaces_Hypr: Hyprland compositor not active");
-      return <box />;
+      console.warn("Bar: workspaces module skipped: hyprland is not active");
+      return <box visible={false} />;
    }
-   const monitors = createBinding(hyprland, "monitors").as((monitors) =>
-      monitors.filter((monitor) => monitor.model === gdkmonitor.model),
+   const conf = config.bar.modules.workspaces;
+   const monitor = createBinding(hyprland, "monitors").as((monitors) =>
+      monitors.find((monitor) => monitor.model === gdkmonitor.model),
    );
 
    function AppButton({ client }: { client: AstalHyprland.Client }) {
+      const apps_icons = conf["taskbar-icons"];
+      const appInfo = getAppInfo(client.class);
+      const iconName =
+         apps_icons[client.class] || appInfo?.iconName || icons.apps_default;
+      const title = createBinding(client, "title");
       const classes = createBinding(hyprland!, "focusedClient").as(
          (fcsClient) => {
             const classes = ["taskbar-button"];
@@ -31,109 +39,135 @@ export function Workspaces_Hypr({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
          },
       );
 
-      const hasWindow = createBinding(hyprland!, "clients").as((clients) =>
-         clients
-            .map((e) => e.class.toLowerCase())
-            .includes(client.class.toLowerCase()),
-      );
+      const hasIndicator = conf["window-format"].includes("{indicator}");
 
-      const appInfo = getAppInfo(client.class);
-      const iconName =
-         apps_icons[client.class] || appInfo?.iconName || icons.apps_default;
+      const formatWithoutIndicator = conf["window-format"]
+         .replace(/\{indicator\}\s*/g, "")
+         .trim();
+      const mainFormat = formatWithoutIndicator
+         ? formatWithoutIndicator
+         : "{icon}";
 
-      const indicatorValign = config.bar.position.as((p) => {
-         switch (p) {
-            case "top":
-               return Gtk.Align.START;
-            case "bottom":
-               return Gtk.Align.END;
-            case "right":
-               return Gtk.Align.CENTER;
-            case "left":
-               return Gtk.Align.CENTER;
-         }
-      });
+      const indicatorValign =
+         config.bar.position === "top"
+            ? Gtk.Align.START
+            : config.bar.position === "bottom"
+              ? Gtk.Align.END
+              : Gtk.Align.CENTER;
 
-      const indicatorHalign = config.bar.position.as((p) => {
-         switch (p) {
-            case "top":
-               return Gtk.Align.CENTER;
-            case "bottom":
-               return Gtk.Align.CENTER;
-            case "right":
-               return Gtk.Align.END;
-            case "left":
-               return Gtk.Align.START;
-         }
-      });
+      const indicatorHalign =
+         config.bar.position === "left"
+            ? Gtk.Align.START
+            : config.bar.position === "right"
+              ? Gtk.Align.END
+              : Gtk.Align.CENTER;
 
       return (
-         <box cssClasses={classes}>
-            <Gtk.GestureClick
-               onPressed={(ctrl, _, x, y) => {
-                  const button = ctrl.get_current_button();
-                  if (button === Gdk.BUTTON_PRIMARY) {
-                     client.focus();
-                  } else if (button === Gdk.BUTTON_MIDDLE) {
-                     client.kill();
-                  }
-               }}
-               button={0}
-            />
-            <overlay hexpand={isVertical}>
+         <overlay hexpand={isVertical} cssClasses={classes}>
+            {hasIndicator && (
                <box
                   $type={"overlay"}
                   class={"indicator"}
-                  valign={indicatorValign.get()}
-                  halign={indicatorHalign.get()}
+                  valign={indicatorValign}
+                  halign={indicatorHalign}
+                  vexpand
+                  hexpand
                />
-               <image
-                  tooltipText={client.title}
-                  halign={Gtk.Align.CENTER}
-                  valign={Gtk.Align.CENTER}
-                  iconName={iconName}
-                  pixelSize={20}
-               />
-            </overlay>
-         </box>
+            )}
+            <BarItem
+               format={mainFormat}
+               onPrimaryClick={() => client.focus()}
+               onMiddleClick={() => client.kill()}
+               data={{
+                  icon: (
+                     <image
+                        iconName={iconName}
+                        pixelSize={20}
+                        hexpand={isVertical}
+                     />
+                  ),
+                  title: (
+                     <label
+                        label={title((t) =>
+                           truncateByFormat(t, "title", mainFormat),
+                        )}
+                        hexpand={isVertical}
+                     />
+                  ),
+                  name: (
+                     <label
+                        label={truncateByFormat(
+                           appInfo?.name.trim() || client.class,
+                           "name",
+                           mainFormat,
+                        )}
+                        hexpand={isVertical}
+                     />
+                  ),
+               }}
+               tooltipText={title}
+            />
+         </overlay>
       );
    }
 
    function WorkspaceButton({ ws }: { ws: AstalHyprland.Workspace }) {
-      const classNames = createBinding(hyprland!, "focusedWorkspace").as(
-         (fws) => {
-            const classes = ["bar-item"];
+      const clients = createBinding(ws, "clients");
+      const clientsCount = clients((w) => w.length);
+      const focusedWorkspace = createBinding(hyprland!, "focusedWorkspace");
+      const visible = createComputed(() => {
+         if (conf["hide-empty"]) {
+            return clientsCount() > 0 || focusedWorkspace().id === ws.id;
+         }
+         return true;
+      });
+      const classNames = focusedWorkspace((fws) => {
+         const classes = ["bar-item", "workspace"];
+         const active = fws.id == ws.id;
+         if (active) classes.push("active");
+         return classes;
+      });
 
-            const active = fws.id == ws.id;
-            active && classes.push("active");
-
-            return classes;
-         },
-      );
-
-      return (
+      return conf["workspace-format"] === "" ? (
+         <box
+            cssClasses={classNames}
+            valign={Gtk.Align.CENTER}
+            halign={Gtk.Align.CENTER}
+         >
+            <Gtk.GestureClick
+               onPressed={(ctrl, _, x, y) => {
+                  const button = ctrl.get_current_button();
+                  if (button === Gdk.BUTTON_PRIMARY) ws.focus();
+               }}
+            />
+         </box>
+      ) : (
          <BarItem
             cssClasses={classNames}
-            orientation={
-               isVertical
-                  ? Gtk.Orientation.VERTICAL
-                  : Gtk.Orientation.HORIZONTAL
-            }
-            hexpand={isVertical}
-         >
-            <label class={"workspace"} label={ws.id.toString()} />
-            {config.bar.modules.workspaces.taskbar.get() && (
-               <For
-                  each={createBinding(ws, "clients").as((clients) =>
-                     clients.sort((a, b) => a.pid - b.pid),
-                  )}
-               >
-                  {(client: AstalHyprland.Client) => (
-                     <AppButton client={client} />
-                  )}
-               </For>
-            )}
-         </BarItem>
+            onPrimaryClick={() => ws.focus()}
+            format={conf["workspace-format"]}
+            data={{
+               id: <label label={ws.id.toString()} hexpand={isVertical} />,
+               name: <label label={ws.name} hexpand={isVertical} />,
+               count: (
+                  <label
+                     label={clientsCount((c) => c.toString())}
+                     hexpand={isVertical}
+                  />
+               ),
+               windows: (
+                  <box
+                     orientation={orientation}
+                     spacing={theme.bar.spacing}
+                     visible={clientsCount((c) => c > 0)}
+                  >
+                     <For each={clients}>
+                        {(client) => <AppButton client={client} />}
+                     </For>
+                  </box>
+               ),
+            }}
+         />
       );
    }
 
@@ -148,42 +182,50 @@ export function Workspaces_Hypr({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
       return (
          <box
             spacing={theme.bar.spacing}
-            orientation={
-               isVertical
-                  ? Gtk.Orientation.VERTICAL
-                  : Gtk.Orientation.HORIZONTAL
-            }
+            orientation={orientation}
             hexpand={isVertical}
-            class={"workspaces"}
+            cssClasses={[
+               "workspaces",
+               conf["workspace-format"] === "" ? "compact" : "",
+            ]}
             $={(self) =>
                attachHoverScroll(self, ({ dy }) => {
                   if (dy < 0) {
                      FunctionsList[
-                        config.bar.modules.workspaces["on-scroll-up"].get()
+                        conf["on-scroll-up"] as keyof typeof FunctionsList
                      ]();
                   } else if (dy > 0) {
                      FunctionsList[
-                        config.bar.modules.workspaces["on-scroll-down"].get()
+                        conf["on-scroll-down"] as keyof typeof FunctionsList
                      ]();
                   }
                })
             }
          >
-            <For each={workspaces}>{(ws) => <WorkspaceButton ws={ws} />}</For>
+            {conf["workspace-format"] === "" ? (
+               <box
+                  class={"content"}
+                  orientation={orientation}
+                  spacing={theme.bar.spacing}
+               >
+                  <For each={workspaces}>
+                     {(ws) => <WorkspaceButton ws={ws} />}
+                  </For>
+               </box>
+            ) : (
+               <For each={workspaces}>
+                  {(ws) => <WorkspaceButton ws={ws} />}
+               </For>
+            )}
          </box>
       );
    }
 
    return (
-      <box
-         orientation={
-            isVertical ? Gtk.Orientation.VERTICAL : Gtk.Orientation.HORIZONTAL
-         }
-         hexpand={isVertical}
-      >
-         <For each={monitors}>
-            {(monitor) => <Workspaces monitor={monitor} />}
-         </For>
+      <box orientation={orientation} hexpand={isVertical}>
+         <With value={monitor}>
+            {(monitor) => monitor && <Workspaces monitor={monitor} />}
+         </With>
       </box>
    );
 }

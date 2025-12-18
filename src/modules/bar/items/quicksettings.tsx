@@ -1,22 +1,18 @@
 import { icons } from "@/src/lib/icons";
-import app from "ags/gtk4/app";
 import BarItem from "@/src/widgets/baritem";
-import { hide_all_windows, windows_names } from "@/windows";
-import { toggleWindow } from "@/src/lib/utils";
+import { windows_names } from "@/windows";
 import { isVertical } from "../bar";
 import { config } from "@/options";
 
 export function QuickSettings() {
+   const conf = config.bar.modules.quicksettings;
+
    return (
       <BarItem
          window={windows_names.quicksettings}
-         onPrimaryClick={config.bar.modules.quicksettings["on-click"].get()}
-         onSecondaryClick={config.bar.modules.quicksettings[
-            "on-click-right"
-         ].get()}
-         onMiddleClick={config.bar.modules.quicksettings[
-            "on-click-middle"
-         ].get()}
+         onPrimaryClick={conf["on-click"]}
+         onSecondaryClick={conf["on-click-right"]}
+         onMiddleClick={conf["on-click-middle"]}
          data={{
             icon: (
                <image
@@ -26,7 +22,7 @@ export function QuickSettings() {
                />
             ),
          }}
-         format={config.bar.modules.quicksettings.format.get()}
+         format={conf.format}
       />
    );
 }

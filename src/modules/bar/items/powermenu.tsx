@@ -1,20 +1,18 @@
 import { icons } from "@/src/lib/icons";
-import app from "ags/gtk4/app";
-import { Gdk, Gtk } from "ags/gtk4";
-import { onCleanup } from "ags";
 import BarItem from "@/src/widgets/baritem";
-import { hide_all_windows, windows_names } from "@/windows";
-import { toggleWindow } from "@/src/lib/utils";
+import { windows_names } from "@/windows";
 import { config } from "@/options";
 import { isVertical } from "../bar";
 
 export function PowerMenu() {
+   const conf = config.bar.modules.powermenu;
+
    return (
       <BarItem
          window={windows_names.powermenu}
-         onPrimaryClick={config.bar.modules.powermenu["on-click"].get()}
-         onSecondaryClick={config.bar.modules.powermenu["on-click-right"].get()}
-         onMiddleClick={config.bar.modules.powermenu["on-click-middle"].get()}
+         onPrimaryClick={conf["on-click"]}
+         onSecondaryClick={conf["on-click-right"]}
+         onMiddleClick={conf["on-click-middle"]}
          data={{
             icon: (
                <image
@@ -24,7 +22,7 @@ export function PowerMenu() {
                />
             ),
          }}
-         format={config.bar.modules.powermenu.format.get()}
+         format={conf.format}
       />
    );
 }

@@ -1,86 +1,85 @@
-import { config, theme } from "@/options";
+import { config } from "@/options";
 import { icons } from "@/src/lib/icons";
-import { toggleWindow } from "@/src/lib/utils";
 import BarItem from "@/src/widgets/baritem";
-import { hide_all_windows, windows_names } from "@/windows";
-import app from "ags/gtk4/app";
+import { windows_names } from "@/windows";
 import AstalBluetooth from "gi://AstalBluetooth";
 import { createBinding, createComputed } from "gnim";
 import { isVertical } from "../bar";
-const bluetooth = AstalBluetooth.get_default();
+import { truncateByFormat } from "@/src/lib/utils";
 
 export function Bluetooth() {
-   const bluetoothconnected = createComputed(
-      [
-         createBinding(bluetooth, "devices"),
-         createBinding(bluetooth, "isConnected"),
-      ],
-      (d, _) => {
-         for (const device of d) {
-            if (device.connected) return true;
-         }
-         return false;
-      },
+   const conf = config.bar.modules.bluetooth;
+   const bluetooth = AstalBluetooth.get_default();
+   const connected = createBinding(bluetooth, "isConnected");
+   const powered = createBinding(bluetooth, "isPowered");
+   const devices = createBinding(bluetooth, "devices");
+   const adapter = createBinding(bluetooth, "adapter");
+   const device = createComputed(
+      () => (connected(), devices().find((device) => device.connected)),
    );
 
    return (
       <BarItem
          window={windows_names.bluetooth}
-         onPrimaryClick={config.bar.modules.bluetooth["on-click"].get()}
-         onSecondaryClick={config.bar.modules.bluetooth["on-click-right"].get()}
-         onMiddleClick={config.bar.modules.bluetooth["on-click-middle"].get()}
+         onPrimaryClick={conf["on-click"]}
+         onSecondaryClick={conf["on-click-right"]}
+         onMiddleClick={conf["on-click-middle"]}
          data={{
             icon: <image hexpand={isVertical} iconName={icons.bluetooth} />,
             status: (
                <label
-                  label={createBinding(bluetooth, "isPowered").as((v) =>
-                     v ? "On" : "Off",
-                  )}
+                  label={powered((v) => (v ? "On" : "Off"))}
                   hexpand={isVertical}
                />
             ),
             "controller-address": (
                <label
-                  label={createBinding(bluetooth, "adapter").as((adapter) =>
-                     adapter.address.toString(),
+                  label={adapter((a) =>
+                     truncateByFormat(
+                        a.address,
+                        "controller-address",
+                        conf.format,
+                     ),
                   )}
                   hexpand={isVertical}
                />
             ),
             "controller-alias": (
                <label
-                  label={createBinding(bluetooth, "adapter").as((adapter) =>
-                     adapter.alias.toString(),
+                  label={adapter((a) =>
+                     truncateByFormat(a.alias, "controller-alias", conf.format),
                   )}
                   hexpand={isVertical}
                />
             ),
             "device-address": (
                <label
-                  label={createBinding(bluetooth, "devices").as((d) => {
-                     for (const device of d) {
-                        if (device.connected) return device.address;
-                     }
-                     return "";
-                  })}
-                  visible={bluetoothconnected}
+                  label={device((d) =>
+                     d
+                        ? truncateByFormat(
+                             d.address,
+                             "device-address",
+                             conf.format,
+                          )
+                        : "",
+                  )}
+                  visible={connected}
                   hexpand={isVertical}
                />
             ),
             "device-alias": (
                <label
-                  label={createBinding(bluetooth, "devices").as((d) => {
-                     for (const device of d) {
-                        if (device.connected) return device.alias;
-                     }
-                     return "";
-                  })}
-                  visible={bluetoothconnected}
+                  label={device((d) =>
+                     d
+                        ? truncateByFormat(d.alias, "device-alias", conf.format)
+                        : "",
+                  )}
+                  visible={connected}
                   hexpand={isVertical}
                />
             ),
          }}
-         format={config.bar.modules.bluetooth.format.get()}
+         format={conf.format}
       />
    );
 }

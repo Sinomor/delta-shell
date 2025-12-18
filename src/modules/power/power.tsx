@@ -4,7 +4,6 @@ import AstalPowerProfiles from "gi://AstalPowerProfiles?version=0.1";
 import { createBinding } from "ags";
 import { theme } from "@/options";
 import { qs_page_set } from "../quicksettings/quicksettings";
-
 const power = AstalPowerProfiles.get_default();
 
 function Header({ showArrow = false }: { showArrow?: boolean }) {
@@ -41,7 +40,20 @@ function Item({ profile }: { profile: string }) {
    );
 
    function setProfile(profile: string) {
-      power.set_active_profile(profile);
+      const currentProfile = power.activeProfile;
+      if (currentProfile === profile) {
+         console.log(`Power: profile '${profile}' already active`);
+         return;
+      }
+
+      console.log(`Power: switching from '${currentProfile}' to '${profile}'`);
+
+      try {
+         power.set_active_profile(profile);
+         console.log(`Power: successfully switched to '${profile}'`);
+      } catch (error) {
+         console.error(`Power: failed to switch to '${profile}':`, error);
+      }
    }
 
    return (
@@ -83,11 +95,13 @@ function List() {
 }
 
 export function PowerModule({ showArrow = false }: { showArrow?: boolean }) {
+   console.log("PowerMenu: initializing module");
+
    return (
       <box
          class={"power"}
-         heightRequest={500 - theme.window.padding.get() * 2}
-         widthRequest={410 - theme.window.padding.get() * 2}
+         heightRequest={500 - theme.window.padding * 2}
+         widthRequest={410 - theme.window.padding * 2}
          cssClasses={["qs-menu-page", "bluetooth-page"]}
          orientation={Gtk.Orientation.VERTICAL}
          spacing={theme.spacing}

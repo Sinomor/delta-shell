@@ -1,35 +1,36 @@
-import AstalBattery from "gi://AstalBattery";
-import { BatteryIcon } from "@/src/lib/icons";
 import BarItem from "@/src/widgets/baritem";
-import { createBinding } from "gnim";
+import AstalWp from "gi://AstalWp";
+import { icons } from "@/src/lib/icons";
 import { windows_names } from "@/windows";
 import { isVertical } from "../bar";
 import { config } from "@/options";
+import { createBinding } from "gnim";
 
-export function Battery() {
-   const conf = config.bar.modules.battery;
-   const battery = AstalBattery.get_default();
-   const percentage = createBinding(battery, "percentage");
+export function Microphone() {
+   const conf = config.bar.modules.microphone;
+   const microphone = AstalWp.get_default()?.get_default_microphone();
+   const volume = createBinding(microphone, "volume");
 
    return (
       <BarItem
-         window={windows_names.power}
+         window={windows_names.volume}
          onPrimaryClick={conf["on-click"]}
          onSecondaryClick={conf["on-click-right"]}
          onMiddleClick={conf["on-click-middle"]}
-         visible={createBinding(battery, "isPresent")}
+         onScrollUp={conf["on-scroll-up"]}
+         onScrollDown={conf["on-scroll-down"]}
          data={{
             icon: (
                <image
                   hexpand={isVertical}
+                  iconName={icons.microphone.default}
                   pixelSize={20}
-                  iconName={BatteryIcon}
                />
             ),
             percent: (
                <label
-                  label={percentage((v) => Math.floor(v * 100).toString())}
                   hexpand={isVertical}
+                  label={volume((v) => Math.floor(v * 100).toString())}
                />
             ),
          }}

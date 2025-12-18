@@ -1,23 +1,15 @@
 import BarItem from "@/src/widgets/baritem";
 import { isVertical } from "../bar";
 import { icons } from "@/src/lib/icons";
-import SystemStats from "@/src/services/systemstats";
+import SystemMonitor from "@/src/services/systemmonitor";
 import { config } from "@/options";
+import { createBinding } from "gnim";
 
 export function RAM() {
-   const systemstats = SystemStats.get_default();
-
-   const memoryUsage = systemstats.memoryUsage.as((data) => {
-      if (!data) return "";
-
-      return Math.floor(data * 100).toString();
-   });
-
-   const memoryTotal = systemstats.memoryTotal.as((data) => {
-      if (!data) return "";
-
-      return (data / 1024 / 1024).toFixed(2).toString();
-   });
+   const conf = config.bar.modules.ram;
+   const systemmonitor = SystemMonitor.get_default();
+   const memoryUsage = createBinding(systemmonitor, "memoryUsage");
+   const memoryTotal = createBinding(systemmonitor, "memoryTotal");
 
    return (
       <BarItem
@@ -29,10 +21,22 @@ export function RAM() {
                   hexpand={isVertical}
                />
             ),
-            usage: <label label={memoryUsage} hexpand={isVertical} />,
-            total: <label label={memoryTotal} hexpand={isVertical} />,
+            usage: (
+               <label
+                  label={memoryUsage((v) => Math.floor(v * 100).toString())}
+                  hexpand={isVertical}
+               />
+            ),
+            total: (
+               <label
+                  label={memoryTotal((v) =>
+                     (v / 1024 / 1024).toFixed(2).toString(),
+                  )}
+                  hexpand={isVertical}
+               />
+            ),
          }}
-         format={config.bar.modules.ram.format.get()}
+         format={conf.format}
       />
    );
 }

@@ -1,19 +1,18 @@
 import BarItem from "@/src/widgets/baritem";
 import { isVertical } from "../bar";
 import { icons } from "@/src/lib/icons";
-import SystemStats from "@/src/services/systemstats";
+import SystemMonitor from "@/src/services/systemmonitor";
 import { config } from "@/options";
+import { createBinding, With } from "gnim";
 
 export function CPU() {
-   const systemstats = SystemStats.get_default();
-   const cpuUsage = systemstats.cpuUsage.as((data) => {
-      if (!data) return "";
-
-      return Math.floor(data * 100).toString();
-   });
+   const conf = config.bar.modules.cpu;
+   const systemmonitor = SystemMonitor.get_default();
+   const cpuUsage = createBinding(systemmonitor, "cpuUsage");
 
    return (
       <BarItem
+         visible={cpuUsage((u) => u !== -1)}
          data={{
             icon: (
                <image
@@ -22,10 +21,14 @@ export function CPU() {
                   hexpand={isVertical}
                />
             ),
-            usage: <label label={cpuUsage} hexpand={isVertical} />,
+            usage: (
+               <label
+                  label={cpuUsage((v) => Math.floor(v * 100).toString())}
+                  hexpand={isVertical}
+               />
+            ),
          }}
-         format={config.bar.modules.cpu.format.get()}
-         visible={cpuUsage.as((d) => d !== "")}
+         format={conf.format}
       />
    );
 }

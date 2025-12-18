@@ -4,9 +4,9 @@ import { BarItemPopup } from "../widgets/baritempopup";
 import { NotificationsListModule } from "../modules/notifications/notificationslist";
 const { height } = config.notifications.list;
 const width =
-   config.notifications.width.get() +
-   theme.window.padding.get() * 2 +
-   theme.window.border.width.get() * 2;
+   config.notifications.width +
+   theme.window.padding * 2 +
+   theme.window.border.width * 2;
 
 export function NotificationsListWindow() {
    return (
@@ -14,7 +14,7 @@ export function NotificationsListWindow() {
          name={windows_names.notificationslist}
          module={"notificationslist"}
          width={width}
-         height={height.get()}
+         height={height}
       >
          <NotificationsListModule />
       </BarItemPopup>
