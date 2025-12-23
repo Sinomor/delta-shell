@@ -154,6 +154,7 @@ function InternetButton() {
    });
 
    const subtitle = createComputed(() => {
+      connectivity();
       if (primary() === AstalNetwork.Primary.WIRED) {
          if (wired.internet === AstalNetwork.Internet.CONNECTED) {
             return "Wired";
@@ -320,7 +321,7 @@ function NotificationsButton() {
    );
 }
 
-export function Qs_Buttons() {
+export function QSButtons() {
    const getVisibleButtons = () => {
       const buttons = config.quicksettings.buttons;
       const visible = [];

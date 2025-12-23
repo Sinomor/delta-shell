@@ -81,7 +81,7 @@ export const FunctionsList = {
       if (comp === "niri") {
          AstalNiri.msg.focus_workspace_up();
       } else if (comp === "hyprland") {
-         getHyprland()?.dispatch("workspace", "+1");
+         getHyprland()?.dispatch("workspace", "-1");
       }
    },
    "workspace-down": () => {
@@ -89,7 +89,7 @@ export const FunctionsList = {
       if (comp === "niri") {
          AstalNiri.msg.focus_workspace_down();
       } else if (comp === "hyprland") {
-         getHyprland()?.dispatch("workspace", "-1");
+         getHyprland()?.dispatch("workspace", "+1");
       }
    },
    "volume-up": () => {

@@ -1,7 +1,7 @@
 import { Gtk } from "ags/gtk4";
 import { QSSliders } from "../items/sliders";
 import { MprisPlayers } from "../items/media";
-import { Qs_Buttons } from "../items/qsbuttons";
+import { QSButtons } from "../items/qsbuttons";
 import { BatteryIcon, icons } from "@/src/lib/icons";
 import AstalBattery from "gi://AstalBattery?version=0.1";
 import { bash, toggleWindow } from "@/src/lib/utils";
@@ -80,7 +80,7 @@ export function MainPage() {
          spacing={theme.spacing}
       >
          <Header />
-         <Qs_Buttons />
+         <QSButtons />
          <QSSliders />
          <MprisPlayers />
       </box>

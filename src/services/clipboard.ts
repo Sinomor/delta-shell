@@ -21,6 +21,7 @@ export default class Clipboard extends GObject.Object {
 
    #list = createState<string[]>([]);
    #updatePending = false;
+   #fileMonitor: Gio.FileMonitor | null = null;
 
    constructor() {
       super();
@@ -41,7 +42,7 @@ export default class Clipboard extends GObject.Object {
          await subprocess(`pkill -f "wl-paste.*cliphist"`);
          await bash(`rm -f ${cacheDir}/delta-shell/cliphist/*`);
          bash(`wl-paste --watch cliphist -max-items ${maxItems} store`);
-         monitorFile(`${cacheDir}/cliphist/db`, () => this.scheduleUpdate());
+         this.startMonitoring();
 
          console.log("Clipboard: service started");
       } catch (error) {
@@ -50,6 +51,16 @@ export default class Clipboard extends GObject.Object {
             error,
          );
       }
+   }
+
+   private startMonitoring() {
+      if (this.#fileMonitor) {
+         this.#fileMonitor.cancel();
+      }
+
+      this.#fileMonitor = monitorFile(`${cacheDir}/cliphist/db`, () =>
+         this.scheduleUpdate(),
+      );
    }
 
    private scheduleUpdate() {
@@ -141,7 +152,8 @@ export default class Clipboard extends GObject.Object {
 
       try {
          await bash("cliphist wipe");
-         await this.update();
+         this.startMonitoring();
+         this.update();
       } catch (error) {
          console.error("Cliphist: failed to clear clipboard history:", error);
       }

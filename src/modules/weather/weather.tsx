@@ -66,23 +66,35 @@ export function WeatherModule({ showArrow = false }: { showArrow?: boolean }) {
          class={"weather"}
          spacing={theme.spacing}
          widthRequest={345 - theme.window.padding * 2}
-         heightRequest={550}
          orientation={Gtk.Orientation.VERTICAL}
       >
          <Header showArrow={showArrow} />
-         <With value={weather.running}>
-            {(running) =>
-               running && (
-                  <box
-                     orientation={Gtk.Orientation.VERTICAL}
-                     spacing={theme.spacing}
-                  >
-                     <Current />
-                     <Hours />
-                     <Days />
-                  </box>
-               )
-            }
+         <With value={weather.data}>
+            {(data) => {
+               if (data)
+                  return (
+                     <box
+                        orientation={Gtk.Orientation.VERTICAL}
+                        spacing={theme.spacing}
+                     >
+                        <Current />
+                        <Hours />
+                        <Days />
+                     </box>
+                  );
+               else
+                  return (
+                     <box
+                        heightRequest={550}
+                        halign={Gtk.Align.CENTER}
+                        valign={Gtk.Align.CENTER}
+                     >
+                        <label
+                           label={"Failed to load data, try again later."}
+                        />
+                     </box>
+                  );
+            }}
          </With>
       </box>
    );
