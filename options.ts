@@ -201,17 +201,17 @@ export const theme = mkOptions(themeFile, {
    },
    spacing: 10,
    shadow: true,
-   radius: 0,
+   radius: 8,
    window: {
       padding: 15,
       opacity: 1,
       margin: 10,
       border: {
-         width: 1,
+         width: 2,
          color: "$bg2",
       },
       outline: {
-         width: 1,
+         width: 2,
          color: "$fg1",
       },
       shadow: {
@@ -229,7 +229,7 @@ export const theme = mkOptions(themeFile, {
       padding: 6,
       spacing: 6,
       border: {
-         width: 1,
+         width: 2,
          color: "$bg2",
       },
       shadow: {
@@ -240,12 +240,12 @@ export const theme = mkOptions(themeFile, {
          opacity: 0.4,
       },
       separator: {
-         width: 1,
+         width: 2,
          color: "$bg2",
       },
       button: {
          fg: "$fg0",
-         padding: [0, 7],
+         padding: [0, 8],
          bg: {
             default: "$bg0",
             hover: "$bg1",
