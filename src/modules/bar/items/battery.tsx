@@ -22,7 +22,7 @@ export function Battery() {
             icon: (
                <image
                   hexpand={isVertical}
-                  pixelSize={20}
+                  pixelSize={config.bar.icon_size}
                   iconName={BatteryIcon}
                />
             ),

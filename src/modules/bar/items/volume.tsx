@@ -25,7 +25,7 @@ export function Volume() {
                <image
                   hexpand={isVertical}
                   iconName={VolumeIcon}
-                  pixelSize={20}
+                  pixelSize={config.bar.icon_size}
                />
             ),
             percent: (

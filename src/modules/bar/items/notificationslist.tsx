@@ -27,7 +27,7 @@ export function NotificationsList() {
             icon: (
                <image
                   iconName={icons.bell}
-                  pixelSize={20}
+                  pixelSize={config.bar.icon_size}
                   hexpand={isVertical}
                />
             ),

@@ -17,7 +17,7 @@ export function RAM() {
             icon: (
                <image
                   iconName={icons.memory}
-                  pixelSize={20}
+                  pixelSize={config.bar.icon_size}
                   hexpand={isVertical}
                />
             ),

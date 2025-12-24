@@ -9,6 +9,7 @@ export const config = mkOptions(configFile, {
    transition: 0.2,
    bar: {
       size: 48,
+	  icon_size: 20,
       position: "top" as "top" | "bottom" | "left" | "right",
       modules: {
          start: ["launcher", "workspaces"],

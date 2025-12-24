@@ -18,7 +18,7 @@ export function PowerMenu() {
                <image
                   hexpand={isVertical}
                   iconName={icons.powermenu.shutdown}
-                  pixelSize={20}
+                  pixelSize={config.bar.icon_size}
                />
             ),
          }}

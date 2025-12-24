@@ -17,7 +17,7 @@ export function QuickSettings() {
             icon: (
                <image
                   hexpand={isVertical}
-                  pixelSize={20}
+                  pixelSize={config.bar.icon_size}
                   iconName={icons.settings}
                />
             ),

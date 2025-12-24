@@ -17,7 +17,7 @@ export function CPU() {
             icon: (
                <image
                   iconName={icons.cpu}
-                  pixelSize={20}
+                  pixelSize={config.bar.icon_size}
                   hexpand={isVertical}
                />
             ),

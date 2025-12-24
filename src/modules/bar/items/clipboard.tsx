@@ -28,7 +28,7 @@ export function Clipboard() {
                <image
                   hexpand={isVertical}
                   iconName={icons.clipboard}
-                  pixelSize={20}
+                  pixelSize={config.bar.icon_size}
                />
             ),
          }}

@@ -18,7 +18,7 @@ export function Launcher() {
                <image
                   hexpand={isVertical}
                   iconName={icons.search}
-                  pixelSize={20}
+                  pixelSize={config.bar.icon_size}
                />
             ),
          }}

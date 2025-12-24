@@ -23,7 +23,7 @@ export function RecordIndicator() {
                   hexpand={isVertical}
                   class={"record-indicator"}
                   iconName={icons.video}
-                  pixelSize={20}
+                  pixelSize={config.bar.icon_size}
                />
             ),
             progress: (
