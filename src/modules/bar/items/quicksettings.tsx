@@ -2,7 +2,7 @@ import { icons } from "@/src/lib/icons";
 import BarItem from "@/src/widgets/baritem";
 import { windows_names } from "@/windows";
 import { isVertical } from "../bar";
-import { config } from "@/options";
+import { config, theme } from "@/options";
 
 export function QuickSettings() {
    const conf = config.bar.modules.quicksettings;
@@ -17,7 +17,7 @@ export function QuickSettings() {
             icon: (
                <image
                   hexpand={isVertical}
-                  pixelSize={config.bar.icon_size}
+                  pixelSize={theme['icon-size'].normal}
                   iconName={icons.settings}
                />
             ),

@@ -1,7 +1,7 @@
 import { icons } from "@/src/lib/icons";
 import BarItem from "@/src/widgets/baritem";
 import { windows_names } from "@/windows";
-import { config } from "@/options";
+import { config, theme } from "@/options";
 import { isVertical } from "../bar";
 
 export function PowerMenu() {
@@ -18,7 +18,7 @@ export function PowerMenu() {
                <image
                   hexpand={isVertical}
                   iconName={icons.powermenu.shutdown}
-                  pixelSize={config.bar.icon_size}
+                  pixelSize={theme['icon-size'].normal}
                />
             ),
          }}

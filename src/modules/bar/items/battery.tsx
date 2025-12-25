@@ -4,7 +4,7 @@ import BarItem from "@/src/widgets/baritem";
 import { createBinding } from "gnim";
 import { windows_names } from "@/windows";
 import { isVertical } from "../bar";
-import { config } from "@/options";
+import { config, theme } from "@/options";
 
 export function Battery() {
    const conf = config.bar.modules.battery;
@@ -22,7 +22,7 @@ export function Battery() {
             icon: (
                <image
                   hexpand={isVertical}
-                  pixelSize={config.bar.icon_size}
+                  pixelSize={theme['icon-size'].normal}
                   iconName={BatteryIcon}
                />
             ),
