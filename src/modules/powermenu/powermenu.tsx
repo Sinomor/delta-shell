@@ -20,7 +20,7 @@ function MenuButton({ icon, label, clicked }: MenuButtonProps) {
             halign={Gtk.Align.CENTER}
             spacing={theme.spacing}
          >
-            <image iconName={icon} iconSize={Gtk.IconSize.LARGE} />
+            <image iconName={icon} pixelSize={theme['icon-size'].large} />
             <label label={label} />
          </box>
       </button>

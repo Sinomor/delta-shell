@@ -1,4 +1,4 @@
-import { config } from "@/options";
+import { config, theme } from "@/options";
 import ScreenRecorder from "@/src/services/screenrecorder";
 import BarItem from "@/src/widgets/baritem";
 import { createBinding } from "ags";
@@ -23,7 +23,7 @@ export function RecordIndicator() {
                   hexpand={isVertical}
                   class={"record-indicator"}
                   iconName={icons.video}
-                  pixelSize={20}
+                  pixelSize={theme['icon-size'].normal}
                />
             ),
             progress: (

@@ -69,7 +69,7 @@ export function Notification({
                class={"close"}
                focusOnClick={false}
             >
-               <image iconName={icons.close} pixelSize={16} />
+               <image iconName={icons.close} pixelSize={theme['icon-size'].small} />
             </button>
          </box>
       );

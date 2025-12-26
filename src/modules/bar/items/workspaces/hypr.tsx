@@ -82,7 +82,7 @@ export function WorkspacesHypr({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
                   icon: (
                      <image
                         iconName={iconName}
-                        pixelSize={20}
+                        pixelSize={config['window-icon-size']}
                         hexpand={isVertical}
                      />
                   ),

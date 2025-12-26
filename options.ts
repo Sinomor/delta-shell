@@ -47,6 +47,7 @@ export const config = mkOptions(configFile, {
          workspaces: {
             "workspace-format": "{id}",
             "window-format": "{indicator} {icon}",
+			"window-icon-size": 20,
             "taskbar-icons": {} as Record<string, string>,
             "hide-empty": false,
             "on-scroll-up": "workspace-up" as string | null,
@@ -202,6 +203,11 @@ export const theme = mkOptions(themeFile, {
    spacing: 10,
    shadow: true,
    radius: 8,
+   "icon-size": {
+      normal: 20,
+	  small: 16,
+	  large: 32
+   },
    window: {
       padding: 15,
       opacity: 1,

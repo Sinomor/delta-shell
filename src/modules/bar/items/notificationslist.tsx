@@ -1,4 +1,4 @@
-import { config } from "@/options";
+import { config, theme } from "@/options";
 import { icons } from "@/src/lib/icons";
 import BarItem from "@/src/widgets/baritem";
 import { windows_names } from "@/windows";
@@ -27,7 +27,7 @@ export function NotificationsList() {
             icon: (
                <image
                   iconName={icons.bell}
-                  pixelSize={20}
+                  pixelSize={theme['icon-size'].normal}
                   hexpand={isVertical}
                />
             ),

@@ -75,7 +75,7 @@ export function Tray() {
                               gicon={item.gicon}
                               hexpand={isVertical}
                               tooltipMarkup={item.tooltipMarkup || item.title}
-                              pixelSize={20}
+                              pixelSize={theme['icon-size'].normal}
                            />
                            <Gtk.GestureClick
                               onPressed={() => item.about_to_show()}
@@ -141,7 +141,7 @@ export function Tray() {
             <image
                hexpand={isVertical}
                iconName={visible((v) => icon(v))}
-               pixelSize={20}
+               pixelSize={theme['icon-size'].normal}
             />
          </button>
       </box>

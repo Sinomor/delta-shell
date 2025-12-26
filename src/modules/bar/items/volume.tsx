@@ -4,7 +4,7 @@ import { Gtk } from "ags/gtk4";
 import { VolumeIcon } from "@/src/lib/icons";
 import { windows_names } from "@/windows";
 import { isVertical } from "../bar";
-import { config } from "@/options";
+import { config, theme } from "@/options";
 import { createBinding } from "gnim";
 
 export function Volume() {
@@ -25,7 +25,7 @@ export function Volume() {
                <image
                   hexpand={isVertical}
                   iconName={VolumeIcon}
-                  pixelSize={20}
+                  pixelSize={theme['icon-size'].normal}
                />
             ),
             percent: (
