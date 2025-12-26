@@ -17,7 +17,7 @@ export function RAM() {
             icon: (
                <image
                   iconName={icons.memory}
-                  pixelSize={theme['icon-size'].normal}
+                  pixelSize={theme["icon-size"].normal}
                   hexpand={isVertical}
                />
             ),

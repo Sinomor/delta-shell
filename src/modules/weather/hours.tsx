@@ -26,7 +26,7 @@ function Hour({ hour }: { hour: HourlyWeather }) {
          class={"hour"}
       >
          <label label={formatHour(hour.time)} />
-         <image iconName={hour.icon} pixelSize={32} />
+         <image iconName={hour.icon} pixelSize={theme["icon-size"].large} />
          <label label={`${hour.temperature}${hour.units.temperature}`} />
          <box visible={hour.precipitation_probability !== 0}>
             <image iconName={icons.droplet} />
@@ -49,7 +49,10 @@ export function Hours() {
          class={"forecast"}
       >
          <box spacing={theme.spacing}>
-            <image iconName={icons.clock} pixelSize={20} />
+            <image
+               iconName={icons.clock}
+               pixelSize={theme["icon-size"].normal}
+            />
             <label label={"Hourly forecast"} />
          </box>
          <scrolledwindow

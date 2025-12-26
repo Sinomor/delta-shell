@@ -17,7 +17,7 @@ export function QuickSettings() {
             icon: (
                <image
                   hexpand={isVertical}
-                  pixelSize={theme['icon-size'].normal}
+                  pixelSize={theme["icon-size"].normal}
                   iconName={icons.settings}
                />
             ),

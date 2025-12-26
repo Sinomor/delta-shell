@@ -43,7 +43,10 @@ function VolumeBox() {
             class={"slider-button"}
             focusOnClick={false}
          >
-            <image iconName={icons.arrow.right} pixelSize={20} />
+            <image
+               iconName={icons.arrow.right}
+               pixelSize={theme["icon-size"].normal}
+            />
          </button>
       </box>
    );
@@ -65,7 +68,10 @@ function MicrophoneBox() {
             class={"slider-button"}
             focusOnClick={false}
          >
-            <image iconName={icons.arrow.right} pixelSize={20} />
+            <image
+               iconName={icons.arrow.right}
+               pixelSize={theme["icon-size"].normal}
+            />
          </button>
       </box>
    );

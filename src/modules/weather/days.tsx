@@ -37,7 +37,7 @@ function Day({ day }: { day: DailyWeather }) {
          class={"day"}
       >
          <label label={formateWeekDay(day.time)} />
-         <image iconName={day.icon} pixelSize={32} />
+         <image iconName={day.icon} pixelSize={theme["icon-size"].large} />
          <box orientation={Gtk.Orientation.VERTICAL}>
             <label
                label={`${day.temperature_max}${day.units.temperature_max}`}
@@ -67,7 +67,10 @@ export function Days() {
          class={"forecast"}
       >
          <box spacing={theme.spacing}>
-            <image iconName={icons.calendar} pixelSize={20} />
+            <image
+               iconName={icons.calendar}
+               pixelSize={theme["icon-size"].normal}
+            />
             <label label={"Daily forecast"} valign={Gtk.Align.CENTER} />
          </box>
          <scrolledwindow

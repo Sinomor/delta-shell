@@ -38,7 +38,7 @@ function MediaPlayer({ player }: { player: AstalMpris.Player }) {
                <box hexpand />
                <image
                   iconName={app?.iconName || icons.player.icon}
-                  pixelSize={22}
+                  pixelSize={theme["icon-size"].normal}
                />
                <label label={player.identity} />
             </box>
@@ -89,21 +89,30 @@ function MediaPlayer({ player }: { player: AstalMpris.Player }) {
                      focusOnClick={false}
                      visible={createBinding(player, "canGoPrevious")}
                   >
-                     <image iconName={icons.player.prev} pixelSize={22} />
+                     <image
+                        iconName={icons.player.prev}
+                        pixelSize={theme["icon-size"].normal}
+                     />
                   </button>
                   <button
                      onClicked={() => player.play_pause()}
                      focusOnClick={false}
                      visible={createBinding(player, "canControl")}
                   >
-                     <image iconName={playIcon} pixelSize={22} />
+                     <image
+                        iconName={playIcon}
+                        pixelSize={theme["icon-size"].normal}
+                     />
                   </button>
                   <button
                      onClicked={() => player.next()}
                      focusOnClick={false}
                      visible={createBinding(player, "canGoNext")}
                   >
-                     <image iconName={icons.player.next} pixelSize={22} />
+                     <image
+                        iconName={icons.player.next}
+                        pixelSize={theme["icon-size"].normal}
+                     />
                   </button>
                </box>
             </box>

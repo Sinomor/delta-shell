@@ -27,7 +27,7 @@ export function NotificationsList() {
             icon: (
                <image
                   iconName={icons.bell}
-                  pixelSize={theme['icon-size'].normal}
+                  pixelSize={theme["icon-size"].normal}
                   hexpand={isVertical}
                />
             ),

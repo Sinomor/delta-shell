@@ -28,7 +28,7 @@ export function Clipboard() {
                <image
                   hexpand={isVertical}
                   iconName={icons.clipboard}
-                  pixelSize={theme['icon-size'].normal}
+                  pixelSize={theme["icon-size"].normal}
                />
             ),
          }}

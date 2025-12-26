@@ -45,7 +45,7 @@ export function Weather() {
             icon: (
                <image
                   iconName={data((d) => d.icon)}
-                  pixelSize={theme['icon-size'].normal}
+                  pixelSize={theme["icon-size"].normal}
                   hexpand={isVertical}
                />
             ),

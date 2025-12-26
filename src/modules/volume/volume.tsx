@@ -22,7 +22,10 @@ function Header({ showArrow = false }: { showArrow?: boolean }) {
                focusOnClick={false}
                onClicked={() => qs_page_set("main")}
             >
-               <image iconName={icons.arrow.left} pixelSize={20} />
+               <image
+                  iconName={icons.arrow.left}
+                  pixelSize={theme["icon-size"].normal}
+               />
             </button>
          )}
          <label
@@ -150,7 +153,10 @@ function DefaultOutput() {
                   ellipsize={Pango.EllipsizeMode.END}
                   maxWidthChars={25}
                />
-               <image iconName={icons.arrow.down} pixelSize={20} />
+               <image
+                  iconName={icons.arrow.down}
+                  pixelSize={theme["icon-size"].normal}
+               />
             </box>
          </button>
          <popover hasArrow={false} $={(self) => (popover = self)}>
@@ -182,7 +188,7 @@ function DefaultOutput() {
          >
             <image
                iconName={VolumeIcon}
-               pixelSize={20}
+               pixelSize={theme["icon-size"].normal}
                valign={Gtk.Align.CENTER}
                halign={Gtk.Align.START}
             />
@@ -224,7 +230,10 @@ function DefaultMicrophone() {
                   ellipsize={Pango.EllipsizeMode.END}
                   maxWidthChars={25}
                />
-               <image iconName={icons.arrow.down} pixelSize={20} />
+               <image
+                  iconName={icons.arrow.down}
+                  pixelSize={theme["icon-size"].normal}
+               />
             </box>
          </button>
          <popover hasArrow={false} $={(self) => (popover = self)}>
@@ -256,7 +265,7 @@ function DefaultMicrophone() {
          >
             <image
                iconName={icons.microphone.default}
-               pixelSize={20}
+               pixelSize={theme["icon-size"].normal}
                valign={Gtk.Align.CENTER}
                halign={Gtk.Align.START}
             />

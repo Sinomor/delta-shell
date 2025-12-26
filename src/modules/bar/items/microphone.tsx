@@ -24,7 +24,7 @@ export function Microphone() {
                <image
                   hexpand={isVertical}
                   iconName={icons.microphone.default}
-                  pixelSize={theme['icon-size'].normal}
+                  pixelSize={theme["icon-size"].normal}
                />
             ),
             percent: (

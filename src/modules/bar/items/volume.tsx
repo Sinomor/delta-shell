@@ -25,7 +25,7 @@ export function Volume() {
                <image
                   hexpand={isVertical}
                   iconName={VolumeIcon}
-                  pixelSize={theme['icon-size'].normal}
+                  pixelSize={theme["icon-size"].normal}
                />
             ),
             percent: (

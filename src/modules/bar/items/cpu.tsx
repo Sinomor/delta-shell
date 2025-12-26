@@ -17,7 +17,7 @@ export function CPU() {
             icon: (
                <image
                   iconName={icons.cpu}
-                  pixelSize={theme['icon-size'].normal}
+                  pixelSize={theme["icon-size"].normal}
                   hexpand={isVertical}
                />
             ),

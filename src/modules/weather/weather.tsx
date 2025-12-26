@@ -17,7 +17,11 @@ function ScanningIndicator() {
    });
 
    return (
-      <image iconName={icons.refresh} pixelSize={20} cssClasses={className} />
+      <image
+         iconName={icons.refresh}
+         pixelSize={theme["icon-size"].normal}
+         cssClasses={className}
+      />
    );
 }
 
@@ -41,10 +45,16 @@ function Header({ showArrow = false }: { showArrow?: boolean }) {
                focusOnClick={false}
                onClicked={() => qs_page_set("main")}
             >
-               <image iconName={icons.arrow.left} pixelSize={20} />
+               <image
+                  iconName={icons.arrow.left}
+                  pixelSize={theme["icon-size"].normal}
+               />
             </button>
          )}
-         <image iconName={icons.location} pixelSize={20} />
+         <image
+            iconName={icons.location}
+            pixelSize={theme["icon-size"].normal}
+         />
          <label label={data((d) => d.label)} />
          <box hexpand />
          <button

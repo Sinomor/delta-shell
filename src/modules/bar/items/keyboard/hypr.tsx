@@ -1,4 +1,4 @@
-import { compositor, config } from "@/options";
+import { compositor, config, theme } from "@/options";
 import { bash } from "@/src/lib/utils";
 import BarItem from "@/src/widgets/baritem";
 import { createState, onCleanup } from "ags";
@@ -76,7 +76,7 @@ export function KeyboardHypr() {
                <image
                   hexpand={isVertical}
                   iconName={icons.keyboard}
-                  pixelSize={20}
+                  pixelSize={theme["icon-size"].normal}
                />
             ),
          }}

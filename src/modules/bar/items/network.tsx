@@ -76,7 +76,7 @@ export function Network() {
             icon: (
                <image
                   hexpand={isVertical}
-                  pixelSize={theme['icon-size'].normal}
+                  pixelSize={theme["icon-size"].normal}
                   iconName={getNetworkIconBinding()}
                />
             ),

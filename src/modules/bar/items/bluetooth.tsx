@@ -1,4 +1,4 @@
-import { config } from "@/options";
+import { config, theme } from "@/options";
 import { icons } from "@/src/lib/icons";
 import BarItem from "@/src/widgets/baritem";
 import { windows_names } from "@/windows";
@@ -25,7 +25,13 @@ export function Bluetooth() {
          onSecondaryClick={conf["on-click-right"]}
          onMiddleClick={conf["on-click-middle"]}
          data={{
-            icon: <image hexpand={isVertical} iconName={icons.bluetooth} />,
+            icon: (
+               <image
+                  hexpand={isVertical}
+                  iconName={icons.bluetooth}
+                  pixelSize={theme["icon-size"].small}
+               />
+            ),
             status: (
                <label
                   label={powered((v) => (v ? "On" : "Off"))}

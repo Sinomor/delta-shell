@@ -18,7 +18,7 @@ export function Launcher() {
                <image
                   hexpand={isVertical}
                   iconName={icons.search}
-                  pixelSize={theme['icon-size'].normal}
+                  pixelSize={theme["icon-size"].normal}
                />
             ),
          }}

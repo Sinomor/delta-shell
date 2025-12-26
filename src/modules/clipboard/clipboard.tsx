@@ -97,7 +97,7 @@ function Clear() {
          focusable={false}
          onClicked={async () => await clipboard.clear()}
       >
-         <image iconName={icons.trash} pixelSize={20} />
+         <image iconName={icons.trash} pixelSize={theme["icon-size"].normal} />
       </button>
    );
 }
