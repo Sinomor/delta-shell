@@ -49,6 +49,7 @@
           gobject-introspection
           geoclue2
           glib-networking
+          wrapGAppsHook3
         ]
         ++ (with astal.packages.${system}; [
           io
