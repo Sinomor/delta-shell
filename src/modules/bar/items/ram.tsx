@@ -2,7 +2,7 @@ import BarItem from "@/src/widgets/baritem";
 import { isVertical } from "../bar";
 import { icons } from "@/src/lib/icons";
 import SystemMonitor from "@/src/services/systemmonitor";
-import { config } from "@/options";
+import { config, theme } from "@/options";
 import { createBinding } from "gnim";
 
 export function RAM() {
@@ -17,7 +17,7 @@ export function RAM() {
             icon: (
                <image
                   iconName={icons.memory}
-                  pixelSize={20}
+                  pixelSize={theme["icon-size"].normal}
                   hexpand={isVertical}
                />
             ),

@@ -2,7 +2,7 @@ import BarItem from "@/src/widgets/baritem";
 import { isVertical } from "../bar";
 import { icons } from "@/src/lib/icons";
 import SystemMonitor from "@/src/services/systemmonitor";
-import { config } from "@/options";
+import { config, theme } from "@/options";
 import { createBinding, With } from "gnim";
 
 export function CPU() {
@@ -17,7 +17,7 @@ export function CPU() {
             icon: (
                <image
                   iconName={icons.cpu}
-                  pixelSize={20}
+                  pixelSize={theme["icon-size"].normal}
                   hexpand={isVertical}
                />
             ),

@@ -4,7 +4,7 @@ import { windows_names } from "@/windows";
 import AstalNetwork from "gi://AstalNetwork";
 import { createBinding, createComputed } from "gnim";
 import { isVertical } from "../bar";
-import { config } from "@/options";
+import { config, theme } from "@/options";
 import { truncateByFormat } from "@/src/lib/utils";
 
 export function Network() {
@@ -76,7 +76,7 @@ export function Network() {
             icon: (
                <image
                   hexpand={isVertical}
-                  pixelSize={20}
+                  pixelSize={theme["icon-size"].normal}
                   iconName={getNetworkIconBinding()}
                />
             ),

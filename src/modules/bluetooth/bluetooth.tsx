@@ -111,6 +111,7 @@ function Item({ device }: ItemProps) {
                      ? icons.bluetooth
                      : device.icon + "-symbolic"
                }
+               pixelSize={theme["icon-size"].normal}
             />
             <label label={device.name} />
             <label

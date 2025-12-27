@@ -82,7 +82,7 @@ export function WorkspacesNiri({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
                   icon: (
                      <image
                         iconName={iconName}
-                        pixelSize={20}
+                        pixelSize={conf["window-icon-size"]}
                         hexpand={isVertical}
                      />
                   ),

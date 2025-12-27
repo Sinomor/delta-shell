@@ -3,6 +3,7 @@ import { bash } from "@/src/lib/utils";
 import { Gdk, Gtk } from "ags/gtk4";
 import { hideWindows } from "@/windows";
 import Clipboard from "@/src/services/clipboard";
+import { theme } from "@/options";
 const clipboard = Clipboard.get_default();
 
 export function ClipColor({ id, content }: { id: string; content: string }) {
@@ -20,8 +21,8 @@ export function ClipColor({ id, content }: { id: string; content: string }) {
       >
          <box spacing={16}>
             <box
-               widthRequest={20}
-               heightRequest={20}
+               widthRequest={theme["icon-size"].normal}
+               heightRequest={theme["icon-size"].normal}
                valign={Gtk.Align.CENTER}
                class={"color"}
                css={`

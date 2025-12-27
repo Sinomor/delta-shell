@@ -1,7 +1,7 @@
 import AstalNiri from "gi://AstalNiri";
 import { bash } from "@/src/lib/utils";
 import { createBinding, createState, onCleanup } from "ags";
-import { compositor, config } from "@/options";
+import { compositor, config, theme } from "@/options";
 import BarItem from "@/src/widgets/baritem";
 import { isVertical } from "../../bar";
 import { icons } from "@/src/lib/icons";
@@ -55,7 +55,7 @@ export function KeyboardNiri() {
                <image
                   hexpand={isVertical}
                   iconName={icons.keyboard}
-                  pixelSize={20}
+                  pixelSize={theme["icon-size"].normal}
                />
             ),
          }}

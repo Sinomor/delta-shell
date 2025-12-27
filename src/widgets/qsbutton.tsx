@@ -4,6 +4,7 @@ import { Gtk } from "ags/gtk4";
 import { Accessor } from "ags";
 import Adw from "gi://Adw?version=1";
 import { attachHoverScroll } from "../lib/utils";
+import { theme } from "@/options";
 
 type QSButtonProps = {
    icon: string | Accessor<string>;
@@ -50,7 +51,10 @@ export function QSButton({
                focusOnClick={false}
             >
                <box spacing={10} hexpand valign={Gtk.Align.CENTER}>
-                  <image pixelSize={22} iconName={icon} />
+                  <image
+                     pixelSize={theme["icon-size"].normal}
+                     iconName={icon}
+                  />
                   <box orientation={Gtk.Orientation.VERTICAL}>
                      <label
                         class={"qs-button-label"}
@@ -78,7 +82,7 @@ export function QSButton({
                      <image
                         iconName={icons.arrow.right}
                         class={"arrow-label"}
-                        pixelSize={22}
+                        pixelSize={theme["icon-size"].normal}
                         hexpand
                         valign={Gtk.Align.CENTER}
                         halign={Gtk.Align.END}
@@ -92,7 +96,10 @@ export function QSButton({
                   cssClasses={ArrowClasses}
                   focusOnClick={false}
                >
-                  <image iconName={icons.arrow.right} pixelSize={22} />
+                  <image
+                     iconName={icons.arrow.right}
+                     pixelSize={theme["icon-size"].normal}
+                  />
                </button>
             )}
          </box>

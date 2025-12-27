@@ -17,7 +17,10 @@ function Header({ showArrow = false }: { showArrow?: boolean }) {
                focusOnClick={false}
                onClicked={() => qs_page_set("main")}
             >
-               <image iconName={icons.arrow.left} pixelSize={20} />
+               <image
+                  iconName={icons.arrow.left}
+                  pixelSize={theme["icon-size"].normal}
+               />
             </button>
          )}
          <label label={"Notifications"} />
@@ -31,7 +34,7 @@ function Header({ showArrow = false }: { showArrow?: boolean }) {
             <image
                halign={Gtk.Align.CENTER}
                iconName={dnd((v) => (v ? icons.bell_off : icons.bell))}
-               pixelSize={20}
+               pixelSize={theme["icon-size"].normal}
             />
          </button>
          <button
@@ -43,7 +46,7 @@ function Header({ showArrow = false }: { showArrow?: boolean }) {
             <image
                halign={Gtk.Align.CENTER}
                iconName={icons.trash}
-               pixelSize={20}
+               pixelSize={theme["icon-size"].normal}
             />
          </button>
       </box>

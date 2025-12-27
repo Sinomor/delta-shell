@@ -15,7 +15,10 @@ function Header({ showArrow = false }: { showArrow?: boolean }) {
                focusOnClick={false}
                onClicked={() => qs_page_set("main")}
             >
-               <image iconName={icons.arrow.left} pixelSize={20} />
+               <image
+                  iconName={icons.arrow.left}
+                  pixelSize={theme["icon-size"].normal}
+               />
             </button>
          )}
          <label
@@ -63,12 +66,15 @@ function Item({ profile }: { profile: string }) {
          focusOnClick={false}
       >
          <box spacing={theme.spacing}>
-            <image iconName={icons.powerprofiles[profile]} pixelSize={24} />
+            <image
+               iconName={icons.powerprofiles[profile]}
+               pixelSize={theme["icon-size"].normal}
+            />
             <label label={profiles_names[profile]} />
             <box hexpand />
             <image
                iconName={icons.check}
-               pixelSize={20}
+               pixelSize={theme["icon-size"].normal}
                visible={isConnected}
             />
          </box>

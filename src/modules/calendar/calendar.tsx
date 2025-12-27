@@ -67,14 +67,20 @@ function Header() {
             class={"monthshift"}
             onClicked={() => calendar.shiftMonth(-1)}
          >
-            <image iconName={icons.arrow.left} pixelSize={20} />
+            <image
+               iconName={icons.arrow.left}
+               pixelSize={theme["icon-size"].normal}
+            />
          </button>
          <button
             focusOnClick={false}
             class={"monthshift"}
             onClicked={() => calendar.shiftMonth(1)}
          >
-            <image iconName={icons.arrow.right} pixelSize={20} />
+            <image
+               iconName={icons.arrow.right}
+               pixelSize={theme["icon-size"].normal}
+            />
          </button>
       </box>
    );

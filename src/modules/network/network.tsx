@@ -15,7 +15,11 @@ function ScanningIndicator() {
    });
 
    return (
-      <image iconName={icons.refresh} pixelSize={20} cssClasses={className} />
+      <image
+         iconName={icons.refresh}
+         pixelSize={theme["icon-size"].normal}
+         cssClasses={className}
+      />
    );
 }
 
@@ -28,7 +32,10 @@ function Header({ showArrow = false }: { showArrow?: boolean }) {
                focusOnClick={false}
                onClicked={() => qs_page_set("main")}
             >
-               <image iconName={icons.arrow.left} pixelSize={20} />
+               <image
+                  iconName={icons.arrow.left}
+                  pixelSize={theme["icon-size"].normal}
+               />
             </button>
          )}
          <label
@@ -82,10 +89,17 @@ function Item({ accessPoint }: ItemProps) {
          focusOnClick={false}
       >
          <box spacing={theme.spacing}>
-            <image iconName={getAccessPointIcon(accessPoint)} pixelSize={20} />
+            <image
+               iconName={getAccessPointIcon(accessPoint)}
+               pixelSize={theme["icon-size"].normal}
+            />
             <label label={accessPoint.ssid} />
             <box hexpand />
-            <image iconName={icons.check} pixelSize={20} visible={connected} />
+            <image
+               iconName={icons.check}
+               pixelSize={theme["icon-size"].normal}
+               visible={connected}
+            />
          </box>
       </button>
    );

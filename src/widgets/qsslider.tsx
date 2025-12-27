@@ -1,3 +1,4 @@
+import { theme } from "@/options";
 import { Accessor } from "ags";
 import { Gtk } from "ags/gtk4";
 
@@ -21,7 +22,7 @@ export function QSSlider({
          <image
             $type={"overlay"}
             iconName={icon}
-            pixelSize={20}
+            pixelSize={theme["icon-size"].normal}
             valign={Gtk.Align.CENTER}
             halign={Gtk.Align.START}
          />
