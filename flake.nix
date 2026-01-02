@@ -114,13 +114,13 @@
             package = lib.mkOption {
               type = lib.types.package;
               description = "The delta-shell package to use";
-              default = self.packages.${pkgs.system}.my-package;
+              default = self.packages.${pkgs.system}.default;
             };
           };
           config = lib.mkMerge [
             (lib.mkIf config.programs.delta-shell.enable {
               programs.gpu-screen-recorder.enable = true;
-              environment.systemPackages = with pkgs; [
+              environment.systemPackages = [
                 config.programs.delta-shell.package
               ];
             })
