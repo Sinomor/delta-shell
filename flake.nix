@@ -107,7 +107,6 @@
           pkgs,
           lib,
           config,
-          self,
           ...
         }: {
           options.programs.delta-shell = {
