@@ -27,6 +27,7 @@
     astal,
     astal_niri,
     ags,
+    self,
     ...
   }:
     flake-parts.lib.mkFlake {inherit inputs;} {
@@ -102,6 +103,30 @@
         };
       };
       flake = {
+        flakeModules.default = {
+          pkgs,
+          lib,
+          config,
+          self,
+          ...
+        }: {
+          options.programs.delta-shell = {
+            enable = lib.mkEnableOption "Install delta-shell";
+            package = lib.mkOption {
+              type = lib.types.package;
+              description = "The delta-shell package to use";
+              default = self.packages.${pkgs.system}.my-package;
+            };
+          };
+          config = lib.mkMerge [
+            (lib.mkIf config.programs.delta-shell.enable {
+              programs.gpu-screen-recorder.enable = true;
+              environment.systemPackages = with pkgs; [
+                config.programs.delta-shell.package
+              ];
+            })
+          ];
+        };
       };
     };
 }
