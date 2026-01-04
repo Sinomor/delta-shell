@@ -7,6 +7,9 @@ const themeFile = `${configDir}/delta-shell/theme.json`;
 
 export const config = mkOptions(configFile, {
    transition: 0.2,
+   dock: {
+      position: "bottom" as "top" | "bottom" | "left" | "right",
+   },
    bar: {
       size: 48,
       position: "top" as "top" | "bottom" | "left" | "right",
@@ -113,6 +116,14 @@ export const config = mkOptions(configFile, {
          },
          cpu: { format: "{icon} {usage}" },
          ram: { format: "{icon} {usage}" },
+         taskbar: {
+            format: "{pinned} {separator} {windows}",
+            "window-format": "{indicator} {icon}",
+            grouped: true,
+            pinned: [],
+            "window-icon-size": 20,
+            icons: {} as Record<string, string>,
+         },
       },
    },
    quicksettings: {

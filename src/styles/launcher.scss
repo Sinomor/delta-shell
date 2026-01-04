@@ -81,4 +81,54 @@ window#clipboard {
          box-shadow: none;
       }
    }
+
+   popover {
+      contents {
+         @if $bar-position == "top" {
+            margin-top: 5px;
+         } @else if $bar-position == "bottom" {
+            margin-bottom: 5px;
+         } @else if $bar-position == "left" {
+            margin-left: 15px;
+         } @else if $bar-position == "right" {
+            margin-right: 5px;
+         }
+         background: rgba($bg0, $window-opacity);
+         border: $window-border-width solid $window-border-color;
+         padding: $window-padding / 2;
+         @if $window-radius != 0px {
+            border-radius: $widget-radius + ($window-padding / 2);
+         } @else {
+            border-radius: $window-radius;
+         }
+         @if $shadow {
+            box-shadow: $window-shadow-offset
+               $window-shadow-blur
+               $window-shadow-spread
+               rgba($window-shadow-color, $window-shadow-opacity);
+         }
+      }
+
+      separator {
+         border-radius: $widget-radius;
+         background: rgba($window-border-color, $bar-opacity);
+
+         &.horizontal {
+            min-height: $window-border-width;
+         }
+      }
+
+      button {
+         background: transparent;
+         color: $fg0;
+         border-radius: $widget-radius;
+         outline: none;
+         font-weight: normal;
+         padding: 5px;
+
+         &:hover {
+            background: $bg1;
+         }
+      }
+   }
 }
