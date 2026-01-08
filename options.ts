@@ -55,6 +55,7 @@ export const config = mkOptions(configFile, {
          },
          keyboard: {
             format: "{lang}",
+            compact: true,
             "on-click": "switch-language" as string | null,
             "on-click-right": null as string | null,
             "on-click-middle": null as string | null,

@@ -29,7 +29,12 @@ export function Keyboard() {
          onSecondaryClick={conf["on-click-right"]}
          onMiddleClick={conf["on-click-middle"]}
          data={{
-            lang: <label hexpand={isVertical} label={layout((l) => l.short)} />,
+            lang: (
+               <label
+                  hexpand={isVertical}
+                  label={layout((l) => (conf.compact ? l.short : l.full))}
+               />
+            ),
             icon: (
                <image
                   hexpand={isVertical}
