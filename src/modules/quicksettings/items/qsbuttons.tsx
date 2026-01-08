@@ -81,7 +81,7 @@ function MicrophoneButton() {
       <QSButton
          icon={icons.microphone.default}
          label={"Microphone"}
-         subtitle={level((level) => (level !== "None" ? level : "None"))}
+         subtitle={level((level) => (level !== "" ? level : "None"))}
          onClicked={() => microphone.set_mute(!microphone.get_mute())}
          onArrowClicked={() => qs_page_set("volume")}
          onScrollUp={() => FunctionsList["microphone-up"]()}
