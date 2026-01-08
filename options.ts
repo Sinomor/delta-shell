@@ -114,6 +114,9 @@ export const config = mkOptions(configFile, {
          },
          cpu: { format: "{icon} {usage}" },
          ram: { format: "{icon} {usage}" },
+         tray: {
+            compact: true,
+         },
       },
    },
    quicksettings: {
