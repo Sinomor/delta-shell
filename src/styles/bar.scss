@@ -296,6 +296,16 @@ window#bar {
             }
          }
       }
+      @if $bar-position == "top" or $bar-position == "bottom" {
+         .workspace {
+            &.minimal,
+            &.empty {
+               .content {
+                  padding: multiply-padding($bar-button-padding, 1.5);
+               }
+            }
+         }
+      }
    }
 
    .record-indicator {
@@ -325,6 +335,7 @@ window#bar {
       .toggle {
          background: transparent;
          padding: $bar-button-padding;
+         border-radius: $widget-radius;
 
          &:hover {
             background: rgba($bar-button-bg-hover, $bar-button-opacity);
