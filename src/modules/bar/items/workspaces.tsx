@@ -138,6 +138,9 @@ export function Workspaces({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
          ) {
             classes.push("active");
          }
+         if (!conf["workspace-format"].includes("{windows}"))
+            classes.push("minimal");
+         if (windowCount() === 0) classes.push("empty");
          return classes;
       });
 
