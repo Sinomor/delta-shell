@@ -1,5 +1,10 @@
 import GObject, { register, getter } from "ags/gobject";
-import { bash, dependencies, ensureDirectory } from "@/src/lib/utils";
+import {
+   bash,
+   dependencies,
+   ensureDirectory,
+   hasBarItem,
+} from "@/src/lib/utils";
 import { createState } from "ags";
 import { config } from "@/options";
 import GLib from "gi://GLib?version=2.0";
@@ -64,7 +69,11 @@ export default class Weather extends GObject.Object {
 
    constructor() {
       super();
-      if (config.weather.enabled) this.start();
+      if (
+         (config.weather.enabled && hasBarItem("weather")) ||
+         config.quicksettings.buttons.includes("weather")
+      )
+         this.start();
    }
 
    async start() {

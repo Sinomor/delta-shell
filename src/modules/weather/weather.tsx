@@ -7,9 +7,10 @@ import { Hours } from "./hours";
 import { config, theme } from "@/options";
 import Weather from "@/src/services/weather";
 import { qs_page_set } from "../quicksettings/quicksettings";
-const weather = Weather.get_default();
 
 function ScanningIndicator() {
+   const weather = Weather.get_default();
+
    const className = weather.loading((scanning) => {
       const classes = ["scanning"];
       if (scanning) classes.push("active");
@@ -26,6 +27,8 @@ function ScanningIndicator() {
 }
 
 function Header({ showArrow = false }: { showArrow?: boolean }) {
+   const weather = Weather.get_default();
+
    const data = weather.location((location) => {
       if (!location)
          return {
@@ -69,7 +72,14 @@ function Header({ showArrow = false }: { showArrow?: boolean }) {
 }
 
 export function WeatherModule({ showArrow = false }: { showArrow?: boolean }) {
+   if (
+      !config.weather.enabled ||
+      !config.quicksettings.buttons.includes("weather")
+   )
+      return <box visible={false} />;
+
    console.log("Weather: initializing module");
+   const weather = Weather.get_default();
 
    return (
       <box

@@ -4,7 +4,6 @@ import { For } from "ags";
 import { icons } from "@/src/lib/icons";
 import { theme } from "@/options";
 import Weather from "@/src/services/weather";
-const weather = Weather.get_default();
 
 function formatDate(timestamp: number): string {
    const date = new Date(timestamp * 1000);
@@ -55,6 +54,8 @@ function Day({ day }: { day: DailyWeather }) {
 }
 
 export function Days() {
+   const weather = Weather.get_default();
+
    const days = weather.data((data) => {
       if (!data) return [];
       return data?.daily;

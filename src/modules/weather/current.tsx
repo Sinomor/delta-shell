@@ -1,7 +1,6 @@
 import { Gtk } from "ags/gtk4";
 import { With } from "ags";
 import Weather from "@/src/services/weather";
-const weather = Weather.get_default();
 
 function getDescription(weatherCode: number) {
    const descriptions = {
@@ -39,6 +38,8 @@ function getDescription(weatherCode: number) {
 }
 
 export function Current() {
+   const weather = Weather.get_default();
+
    const data = weather.data((data) => {
       if (!data)
          return {
