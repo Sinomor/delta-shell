@@ -8,13 +8,14 @@ import {
    toggleQsModule,
    toggleWindow,
 } from "../lib/utils";
-import { compositor, theme } from "@/options";
+import { theme } from "@/options";
 import { isVertical, orientation } from "../modules/bar/bar";
 import { windows_names } from "@/windows";
 import AstalHyprland from "gi://AstalHyprland?version=0.1";
 import AstalNiri from "gi://AstalNiri?version=0.1";
 import AstalWp from "gi://AstalWp?version=0.1";
 import ScreenRecorder from "@/src/services/screenrecorder";
+import { compositor } from "../lib/compositor";
 
 type FormatData = Record<string, JSX.Element>;
 
@@ -76,22 +77,8 @@ export const FunctionsList = {
    "toggle-network": () => toggleQsModule(windows_names.network),
    "toggle-bluetooth": () => toggleQsModule(windows_names.bluetooth),
    "toggle-power": () => toggleQsModule(windows_names.power, "battery"),
-   "workspace-up": () => {
-      const comp = compositor.peek();
-      if (comp === "niri") {
-         AstalNiri.msg.focus_workspace_up();
-      } else if (comp === "hyprland") {
-         getHyprland()?.dispatch("workspace", "-1");
-      }
-   },
-   "workspace-down": () => {
-      const comp = compositor.peek();
-      if (comp === "niri") {
-         AstalNiri.msg.focus_workspace_down();
-      } else if (comp === "hyprland") {
-         getHyprland()?.dispatch("workspace", "+1");
-      }
-   },
+   "workspace-up": () => compositor.nextWorkspace(),
+   "workspace-down": () => compositor.previousWorkspace(),
    "volume-up": () => {
       const spk = getSpeaker();
       if (spk) spk.set_volume(spk.volume + 0.01);
@@ -116,26 +103,7 @@ export const FunctionsList = {
       const mcph = getMicrophone();
       if (mcph) mcph.set_mute(!mcph.get_mute());
    },
-   "switch-language": async () => {
-      const comp = compositor.peek();
-      if (comp === "niri") AstalNiri.msg.switch_layout_next();
-      if (comp === "hyprland") {
-         try {
-            const json = await bash("hyprctl devices -j");
-            const devices = JSON.parse(json);
-
-            const mainKeyboard = devices.keyboards.find(
-               (kb: any) => kb.main === true,
-            );
-
-            if (mainKeyboard?.name) {
-               bash(`hyprctl switchxkblayout ${mainKeyboard.name} next`);
-            }
-         } catch (error) {
-            console.error("Failed to switch keyboard layout:", error);
-         }
-      }
-   },
+   "switch-language": () => compositor.keyboard.switchLayout(),
    "screenrecord-toggle": () => {
       const sr = getScreenRecorder();
       if (sr) {
