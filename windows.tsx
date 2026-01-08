@@ -45,12 +45,12 @@ export function hideWindows() {
       windows_names.osd,
    ];
 
-   // app.get_windows()
-   //    .filter((window) => !ignore.includes(window.name))
-   //    .forEach((w) => {
-   //       app.get_window(w.name)?.hide();
-   //    });
-   // qs_page_set("main");
+   app.get_windows()
+      .filter((window) => !ignore.includes(window.name))
+      .forEach((w) => {
+         app.get_window(w.name)?.hide();
+      });
+   qs_page_set("main");
 }
 
 export function windows() {
