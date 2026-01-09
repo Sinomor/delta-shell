@@ -5,12 +5,16 @@ import { Gtk } from "ags/gtk4";
 type SliderProps = {
    level: Accessor<number>;
    icon: string | Accessor<string>;
+   max?: number;
+   min?: number;
    onChangeValue: (value: number) => void;
 };
 
 export function QSSlider({
    level,
    icon,
+   min,
+   max,
    onChangeValue,
    ...props
 }: SliderProps) {
@@ -30,8 +34,9 @@ export function QSSlider({
             onChangeValue={({ value }) => {
                onChangeValue(value);
             }}
+            max={max}
+            min={min}
             hexpand
-            min={0.1}
             value={level}
          />
       </overlay>
