@@ -264,18 +264,17 @@ function BluetoothButton() {
 
 function WeatherButton() {
    const weather = Weather.get_default();
+   const data = createBinding(weather, "data");
 
    const temp = createComputed(() => {
-      const data = weather.data();
-      if (!data) return "";
-      const current = data.hourly[0];
-      return weather.running()
-         ? `${current.temperature}${current.units.temperature}`
-         : "";
+      const hourly = data().hourly;
+      if (!hourly) return "";
+      const current = hourly[0];
+      return `${current.temperature}${current.units.temperature}`;
    });
 
-   const icon = weather.data((data) => {
-      if (!data) return icons.weather.clear.day;
+   const icon = data((data) => {
+      if (!data.hourly) return icons.weather.clear.day;
 
       const current = data.hourly[0];
       return current.icon;

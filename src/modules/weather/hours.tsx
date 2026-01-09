@@ -1,5 +1,5 @@
 import { Gtk } from "ags/gtk4";
-import { For } from "ags";
+import { createBinding, For } from "ags";
 import { icons } from "@/src/lib/icons";
 import { theme } from "@/options";
 import { HourlyWeather } from "@/src/services/weather";
@@ -38,9 +38,9 @@ function Hour({ hour }: { hour: HourlyWeather }) {
 export function Hours() {
    const weather = Weather.get_default();
 
-   const hours = weather.data((data) => {
-      if (!data) return [];
-      return data?.hourly;
+   const hours = createBinding(weather, "data").as((data) => {
+      if (!data.hourly) return [];
+      return data.hourly;
    });
 
    return (

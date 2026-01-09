@@ -1,6 +1,6 @@
 import { Gtk } from "ags/gtk4";
 import { DailyWeather } from "@/src/services/weather";
-import { For } from "ags";
+import { createBinding, For } from "ags";
 import { icons } from "@/src/lib/icons";
 import { theme } from "@/options";
 import Weather from "@/src/services/weather";
@@ -56,9 +56,9 @@ function Day({ day }: { day: DailyWeather }) {
 export function Days() {
    const weather = Weather.get_default();
 
-   const days = weather.data((data) => {
-      if (!data) return [];
-      return data?.daily;
+   const days = createBinding(weather, "data").as((data) => {
+      if (!data.daily) return [];
+      return data.daily;
    });
 
    return (

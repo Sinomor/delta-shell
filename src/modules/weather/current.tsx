@@ -1,5 +1,5 @@
 import { Gtk } from "ags/gtk4";
-import { With } from "ags";
+import { createBinding, With } from "ags";
 import Weather from "@/src/services/weather";
 
 function getDescription(weatherCode: number) {
@@ -40,8 +40,8 @@ function getDescription(weatherCode: number) {
 export function Current() {
    const weather = Weather.get_default();
 
-   const data = weather.data((data) => {
-      if (!data)
+   const data = createBinding(weather, "data").as((data) => {
+      if (!data.hourly)
          return {
             feels: "",
             temp: "",
