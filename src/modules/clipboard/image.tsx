@@ -5,6 +5,7 @@ import { createState } from "ags";
 import { hideWindows } from "@/windows";
 import { config, theme } from "@/options";
 import Clipboard from "@/src/services/clipboard";
+import Adw from "gi://Adw?version=1";
 const clipboard = Clipboard.get_default();
 
 export function ClipImage({
@@ -15,32 +16,30 @@ export function ClipImage({
    content: RegExpMatchArray;
 }) {
    const [_, size, unit, format, width, height] = content;
-   const maxWidth = config.clipboard.width - theme.window.padding * 2;
-   let widthPx = (Number(width) / Number(height)) * 200;
-   let heightPx: number;
 
-   if (widthPx > maxWidth) heightPx = (200 / widthPx) * maxWidth;
-   else heightPx = 200;
+   const widthPx = config.clipboard.width - theme.window.padding * 2 - 20;
+   const heightPx = Math.floor((widthPx * Number(height)) / Number(width));
 
    return (
-      <button
-         cssClasses={["clipbutton", "image-content"]}
-         heightRequest={heightPx}
-         hexpand
-         onClicked={() => {
-            clipboard.copy(id);
-            hideWindows();
-         }}
-         focusOnClick={false}
-      >
-         <Gtk.Picture
-            class={"image"}
-            halign={Gtk.Align.START}
-            $={async (self) => {
-               const image = await clipboard.load_image(id);
-               if (image) self.set_file(Gio.file_new_for_path(image));
+      <Adw.Clamp maximumSize={widthPx}>
+         <button
+            cssClasses={["clipbutton", "image-content"]}
+            onClicked={() => {
+               clipboard.copy(id);
+               hideWindows();
             }}
-         />
-      </button>
+            focusOnClick={false}
+         >
+            <Gtk.Picture
+               class={"image"}
+               contentFit={Gtk.ContentFit.CONTAIN}
+               heightRequest={heightPx}
+               $={async (self) => {
+                  const image = await clipboard.load_image(id);
+                  if (image) self.set_file(Gio.file_new_for_path(image));
+               }}
+            />
+         </button>
+      </Adw.Clamp>
    );
 }
