@@ -52,7 +52,7 @@ export default class ScreenRecorder extends GObject.Object {
          this.#pid = parseInt(
             (
                await bash(
-                  `gpu-screen-recorder -w portal -f 60 -a default_output -o "${this.#file}" </dev/null >/dev/null 2>&1 & echo $!`
+                  `gpu-screen-recorder -w screen -f 60 -a default_output -o "${this.#file}" </dev/null >/dev/null 2>&1 & echo $!`
                )
             ).trim(),
             10
