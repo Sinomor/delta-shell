@@ -16,6 +16,7 @@ export default class ScreenRecorder extends GObject.Object {
       return this.instance;
    }
 
+   #pid = 0;
    #recordings = `${HOME}/Videos/Screencasting`;
    #file = "";
    #interval?: Timer;
@@ -48,8 +49,13 @@ export default class ScreenRecorder extends GObject.Object {
          ensureDirectory(this.#recordings);
          this.#file = `${this.#recordings}/${now()}.mp4`;
 
-         bash(
-            `gpu-screen-recorder -w screen -f 60 -a default_output -o ${this.#file}`,
+         this.#pid = parseInt(
+            (
+               await bash(
+                  `gpu-screen-recorder -w screen -f 60 -a default_output -o "${this.#file}" </dev/null >/dev/null 2>&1 & echo $!`
+               )
+            ).trim(),
+            10
          );
 
          console.log(`ScreenRecorder: started recording to ${this.#file}`);
@@ -74,7 +80,8 @@ export default class ScreenRecorder extends GObject.Object {
       }
 
       try {
-         await bash("killall -INT gpu-screen-recorder");
+         if (this.#pid) await bash(`kill -INT ${this.#pid} 2>/dev/null || true`);
+         this.#pid = 0;
          console.log(`ScreenRecorder: stopped, saved to ${this.#file}`);
          this.#recording = false;
          this.notify("recording");
