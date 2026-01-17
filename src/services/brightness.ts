@@ -3,19 +3,68 @@ import GObject, { register, getter, setter } from "ags/gobject";
 import { monitorFile, readFileAsync } from "ags/file";
 import { bash, dependencies } from "@/src/lib/utils";
 
-let screen = "";
+let internalDisplay = "";
 try {
-   screen = exec(`bash -c "ls -w1 /sys/class/backlight | head -1"`).trim();
-   if (screen) {
-      console.log(`Brightness: detected backlight device ${screen}`);
+   internalDisplay = exec(
+      `bash -c "ls -w1 /sys/class/backlight 2>/dev/null | head -1"`,
+   ).trim();
+   if (internalDisplay) {
+      console.log(`Brightness: detected internal display ${internalDisplay}`);
    }
 } catch (error) {
-   console.warn(
-      "Brightness: no backlight devices found in /sys/class/backlight",
-   );
+   console.debug("Brightness: no internal displays found");
 }
 
-const available = dependencies("brightnessctl") && screen !== "";
+const externalDisplays: number[] = [];
+if (dependencies("ddcutil")) {
+   try {
+      const output = exec("sh -c 'ddcutil detect --brief 2>/dev/null'").trim();
+      if (output) {
+         const buses = output
+            .split("\n")
+            .filter((line) => line.includes("I2C bus"))
+            .map((line) => {
+               const match = line.match(/\/dev\/i2c-(\d+)/);
+               return match ? parseInt(match[1]) : null;
+            })
+            .filter((bus) => bus !== null) as number[];
+
+         if (buses.length > 0) {
+            externalDisplays.push(...buses);
+            console.log(
+               `Brightness: detected ${buses.length} external displays on buses: ${buses.join(", ")}`,
+            );
+         }
+      }
+   } catch (error) {
+      console.debug("Brightness: no external displays detected:", error);
+   }
+}
+
+const hasInternal = dependencies("brightnessctl") && !!internalDisplay;
+const hasExternal = externalDisplays.length > 0;
+const available = hasInternal || hasExternal;
+
+const setBrightness = async (percent: number) => {
+   const value = Math.round(percent * 100);
+
+   if (hasInternal) {
+      bash(`brightnessctl set ${value}% -q`);
+   }
+
+   if (hasExternal) {
+      externalDisplays.map((bus) => {
+         try {
+            exec(`ddcutil --bus ${bus} setvcp 10 ${value}`);
+         } catch (err) {
+            console.warn(
+               `Failed to set brightness for display on bus ${bus}:`,
+               err,
+            );
+         }
+      });
+   }
+};
 
 const get = available
    ? (args: string) => Number(exec(`brightnessctl ${args}`))
@@ -54,7 +103,7 @@ export default class Brightness extends GObject.Object {
       this.#screen = percent;
       this.notify("screen");
 
-      bash(`brightnessctl set ${Math.floor(percent * 100)}% -q`)
+      setBrightness(percent)
          .then(() => {
             setTimeout(() => {
                this.#changing = false;
@@ -73,12 +122,15 @@ export default class Brightness extends GObject.Object {
       super();
 
       if (this.#available) {
-         monitorFile(`/sys/class/backlight/${screen}/brightness`, async (f) => {
-            if (this.#changing) return;
-            const v = await readFileAsync(f);
-            this.#screen = Number(v) / this.#screenMax;
-            this.notify("screen");
-         });
+         monitorFile(
+            `/sys/class/backlight/${this.#screen}/brightness`,
+            async (f) => {
+               if (this.#changing) return;
+               const v = await readFileAsync(f);
+               this.#screen = Number(v) / this.#screenMax;
+               this.notify("screen");
+            },
+         );
       }
    }
 }
