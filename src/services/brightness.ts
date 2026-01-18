@@ -114,32 +114,13 @@ const getExternalBrightness = (bus: number): number => {
    }
 };
 
-const setBrightness = async (percent: number) => {
-   const value = Math.round(percent * 100);
-
-   if (hasInternal) {
-      await bash(`brightnessctl set ${value}% -q`);
-   }
-
-   if (hasExternal) {
-      await Promise.allSettled(
-         externalDisplayBuses.map(async (bus) => {
-            try {
-               await execAsync(`ddcutil --bus ${bus} setvcp 10 ${value}`);
-            } catch (err) {
-               console.warn(
-                  `Failed to set brightness for display on bus ${bus}:`,
-                  err,
-               );
-            }
-         }),
-      );
-   }
+type MonitorState = {
+   id: string;
+   type: "internal" | "external";
+   bus?: number;
+   changing: boolean;
+   pendingPercent: number | null;
 };
-
-const get = available
-   ? (args: string) => Number(exec(`brightnessctl ${args}`))
-   : () => 0;
 
 @register({ GTypeName: "Brightness" })
 export default class Brightness extends GObject.Object {
@@ -151,8 +132,7 @@ export default class Brightness extends GObject.Object {
 
    #screen = available ? getBrightness() : 0;
    #available = available;
-   #changing = false;
-   #pendingPercent: number | null = null;
+   #monitors: MonitorState[] = [];
 
    @getter(Number)
    get screen() {
@@ -171,54 +151,95 @@ export default class Brightness extends GObject.Object {
       if (percent > 1) percent = 1;
 
       this.#screen = percent;
+      this.notify("screen");
 
-      if (this.#changing) {
-         this.#pendingPercent = percent;
-         return;
+      for (const monitor of this.#monitors) {
+         if (monitor.changing) {
+            monitor.pendingPercent = percent;
+         } else {
+            this._setMonitorBrightness(monitor, percent);
+         }
       }
-
-      this.#pendingPercent = null;
-
-      this.#changing = true;
-      setBrightness(percent)
-         .then(() => {
-            this.#changing = false;
-            if (this.#pendingPercent !== null) {
-               const pending = this.#pendingPercent;
-               this.#pendingPercent = null;
-               this.screen = pending;
-            }
-         })
-         .catch((err) => {
-            console.error(
-               `Brightness: failed to set brightness to ${Math.floor(percent * 100)}%:`,
-               err,
-            );
-            this.#changing = false;
-            if (this.#pendingPercent !== null) {
-               const pending = this.#pendingPercent;
-               this.#pendingPercent = null;
-               this.screen = pending;
-            }
-         });
    }
 
    constructor() {
       super();
 
+      if (hasInternal) {
+         this.#monitors.push({
+            id: "internal",
+            type: "internal",
+            changing: false,
+            pendingPercent: null,
+         });
+      }
+
+      for (const bus of externalDisplayBuses) {
+         this.#monitors.push({
+            id: `external-${bus}`,
+            type: "external",
+            bus,
+            changing: false,
+            pendingPercent: null,
+         });
+      }
+
       if (this.#available) {
          this.#screen = getBrightness();
-         this.notify("screen");
 
-         monitorFile(
-            `/sys/class/backlight/${internalDisplayName}/brightness`,
-            async (f) => {
-               if (this.#changing) return;
-               const v = await readFileAsync(f);
-               this.#screen = getBrightness();
-               this.notify("screen");
-            },
-         );
+         if (hasInternal) {
+            const internalMonitor = this.#monitors.find(
+               (m) => m.type === "internal",
+            );
+            monitorFile(
+               `/sys/class/backlight/${internalDisplayName}/brightness`,
+               async (f) => {
+                  if (internalMonitor?.changing) return;
+
+                  await readFileAsync(f);
+                  this.#screen = getBrightness();
+                  this.notify("screen");
+               },
+            );
+         }
       }
+   }
+
+   private async _setMonitorBrightness(monitor: MonitorState, percent: number) {
+      monitor.changing = true;
+      monitor.pendingPercent = null;
+
+      try {
+         if (monitor.type === "internal") {
+            await this._setInternalBrightness(percent);
+         } else if (monitor.type === "external" && monitor.bus !== undefined) {
+            await this._setExternalBrightness(monitor.bus, percent);
+         }
+      } catch (err) {
+         console.error(
+            `Brightness: failed to set ${monitor.id} to ${Math.floor(percent * 100)}%:`,
+            err,
+         );
+      } finally {
+         monitor.changing = false;
+
+         if (monitor.pendingPercent !== null) {
+            const pending = monitor.pendingPercent;
+            this._setMonitorBrightness(monitor, pending);
+         }
+      }
+   }
+
+   private async _setInternalBrightness(percent: number): Promise<void> {
+      const value = Math.round(percent * 100);
+      await bash(`brightnessctl set ${value}% -q`);
+   }
+
+   private async _setExternalBrightness(
+      bus: number,
+      percent: number,
+   ): Promise<void> {
+      const value = Math.round(percent * 100);
+      await execAsync(`ddcutil --bus ${bus} setvcp 10 ${value}`);
    }
 }
