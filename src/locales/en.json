@@ -2,12 +2,14 @@
    "common": {
       "on": "On",
       "off": "Off",
+      "search": "Search...",
       "noMatch": "No match found",
       "notFound": "Not found",
       "clearAll": "Clear all"
    },
    "modules": {
       "applauncher": {
+         "search": "{common.search}",
          "noMatch": "{common.noMatch}"
       },
       "bluetooth": {
@@ -19,6 +21,7 @@
          }
       },
       "clipboard": {
+         "search": "{common.search}",
          "noMatch": "{common.noMatch}"
       },
       "network": {

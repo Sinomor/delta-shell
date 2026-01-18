@@ -52,7 +52,7 @@ function Entry() {
                }
             });
          }}
-         placeholderText={"Search..."}
+         placeholderText={t("modules.applauncher.search")}
          onActivate={onEnter}
          onNotifyText={(self) => {
             scrolled.set_vadjustment(null);

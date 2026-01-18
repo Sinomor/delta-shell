@@ -2,12 +2,14 @@
    "common": {
       "on": "Açık",
       "off": "Kapalı",
+      "search": "Ara...",
       "noMatch": "Eşleşme bulunamadı",
       "notFound": "Bulunamadı",
       "clearAll": "Tümünü Temizle"
    },
    "modules": {
       "applauncher": {
+         "search": "{common.search}",
          "noMatch": "{common.noMatch}"
       },
       "bluetooth": {
@@ -19,6 +21,7 @@
          }
       },
       "clipboard": {
+         "search": "Panoda ara...",
          "noMatch": "{common.noMatch}"
       },
       "network": {

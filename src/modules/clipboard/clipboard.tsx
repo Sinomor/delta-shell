@@ -91,7 +91,7 @@ function Entry() {
                }
             });
          }}
-         placeholderText={"Search..."}
+         placeholderText={t("modules.clipboard.search")}
          onActivate={onEnter}
          onNotifyText={(self) => {
             scrolled.set_vadjustment(null);
