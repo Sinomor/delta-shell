@@ -5,6 +5,7 @@ import { Gtk } from "ags/gtk4";
 import { createBinding, createComputed, For } from "ags";
 import { theme } from "@/options";
 import { qs_page_set } from "../quicksettings/quicksettings";
+import { t } from "@/i18n";
 const network = AstalNetwork.get_default();
 
 function ScanningIndicator() {
@@ -39,7 +40,7 @@ function Header({ showArrow = false }: { showArrow?: boolean }) {
             </button>
          )}
          <label
-            label={"Wi-Fi"}
+            label={t("modules.network.wifi")}
             halign={Gtk.Align.START}
             valign={Gtk.Align.CENTER}
          />

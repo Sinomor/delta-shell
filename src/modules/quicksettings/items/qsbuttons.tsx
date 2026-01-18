@@ -16,6 +16,7 @@ import { profiles_names } from "../../power/power";
 import Weather from "@/src/services/weather";
 import AstalNotifd from "gi://AstalNotifd?version=0.1";
 import { FunctionsList } from "@/src/widgets/baritem";
+import { t } from "@/i18n";
 const network = AstalNetwork.get_default();
 const bluetooth = AstalBluetooth.get_default();
 const powerprofile = AstalPowerProfiles.get_default();
@@ -47,7 +48,7 @@ function VolumeButton() {
    return (
       <QSButton
          icon={VolumeIcon}
-         label={"Volume"}
+         label={t("modules.quicksettings.volume")}
          subtitle={level((level) => (level !== "" ? level : "None"))}
          onClicked={() => speaker.set_mute(!speaker.get_mute())}
          onArrowClicked={() => qs_page_set("volume")}
@@ -80,7 +81,7 @@ function MicrophoneButton() {
    return (
       <QSButton
          icon={icons.microphone.default}
-         label={"Microphone"}
+         label={t("modules.quicksettings.microphone")}
          subtitle={level((level) => (level !== "" ? level : "None"))}
          onClicked={() => microphone.set_mute(!microphone.get_mute())}
          onArrowClicked={() => qs_page_set("volume")}
@@ -107,7 +108,7 @@ function PowerProfilesButton() {
    return (
       <QSButton
          icon={activeprofile((profile) => icons.powerprofiles[profile])}
-         label={"Power"}
+         label={t("modules.quicksettings.power")}
          subtitle={activeprofile((profile) => profiles_names[profile])}
          arrow={"separate"}
          onClicked={() => {
@@ -157,7 +158,7 @@ function InternetButton() {
       connectivity();
       if (primary() === AstalNetwork.Primary.WIRED) {
          if (wired.internet === AstalNetwork.Internet.CONNECTED) {
-            return "Wired";
+            return t("modules.quicksettings.wired");
          }
       }
       if (primary() === AstalNetwork.Primary.WIFI) {
@@ -169,7 +170,7 @@ function InternetButton() {
    return (
       <QSButton
          icon={getNetworkIconBinding()}
-         label={"Internet"}
+         label={t("modules.quicksettings.internet")}
          subtitle={subtitle((text) => (text !== "" ? text : "None"))}
          onClicked={() => {
             if (
@@ -215,7 +216,7 @@ function ScreenRecordButton() {
    return (
       <QSButton
          icon={icons.video}
-         label={"Screen Record"}
+         label={t("modules.quicksettings.screenRecord")}
          subtitle={progress.as((progress) =>
             progress !== "" ? progress : "None",
          )}
@@ -243,7 +244,7 @@ function BluetoothButton() {
    return (
       <QSButton
          icon={icons.bluetooth}
-         label={"Bluetooth"}
+         label={t("modules.quicksettings.bluetooth")}
          subtitle={device((d) => (d ? d.alias : "None"))}
          arrow={"separate"}
          onClicked={() => bluetooth.toggle()}
@@ -283,7 +284,7 @@ function WeatherButton() {
    return (
       <QSButton
          icon={icon}
-         label={"Weather"}
+         label={t("modules.quicksettings.weather")}
          subtitle={temp((temp) => (temp !== "" ? temp : "None"))}
          arrow={"inside"}
          onClicked={() => qs_page_set("weather")}
@@ -299,7 +300,7 @@ function NotificationsButton() {
    return (
       <QSButton
          icon={icons.bell}
-         label={"Notifications"}
+         label={t("modules.quicksettings.notifications")}
          subtitle={notifications((n) =>
             n.length === 0 ? "None" : n.length.toString(),
          )}

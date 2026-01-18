@@ -1,0 +1,141 @@
+{
+   "common": {
+      "on": "On",
+      "off": "Off",
+      "noMatch": "No match found",
+      "notFound": "Not found",
+      "clearAll": "Clear all"
+   },
+   "modules": {
+      "applauncher": {
+         "noMatch": "{common.noMatch}"
+      },
+      "bluetooth": {
+         "title": "Bluetooth"
+      },
+      "calendar": {
+         "weekdays": {
+            "narrow": ["M", "T", "W", "T", "F", "S", "S"]
+         }
+      },
+      "clipboard": {
+         "noMatch": "{common.noMatch}"
+      },
+      "network": {
+         "wifi": "Wi-Fi"
+      },
+      "notifications": {
+         "title": "Notifications",
+         "dontDisturb": "Don't disturb",
+         "clear": "{common.clearAll}",
+         "empty": "Your inbox is empty"
+      },
+      "power": {
+         "title": "Power",
+         "profiles": {
+            "power-saver": "Power Saver",
+            "balanced": "Balanced",
+            "performance": "Performance"
+         }
+      },
+      "powermenu": {
+         "sleep": "Sleep",
+         "logout": "Logout",
+         "reboot": "Reboot",
+         "shutdown": "Shutdown"
+      },
+      "quicksettings": {
+         "media": {
+            "unknown": {
+               "track": "Unknown Track",
+               "artist": "Unknown Artist"
+            }
+         },
+         "volume": "Volume",
+         "microphone": "Microphone",
+         "power": "{modules.power.title}",
+         "internet": "Internet",
+         "wired": "Wired",
+         "screenRecord": "Screen Record",
+         "bluetooth": "{modules.bluetooth.title}",
+         "weather": "Weather",
+         "notifications": "{modules.notifications.title}",
+         "powermenu": "Power Menu",
+         "restart": "Restart shell"
+      },
+      "volume": {
+         "title": "{modules.quicksettings.volume}",
+         "applications": "Applications",
+         "output": "Output",
+         "microphone": "{modules.quicksettings.microphone}"
+      },
+      "weather": {
+         "codes": {
+            "0": "Clear sky",
+            "1": "Mainly clear",
+            "2": "Partly cloudy",
+            "3": "Overcast",
+            "45": "Fog",
+            "48": "Depositing rime fog",
+            "51": "Light drizzle",
+            "53": "Moderate drizzle",
+            "55": "Dense drizzle",
+            "56": "Light freezing drizzle",
+            "57": "Dense freezing drizzle",
+            "61": "Slight rain",
+            "63": "Moderate rain",
+            "65": "Heavy rain",
+            "66": "Light freezing rain",
+            "67": "Heavy freezing rain",
+            "71": "Slight snowfall",
+            "73": "Moderate snowfall",
+            "75": "Heavy snowfall",
+            "77": "Snow grains",
+            "80": "Slight rain showers",
+            "81": "Moderate rain showers",
+            "82": "Violent rain showers",
+            "85": "Slight snow showers",
+            "86": "Heavy snow showers",
+            "95": "Thunderstorm",
+            "96": "Thunderstorm with slight hail",
+            "99": "Thunderstorm with heavy hail"
+         },
+         "feelsLike": "Feels like {value}{unit}",
+         "today": "Today",
+         "forecast": {
+            "daily": "Daily forecast",
+            "hourly": "Hourly forecast"
+         },
+         "failed": "Failed to load data, try again later."
+      }
+   },
+   "services": {
+      "powermenu": {
+         "sleep": {
+            "title": "{modules.powermenu.sleep}",
+            "message": "{user} will be sleep automatically in {time} seconds"
+         },
+         "reboot": {
+            "title": "{modules.powermenu.reboot}",
+            "message": "The system will restart automatically in {time} seconds"
+         },
+         "logout": {
+            "title": "{modules.powermenu.logout}",
+            "message": "{user} will be logged out automatically in {time} seconds"
+         },
+         "shutdown": {
+            "title": "{modules.powermenu.shutdown}",
+            "message": "The system will shutdown automatically in {time} seconds"
+         }
+      },
+      "screencapture": {
+         "record": {
+            "notification": {
+               "app": "Screen Recorder",
+               "summary": "Screen recording saved",
+               "body": "File saved at {file}"
+            }
+         }
+      }
+   }
+}

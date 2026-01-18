@@ -7,6 +7,7 @@ import { theme } from "@/options";
 import { qs_page, qs_page_set } from "../quicksettings/quicksettings";
 import app from "ags/gtk4/app";
 import { windows_names } from "@/windows";
+import { t } from "@/i18n";
 const bluetooth = AstalBluetooth.get_default();
 
 function ScanningIndicator() {
@@ -36,7 +37,7 @@ function Header({ showArrow = false }: { showArrow?: boolean }) {
             </button>
          )}
          <label
-            label={"Bluetooth"}
+            label={t("modules.bluetooth.title")}
             halign={Gtk.Align.START}
             valign={Gtk.Align.CENTER}
          />

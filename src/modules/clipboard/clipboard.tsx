@@ -15,6 +15,7 @@ import Clipboard from "@/src/services/clipboard";
 import { ClipText } from "./text";
 import { ClipColor } from "./color";
 import { ClipImage } from "./image";
+import { t } from "@/i18n";
 const clipboard = Clipboard.get_default();
 const { width } = config.clipboard;
 
@@ -147,7 +148,7 @@ function NotFound() {
          vexpand
          visible={list((l) => l.length === 0)}
       >
-         <label label={"No match found"} />
+         <label label={t("modules.clipboard.noMatch")} />
       </box>
    );
 }

@@ -9,13 +9,14 @@ import { createBinding } from "ags";
 import { timeout } from "ags/time";
 import { config, theme } from "@/options";
 import { windows_names } from "@/windows";
+import { t } from "@/i18n";
 const battery = AstalBattery.get_default();
 
 function Power() {
    return (
       <button
          class={"qs-header-button"}
-         tooltipText={"Power Menu"}
+         tooltipText={t("modules.quicksettings.powermenu")}
          focusOnClick={false}
          onClicked={() => toggleWindow(windows_names.powermenu)}
       >
@@ -29,7 +30,7 @@ function Reload() {
       <button
          class={"qs-header-button"}
          focusOnClick={false}
-         tooltipText={"Restart shell"}
+         tooltipText={t("modules.quicksettings.restart")}
          onClicked={() => {
             if (DATADIR !== null) bash(`delta-shell restart`);
             else bash(`ags -i delta-shell quit; ${SRC}/run-dev.sh`);

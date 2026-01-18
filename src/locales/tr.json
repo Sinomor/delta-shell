@@ -1,0 +1,141 @@
+{
+   "common": {
+      "on": "Açık",
+      "off": "Kapalı",
+      "noMatch": "Eşleşme bulunamadı",
+      "notFound": "Bulunamadı",
+      "clearAll": "Tümünü Temizle"
+   },
+   "modules": {
+      "applauncher": {
+         "noMatch": "{common.noMatch}"
+      },
+      "bluetooth": {
+         "title": "Bluetooth"
+      },
+      "calendar": {
+         "weekdays": {
+            "narrow": ["P", "S", "Ç", "P", "C", "C", "P"]
+         }
+      },
+      "clipboard": {
+         "noMatch": "{common.noMatch}"
+      },
+      "network": {
+         "wifi": "Wi-Fi"
+      },
+      "notifications": {
+         "title": "Bildirimler",
+         "dontDisturb": "Rahatsız Etme",
+         "clear": "{common.clearAll}",
+         "empty": "Yeni bildirim yok"
+      },
+      "power": {
+         "title": "Güç Modu",
+         "profiles": {
+            "power-saver": "Güç Tasarrufu",
+            "balanced": "Dengeli",
+            "performance": "Yüksek Performans"
+         }
+      },
+      "powermenu": {
+         "sleep": "Uyku",
+         "logout": "Çıkış",
+         "reboot": "Yeniden Başlat",
+         "shutdown": "Kapat"
+      },
+      "quicksettings": {
+         "media": {
+            "unknown": {
+               "track": "Bilinmeyen Parça",
+               "artist": "Bilinmeyen Sanatçı"
+            }
+         },
+         "volume": "Ses",
+         "microphone": "Mikrofon",
+         "power": "{modules.power.title}",
+         "internet": "İnternet",
+         "wired": "Kablolu",
+         "screenRecord": "Ekran Kaydı",
+         "bluetooth": "{modules.bluetooth.title}",
+         "weather": "Hava Durumu",
+         "notifications": "{modules.notifications.title}",
+         "powermenu": "Kapat",
+         "restart": "Yenile"
+      },
+      "volume": {
+         "title": "Ses Aygıtları",
+         "applications": "Uygulamalar",
+         "output": "Hoparlör",
+         "microphone": "{modules.quicksettings.microphone}"
+      },
+      "weather": {
+         "codes": {
+            "0": "Açık",
+            "1": "Çoğunlukla Açık",
+            "2": "Parçalı Bulutlu",
+            "3": "Kapalı",
+            "45": "Sisli",
+            "48": "Kırağı Oluşturan Sis",
+            "51": "Hafif Çisenti",
+            "53": "Orta Şiddette Çisenti",
+            "55": "Yoğun Çisenti",
+            "56": "Hafif Dondurucu Çisenti",
+            "57": "Yoğun Dondurucu Çisenti",
+            "61": "Hafif Yağmur",
+            "63": "Orta Şiddette Yağmur",
+            "65": "Kuvvetli Yağmur",
+            "66": "Hafif Dondurucu Yağmur",
+            "67": "Kuvvetli Dondurucu Yağmur",
+            "71": "Hafif Kar Yağışı",
+            "73": "Orta Şiddette Kar Yağışı",
+            "75": "Yoğun Kar Yağışı",
+            "77": "Kar Taneleri",
+            "80": "Hafif Sağanak Yağmur",
+            "81": "Orta Şiddette Sağanak Yağmur",
+            "82": "Şiddetli Sağanak Yağmur",
+            "85": "Hafif Kar Sağanağı",
+            "86": "Yoğun Kar Sağanağı",
+            "95": "Gök Gürültülü Fırtına",
+            "96": "Dolu ile Gök Gürültülü Fırtına",
+            "99": "Şiddetli Dolu ile Fırtına"
+         },
+         "feelsLike": "Hissedilen {value}{unit}",
+         "today": "Bugün",
+         "forecast": {
+            "daily": "Günlük Tahmin",
+            "hourly": "Saatlik Tahmin"
+         },
+         "failed": "Veriler yüklenemedi, daha sonra tekrar deneyin."
+      }
+   },
+   "services": {
+      "powermenu": {
+         "sleep": {
+            "title": "{modules.powermenu.sleep}",
+            "message": "Sistem {time} saniye içinde uyku moduna geçecek"
+         },
+         "reboot": {
+            "title": "{modules.powermenu.reboot}",
+            "message": "Sistem {time} saniye içinde yeniden başlatılacak"
+         },
+         "logout": {
+            "title": "{modules.powermenu.logout}",
+            "message": "Oturum {time} saniye içinde kapatılacak"
+         },
+         "shutdown": {
+            "title": "{modules.powermenu.shutdown}",
+            "message": "Sistem {time} saniye içinde kapatılacak"
+         }
+      },
+      "screencapture": {
+         "record": {
+            "notification": {
+               "app": "Ekran Kaydedici",
+               "summary": "Ekran kaydı kaydedildi",
+               "body": "Dosya: {file}"
+            }
+         }
+      }
+   }
+}

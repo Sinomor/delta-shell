@@ -7,6 +7,7 @@ import { Hours } from "./hours";
 import { config, theme } from "@/options";
 import Weather from "@/src/services/weather";
 import { qs_page_set } from "../quicksettings/quicksettings";
+import { t } from "@/i18n";
 
 function ScanningIndicator() {
    const weather = Weather.get_default();
@@ -110,7 +111,7 @@ export function WeatherModule({ showArrow = false }: { showArrow?: boolean }) {
                         valign={Gtk.Align.CENTER}
                      >
                         <label
-                           label={"Failed to load data, try again later."}
+                           label={t("modules.weather.failed")}
                         />
                      </box>
                   );

@@ -4,6 +4,7 @@ import { createBinding, For } from "ags";
 import { icons } from "@/src/lib/icons";
 import { theme } from "@/options";
 import Weather from "@/src/services/weather";
+import { t } from "@/i18n";
 
 function formatDate(timestamp: number): string {
    const date = new Date(timestamp * 1000);
@@ -24,7 +25,7 @@ function formateWeekDay(timestamp: number): string {
       date.getMonth() === today.getMonth() &&
       date.getFullYear() === today.getFullYear()
    )
-      return "Today";
+      return t("modules.weather.today");
    else return weekday;
 }
 
@@ -72,7 +73,7 @@ export function Days() {
                iconName={icons.calendar}
                pixelSize={theme["icon-size"].normal}
             />
-            <label label={"Daily forecast"} valign={Gtk.Align.CENTER} />
+            <label label={t("modules.weather.forecast.daily")} valign={Gtk.Align.CENTER} />
          </box>
          <scrolledwindow
             vscrollbarPolicy={Gtk.PolicyType.NEVER}
