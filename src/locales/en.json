@@ -138,7 +138,9 @@
                "summary": "Screen recording saved",
                "body": "File saved at {file}"
             }
-         }
+         },
+         "showInFiles": "Show in Files",
+         "view": "View"
       }
    }
 }

@@ -138,7 +138,9 @@
                "summary": "Ekran kaydı kaydedildi",
                "body": "Dosya: {file}"
             }
-         }
+         },
+         "showInFiles": "Dosyalarda Göster",
+         "view": "Aç"
       }
    }
 }

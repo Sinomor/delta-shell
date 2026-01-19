@@ -96,10 +96,10 @@ export default class ScreenRecorder extends GObject.Object {
          });
 
          notification.add_action(
-            new AstalNotifd.Action({ id: "show", label: "Show in Files" }),
+            new AstalNotifd.Action({ id: "show", label: t("services.screencapture.showInFiles") }),
          );
          notification.add_action(
-            new AstalNotifd.Action({ id: "view", label: "View" }),
+            new AstalNotifd.Action({ id: "view", label: t("services.screencapture.view") }),
          );
 
          notification.connect("invoked", (_, action) => {
