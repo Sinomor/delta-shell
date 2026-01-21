@@ -34,7 +34,7 @@ More information about Delta Shell you can find at [docs website](https://sinomo
 - `gpu-screen-recorder` to record screen from control center
 - `geoclue` to autoload the location for weather
 - `tuned-ppd` or `power-profiles-daemon` to switch between power profiles
-- `brightnessctl` for control screen brightness
+- `brightnessctl` and `ddcutil` for control screen brightness
 - `bluez` for connect to bluetooth devices
 - `libgtop` for cpu usage
 
@@ -46,7 +46,7 @@ More information about Delta Shell you can find at [docs website](https://sinomo
 1. Installation dependencies and delta-shell
 
 ```bash
-yay -S delta-shell-git libastal-niri-git aylurs-gtk-shell-git libastal-meta brightnessctl dart-sass fd bluez tuned-ppd cliphist gpu-screen-recorder wl-clipboard libgtop
+yay -S delta-shell-git libastal-niri-git aylurs-gtk-shell-git libastal-meta brightnessctl ddcutil dart-sass fd bluez tuned-ppd cliphist gpu-screen-recorder wl-clipboard libgtop
 ```
 
 2. Run and usage with command
