@@ -30,13 +30,13 @@ More information about Delta Shell you can find at [docs website](https://sinomo
 
 ### Optional
 
-- `cliphist` and `wl-clipboard` for clipboard
-- `gpu-screen-recorder` to record screen from control center
-- `geoclue` to autoload the location for weather
-- `tuned-ppd` or `power-profiles-daemon` to switch between power profiles
-- `brightnessctl` and `ddcutil` for control screen brightness
-- `bluez` for connect to bluetooth devices
-- `libgtop` for cpu usage
+- `cliphist` and `wl-clipboard` for clipboard management
+- `gpu-screen-recorder` for recording screen from control center
+- `geoclue` for autoloading the location for weather
+- `tuned-ppd` or `power-profiles-daemon` for switching between power profiles
+- `brightnessctl` and `ddcutil` for controlling screen brightness
+- `bluez` for connecting to bluetooth devices
+- `libgtop` for monitoring cpu usage
 
 ## Installation
 
