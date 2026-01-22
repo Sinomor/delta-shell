@@ -5,6 +5,7 @@ import { createBinding, For } from "ags";
 import { config, theme } from "@/options";
 import { Notification } from "./notification";
 import { qs_page_set } from "../quicksettings/quicksettings";
+import { t } from "@/i18n";
 const notifd = AstalNotifd.get_default();
 
 function Header({ showArrow = false }: { showArrow?: boolean }) {
@@ -23,11 +24,11 @@ function Header({ showArrow = false }: { showArrow?: boolean }) {
                />
             </button>
          )}
-         <label label={"Notifications"} />
+         <label label={t("modules.notifications.title")} />
          <box hexpand />
          <button
             cssClasses={["qs-header-button", "notifs-dnd"]}
-            tooltipText={"Don't disturb"}
+            tooltipText={t("modules.notifications.dontDisturb")}
             focusOnClick={false}
             onClicked={() => notifd.set_dont_disturb(!notifd.dontDisturb)}
          >
@@ -40,7 +41,7 @@ function Header({ showArrow = false }: { showArrow?: boolean }) {
          <button
             cssClasses={["qs-header-button", "notifs-clear"]}
             focusOnClick={false}
-            tooltipText={"Clear all"}
+            tooltipText={t("modules.notifications.clear")}
             onClicked={() => notifd.notifications.forEach((n) => n.dismiss())}
          >
             <image
@@ -63,7 +64,7 @@ function NotFound() {
          vexpand
          visible={notifications((n) => n.length === 0)}
       >
-         <label label={"Your inbox is empty"} />
+         <label label={t("modules.notifications.empty")} />
       </box>
    );
 }

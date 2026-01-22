@@ -3,6 +3,7 @@ import { icons } from "@/src/lib/icons";
 import PowerMenu from "@/src/services/powermenu";
 import { windows_names } from "@/windows";
 import { config, theme } from "@/options";
+import { t } from "@/i18n";
 const powermenu = PowerMenu.get_default();
 
 type MenuButtonProps = {
@@ -27,18 +28,23 @@ function MenuButton({ icon, label, clicked }: MenuButtonProps) {
    );
 }
 
-const list = ["Sleep", "Logout", "Reboot", "Shutdown"];
+const list = [
+  { key: 'Sleep', label: t("modules.powermenu.sleep") },
+  { key: 'Logout', label: t("modules.powermenu.logout") },
+  { key: 'Reboot', label: t("modules.powermenu.reboot") },
+  { key: 'Shutdown', label: t("modules.powermenu.shutdown") },
+];
 
 export function PowerMenuModule() {
    console.log("PowerMenu: initializing module");
 
    return (
       <box spacing={theme.spacing}>
-         {list.map((value) => (
+         {list.map(({ key, label }) => (
             <MenuButton
-               icon={icons.powermenu[value.toLowerCase()]}
-               label={value}
-               clicked={() => powermenu.action(value)}
+               icon={icons.powermenu[key.toLowerCase()]}
+               label={label}
+               clicked={() => powermenu.action(key)}
             />
          ))}
       </box>

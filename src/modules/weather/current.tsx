@@ -1,40 +1,12 @@
 import { Gtk } from "ags/gtk4";
 import { createBinding, With } from "ags";
 import Weather from "@/src/services/weather";
+import { t } from "@/i18n";
 
-function getDescription(weatherCode: number) {
-   const descriptions = {
-      0: "Clear sky",
-      1: "Mainly clear",
-      2: "Partly cloudy",
-      3: "Overcast",
-      45: "Fog",
-      48: "Depositing rime fog",
-      51: "Light drizzle",
-      53: "Moderate drizzle",
-      55: "Dense drizzle",
-      56: "Light freezing drizzle",
-      57: "Dense freezing drizzle",
-      61: "Slight rain",
-      63: "Moderate rain",
-      65: "Heavy rain",
-      66: "Light freezing rain",
-      67: "Heavy freezing rain",
-      71: "Slight snow fall",
-      73: "Moderate snow fall",
-      75: "Heavy snow fall",
-      77: "Snow grains",
-      80: "Slight rains showers",
-      81: "Moderate rain showers",
-      82: "Violent rain showers",
-      85: "Slight snow nshowers",
-      86: "Heavy snow showers",
-      95: "Thunderstorm",
-      96: "Thunderstorm with slight hail",
-      99: "Thunderstorm with heavy hail",
-   } as Record<number, any>;
-
-   return descriptions[weatherCode];
+function getDescription(weatherCode: number): string {
+   const key = `modules.weather.codes.${weatherCode}`;
+   const value = t(key);
+   return value === key ? t("common.notFound") : value;
 }
 
 export function Current() {
@@ -51,7 +23,10 @@ export function Current() {
 
       const current = data.hourly[0];
       return {
-         feels: `Feels like ${current.apparent_temperature}${current.units.temperature}`,
+         feels: t("modules.weather.feelsLike", {
+            value: current.apparent_temperature,
+            unit: current.units.temperature
+         }),
          temp: current.temperature.toString(),
          units: current.units.temperature.toString(),
          desc: getDescription(current.weather_code),

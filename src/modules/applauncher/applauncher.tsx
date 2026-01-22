@@ -5,6 +5,7 @@ import { createComputed, createState, For, onCleanup } from "ags";
 import { hideWindows, windows_names } from "@/windows";
 import { config, theme } from "@/options";
 import { AppButton } from "./appbutton";
+import { t } from "@/i18n";
 const { width, columns, "sort-type": sort } = config.launcher;
 
 const apps = new Apps.Apps();
@@ -51,7 +52,7 @@ function Entry() {
                }
             });
          }}
-         placeholderText={"Search..."}
+         placeholderText={t("modules.applauncher.search")}
          onActivate={onEnter}
          onNotifyText={(self) => {
             scrolled.set_vadjustment(null);
@@ -109,7 +110,7 @@ function NotFound() {
          vexpand
          visible={list((l) => l.length === 0)}
       >
-         <label label={"No match found"} />
+         <label label={t("modules.applauncher.noMatch")} />
       </box>
    );
 }

@@ -4,6 +4,7 @@ import { icons } from "@/src/lib/icons";
 import { theme } from "@/options";
 import { HourlyWeather } from "@/src/services/weather";
 import Weather from "@/src/services/weather";
+import { t } from "@/i18n";
 
 function formatHour(timestamp: number): string {
    const date = new Date(timestamp * 1000);
@@ -54,7 +55,7 @@ export function Hours() {
                iconName={icons.clock}
                pixelSize={theme["icon-size"].normal}
             />
-            <label label={"Hourly forecast"} />
+            <label label={t("modules.weather.forecast.hourly")} />
          </box>
          <scrolledwindow
             vscrollbarPolicy={Gtk.PolicyType.NEVER}

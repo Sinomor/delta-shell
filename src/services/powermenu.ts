@@ -6,6 +6,7 @@ import GLib from "gi://GLib?version=2.0";
 import { Timer } from "../lib/timer";
 import { bash } from "../lib/utils";
 import { timeout } from "ags/time";
+import { t } from "@/i18n";
 
 const user = await GLib.getenv("USER");
 
@@ -37,7 +38,8 @@ export default class PowerMenu extends GObject.Object {
    #title = "";
    #label = "";
    #cmd = "";
-   #timer = new Timer(60 * 1000);
+   #time = 60;
+   #timer = new Timer(this.#time * 1000);
 
    @getter(String)
    get title() {
@@ -73,23 +75,23 @@ export default class PowerMenu extends GObject.Object {
       [this.#cmd, this.#title, this.#label] = {
          Sleep: [
             commands.sleep,
-            "Sleep",
-            `${user} will be sleep automatically in 60 seconds`,
+            t("services.powermenu.sleep.title"),
+            t("services.powermenu.sleep.message", { user, time: this.#time }),
          ],
          Reboot: [
             commands.reboot,
-            "Reboot",
-            "The system will restart automatically in 60 seconds",
+            t("services.powermenu.reboot.title"),
+            t("services.powermenu.reboot.message", { user, time: this.#time }),
          ],
          Logout: [
             commands.logout,
-            "Log Out",
-            `${user} will be logged out automatically in 60 seconds`,
+            t("services.powermenu.logout.title"),
+            t("services.powermenu.logout.message", { user, time: this.#time }),
          ],
          Shutdown: [
             commands.shutdown,
-            "Shutdown",
-            "The system will shutdown automatically in 60 seconds",
+            t("services.powermenu.shutdown.title"),
+            t("services.powermenu.shutdown.message", { user, time: this.#time }),
          ],
       }[action]!;
 

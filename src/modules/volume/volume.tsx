@@ -11,6 +11,7 @@ import { theme } from "@/options";
 import { qs_page_set } from "../quicksettings/quicksettings";
 import { getAppInfo } from "@/src/lib/utils";
 import Adw from "gi://Adw?version=1";
+import { t } from "@/i18n";
 const wp = AstalWp.get_default()!;
 
 function Header({ showArrow = false }: { showArrow?: boolean }) {
@@ -29,7 +30,7 @@ function Header({ showArrow = false }: { showArrow?: boolean }) {
             </button>
          )}
          <label
-            label={"Volume"}
+            label={t("modules.volume.title")}
             halign={Gtk.Align.START}
             valign={Gtk.Align.CENTER}
          />
@@ -48,7 +49,7 @@ function StreamsList() {
          spacing={theme.spacing}
          visible={streams((l) => l.length > 0)}
       >
-         <label label={"Applications"} halign={Gtk.Align.START} />
+         <label label={t("modules.volume.applications")} halign={Gtk.Align.START} />
          <For each={streams}>
             {(stream) => {
                const name = createBinding(stream, "name");
@@ -136,7 +137,7 @@ function DefaultOutput() {
 
    return (
       <box orientation={Gtk.Orientation.VERTICAL} spacing={theme.spacing}>
-         <label label={"Output"} halign={Gtk.Align.START} />
+         <label label={t("modules.volume.output")} halign={Gtk.Align.START} />
          <button
             onClicked={(self) => {
                popover.set_parent(self);
@@ -213,7 +214,7 @@ function DefaultMicrophone() {
 
    return (
       <box orientation={Gtk.Orientation.VERTICAL} spacing={theme.spacing}>
-         <label label={"Microphone"} halign={Gtk.Align.START} />
+         <label label={t("modules.volume.microphone")} halign={Gtk.Align.START} />
          <button
             onClicked={(self) => {
                popover.set_parent(self);

@@ -6,6 +6,7 @@ import AstalBluetooth from "gi://AstalBluetooth";
 import { createBinding, createComputed } from "gnim";
 import { isVertical } from "../bar";
 import { truncateByFormat } from "@/src/lib/utils";
+import { t } from "@/i18n";
 
 export function Bluetooth() {
    const conf = config.bar.modules.bluetooth;
@@ -34,7 +35,7 @@ export function Bluetooth() {
             ),
             status: (
                <label
-                  label={powered((v) => (v ? "On" : "Off"))}
+                  label={powered((v) => (v ? t("common.on") : t("common.off")))}
                   hexpand={isVertical}
                />
             ),

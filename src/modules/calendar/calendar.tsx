@@ -3,9 +3,10 @@ import { Gtk } from "ags/gtk4";
 import { createBinding, For } from "ags";
 import { theme } from "@/options";
 import Calendar, { CalendarDay } from "@/src/services/calendar";
+import { t } from "@/i18n";
 const calendar = Calendar.get_default();
 
-const WEEK_DAYS = ["M", "T", "W", "T", "F", "S", "S"];
+const WEEK_DAYS = t("modules.calendar.weekdays.narrow");
 
 function CalendarDayButton({ day }: { day: CalendarDay }) {
    const classes = ["calendar-button"];

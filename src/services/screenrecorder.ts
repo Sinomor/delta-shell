@@ -4,6 +4,7 @@ import GLib from "gi://GLib?version=2.0";
 import { interval, Timer } from "ags/time";
 import AstalNotifd from "gi://AstalNotifd?version=0.1";
 import { icons } from "../lib/icons";
+import { t } from "@/i18n";
 
 const HOME = GLib.get_home_dir();
 
@@ -88,17 +89,17 @@ export default class ScreenRecorder extends GObject.Object {
          this.#interval?.cancel();
 
          const notification = new AstalNotifd.Notification({
-            appName: "Screen Recorder",
+            appName: t("services.screencapture.record.notification.app"),
             appIcon: icons.video,
-            summary: "Screen recording saved",
-            body: `File saved at ${this.#file}`,
+            summary: t("services.screencapture.record.notification.summary"),
+            body: t("services.screencapture.record.notification.body", { file: this.#file }),
          });
 
          notification.add_action(
-            new AstalNotifd.Action({ id: "show", label: "Show in Files" }),
+            new AstalNotifd.Action({ id: "show", label: t("services.screencapture.showInFiles") }),
          );
          notification.add_action(
-            new AstalNotifd.Action({ id: "view", label: "View" }),
+            new AstalNotifd.Action({ id: "view", label: t("services.screencapture.view") }),
          );
 
          notification.connect("invoked", (_, action) => {

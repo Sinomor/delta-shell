@@ -4,6 +4,7 @@ import AstalPowerProfiles from "gi://AstalPowerProfiles?version=0.1";
 import { createBinding } from "ags";
 import { theme } from "@/options";
 import { qs_page_set } from "../quicksettings/quicksettings";
+import { t } from "@/i18n";
 const power = AstalPowerProfiles.get_default();
 
 function Header({ showArrow = false }: { showArrow?: boolean }) {
@@ -22,7 +23,7 @@ function Header({ showArrow = false }: { showArrow?: boolean }) {
             </button>
          )}
          <label
-            label={"Power"}
+            label={t("modules.power.title")}
             halign={Gtk.Align.START}
             valign={Gtk.Align.CENTER}
          />
@@ -31,11 +32,10 @@ function Header({ showArrow = false }: { showArrow?: boolean }) {
    );
 }
 
-export const profiles_names = {
-   "power-saver": "Power Saver",
-   balanced: "Balanced",
-   performance: "Performance",
-} as Record<string, any>;
+export const profiles_names = t("modules.power.profiles") as unknown as Record<
+  'power-saver' | 'balanced' | 'performance',
+  string
+>;
 
 function Item({ profile }: { profile: string }) {
    const isConnected = createBinding(power, "activeProfile").as(

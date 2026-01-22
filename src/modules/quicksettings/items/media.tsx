@@ -8,13 +8,16 @@ import Adw from "gi://Adw?version=1";
 import { config, theme } from "@/options";
 import AstalApps from "gi://AstalApps?version=0.1";
 import { getAppInfo, lengthStr } from "@/src/lib/utils";
+import { t } from "@/i18n";
 const mpris = AstalMpris.get_default();
 let carousel: Adw.Carousel;
 
 function MediaPlayer({ player }: { player: AstalMpris.Player }) {
-   const title = createBinding(player, "title").as((t) => t || "Unknown Track");
+   const title = createBinding(player, "title").as(
+      (t) => t || t("modules.quicksettings.media.unknown.track")
+   );
    const artist = createBinding(player, "artist").as(
-      (a) => a || "Unknown Artist",
+      (a) => a || t("modules.quicksettings.media.unknown.artist"),
    );
    const coverArt = createBinding(player, "coverArt").as((c) =>
       Gio.file_new_for_path(c || `${DATADIR ?? SRC}/assets/defsong.jpg`),
