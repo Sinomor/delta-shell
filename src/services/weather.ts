@@ -81,7 +81,7 @@ export default class Weather extends GObject.Object {
       console.log("Weather: service started");
       this.running = true;
       this.updateLocation();
-      this.interval = interval(30000, () => {
+      this.interval = interval(300000, () => {
          this.update();
       });
    }
