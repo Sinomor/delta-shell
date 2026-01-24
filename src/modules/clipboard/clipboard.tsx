@@ -2,7 +2,13 @@ import app from "ags/gtk4/app";
 import { Gtk } from "ags/gtk4";
 import { bash, hasBarItem } from "@/src/lib/utils";
 import { icons } from "@/src/lib/icons";
-import { createComputed, createState, For, onCleanup } from "ags";
+import {
+   createBinding,
+   createComputed,
+   createState,
+   For,
+   onCleanup,
+} from "ags";
 import { hideWindows, windows_names } from "@/windows";
 import { config, theme } from "@/options";
 import Clipboard from "@/src/services/clipboard";
@@ -20,16 +26,20 @@ const colorPatterns = {
    hsla: /^hsla\(\s*(\d{1,3})\s*,\s*(\d{1,3}%)\s*,\s*(\d{1,3}%)\s*,\s*([01]?\.\d+|\d{1,3}%?)\s*\)$/,
 };
 
-const imagePattern = /\[\[ binary data \d+ ([KMGT]i)?B \w+ \d+x\d+ \]\]/;
+const imagePattern =
+   /\[\[ binary data (\d+) ([KMGT]i)?B (\w+) (\d+)x(\d+) \]\]/;
 
 const [text, text_set] = createState("");
 let scrolled: Gtk.ScrolledWindow;
 
-const list = createComputed([clipboard.list, text], (list, text) => {
-   return list.filter((entry) => {
-      if (!text) return true;
+const items = createBinding(clipboard, "list");
+
+const list = createComputed(() => {
+   const input = text();
+   return items().filter((entry) => {
+      if (!input) return true;
       const content = entry.split("\t").slice(1).join(" ").trim();
-      return content.toLowerCase().includes(text.toLowerCase());
+      return content.toLowerCase().includes(input.toLowerCase());
    });
 });
 

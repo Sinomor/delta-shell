@@ -1,10 +1,9 @@
-import GObject, { register, getter, property } from "ags/gobject";
+import GObject, { register, property } from "ags/gobject";
 import { bash, bashRaw, dependencies, ensureDirectory } from "@/src/lib/utils";
-import { createState } from "ags";
 import { config } from "@/options";
 import { monitorFile } from "ags/file";
 import GLib from "gi://GLib?version=2.0";
-import { execAsync, subprocess } from "ags/process";
+import { subprocess } from "ags/process";
 import Gio from "gi://Gio?version=2.0";
 import { timeout } from "ags/time";
 
@@ -19,9 +18,11 @@ export default class Clipboard extends GObject.Object {
       return this.instance;
    }
 
-   #list = createState<string[]>([]);
-   #updatePending = false;
-   #fileMonitor: Gio.FileMonitor | null = null;
+   @property(Array)
+   list: string[] = [];
+
+   updating = false;
+   fileMonitor?: Gio.FileMonitor;
 
    constructor() {
       super();
@@ -54,21 +55,19 @@ export default class Clipboard extends GObject.Object {
    }
 
    private startMonitoring() {
-      if (this.#fileMonitor) {
-         this.#fileMonitor.cancel();
-      }
+      if (this.fileMonitor) this.fileMonitor.cancel();
 
-      this.#fileMonitor = monitorFile(`${cacheDir}/cliphist/db`, () =>
+      this.fileMonitor = monitorFile(`${cacheDir}/cliphist/db`, () =>
          this.scheduleUpdate(),
       );
    }
 
    private scheduleUpdate() {
-      if (this.#updatePending) return;
+      if (this.updating) return;
 
-      this.#updatePending = true;
+      this.updating = true;
       timeout(500, () => {
-         this.#updatePending = false;
+         this.updating = false;
          this.update();
       });
    }
@@ -86,17 +85,17 @@ export default class Clipboard extends GObject.Object {
       }
 
       try {
-         const output = await execAsync(["cliphist", "list"]);
+         const list = await bash("cliphist list");
 
-         if (!output.trim()) {
-            this.#list[1]([]);
+         if (!list.trim()) {
+            this.list = [];
             return;
          }
 
-         this.#list[1](output.split("\n").filter((line) => line.trim()));
+         this.list = list.split("\n").filter((line) => line.trim());
       } catch (error) {
          console.error("Clipboard: failed to update clipboard history:", error);
-         this.#list[1]([]);
+         this.list = [];
       }
    }
 
@@ -157,9 +156,5 @@ export default class Clipboard extends GObject.Object {
       } catch (error) {
          console.error("Cliphist: failed to clear clipboard history:", error);
       }
-   }
-
-   get list() {
-      return this.#list[0];
    }
 }

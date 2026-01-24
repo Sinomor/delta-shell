@@ -43,7 +43,10 @@ const variables = () => [
    $("widget-radius", `${radius}px`),
 
    $("window-padding", `${window.padding}px`),
-   $("window-radius", `${radius === 0 ? radius : radius + window.padding}px`),
+   $(
+      "window-radius",
+      `${radius === 0 ? radius : radius + window.padding + window.border.width}px`,
+   ),
    $("window-opacity", `${window.opacity}`),
    $("window-border-width", `${window.border.width}px`),
    $("window-border-color", `${window.border.color}`),

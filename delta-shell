@@ -12,6 +12,19 @@ else
     IS_DEV=false
 fi
 
+run_and_check() {
+    local output
+    output=$( "$@" 2>&1 )
+    local exit_code=$?
+    if [[ "$output" == *"Unknown request"* ]]; then
+        echo "$output"
+        exit 1
+    else
+        [[ -n "$output" ]] && echo "$output"
+        return $exit_code
+    fi
+}
+
 print_help() {
     cat <<EOF
 Usage: $(basename "$0") <command> [options]
@@ -64,13 +77,13 @@ main() {
                 printf "  - %s\n" "${WIDGETS[@]}"
                 exit 0
             fi
-            ags -i delta-shell request toggle "$2"
+            run_and_check ags -i delta-shell request toggle "$2"
             ;;
         help|-h|--help)
             print_help
             ;;
         *)
-            ags -i delta-shell request "$@"
+            run_and_check ags -i delta-shell request "$@"
             ;;
     esac
 }

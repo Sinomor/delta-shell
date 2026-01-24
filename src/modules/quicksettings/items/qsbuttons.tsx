@@ -81,7 +81,7 @@ function MicrophoneButton() {
       <QSButton
          icon={icons.microphone.default}
          label={"Microphone"}
-         subtitle={level((level) => (level !== "None" ? level : "None"))}
+         subtitle={level((level) => (level !== "" ? level : "None"))}
          onClicked={() => microphone.set_mute(!microphone.get_mute())}
          onArrowClicked={() => qs_page_set("volume")}
          onScrollUp={() => FunctionsList["microphone-up"]()}
@@ -264,18 +264,17 @@ function BluetoothButton() {
 
 function WeatherButton() {
    const weather = Weather.get_default();
+   const data = createBinding(weather, "data");
 
    const temp = createComputed(() => {
-      const data = weather.data();
-      if (!data) return "";
-      const current = data.hourly[0];
-      return weather.running()
-         ? `${current.temperature}${current.units.temperature}`
-         : "";
+      const hourly = data().hourly;
+      if (!hourly) return "";
+      const current = hourly[0];
+      return `${current.temperature}${current.units.temperature}`;
    });
 
-   const icon = weather.data((data) => {
-      if (!data) return icons.weather.clear.day;
+   const icon = data((data) => {
+      if (!data.hourly) return icons.weather.clear.day;
 
       const current = data.hourly[0];
       return current.icon;

@@ -55,6 +55,7 @@ export const config = mkOptions(configFile, {
          },
          keyboard: {
             format: "{lang}",
+            compact: true,
             "on-click": "switch-language" as string | null,
             "on-click-right": null as string | null,
             "on-click-middle": null as string | null,
@@ -113,6 +114,9 @@ export const config = mkOptions(configFile, {
          },
          cpu: { format: "{icon} {usage}" },
          ram: { format: "{icon} {usage}" },
+         tray: {
+            compact: true,
+         },
       },
    },
    quicksettings: {
@@ -265,7 +269,3 @@ export const theme = mkOptions(themeFile, {
       },
    },
 });
-
-export const [compositor, setCompositor] = createState<string>(
-   GLib.getenv("XDG_CURRENT_DESKTOP")!.toLowerCase(),
-);

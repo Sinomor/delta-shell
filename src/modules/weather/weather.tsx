@@ -1,5 +1,5 @@
 import Gtk from "gi://Gtk";
-import { createComputed, With } from "ags";
+import { createBinding, createComputed, With } from "ags";
 import { Current } from "./current";
 import { icons } from "@/src/lib/icons";
 import { Days } from "./days";
@@ -7,10 +7,11 @@ import { Hours } from "./hours";
 import { config, theme } from "@/options";
 import Weather from "@/src/services/weather";
 import { qs_page_set } from "../quicksettings/quicksettings";
-const weather = Weather.get_default();
 
 function ScanningIndicator() {
-   const className = weather.loading((scanning) => {
+   const weather = Weather.get_default();
+
+   const className = createBinding(weather, "loading").as((scanning) => {
       const classes = ["scanning"];
       if (scanning) classes.push("active");
       return classes;
@@ -26,7 +27,9 @@ function ScanningIndicator() {
 }
 
 function Header({ showArrow = false }: { showArrow?: boolean }) {
-   const data = weather.location((location) => {
+   const weather = Weather.get_default();
+
+   const data = createBinding(weather, "location").as((location) => {
       if (!location)
          return {
             label: "",
@@ -69,7 +72,14 @@ function Header({ showArrow = false }: { showArrow?: boolean }) {
 }
 
 export function WeatherModule({ showArrow = false }: { showArrow?: boolean }) {
+   if (
+      !config.weather.enabled ||
+      !config.quicksettings.buttons.includes("weather")
+   )
+      return <box visible={false} />;
+
    console.log("Weather: initializing module");
+   const weather = Weather.get_default();
 
    return (
       <box
@@ -79,7 +89,7 @@ export function WeatherModule({ showArrow = false }: { showArrow?: boolean }) {
          orientation={Gtk.Orientation.VERTICAL}
       >
          <Header showArrow={showArrow} />
-         <With value={weather.data}>
+         <With value={createBinding(weather, "data")}>
             {(data) => {
                if (data)
                   return (
