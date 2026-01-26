@@ -4,7 +4,9 @@ import { icons } from "@/src/lib/icons";
 import { createBinding, For } from "ags";
 import { config, theme } from "@/options";
 import { Notification } from "./notification";
-import { qs_page_set } from "../quicksettings/quicksettings";
+import { qs_page, qs_page_set } from "../quicksettings/quicksettings";
+import { windows_names } from "@/windows";
+import app from "ags/gtk4/app";
 const notifd = AstalNotifd.get_default();
 
 function Header({ showArrow = false }: { showArrow?: boolean }) {
@@ -40,7 +42,13 @@ function Header({ showArrow = false }: { showArrow?: boolean }) {
             class={"toggle"}
             valign={Gtk.Align.CENTER}
             active={createBinding(notifd, "dontDisturb").as((v) => !v)}
-            onNotifyActive={() => notifd.set_dont_disturb(!notifd.dontDisturb)}
+            onNotifyActive={({ state }) => {
+               if (
+                  qs_page.peek() === "notificationslist" ||
+                  app.get_window(windows_names.notificationslist)?.visible
+               )
+                  notifd.set_dont_disturb(!state);
+            }}
          />
       </box>
    );
