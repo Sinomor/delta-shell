@@ -26,21 +26,8 @@ function Header({ showArrow = false }: { showArrow?: boolean }) {
          <label label={"Notifications"} />
          <box hexpand />
          <button
-            cssClasses={["qs-header-button", "notifs-dnd"]}
-            tooltipText={"Don't disturb"}
-            focusOnClick={false}
-            onClicked={() => notifd.set_dont_disturb(!notifd.dontDisturb)}
-         >
-            <image
-               halign={Gtk.Align.CENTER}
-               iconName={dnd((v) => (v ? icons.bell_off : icons.bell))}
-               pixelSize={theme["icon-size"].normal}
-            />
-         </button>
-         <button
             cssClasses={["qs-header-button", "notifs-clear"]}
             focusOnClick={false}
-            tooltipText={"Clear all"}
             onClicked={() => notifd.notifications.forEach((n) => n.dismiss())}
          >
             <image
@@ -49,6 +36,12 @@ function Header({ showArrow = false }: { showArrow?: boolean }) {
                pixelSize={theme["icon-size"].normal}
             />
          </button>
+         <switch
+            class={"toggle"}
+            valign={Gtk.Align.CENTER}
+            active={createBinding(notifd, "dontDisturb").as((v) => !v)}
+            onNotifyActive={() => notifd.set_dont_disturb(!notifd.dontDisturb)}
+         />
       </box>
    );
 }
