@@ -142,15 +142,16 @@ function InternetButton() {
    const wired = network.wired;
    const connectivity = createBinding(network, "connectivity");
    const primary = createBinding(network, "primary");
+   const enabled = createBinding(wifi, "enabled");
 
-   const enabled = createComputed(() => {
+   const active = createComputed(() => {
       connectivity();
       if (
          primary() === AstalNetwork.Primary.WIRED &&
          network.wired.internet === AstalNetwork.Internet.CONNECTED
       )
          return true;
-      if (wifi !== null) return wifi.enabled;
+      if (wifi !== null) return enabled();
    });
 
    const subtitle = createComputed(() => {
@@ -184,12 +185,12 @@ function InternetButton() {
             qs_page_set("network");
          }}
          arrow={network.wifi !== null ? "separate" : "none"}
-         ArrowClasses={enabled((p) => {
+         ArrowClasses={active((p) => {
             const classes = ["arrow"];
             p && classes.push("active");
             return classes;
          })}
-         ButtonClasses={enabled((p) => {
+         ButtonClasses={active((p) => {
             const classes = ["qs-button-box-arrow"];
             p && classes.push("active");
             return classes;

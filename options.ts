@@ -83,7 +83,7 @@ export const config = mkOptions(configFile, {
             "on-scroll-down": "microphone-down" as string | null,
          },
          weather: {
-            format: "{icon} {temp}{units}",
+            format: "{icon} {temp}{temp-units}",
             "on-click": "toggle-weather" as string | null,
             "on-click-right": null as string | null,
             "on-click-middle": null as string | null,

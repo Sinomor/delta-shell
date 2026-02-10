@@ -4,7 +4,9 @@ import { icons, getAccessPointIcon } from "@/src/lib/icons";
 import { Gtk } from "ags/gtk4";
 import { createBinding, createComputed, For } from "ags";
 import { theme } from "@/options";
-import { qs_page_set } from "../quicksettings/quicksettings";
+import { qs_page, qs_page_set } from "../quicksettings/quicksettings";
+import { windows_names } from "@/windows";
+import app from "ags/gtk4/app";
 const network = AstalNetwork.get_default();
 
 function ScanningIndicator() {
@@ -55,7 +57,13 @@ function Header({ showArrow = false }: { showArrow?: boolean }) {
             class={"toggle"}
             valign={Gtk.Align.CENTER}
             active={createBinding(network.wifi, "enabled")}
-            onNotifyActive={({ state }) => network.wifi.set_enabled(state)}
+            onNotifyActive={({ state }) => {
+               if (
+                  qs_page.peek() === "network" ||
+                  app.get_window(windows_names.network)?.visible
+               )
+                  network.wifi.set_enabled(state);
+            }}
          />
       </box>
    );
