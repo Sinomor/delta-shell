@@ -55,6 +55,34 @@ export const compositor = {
       }
       return { get: () => [], subscribe: () => () => {} } as any;
    },
+   windows(): Accessor<any[]> {
+      if (hyprland) {
+         return createBinding(hyprland, "clients");
+      }
+      if (niri) {
+         return createBinding(niri, "windows");
+      }
+      return { get: () => [], subscribe: () => () => {} } as any;
+   },
+   monitorWindows(gdkmonitor: Gdk.Monitor): Accessor<any[]> {
+      if (hyprland) {
+         const model = gdkmonitor.model;
+         return createBinding(hyprland, "clients").as((clients) =>
+            clients
+               .filter((c) => c.workspace?.monitor?.model === model)
+               .sort((a, b) => a.pid - b.pid),
+         );
+      }
+      if (niri) {
+         const connector = gdkmonitor.connector;
+         return createBinding(niri, "windows").as((windows) =>
+            windows
+               .filter((w) => w.workspace?.output === connector)
+               .sort((a, b) => a.id - b.id),
+         );
+      }
+      return { get: () => [], subscribe: () => () => {} } as any;
+   },
    focusedWorkspace(): Accessor<any> {
       if (hyprland) {
          return createBinding(hyprland, "focusedWorkspace");
@@ -124,6 +152,12 @@ export const compositor = {
    },
    windowTitle(win: any): string {
       return win?.title || "";
+   },
+   windowIsFocused(win: any): boolean {
+      if (!win) return false;
+      if (hyprland) return win.pid === hyprland?.focusedClient?.pid;
+      if (niri) return win.is_focused || false;
+      return false;
    },
    focusWindow(win: any) {
       if (!win) return;

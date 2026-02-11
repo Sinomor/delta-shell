@@ -18,7 +18,6 @@ import { PowerWindow } from "./src/windows/power";
 import { dependencies, hasBarItem } from "./src/lib/utils";
 import { ClipboardWindow } from "./src/windows/clipboard";
 import { AppLauncherWindow } from "./src/windows/applauncher";
-import { DockWindow } from "./src/windows/dock";
 
 export const windows_names = {
    bar: "bar",
@@ -37,7 +36,6 @@ export const windows_names = {
    bluetooth: "bluetooth",
    power: "power",
    clipboard: "clipboard",
-   dock: "dock",
 };
 
 export function hideWindows() {
@@ -45,7 +43,6 @@ export function hideWindows() {
       windows_names.bar,
       windows_names.bar_shadow,
       windows_names.osd,
-      windows_names.dock,
    ];
 
    app.get_windows()
@@ -80,10 +77,6 @@ export function windows() {
       {(monitor) => (
          <This this={app}>
             <BarWindow
-               gdkmonitor={monitor}
-               $={(self) => onCleanup(() => self.destroy())}
-            />
-            <DockWindow
                gdkmonitor={monitor}
                $={(self) => onCleanup(() => self.destroy())}
             />

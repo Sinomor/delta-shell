@@ -4,7 +4,7 @@ import Pango from "gi://Pango?version=1.0";
 import { hideWindows } from "@/windows";
 import { theme } from "@/options";
 import GioUnix from "gi://GioUnix?version=2.0";
-import { pinnedEntries, togglePin } from "../bar/items/taskbar/niri";
+import { pinnedEntries, togglePin } from "../bar/items/taskbar";
 
 export function AppButton({ app }: { app: AstalApps.Application }) {
    let box: Gtk.Box;

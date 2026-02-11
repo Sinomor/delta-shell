@@ -117,15 +117,6 @@ export const config = mkOptions(configFile, {
          },
          cpu: { format: "{icon} {usage}" },
          ram: { format: "{icon} {usage}" },
-<<<<<<< HEAD
-         taskbar: {
-            format: "{pinned} {separator} {windows}",
-            "window-format": "{indicator} {icon}",
-            grouped: true,
-            pinned: [],
-            "window-icon-size": 20,
-            icons: {} as Record<string, string>,
-=======
          tray: {
             compact: true,
          },
@@ -136,7 +127,14 @@ export const config = mkOptions(configFile, {
             "on-click-middle": null as string | null,
             "on-scroll-up": "brightness-up" as string | null,
             "on-scroll-down": "brightness-down" as string | null,
->>>>>>> main
+         },
+         taskbar: {
+            format: "{pinned} {separator} {windows}",
+            "window-format": "{indicator} {icon}",
+            grouped: true,
+            pinned: [],
+            "window-icon-size": 20,
+            icons: {} as Record<string, string>,
          },
       },
    },
