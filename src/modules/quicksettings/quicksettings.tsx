@@ -39,7 +39,7 @@ export function QuickSettingsModule() {
          {bluetooth.adapter !== null && <BluetoothPage />}
          <PowerPage />
          <VolumePage />
-         {config.notifications.enabled && <WeatherPage />}
+         {config.weather.enabled && <WeatherPage />}
          {config.notifications.enabled && <NotificationsListPage />}
       </stack>
    );
