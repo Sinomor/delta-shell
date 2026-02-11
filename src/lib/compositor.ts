@@ -100,14 +100,14 @@ export const compositor = {
       if (hyprland) {
          bash("hyprctl dispatch workspace +1");
       } else if (niri) {
-         bash("niri msg action focus-workspace-down");
+         AstalNiri.msg.focus_workspace_up();
       }
    },
    previousWorkspace() {
       if (hyprland) {
          bash("hyprctl dispatch workspace -1");
       } else if (niri) {
-         bash("niri msg action focus-workspace-up");
+         AstalNiri.msg.focus_workspace_down();
       }
    },
    windowId(win: any): number | string {
@@ -171,8 +171,11 @@ export const compositor = {
             }
          } else if (niri) {
             try {
-               const output = await bash(`niri msg keyboard-layouts`);
-               const layout = output.match(/\*\s+\d+\s+(.+)/)?.[1];
+               const json = JSON.parse(
+                  await bash("niri msg --json keyboard-layouts"),
+               );
+               const layouts = json.names;
+               const layout = layouts[json.current_idx];
 
                if (!layout) {
                   return {
@@ -210,6 +213,21 @@ export const compositor = {
             return () => niri.disconnect(id);
          }
          return () => {};
+      },
+      async switchLayout() {
+         if (hyprland) {
+            try {
+               const json = await bash(`hyprctl devices -j`);
+               const devices = JSON.parse(json);
+               let mainKb = devices.keyboards.find((kb: any) => kb.main);
+
+               if (mainKb.name) {
+                  bash(`hyprctl switchxkblayout ${mainKb.name} next`);
+               }
+            } catch (error) {
+               console.error("Failed to switch keyboard layout:", error);
+            }
+         } else if (niri) AstalNiri.msg.switch_layout_next();
       },
       isValidLayout(kbLayout: string): kbLayout is LayoutKeys {
          return Object.keys(layoutMap).includes(kbLayout);

@@ -1,10 +1,9 @@
 import { Gtk } from "ags/gtk4";
-import { For } from "ags";
+import { createBinding, For } from "ags";
 import { icons } from "@/src/lib/icons";
 import { theme } from "@/options";
 import { HourlyWeather } from "@/src/services/weather";
 import Weather from "@/src/services/weather";
-const weather = Weather.get_default();
 
 function formatHour(timestamp: number): string {
    const date = new Date(timestamp * 1000);
@@ -37,9 +36,11 @@ function Hour({ hour }: { hour: HourlyWeather }) {
 }
 
 export function Hours() {
-   const hours = weather.data((data) => {
-      if (!data) return [];
-      return data?.hourly;
+   const weather = Weather.get_default();
+
+   const hours = createBinding(weather, "data").as((data) => {
+      if (!data.hourly) return [];
+      return data.hourly;
    });
 
    return (

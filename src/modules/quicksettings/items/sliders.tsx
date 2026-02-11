@@ -21,6 +21,7 @@ function BrightnessBox() {
    return (
       <QSSlider
          level={level}
+         min={0.05}
          icon={icons.brightness}
          onChangeValue={(value) => (brightness.screen = value)}
       />

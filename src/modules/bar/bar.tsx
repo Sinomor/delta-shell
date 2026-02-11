@@ -20,7 +20,7 @@ import { Separator } from "./items/separator";
 import { CPU } from "./items/cpu";
 import { RAM } from "./items/ram";
 import { Microphone } from "./items/microphone";
-import { Taskbar } from "./items/taskbar";
+import { ScreenBrightness } from "./items/brightness";
 
 const { position, modules, size } = config.bar;
 const { spacing } = theme.bar;
@@ -53,7 +53,11 @@ export function BarModule({
       cpu: () => <CPU />,
       ram: () => <RAM />,
       microphone: () => <Microphone />,
+<<<<<<< HEAD
       taskbar: () => <Taskbar gdkmonitor={gdkmonitor} />,
+=======
+      brightness: () => <ScreenBrightness />,
+>>>>>>> main
    } as Record<string, any>;
 
    const getModules = (location: "start" | "center" | "end") => {

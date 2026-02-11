@@ -8,13 +8,15 @@ import {
    toggleQsModule,
    toggleWindow,
 } from "../lib/utils";
-import { compositor, theme } from "@/options";
+import { theme } from "@/options";
 import { isVertical, orientation } from "../modules/bar/bar";
 import { windows_names } from "@/windows";
 import AstalHyprland from "gi://AstalHyprland?version=0.1";
 import AstalNiri from "gi://AstalNiri?version=0.1";
 import AstalWp from "gi://AstalWp?version=0.1";
 import ScreenRecorder from "@/src/services/screenrecorder";
+import { compositor } from "../lib/compositor";
+import Brightness from "../services/brightness";
 
 type FormatData = Record<string, JSX.Element>;
 
@@ -29,32 +31,6 @@ type BarItemProps = JSX.IntrinsicElements["box"] & {
    onScrollDown?: string | null | Function;
    onScrollUp?: string | null | Function;
 };
-
-let speaker: AstalWp.Endpoint | undefined;
-let microphone: AstalWp.Endpoint | undefined;
-let screenRecord: ScreenRecorder | undefined;
-let hyprland: AstalHyprland.Hyprland | undefined;
-
-function getSpeaker() {
-   if (!speaker) speaker = AstalWp.get_default()?.get_default_speaker();
-   return speaker;
-}
-
-function getMicrophone() {
-   if (!microphone)
-      microphone = AstalWp.get_default()?.get_default_microphone();
-   return microphone;
-}
-
-function getScreenRecorder() {
-   if (!screenRecord) screenRecord = ScreenRecorder.get_default();
-   return screenRecord;
-}
-
-function getHyprland() {
-   if (!hyprland) hyprland = AstalHyprland.get_default();
-   return hyprland;
-}
 
 export const FunctionsList = {
    "toggle-launcher": () => toggleWindow(windows_names.applauncher),
@@ -76,73 +52,42 @@ export const FunctionsList = {
    "toggle-network": () => toggleQsModule(windows_names.network),
    "toggle-bluetooth": () => toggleQsModule(windows_names.bluetooth),
    "toggle-power": () => toggleQsModule(windows_names.power, "battery"),
-   "workspace-up": () => {
-      const comp = compositor.peek();
-      if (comp === "niri") {
-         AstalNiri.msg.focus_workspace_up();
-      } else if (comp === "hyprland") {
-         getHyprland()?.dispatch("workspace", "-1");
-      }
-   },
-   "workspace-down": () => {
-      const comp = compositor.peek();
-      if (comp === "niri") {
-         AstalNiri.msg.focus_workspace_down();
-      } else if (comp === "hyprland") {
-         getHyprland()?.dispatch("workspace", "+1");
-      }
-   },
+   "workspace-up": () => compositor.nextWorkspace(),
+   "workspace-down": () => compositor.previousWorkspace(),
    "volume-up": () => {
-      const spk = getSpeaker();
+      const spk = AstalWp.get_default()?.get_default_speaker();
       if (spk) spk.set_volume(spk.volume + 0.01);
    },
    "volume-down": () => {
-      const spk = getSpeaker();
+      const spk = AstalWp.get_default()?.get_default_speaker();
       if (spk) spk.set_volume(spk.volume - 0.01);
    },
    "volume-toggle": () => {
-      const spk = getSpeaker();
+      const spk = AstalWp.get_default()?.get_default_speaker();
       if (spk) spk.set_mute(!spk.get_mute());
    },
    "microphone-up": () => {
-      const mcph = getMicrophone();
+      const mcph = AstalWp.get_default()?.get_default_microphone();
       if (mcph) mcph.set_volume(mcph.volume + 0.01);
    },
    "microphone-down": () => {
-      const mcph = getMicrophone();
+      const mcph = AstalWp.get_default()?.get_default_microphone();
       if (mcph) mcph.set_volume(mcph.volume - 0.01);
    },
    "microphone-toggle": () => {
-      const mcph = getMicrophone();
+      const mcph = AstalWp.get_default()?.get_default_microphone();
       if (mcph) mcph.set_mute(!mcph.get_mute());
    },
-   "switch-language": async () => {
-      const comp = compositor.peek();
-      if (comp === "niri") AstalNiri.msg.switch_layout_next();
-      if (comp === "hyprland") {
-         try {
-            const json = await bash("hyprctl devices -j");
-            const devices = JSON.parse(json);
-
-            const mainKeyboard = devices.keyboards.find(
-               (kb: any) => kb.main === true,
-            );
-
-            if (mainKeyboard?.name) {
-               bash(`hyprctl switchxkblayout ${mainKeyboard.name} next`);
-            }
-         } catch (error) {
-            console.error("Failed to switch keyboard layout:", error);
-         }
-      }
-   },
+   "switch-language": () => compositor.keyboard.switchLayout(),
    "screenrecord-toggle": () => {
-      const sr = getScreenRecorder();
+      const sr = ScreenRecorder.get_default();
       if (sr) {
          if (sr.recording) sr.stop();
          else sr.start();
       }
    },
+   "brightness-up": () => (Brightness.get_default().screen += 0.01),
+   "brightness-down": () => (Brightness.get_default().screen -= 0.01),
 } as Record<string, any>;
 
 function parseFormat(format: string, data: FormatData): JSX.Element[] {

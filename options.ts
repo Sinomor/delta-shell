@@ -58,6 +58,7 @@ export const config = mkOptions(configFile, {
          },
          keyboard: {
             format: "{lang}",
+            compact: true,
             "on-click": "switch-language" as string | null,
             "on-click-right": null as string | null,
             "on-click-middle": null as string | null,
@@ -85,7 +86,7 @@ export const config = mkOptions(configFile, {
             "on-scroll-down": "microphone-down" as string | null,
          },
          weather: {
-            format: "{icon} {temp}{units}",
+            format: "{icon} {temp}{temp-units}",
             "on-click": "toggle-weather" as string | null,
             "on-click-right": null as string | null,
             "on-click-middle": null as string | null,
@@ -116,6 +117,7 @@ export const config = mkOptions(configFile, {
          },
          cpu: { format: "{icon} {usage}" },
          ram: { format: "{icon} {usage}" },
+<<<<<<< HEAD
          taskbar: {
             format: "{pinned} {separator} {windows}",
             "window-format": "{indicator} {icon}",
@@ -123,6 +125,18 @@ export const config = mkOptions(configFile, {
             pinned: [],
             "window-icon-size": 20,
             icons: {} as Record<string, string>,
+=======
+         tray: {
+            compact: true,
+         },
+         brightness: {
+            format: "{icon}",
+            "on-click": null as string | null,
+            "on-click-right": null as string | null,
+            "on-click-middle": null as string | null,
+            "on-scroll-up": "brightness-up" as string | null,
+            "on-scroll-down": "brightness-down" as string | null,
+>>>>>>> main
          },
       },
    },
@@ -276,7 +290,3 @@ export const theme = mkOptions(themeFile, {
       },
    },
 });
-
-export const [compositor, setCompositor] = createState<string>(
-   GLib.getenv("XDG_CURRENT_DESKTOP")!.toLowerCase(),
-);

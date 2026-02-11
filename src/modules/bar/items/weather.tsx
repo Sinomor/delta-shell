@@ -3,6 +3,7 @@ import { windows_names } from "@/windows";
 import { config, theme } from "@/options";
 import WeatherService from "@/src/services/weather";
 import { isVertical } from "../bar";
+import { createBinding } from "gnim";
 
 export function Weather() {
    if (!config.weather.enabled) {
@@ -14,8 +15,8 @@ export function Weather() {
    const conf = config.bar.modules.weather;
    const weather = WeatherService.get_default();
 
-   const data = weather.data((data) => {
-      if (!data)
+   const data = createBinding(weather, "data").as((data) => {
+      if (!data.hourly)
          return {
             icon: "",
             temp: "",

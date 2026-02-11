@@ -1,11 +1,9 @@
-import GObject, { register, getter } from "ags/gobject";
-import { bash, dependencies, ensureDirectory } from "@/src/lib/utils";
-import { createState } from "ags";
+import GObject, { register, property } from "ags/gobject";
+import { bash, dependencies, hasBarItem } from "@/src/lib/utils";
 import { config } from "@/options";
-import GLib from "gi://GLib?version=2.0";
 import fetch, { URL } from "ags/fetch";
 import { getWeatherIcon } from "../lib/icons";
-import { interval } from "ags/time";
+import { interval, Timer } from "ags/time";
 
 interface LocationData {
    city: string;
@@ -15,7 +13,7 @@ interface LocationData {
    longitude: number;
 }
 
-export interface HourlyWeather {
+interface HourlyWeather {
    temperature: number;
    wind_speed: number;
    apparent_temperature: number;
@@ -29,7 +27,7 @@ export interface HourlyWeather {
       wind_speed: string;
    };
 }
-export interface DailyWeather {
+interface DailyWeather {
    time: number;
    weather_code: number;
    precipitation_probability: number;
@@ -56,57 +54,51 @@ export default class Weather extends GObject.Object {
       return this.instance;
    }
 
-   #running = createState<boolean>(false);
-   #location = createState<LocationData | null>(null);
-   #data = createState<WeatherData | null>(null);
-   #interval: any = null;
-   #loading = createState(false);
+   @property(Boolean)
+   running = false;
+
+   @property(Object)
+   location: Partial<LocationData> = {};
+
+   @property(Boolean)
+   loading = false;
+
+   @property(Object)
+   data: Partial<WeatherData> = {};
+
+   interval?: Timer;
 
    constructor() {
       super();
-      if (config.weather.enabled) this.start();
+      if (
+         (config.weather.enabled && hasBarItem("weather")) ||
+         config.quicksettings.buttons.includes("weather")
+      )
+         this.start();
    }
 
    async start() {
       console.log("Weather: service started");
+      this.running = true;
       this.updateLocation();
-      this.#running[1](true);
-      this.#location[0].subscribe(() => this.update());
-      this.#interval = interval(5 * 60 * 1000, () => {
+      this.interval = interval(300000, () => {
          this.update();
       });
    }
 
    async stop() {
-      if (this.#interval) {
-         this.#running[1](false);
-         this.#interval.cancel();
-         this.#interval = null;
+      if (this.interval) {
+         this.running = false;
+         this.interval.cancel();
       }
       console.log("Weather: service stopped");
-   }
-
-   get running() {
-      return this.#running[0];
-   }
-
-   get location() {
-      return this.#location[0];
-   }
-
-   get loading() {
-      return this.#loading[0];
-   }
-
-   get data() {
-      return this.#data[0];
    }
 
    async updateLocation() {
       const location = config.weather.location;
 
       try {
-         this.#loading[1](true);
+         this.loading = true;
          if (location.auto) {
             console.log("Weather: detecting location automatically");
             this.location_auto();
@@ -125,12 +117,12 @@ export default class Weather extends GObject.Object {
             console.error(
                "Weather: invalid location config (specify city, coords, or enable auto)",
             );
-            this.#location[1](null);
+            this.location = {};
          }
-         this.#loading[1](false);
+         this.loading = false;
       } catch (error) {
          console.error("Weather: location update failed:", error);
-         this.#location[1](null);
+         this.location = {};
       }
    }
 
@@ -158,7 +150,7 @@ export default class Weather extends GObject.Object {
          const json = await res.json();
          const location = json.address;
 
-         this.#location[1]({
+         this.location = {
             city:
                location.hamlet ||
                location.city ||
@@ -169,13 +161,14 @@ export default class Weather extends GObject.Object {
             country_code: location.country_code.toLocaleUpperCase(),
             latitude: Number(lat),
             longitude: Number(lon),
-         });
+         };
+         this.update();
       } catch (error) {
          console.error(
             `Weather: failed to reverse geocode coordinates (${lat}, ${lon}):`,
             error,
          );
-         this.#location[1](null);
+         this.location = {};
       }
    }
 
@@ -204,16 +197,17 @@ export default class Weather extends GObject.Object {
 
          const location = json.results[0];
 
-         this.#location[1]({
+         this.location = {
             city: location.name,
             country: location.country,
             country_code: location.country_code,
             latitude: location.latitude,
             longitude: location.longitude,
-         });
+         };
          console.log(
             `Weather: found ${location.name}, ${location.country_code}`,
          );
+         this.update();
       } catch (error) {
          if (error instanceof Error && error.message === "NOT_FOUND") {
             console.error(`Weather: city ${city} not found`);
@@ -221,7 +215,7 @@ export default class Weather extends GObject.Object {
             console.error(`Weather: failed to search for city ${city}:`, error);
          }
 
-         this.#location[1](null);
+         this.location = {};
       }
    }
 
@@ -238,7 +232,7 @@ export default class Weather extends GObject.Object {
                   console.error(
                      "Weather: Geoclue service unavailable (make sure geoclue is running and configured)",
                   );
-                  this.#location[1](null);
+                  this.location = {};
                   return;
                }
                console.log("Weather: location detected via GeoClue");
@@ -259,27 +253,26 @@ export default class Weather extends GObject.Object {
          );
       } catch (error) {
          console.error("Weather: failed to initialize Geoclue:", error);
-         this.#location[1](null);
+         this.location = {};
       }
    }
 
    async update() {
-      const location = this.#location[0].get();
-      if (!location) {
-         this.#location[1](null);
+      if (!this.location.city) {
+         this.location = {};
          return;
       }
-      if (this.#loading[0].get()) {
+      if (this.loading) {
          console.warn("Weather: update already in progress, skipping");
-         this.#loading[1](false);
+         this.loading = false;
          return;
       }
-      console.log(`Weather: updating forecast for ${location.city}`);
-      this.#loading[1](true);
+      console.log(`Weather: updating forecast for ${this.location.city}`);
+      this.loading = true;
 
       const params = {
-         latitude: location.latitude,
-         longitude: location.longitude,
+         latitude: this.location.latitude,
+         longitude: this.location.longitude,
          hourly: [
             "temperature_2m",
             "apparent_temperature",
@@ -371,14 +364,14 @@ export default class Weather extends GObject.Object {
             `Weather: forecast updated (${hourlyData.length} hours, ${dailyData.length} days)`,
          );
 
-         this.#data[1]({
+         this.data = {
             hourly: hourlyData,
             daily: dailyData,
-         });
-         this.#loading[1](false);
+         };
+         this.loading = false;
       } catch (error) {
          console.error("Weather update failed:", error);
-         this.#data[1](null);
+         this.data = {};
       }
    }
 }
