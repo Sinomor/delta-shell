@@ -117,6 +117,14 @@ export const config = mkOptions(configFile, {
          tray: {
             compact: true,
          },
+         brightness: {
+            format: "{icon}",
+            "on-click": null as string | null,
+            "on-click-right": null as string | null,
+            "on-click-middle": null as string | null,
+            "on-scroll-up": "brightness-up" as string | null,
+            "on-scroll-down": "brightness-down" as string | null,
+         },
       },
    },
    quicksettings: {

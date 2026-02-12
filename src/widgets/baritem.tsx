@@ -16,6 +16,7 @@ import AstalNiri from "gi://AstalNiri?version=0.1";
 import AstalWp from "gi://AstalWp?version=0.1";
 import ScreenRecorder from "@/src/services/screenrecorder";
 import { compositor } from "../lib/compositor";
+import Brightness from "../services/brightness";
 
 type FormatData = Record<string, JSX.Element>;
 
@@ -30,32 +31,6 @@ type BarItemProps = JSX.IntrinsicElements["box"] & {
    onScrollDown?: string | null | Function;
    onScrollUp?: string | null | Function;
 };
-
-let speaker: AstalWp.Endpoint | undefined;
-let microphone: AstalWp.Endpoint | undefined;
-let screenRecord: ScreenRecorder | undefined;
-let hyprland: AstalHyprland.Hyprland | undefined;
-
-function getSpeaker() {
-   if (!speaker) speaker = AstalWp.get_default()?.get_default_speaker();
-   return speaker;
-}
-
-function getMicrophone() {
-   if (!microphone)
-      microphone = AstalWp.get_default()?.get_default_microphone();
-   return microphone;
-}
-
-function getScreenRecorder() {
-   if (!screenRecord) screenRecord = ScreenRecorder.get_default();
-   return screenRecord;
-}
-
-function getHyprland() {
-   if (!hyprland) hyprland = AstalHyprland.get_default();
-   return hyprland;
-}
 
 export const FunctionsList = {
    "toggle-launcher": () => toggleWindow(windows_names.applauncher),
@@ -80,37 +55,39 @@ export const FunctionsList = {
    "workspace-up": () => compositor.nextWorkspace(),
    "workspace-down": () => compositor.previousWorkspace(),
    "volume-up": () => {
-      const spk = getSpeaker();
+      const spk = AstalWp.get_default()?.get_default_speaker();
       if (spk) spk.set_volume(spk.volume + 0.01);
    },
    "volume-down": () => {
-      const spk = getSpeaker();
+      const spk = AstalWp.get_default()?.get_default_speaker();
       if (spk) spk.set_volume(spk.volume - 0.01);
    },
    "volume-toggle": () => {
-      const spk = getSpeaker();
+      const spk = AstalWp.get_default()?.get_default_speaker();
       if (spk) spk.set_mute(!spk.get_mute());
    },
    "microphone-up": () => {
-      const mcph = getMicrophone();
+      const mcph = AstalWp.get_default()?.get_default_microphone();
       if (mcph) mcph.set_volume(mcph.volume + 0.01);
    },
    "microphone-down": () => {
-      const mcph = getMicrophone();
+      const mcph = AstalWp.get_default()?.get_default_microphone();
       if (mcph) mcph.set_volume(mcph.volume - 0.01);
    },
    "microphone-toggle": () => {
-      const mcph = getMicrophone();
+      const mcph = AstalWp.get_default()?.get_default_microphone();
       if (mcph) mcph.set_mute(!mcph.get_mute());
    },
    "switch-language": () => compositor.keyboard.switchLayout(),
    "screenrecord-toggle": () => {
-      const sr = getScreenRecorder();
+      const sr = ScreenRecorder.get_default();
       if (sr) {
          if (sr.recording) sr.stop();
          else sr.start();
       }
    },
+   "brightness-up": () => (Brightness.get_default().screen += 0.01),
+   "brightness-down": () => (Brightness.get_default().screen -= 0.01),
 } as Record<string, any>;
 
 function parseFormat(format: string, data: FormatData): JSX.Element[] {
