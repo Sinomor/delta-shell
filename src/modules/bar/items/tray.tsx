@@ -111,6 +111,7 @@ export function Tray() {
    );
 
    if (conf.compact) {
+      const [revealed, setRevealed] = createState(false);
       const [visible, setVisible] = createState(false);
 
       function icon(visible: boolean) {
@@ -128,20 +129,30 @@ export function Tray() {
             spacing={theme.bar.spacing}
          >
             <revealer
-               revealChild={visible}
+               revealChild={revealed}
+               visible={visible}
                transitionType={
                   isVertical
                      ? Gtk.RevealerTransitionType.SLIDE_UP
                      : Gtk.RevealerTransitionType.SLIDE_RIGHT
                }
+               onNotifyChildRevealed={({ childRevealed }) =>
+                  setVisible(childRevealed)
+               }
                transitionDuration={config.transition * 1000}
             >
                {content}
             </revealer>
-            <button onClicked={() => setVisible((v) => !v)} class={"toggle"}>
+            <button
+               onClicked={() => {
+                  !visible.peek() && setVisible(true);
+                  setRevealed((v) => !v);
+               }}
+               class={"toggle"}
+            >
                <image
                   hexpand={isVertical}
-                  iconName={visible((v) => icon(v))}
+                  iconName={visible(icon)}
                   pixelSize={theme["icon-size"].normal}
                />
             </button>
