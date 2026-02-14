@@ -50,7 +50,7 @@ export function Tray() {
                      }}
                   >
                      <image
-                        gicon={item.gicon}
+                        gicon={createBinding(item, "gicon")}
                         hexpand={isVertical}
                         tooltipMarkup={item.tooltipMarkup || item.title}
                         pixelSize={theme["icon-size"].normal}
