@@ -6,15 +6,20 @@ import { config, theme } from "@/options";
 import { createBinding } from "gnim";
 import Brightness from "@/src/services/brightness";
 import { icons } from "@/src/lib/icons";
+const brightness = Brightness.get_default();
 
 export function ScreenBrightness() {
+   if (!brightness.available) {
+      console.warn(
+         "Bar: brightness module skipped: brightness service unavailable",
+      );
+      return <box visible={false} />;
+   }
    const conf = config.bar.modules.brightness;
-   const brightness = Brightness.get_default();
    const level = createBinding(brightness, "screen");
 
    return (
       <BarItem
-         window={windows_names.volume}
          onPrimaryClick={conf["on-click"]}
          onSecondaryClick={conf["on-click-right"]}
          onMiddleClick={conf["on-click-middle"]}
