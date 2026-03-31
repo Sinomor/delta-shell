@@ -139,7 +139,7 @@ export const config = mkOptions(configFile, {
       "sort-type": "frequency" as "frequency" | "alphabetical" | null,
    },
    calendar: {
-     start_day_of_week: "monday",
+     "start-day-of-week": "monday",
    },
    clipboard: {
       enabled: true,
