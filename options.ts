@@ -140,7 +140,6 @@ export const config = mkOptions(configFile, {
    },
    calendar: {
      start_day_of_week: "monday",
-     week_end_days: ["saturday", "sunday"],
    },
    clipboard: {
       enabled: true,

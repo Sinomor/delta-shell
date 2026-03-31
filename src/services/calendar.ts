@@ -59,22 +59,20 @@ export default class Calendar extends GObject.Object {
       }
     }
 
-   weekDays(start_day_of_week: string) {
-      switch (start_day_of_week.trim().toLowerCase()) {
+   weekDays(startDayOfWeek: string) {
+      switch (startDayOfWeek.trim().toLowerCase()) {
         case "monday": return ["M","T","W","T","F","S","S"];
-        case "tuesday": return ["T","W","T","F","S","S","M"];
-        case "wednesday": return ["W","T","F","S","S","M","T"];
-        case "thursday": return ["T","F","S","S","M","T","W"];
-        case "friday": return ["F","S","S","M","T","W","T"];
-        case "saturday": return ["S","S","M","T","W","T","F"];
         case "sunday": return ["S","M","T","W","T","F","S"];
-        default: throw new Error(`${start_day_of_week} is not a day`);
+        default: throw new Error(`"${startDayOfWeek}" start day of the week have to be sunday or monday`);
       }
     }
 
-   weekEndDays(days: string[]): number[] {
-    return days
-      .map(day => this.dayToNumber(day));
+   weekEndDays(startDayOfWeek: string): number[] {
+      switch (startDayOfWeek.trim().toLowerCase()) {
+        case "monday": return [0, 6];
+        case "sunday": return [5, 6];
+        default: throw new Error(`"${startDayOfWeek}" start day of the week have to be sunday or monday`);
+      }
    }
 
    @getter(Object)
@@ -101,7 +99,7 @@ export default class Calendar extends GObject.Object {
             day: currentIterDate.getDate(),
             isToday,
             isWeekend:
-               this.weekEndDays(config.calendar.week_end_days).includes(currentIterDate.getDay()),
+               this.weekEndDays(config.calendar.start_day_of_week).includes(currentIterDate.getDay()),
             isOtherMonth: currentIterDate.getMonth() !== month,
          });
 

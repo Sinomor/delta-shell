@@ -24,13 +24,10 @@ function CalendarDayButton({ day }: { day: CalendarDay }) {
 }
 
 function WeekDayHeader({ day, index }: { day: string; index: number }) {
-  const weekendEndDays = calendar
-    .weekEndDays(config.calendar.week_end_days)
-    .map(n => n === 0 ? 6 : n - 1);
-
+   const isWeekend = index >= 5;
    return (
       <button
-         cssClasses={["calendar-button", weekendEndDays.includes(index) ? "weekend" : ""]}
+         cssClasses={["calendar-button", isWeekend ? "weekend" : ""]}
          focusOnClick={false}
       >
          <box halign={Gtk.Align.CENTER}>
