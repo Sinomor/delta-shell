@@ -138,6 +138,10 @@ export const config = mkOptions(configFile, {
       columns: 1,
       "sort-type": "frequency" as "frequency" | "alphabetical" | null,
    },
+   calendar: {
+     start_day_of_week: "monday",
+     week_end_days: ["saturday", "sunday"],
+   },
    clipboard: {
       enabled: true,
       "max-items": 50,

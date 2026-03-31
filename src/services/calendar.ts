@@ -1,4 +1,5 @@
 import GObject, { register, property, getter, setter } from "ags/gobject";
+import { config } from "@/options"
 
 export type CalendarDay = {
    date: Date;
@@ -45,6 +46,37 @@ export default class Calendar extends GObject.Object {
       return this._date.getFullYear();
    }
 
+   dayToNumber(day: string): number  {
+      switch (day.trim().toLowerCase()) {
+        case 'saturday': return 6;
+        case 'friday': return 5;
+        case 'thursday': return 4;
+        case 'wednesday': return 3;
+        case 'tuesday': return 2;
+        case 'monday': return 1;
+        case 'sunday': return 0;
+        default: throw new Error(`${day} is not a day`);
+      }
+    }
+
+   weekDays(start_day_of_week: string) {
+      switch (start_day_of_week.trim().toLowerCase()) {
+        case "monday": return ["M","T","W","T","F","S","S"];
+        case "tuesday": return ["T","W","T","F","S","S","M"];
+        case "wednesday": return ["W","T","F","S","S","M","T"];
+        case "thursday": return ["T","F","S","S","M","T","W"];
+        case "friday": return ["F","S","S","M","T","W","T"];
+        case "saturday": return ["S","S","M","T","W","T","F"];
+        case "sunday": return ["S","M","T","W","T","F","S"];
+        default: throw new Error(`${start_day_of_week} is not a day`);
+      }
+    }
+
+   weekEndDays(days: string[]): number[] {
+    return days
+      .map(day => this.dayToNumber(day));
+   }
+
    @getter(Object)
    get calendar() {
       const year = this.year;
@@ -52,7 +84,7 @@ export default class Calendar extends GObject.Object {
       const now = new Date();
 
       const startOfMonth = new Date(year, month, 1);
-      const startDayOfWeek = (startOfMonth.getDay() + 6) % 7;
+      const startDayOfWeek = (startOfMonth.getDay() - this.dayToNumber(config.calendar.start_day_of_week) + 7) % 7;
 
       const days: CalendarDay[] = [];
 
@@ -69,7 +101,7 @@ export default class Calendar extends GObject.Object {
             day: currentIterDate.getDate(),
             isToday,
             isWeekend:
-               currentIterDate.getDay() === 0 || currentIterDate.getDay() === 6,
+               this.weekEndDays(config.calendar.week_end_days).includes(currentIterDate.getDay()),
             isOtherMonth: currentIterDate.getMonth() !== month,
          });
 
