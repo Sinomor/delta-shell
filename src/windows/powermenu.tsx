@@ -4,11 +4,14 @@ import app from "ags/gtk4/app";
 import Powermenu from "../services/powermenu";
 import { VerificationModule } from "../modules/powermenu/verification";
 import { Popup } from "../widgets/popup";
+import { Gtk } from "ags/gtk4";
+
 const powermenu = Powermenu.get_default();
+const crossfade = Gtk.RevealerTransitionType.CROSSFADE;
 
 export function PowerMenuWindow() {
    return (
-      <Popup name={windows_names.powermenu}>
+      <Popup name={windows_names.powermenu} transitionType={crossfade}>
          <PowerMenuModule />
       </Popup>
    );
@@ -25,7 +28,7 @@ export function VerificationWindow() {
    });
 
    return (
-      <Popup name={windows_names.verification}>
+      <Popup name={windows_names.verification} transitionType={crossfade}>
          <VerificationModule />
       </Popup>
    );
