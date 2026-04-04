@@ -20,73 +20,79 @@ import { ClipboardWindow } from "./src/windows/clipboard";
 import { AppLauncherWindow } from "./src/windows/applauncher";
 
 export const windows_names = {
-   bar: "bar",
-   bar_shadow: "barshadow",
-   applauncher: "applauncher",
-   notifications_popup: "notificationspopup",
-   quicksettings: "quicksettings",
-   osd: "osd",
-   powermenu: "powermenu",
-   verification: "verification",
-   weather: "weather",
-   calendar: "calendar",
-   notificationslist: "notificationslist",
-   volume: "volume",
-   network: "network",
-   bluetooth: "bluetooth",
-   power: "power",
-   clipboard: "clipboard",
+  bar: "bar",
+  bar_shadow: "barshadow",
+  applauncher: "applauncher",
+  notifications_popup: "notificationspopup",
+  quicksettings: "quicksettings",
+  osd: "osd",
+  powermenu: "powermenu",
+  verification: "verification",
+  weather: "weather",
+  calendar: "calendar",
+  notificationslist: "notificationslist",
+  volume: "volume",
+  network: "network",
+  bluetooth: "bluetooth",
+  power: "power",
+  clipboard: "clipboard",
 };
 
 export function hideWindows() {
-   const ignore = [
-      windows_names.bar,
-      windows_names.bar_shadow,
-      windows_names.osd,
-   ];
+  const ignore = [
+    windows_names.bar,
+    windows_names.bar_shadow,
+    windows_names.osd,
+  ];
 
-   app.get_windows()
-      .filter((window) => !ignore.includes(window.name))
-      .forEach((w) => {
-         app.get_window(w.name)?.hide();
-      });
-   qs_page_set("main");
+  app
+    .get_windows()
+    .filter((window) => !ignore.includes(window.name))
+    .forEach((w) => {
+      app.get_window(w.name)?.hide();
+    });
+  qs_page_set("main");
 }
 
 export function windows() {
-   AppLauncherWindow();
-   QuickSettingsWindow();
-   CalendarWindow();
-   PowerMenuWindow();
-   VerificationWindow();
-   if (config.weather.enabled) hasBarItem("weather") && WeatherWindow();
-   if (config.notifications.enabled) {
-      hasBarItem("notificationslist") && NotificationsListWindow();
-      NotificationsWindow();
-   }
-   if (config.osd.enabled) OsdWindow();
-   if (dependencies("wl-paste", "cliphist"))
-      config.clipboard.enabled && ClipboardWindow();
-   if (hasBarItem("volume") || hasBarItem("microphone")) VolumeWindow();
-   hasBarItem("network") && NetworkWindow();
-   hasBarItem("bluetooth") && BluetoothWindow();
-   hasBarItem("battery") && PowerWindow();
-   const monitors = createBinding(app, "monitors");
+  // prettier-ignore
+  const windows: Array<[condition: boolean, open: () => void]> = [
+    [true, AppLauncherWindow],
+    [true, QuickSettingsWindow],
+    [true, CalendarWindow],          // <------ always open
+    [true, PowerMenuWindow],         //  ↓↓↓↓ open if condition === true
+    [true, VerificationWindow],
+    [config.weather.enabled && hasBarItem("weather"),                    WeatherWindow],
+    [config.notifications.enabled && hasBarItem("notificationslist"),    NotificationsListWindow],
+    [config.notifications.enabled,                                       NotificationsWindow],
+    [config.osd.enabled,                                                 OsdWindow],
+    [config.clipboard.enabled && dependencies("wl-paste", "cliphist"),   ClipboardWindow],
+    [hasBarItem("volume") || hasBarItem("microphone"),                   VolumeWindow],
+    [hasBarItem("network"),                                              NetworkWindow],
+    [hasBarItem("bluetooth"),                                            BluetoothWindow],
+    [hasBarItem("battery"),                                              PowerWindow],
+  ];
 
-   <For each={monitors}>
-      {(monitor) => (
-         <This this={app}>
-            <BarWindow
-               gdkmonitor={monitor}
-               $={(self) => onCleanup(() => self.destroy())}
-            />
-            {theme.shadow && (
-               <BarShadowWindow
-                  gdkmonitor={monitor}
-                  $={(self) => onCleanup(() => self.destroy())}
-               />
-            )}
-         </This>
-      )}
-   </For>;
+  for (const [condition, open] of windows) {
+    if (condition) open();
+  }
+
+  const monitors = createBinding(app, "monitors");
+
+  <For each={monitors}>
+    {(monitor) => (
+      <This this={app}>
+        <BarWindow
+          gdkmonitor={monitor}
+          $={(self) => onCleanup(() => self.destroy())}
+        />
+        {theme.shadow && (
+          <BarShadowWindow
+            gdkmonitor={monitor}
+            $={(self) => onCleanup(() => self.destroy())}
+          />
+        )}
+      </This>
+    )}
+  </For>;
 }
