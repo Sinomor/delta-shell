@@ -30,7 +30,7 @@ export function Popup({
    margin_start = margin,
    margin_end = margin,
    gdkmonitor,
-   transitionType = Gtk.RevealerTransitionType.SLIDE_DOWN,
+   transitionType = Gtk.RevealerTransitionType.CROSSFADE,
    transitionDuration = config.transition,
    halign = Gtk.Align.CENTER,
    valign = Gtk.Align.CENTER,
