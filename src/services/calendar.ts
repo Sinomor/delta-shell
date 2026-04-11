@@ -1,5 +1,4 @@
 import GObject, { register, property, getter, setter } from "ags/gobject";
-import { config } from "@/options"
 
 export type CalendarDay = {
    date: Date;
@@ -46,35 +45,6 @@ export default class Calendar extends GObject.Object {
       return this._date.getFullYear();
    }
 
-   dayToNumber(day: string): number  {
-      switch (day.trim().toLowerCase()) {
-        case 'saturday': return 6;
-        case 'friday': return 5;
-        case 'thursday': return 4;
-        case 'wednesday': return 3;
-        case 'tuesday': return 2;
-        case 'monday': return 1;
-        case 'sunday': return 0;
-        default: throw new Error(`${day} is not a day`);
-      }
-    }
-
-   weekDays(startDayOfWeek: string) {
-      switch (startDayOfWeek.trim().toLowerCase()) {
-        case "monday": return ["M","T","W","T","F","S","S"];
-        case "sunday": return ["S","M","T","W","T","F","S"];
-        default: throw new Error(`"${startDayOfWeek}" start day of the week have to be sunday or monday`);
-      }
-    }
-
-   weekEndDays(startDayOfWeek: string): number[] {
-      switch (startDayOfWeek.trim().toLowerCase()) {
-        case "monday": return [0, 6];
-        case "sunday": return [5, 6];
-        default: throw new Error(`"${startDayOfWeek}" start day of the week have to be sunday or monday`);
-      }
-   }
-
    @getter(Object)
    get calendar() {
       const year = this.year;
@@ -82,7 +52,7 @@ export default class Calendar extends GObject.Object {
       const now = new Date();
 
       const startOfMonth = new Date(year, month, 1);
-      const startDayOfWeek = (startOfMonth.getDay() - this.dayToNumber(config.calendar.start_day_of_week) + 7) % 7;
+      const startDayOfWeek = (startOfMonth.getDay() + 6) % 7;
 
       const days: CalendarDay[] = [];
 
@@ -99,7 +69,7 @@ export default class Calendar extends GObject.Object {
             day: currentIterDate.getDate(),
             isToday,
             isWeekend:
-               this.weekEndDays(config.calendar.start_day_of_week).includes(currentIterDate.getDay()),
+               currentIterDate.getDay() === 0 || currentIterDate.getDay() === 6,
             isOtherMonth: currentIterDate.getMonth() !== month,
          });
 
