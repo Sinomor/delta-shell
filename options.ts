@@ -144,6 +144,7 @@ export const config = mkOptions(configFile, {
       "image-preview": true,
       width: 400,
       height: 500,
+      centered: false,
    },
    osd: {
       enabled: true,
