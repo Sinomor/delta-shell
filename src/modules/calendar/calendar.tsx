@@ -1,9 +1,11 @@
 import { icons } from "@/src/lib/icons";
 import { Gtk } from "ags/gtk4";
 import { createBinding, For } from "ags";
-import { config, theme } from "@/options";
+import { theme } from "@/options";
 import Calendar, { CalendarDay } from "@/src/services/calendar";
 const calendar = Calendar.get_default();
+
+const WEEK_DAYS = ["M", "T", "W", "T", "F", "S", "S"];
 
 function CalendarDayButton({ day }: { day: CalendarDay }) {
    const classes = ["calendar-button"];
@@ -25,6 +27,7 @@ function CalendarDayButton({ day }: { day: CalendarDay }) {
 
 function WeekDayHeader({ day, index }: { day: string; index: number }) {
    const isWeekend = index >= 5;
+
    return (
       <button
          cssClasses={["calendar-button", isWeekend ? "weekend" : ""]}
@@ -96,7 +99,7 @@ export function CalendarModule() {
       >
          <Header />
          <box class={"weekdays"} spacing={theme.spacing}>
-            {calendar.weekDays(config.calendar.start_day_of_week).map((day, index) => (
+            {WEEK_DAYS.map((day, index) => (
                <WeekDayHeader day={day} index={index} />
             ))}
          </box>

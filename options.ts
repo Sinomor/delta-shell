@@ -138,16 +138,12 @@ export const config = mkOptions(configFile, {
       columns: 1,
       "sort-type": "frequency" as "frequency" | "alphabetical" | null,
    },
-   calendar: {
-     "start-day-of-week": "monday",
-   },
    clipboard: {
       enabled: true,
       "max-items": 50,
       "image-preview": true,
       width: 400,
       height: 500,
-      centered: false,
    },
    osd: {
       enabled: true,
