@@ -163,8 +163,9 @@ window#bar {
             background: lighten($bar-button-bg-hover, 10%);
             &.active {
               background: $accent-light;
+              transition: all $transition;
             }
-            transition: background $transition;
+            transition: all $transition;
           }
         }
       }
