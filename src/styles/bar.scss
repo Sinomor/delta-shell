@@ -1,333 +1,335 @@
 window#bar {
-   all: unset;
-   color: $fg0;
-   font-size: $font-size;
+  all: unset;
+  color: $fg0;
+  font-size: $font-size;
 
-   .main {
-      margin: $bar-margin;
-      background: rgba($bar-bg, $bar-opacity);
-      @if $shadow and $bar-opacity != 0 {
-         box-shadow: $bar-shadow-offset
-            $bar-shadow-blur
-            $bar-shadow-spread
-            rgba($bar-shadow-color, $bar-shadow-opacity);
+  .main {
+    margin: $bar-margin;
+    background: rgba($bar-bg, $bar-opacity);
+    @if $shadow and $bar-opacity != 0 {
+      box-shadow: $bar-shadow-offset
+        $bar-shadow-blur
+        $bar-shadow-spread
+        rgba($bar-shadow-color, $bar-shadow-opacity);
+    }
+    @if $bar-vertical {
+      min-width: $bar-size;
+    } @else {
+      min-height: $bar-size;
+    }
+    @if all-zero($bar-margin) {
+      @if $bar-position == "top" {
+        border-bottom: $bar-border-width solid $bar-border-color;
+      } @else if $bar-position == "bottom" {
+        border-top: $bar-border-width solid $bar-border-color;
+      } @else if $bar-position == "left" {
+        border-right: $bar-border-width solid $bar-border-color;
+      } @else if $bar-position == "right" {
+        border-left: $bar-border-width solid $bar-border-color;
       }
-      @if $bar-vertical {
-         min-width: $bar-size;
-      } @else {
-         min-height: $bar-size;
-      }
-      @if all-zero($bar-margin) {
-         @if $bar-position == "top" {
-            border-bottom: $bar-border-width solid $bar-border-color;
-         } @else if $bar-position == "bottom" {
-            border-top: $bar-border-width solid $bar-border-color;
-         } @else if $bar-position == "left" {
-            border-right: $bar-border-width solid $bar-border-color;
-         } @else if $bar-position == "right" {
-            border-left: $bar-border-width solid $bar-border-color;
-         }
-      } @else {
-         border-radius: $widget-radius;
-         border: $bar-border-width solid $bar-border-color;
-      }
-   }
-
-   tooltip {
-      background: rgba($bg0, $bar-opacity);
+    } @else {
+      border-radius: $widget-radius;
       border: $bar-border-width solid $bar-border-color;
-      border-radius: $widget-radius;
-   }
+    }
+  }
 
-   separator {
-      border-radius: $widget-radius;
-      background: rgba($bar-separator-color, $bar-opacity);
-      &.vertical {
-         margin: 0 $bar-padding;
-         min-height: $bar-separator-width;
-      }
+  tooltip {
+    background: rgba($bg0, $bar-opacity);
+    border: $bar-border-width solid $bar-border-color;
+    border-radius: $widget-radius;
+  }
 
-      &.horizontal {
-         margin: $bar-padding 0;
-         min-width: $bar-separator-width;
-      }
-   }
+  separator {
+    border-radius: $widget-radius;
+    background: rgba($bar-separator-color, $bar-opacity);
+    &.vertical {
+      margin: 0 $bar-padding;
+      min-height: $bar-separator-width;
+    }
 
-   .modules-start {
-      > *:first-child .bar-item,
-      > .bar-item:first-child {
-         @if $bar-vertical {
-            padding-top: $bar-padding;
-         } @else {
-            padding-left: $bar-padding;
-         }
-      }
-   }
+    &.horizontal {
+      margin: $bar-padding 0;
+      min-width: $bar-separator-width;
+    }
+  }
 
-   .modules-end {
-      > *:last-child .bar-item,
-      > .bar-item:last-child {
-         @if $bar-vertical {
-            padding-bottom: $bar-padding;
-         } @else {
-            padding-right: $bar-padding;
-         }
-      }
-   }
-
-   .bar-item {
-      background: transparent;
-      font-weight: normal;
+  .modules-start {
+    > *:first-child .bar-item,
+    > .bar-item:first-child {
       @if $bar-vertical {
-         padding: 0 $bar-padding;
+        padding-top: $bar-padding;
       } @else {
-         padding: $bar-padding 0;
+        padding-left: $bar-padding;
       }
+    }
+  }
 
-      .content {
-         border-radius: $widget-radius;
-         background: rgba($bar-button-bg, $bar-button-opacity);
-         border: $bar-button-border-width solid $bar-button-border-color;
-         color: $bar-button-fg;
-         padding: $bar-button-padding;
-         @if $shadow and $bar-opacity == 0 {
-            box-shadow: $bar-shadow-offset
-               $bar-shadow-blur
-               $bar-shadow-spread
-               rgba($bar-shadow-color, $bar-shadow-opacity);
-         }
+  .modules-end {
+    > *:last-child .bar-item,
+    > .bar-item:last-child {
+      @if $bar-vertical {
+        padding-bottom: $bar-padding;
+      } @else {
+        padding-right: $bar-padding;
       }
+    }
+  }
 
-      &:hover {
-         .content {
-            background: rgba($bar-button-bg-hover, $bar-button-opacity);
-            transition: background $transition;
-         }
-      }
+  .bar-item {
+    background: transparent;
+    font-weight: normal;
+    @if $bar-vertical {
+      padding: 0 $bar-padding;
+    } @else {
+      padding: $bar-padding 0;
+    }
 
-      &.active {
-         .content {
-            background: rgba($bar-button-bg-active, $bar-button-opacity);
-            transition: background $transition;
-         }
-      }
-   }
-
-   @keyframes blink {
-      to {
-         color: $red;
-      }
-   }
-
-   .workspaces {
-      &.compact {
-         @if $bar-vertical {
-            padding: 0 $bar-padding;
-         } @else {
-            padding: $bar-padding 0;
-         }
-         .content {
-            padding: $bar-button-padding;
-            background: $bar-button-bg;
-            border-radius: $widget-radius;
-            .workspace {
-               all: unset;
-
-               @if $bar-vertical {
-                  min-height: 20px;
-                  min-width: 14px;
-               } @else {
-                  min-width: 20px;
-                  min-height: 14px;
-               }
-               border-radius: $widget-radius;
-               background: $bar-button-bg-hover;
-               &.active {
-                  background: $accent;
-                  @if $bar-vertical {
-                     min-height: 30px;
-                  } @else {
-                     min-width: 30px;
-                  }
-                  transition: background $transition;
-               }
-            }
-         }
-         &:hover {
-            .content {
-               background: $bar-button-bg-hover;
-               transition: background $transition;
-               .workspace {
-                  background: lighten($bar-button-bg-hover, 10%);
-                  &.active {
-                     background: $accent-light;
-                  }
-                  transition: background $transition;
-               }
-            }
-         }
-      }
-      @if $bar-position == "top" or $bar-position == "bottom" {
-         .workspace {
-            &.minimal,
-            &.empty {
-               .content {
-                  padding: multiply-padding($bar-button-padding, 1.5);
-               }
-            }
-         }
-      }
-   }
-
-   .record-indicator {
-      animation-name: blink;
-      animation-duration: 0.5s;
-      animation-timing-function: steps(12);
-      animation-iteration-count: infinite;
-      animation-direction: alternate;
-   }
-
-   .tray {
+    .content {
+      border-radius: $widget-radius;
       background: rgba($bar-button-bg, $bar-button-opacity);
       border: $bar-button-border-width solid $bar-button-border-color;
-      border-radius: $widget-radius;
-      @if $bar-vertical {
-         margin: 0 $bar-padding;
-      } @else {
-         margin: $bar-padding 0;
-      }
+      color: $bar-button-fg;
+      padding: $bar-button-padding;
       @if $shadow and $bar-opacity == 0 {
-         box-shadow: $bar-shadow-offset
+        box-shadow: $bar-shadow-offset
+          $bar-shadow-blur
+          $bar-shadow-spread
+          rgba($bar-shadow-color, $bar-shadow-opacity);
+      }
+    }
+
+    &:hover {
+      .content {
+        background: rgba($bar-button-bg-hover, $bar-button-opacity);
+        transition: background $transition;
+      }
+    }
+
+    &.active {
+      .content {
+        background: rgba($bar-button-bg-active, $bar-button-opacity);
+        transition: background $transition;
+      }
+    }
+  }
+
+  @keyframes blink {
+    to {
+      color: $red;
+    }
+  }
+
+  .workspaces {
+    &.compact {
+      @if $bar-vertical {
+        padding: 0 $bar-padding;
+      } @else {
+        padding: $bar-padding 0;
+      }
+      .content {
+        padding: $bar-button-padding;
+        background: $bar-button-bg;
+        border-radius: $widget-radius;
+        .workspace {
+          all: unset;
+
+          @if $bar-vertical {
+            min-height: 20px;
+            min-width: 14px;
+          } @else {
+            min-width: 20px;
+            min-height: 14px;
+          }
+          border-radius: $widget-radius;
+          background: $bar-button-bg-hover;
+          transition: all $transition;
+
+          &.active {
+            background: $accent;
+            @if $bar-vertical {
+              min-height: 30px;
+            } @else {
+              min-width: 30px;
+            }
+            transition: all $transition;
+          }
+        }
+      }
+      &:hover {
+        .content {
+          background: $bar-button-bg-hover;
+          transition: background $transition;
+          .workspace {
+            background: lighten($bar-button-bg-hover, 10%);
+            &.active {
+              background: $accent-light;
+            }
+            transition: background $transition;
+          }
+        }
+      }
+    }
+    @if $bar-position == "top" or $bar-position == "bottom" {
+      .workspace {
+        &.minimal,
+        &.empty {
+          .content {
+            padding: multiply-padding($bar-button-padding, 1.5);
+          }
+        }
+      }
+    }
+  }
+
+  .record-indicator {
+    animation-name: blink;
+    animation-duration: 0.5s;
+    animation-timing-function: steps(12);
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+  }
+
+  .tray {
+    background: rgba($bar-button-bg, $bar-button-opacity);
+    border: $bar-button-border-width solid $bar-button-border-color;
+    border-radius: $widget-radius;
+    @if $bar-vertical {
+      margin: 0 $bar-padding;
+    } @else {
+      margin: $bar-padding 0;
+    }
+    @if $shadow and $bar-opacity == 0 {
+      box-shadow: $bar-shadow-offset
+        $bar-shadow-blur
+        $bar-shadow-spread
+        rgba($bar-shadow-color, $bar-shadow-opacity);
+    }
+
+    .toggle {
+      background: transparent;
+      padding: $bar-button-padding;
+      border-radius: $widget-radius;
+
+      &:hover {
+        background: rgba($bar-button-bg-hover, $bar-button-opacity);
+      }
+    }
+
+    .menu {
+      &.menu > contents {
+        background: rgba($bg0, $window-opacity);
+        border: $bar-border-width solid $bar-border-color;
+        border-radius: $widget-radius;
+        @if $shadow {
+          box-shadow: $bar-shadow-offset
             $bar-shadow-blur
             $bar-shadow-spread
             rgba($bar-shadow-color, $bar-shadow-opacity);
+        }
+        @if $bar-position == "top" {
+          margin-top: 5px;
+        } @else if $bar-position == "bottom" {
+          margin-bottom: 5px;
+        } @else if $bar-position == "left" {
+          margin-left: 5px;
+        } @else if $bar-position == "right" {
+          margin-right: 5px;
+        }
       }
 
-      .toggle {
-         background: transparent;
-         padding: $bar-button-padding;
-         border-radius: $widget-radius;
+      modelbutton {
+        border-radius: $widget-radius;
+        background: transparent;
+        color: $fg0;
 
-         &:hover {
-            background: rgba($bar-button-bg-hover, $bar-button-opacity);
-         }
+        &:hover {
+          background: rgba($bg1, $window-opacity);
+        }
       }
 
-      .menu {
-         &.menu > contents {
-            background: rgba($bg0, $window-opacity);
-            border: $bar-border-width solid $bar-border-color;
-            border-radius: $widget-radius;
-            @if $shadow {
-               box-shadow: $bar-shadow-offset
-                  $bar-shadow-blur
-                  $bar-shadow-spread
-                  rgba($bar-shadow-color, $bar-shadow-opacity);
-            }
-            @if $bar-position == "top" {
-               margin-top: 5px;
-            } @else if $bar-position == "bottom" {
-               margin-bottom: 5px;
-            } @else if $bar-position == "left" {
-               margin-left: 5px;
-            } @else if $bar-position == "right" {
-               margin-right: 5px;
-            }
-         }
-
-         modelbutton {
-            border-radius: $widget-radius;
-            background: transparent;
-            color: $fg0;
-
-            &:hover {
-               background: rgba($bg1, $window-opacity);
-            }
-         }
-
-         &.menu > arrow {
-            all: unset;
-         }
+      &.menu > arrow {
+        all: unset;
       }
+    }
 
-      .items {
-         .item {
-            padding: $bar-button-padding;
-            background: transparent;
-            border-radius: $widget-radius;
+    .items {
+      .item {
+        padding: $bar-button-padding;
+        background: transparent;
+        border-radius: $widget-radius;
 
-            &:hover {
-               background: rgba($bar-button-bg-hover, $bar-button-opacity);
-            }
+        &:hover {
+          background: rgba($bar-button-bg-hover, $bar-button-opacity);
+        }
 
-            &.active {
-               background: rgba($bar-button-bg-active, $bar-button-opacity);
-               transition: background $transition;
-            }
-         }
+        &.active {
+          background: rgba($bar-button-bg-active, $bar-button-opacity);
+          transition: background $transition;
+        }
       }
-   }
+    }
+  }
 
-   .taskbar-button {
-      background: transparent;
+  .taskbar-button {
+    background: transparent;
 
-      &.focused {
-         .indicator {
-            transition: background $transition;
-            background: $accent;
-         }
-      }
-
+    &.focused {
       .indicator {
-         border-radius: $widget-radius;
-         min-width: 4px;
-         min-height: 4px;
-         background: lighten($bar-button-bg-active, 20%);
-         transition: min-width $transition;
+        transition: background $transition;
+        background: $accent;
       }
+    }
 
-      .content {
-         padding: 0;
-      }
-   }
+    .indicator {
+      border-radius: $widget-radius;
+      min-width: 4px;
+      min-height: 4px;
+      background: lighten($bar-button-bg-active, 20%);
+      transition: min-width $transition;
+    }
+
+    .content {
+      padding: 0;
+    }
+  }
 }
 
 window#barshadow {
-   all: unset;
+  all: unset;
 
-   .shadow {
-      @if $bar-vertical {
-         margin-top: $bar-margin-top + $widget-radius;
-         margin-bottom: $bar-margin-bottom + $widget-radius;
-      } @else {
-         margin-right: $bar-margin-right + $widget-radius;
-         margin-left: $bar-margin-left + $widget-radius;
-      }
+  .shadow {
+    @if $bar-vertical {
+      margin-top: $bar-margin-top + $widget-radius;
+      margin-bottom: $bar-margin-bottom + $widget-radius;
+    } @else {
+      margin-right: $bar-margin-right + $widget-radius;
+      margin-left: $bar-margin-left + $widget-radius;
+    }
 
-      @if $shadow and $bar-opacity != 0 {
-         @if $bar-position == "top" {
-            box-shadow: inset
-               0px
-               10px
-               8px -10px
-               rgba($bar-shadow-color, $bar-shadow-opacity);
-         } @else if $bar-position == "bottom" {
-            box-shadow: inset
-               0px -10px
-               8px -10px
-               rgba($bar-shadow-color, $bar-shadow-opacity);
-         } @else if $bar-position == "right" {
-            box-shadow: inset -10px
-               0px
-               8px -10px
-               rgba($bar-shadow-color, $bar-shadow-opacity);
-         } @else if $bar-position == "left" {
-            box-shadow: inset
-               10px
-               0px
-               8px -10px
-               rgba($bar-shadow-color, $bar-shadow-opacity);
-         }
+    @if $shadow and $bar-opacity != 0 {
+      @if $bar-position == "top" {
+        box-shadow: inset
+          0px
+          10px
+          8px -10px
+          rgba($bar-shadow-color, $bar-shadow-opacity);
+      } @else if $bar-position == "bottom" {
+        box-shadow: inset
+          0px -10px
+          8px -10px
+          rgba($bar-shadow-color, $bar-shadow-opacity);
+      } @else if $bar-position == "right" {
+        box-shadow: inset -10px
+          0px
+          8px -10px
+          rgba($bar-shadow-color, $bar-shadow-opacity);
+      } @else if $bar-position == "left" {
+        box-shadow: inset
+          10px
+          0px
+          8px -10px
+          rgba($bar-shadow-color, $bar-shadow-opacity);
       }
-   }
+    }
+  }
 }
