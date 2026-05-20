@@ -37,7 +37,7 @@ function Header({ showArrow = false }: { showArrow?: boolean }) {
          };
 
       return {
-         label: `${location.city}, ${location.country_code}`,
+         label: `${location.city}, ${location.region ?? location.country_code}`,
       };
    });
 

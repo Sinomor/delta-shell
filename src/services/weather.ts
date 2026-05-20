@@ -9,6 +9,7 @@ interface LocationData {
    city: string;
    country: string;
    country_code: string;
+   region?: string;
    latitude: number;
    longitude: number;
 }
@@ -126,7 +127,7 @@ export default class Weather extends GObject.Object {
       }
    }
 
-   async location_by_coords(lat: string, lon: string) {
+   async location_by_coords(lat: string, lon: string, cityName?: string) {
       const params = {
          lat: lat,
          lon: lon,
@@ -150,15 +151,20 @@ export default class Weather extends GObject.Object {
          const json = await res.json();
          const location = json.address;
 
+         const countryCode = location.country_code.toLocaleUpperCase();
+         const iso = location["ISO3166-2-lvl4"];
+
          this.location = {
             city:
+               cityName ||
                location.hamlet ||
                location.city ||
                location.town ||
                location.village ||
                "Unknown",
             country: location.country,
-            country_code: location.country_code.toLocaleUpperCase(),
+            country_code: countryCode,
+            region: countryCode === "US" && iso ? iso.split("-")[1] : undefined,
             latitude: Number(lat),
             longitude: Number(lon),
          };
@@ -168,7 +174,14 @@ export default class Weather extends GObject.Object {
             `Weather: failed to reverse geocode coordinates (${lat}, ${lon}):`,
             error,
          );
-         this.location = {};
+         this.location = {
+            city: cityName || "Unknown",
+            country: "",
+            country_code: "",
+            latitude: Number(lat),
+            longitude: Number(lon),
+         };
+         this.update();
       }
    }
 
@@ -196,18 +209,14 @@ export default class Weather extends GObject.Object {
          }
 
          const location = json.results[0];
-
-         this.location = {
-            city: location.name,
-            country: location.country,
-            country_code: location.country_code,
-            latitude: location.latitude,
-            longitude: location.longitude,
-         };
          console.log(
             `Weather: found ${location.name}, ${location.country_code}`,
          );
-         this.update();
+         await this.location_by_coords(
+            location.latitude.toString(),
+            location.longitude.toString(),
+            location.name,
+         );
       } catch (error) {
          if (error instanceof Error && error.message === "NOT_FOUND") {
             console.error(`Weather: city ${city} not found`);
@@ -288,6 +297,7 @@ export default class Weather extends GObject.Object {
             "precipitation_probability_max",
          ],
          wind_speed_unit: "ms",
+         temperature_unit: config.weather.units,
          timezone: "auto",
          timeformat: "unixtime",
          forecast_hours: 12,

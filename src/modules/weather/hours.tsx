@@ -1,17 +1,18 @@
 import { Gtk } from "ags/gtk4";
 import { createBinding, For } from "ags";
 import { icons } from "@/src/lib/icons";
-import { theme } from "@/options";
+import { config, theme } from "@/options";
 import { HourlyWeather } from "@/src/services/weather";
 import Weather from "@/src/services/weather";
 
 function formatHour(timestamp: number): string {
    const date = new Date(timestamp * 1000);
    const now = new Date();
+   // minutes omitted in 12h mode to prevent last hour from clipping
    const hour = date.toLocaleTimeString([], {
-      hour12: false,
-      hour: "2-digit",
-      minute: "2-digit",
+      hour12: config.weather.hour12,
+      hour: config.weather.hour12 ? "numeric" : "2-digit",
+      ...(config.weather.hour12 ? {} : { minute: "2-digit" }),
    });
    if (date.getHours() === now.getHours()) return "Now";
    else return hour;
