@@ -179,6 +179,8 @@ export const config = mkOptions(configFile, {
    },
    weather: {
       enabled: true,
+      hour12: false,
+      units: "celsius" as "celsius" | "fahrenheit",
       location: {
          auto: false,
          coords: null as { latitude: string; longitude: string } | null,
