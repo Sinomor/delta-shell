@@ -120,11 +120,11 @@ window#bar {
   }
 
   .workspaces {
-    // Workspace currently displayed on its monitor but not globally focused.
-    // Adds a subtle accent border so multi-monitor setups can tell at a glance
-    // which workspace is shown on a non-focused monitor.
-    .workspace.visible:not(.active) > .content,
-    &.compact .content > .workspace.visible:not(.active) {
+    // Workspace currently displayed on its monitor (including the focused one).
+    // Adds an accent border so multi-monitor setups can tell at a glance
+    // which workspace is shown on each monitor.
+    .workspace.visible > .content,
+    &.compact .content > .workspace.visible {
       box-shadow: inset 0 0 0 2px $accent;
     }
 
