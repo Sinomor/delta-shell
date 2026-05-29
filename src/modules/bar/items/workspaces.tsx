@@ -20,6 +20,7 @@ export function Workspaces({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
    const conf = config.bar.modules.workspaces;
    const workspaces = compositor.monitorWorkspaces(gdkmonitor);
    const focusedWorkspace = compositor.focusedWorkspace();
+   const monitorActiveWorkspace = compositor.monitorActiveWorkspace(gdkmonitor);
    const focusedWindow = compositor.focusedWindow();
 
    function AppButton({ window: win }: { window: any }) {
@@ -130,13 +131,21 @@ export function Workspaces({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
          return true;
       });
 
-      const classNames = focusedWorkspace((fws) => {
+      const classNames = createComputed(() => {
+         const fws = focusedWorkspace();
+         const mws = monitorActiveWorkspace();
          const classes = ["bar-item", "workspace"];
          if (
             fws &&
             compositor.workspaceId(fws) === compositor.workspaceId(ws)
          ) {
             classes.push("active");
+         }
+         if (
+            mws &&
+            compositor.workspaceId(mws) === compositor.workspaceId(ws)
+         ) {
+            classes.push("visible");
          }
          if (!conf["workspace-format"].includes("{windows}"))
             classes.push("minimal");

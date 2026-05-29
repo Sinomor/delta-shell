@@ -64,6 +64,25 @@ export const compositor = {
       }
       return { get: () => null, subscribe: () => () => {} } as any;
    },
+   monitorActiveWorkspace(gdkmonitor: Gdk.Monitor): Accessor<any> {
+      if (hyprland) {
+         const model = gdkmonitor.model;
+         return createBinding(hyprland, "monitors").as((monitors) => {
+            const m = monitors.find((mon: any) => mon.model === model);
+            return m?.activeWorkspace ?? null;
+         });
+      }
+      if (niri) {
+         const connector = gdkmonitor.connector;
+         return createBinding(niri, "workspaces").as(
+            (wss) =>
+               wss.find(
+                  (ws: any) => ws.output === connector && ws.isActive,
+               ) ?? null,
+         );
+      }
+      return { get: () => null, subscribe: () => () => {} } as any;
+   },
    focusedWindow(): Accessor<any> {
       if (hyprland) {
          return createBinding(hyprland, "focusedClient");
