@@ -2,3 +2,4 @@ node_modules/
 @girs/
 ./results/*
 package-lock.json
+.aider*
