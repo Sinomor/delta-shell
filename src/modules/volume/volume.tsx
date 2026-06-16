@@ -147,7 +147,7 @@ function DefaultOutput() {
          >
             <box hexpand>
                <label
-                  label={description}
+                  label={description((d) => d ?? "")}
                   hexpand
                   halign={Gtk.Align.START}
                   ellipsize={Pango.EllipsizeMode.END}
@@ -224,7 +224,7 @@ function DefaultMicrophone() {
          >
             <box hexpand>
                <label
-                  label={description}
+                  label={description((d) => d ?? "")}
                   hexpand
                   halign={Gtk.Align.START}
                   ellipsize={Pango.EllipsizeMode.END}
