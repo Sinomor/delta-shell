@@ -10,7 +10,7 @@ export function RAM() {
    const systemmonitor = SystemMonitor.get_default();
    const memoryUsage = createBinding(systemmonitor, "memoryUsage"); // Percent usage
    const memoryTotal = createBinding(systemmonitor, "memoryTotal");
-   const memoryUsed = createBinding(systemmonitor, "memoryUsed"); // Usage in GBs
+   const memoryUsed = createBinding(systemmonitor, "memoryUsed"); // Usage in GiB
 
    return (
       <BarItem
@@ -28,7 +28,7 @@ export function RAM() {
                   hexpand={isVertical}
                />
             ),
-	    // Total used GBs
+	    // Total used GiB
 	    used: (
 	      <label
 	          label={memoryUsed((v) => (v / 1024 / 1024).toFixed(2))}
