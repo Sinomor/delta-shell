@@ -28,13 +28,13 @@ export function RAM() {
                   hexpand={isVertical}
                />
             ),
-	    // Total used GiB
-	    used: (
-	      <label
-	          label={memoryUsed((v) => (v / 1024 / 1024).toFixed(2))}
-		  hexpand={isVertical}
-	       />
-	    ),
+       	    // Total used GiB
+       	    used: (
+               <label
+          	  	  label={memoryUsed((v) => (v / 1024 / 1024).toFixed(2))}
+          	  	  hexpand={isVertical}
+          	   />
+       	    ),
             total: (
                <label
                   label={memoryTotal((v) =>

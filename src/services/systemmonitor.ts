@@ -119,7 +119,7 @@ export default class SystemMonitor extends GObject.Object {
          }
 
          this.memoryTotal = total;
-	 this.memoryUsed = total - available;
+         this.memoryUsed = total - available;
 
          if (total > 0) {
             this.memoryUsage = 1 - available / total;
