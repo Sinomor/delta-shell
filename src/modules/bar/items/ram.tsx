@@ -8,8 +8,9 @@ import { createBinding } from "gnim";
 export function RAM() {
    const conf = config.bar.modules.ram;
    const systemmonitor = SystemMonitor.get_default();
-   const memoryUsage = createBinding(systemmonitor, "memoryUsage");
+   const memoryUsage = createBinding(systemmonitor, "memoryUsage"); // Percent usage
    const memoryTotal = createBinding(systemmonitor, "memoryTotal");
+   const memoryUsed = createBinding(systemmonitor, "memoryUsed"); // Usage in GiB
 
    return (
       <BarItem
@@ -27,6 +28,13 @@ export function RAM() {
                   hexpand={isVertical}
                />
             ),
+       	    // Total used GiB
+       	    used: (
+               <label
+          	  	  label={memoryUsed((v) => (v / 1024 / 1024).toFixed(2))}
+          	  	  hexpand={isVertical}
+          	   />
+       	    ),
             total: (
                <label
                   label={memoryTotal((v) =>
