@@ -17,6 +17,20 @@ try {
    console.debug("Brightness: no internal displays found");
 }
 
+let kbdBacklightName = "";
+try {
+   kbdBacklightName = exec(
+      `bash -c "ls -w1 /sys/class/leds 2>/dev/null | grep kbd_backlight | head -1"`,
+   ).trim();
+   if (kbdBacklightName) {
+      console.log(
+         `Brightness: detected keyboard backlight ${kbdBacklightName}`,
+      );
+   }
+} catch (error) {
+   console.debug("Brightness: no keyboard backlight found");
+}
+
 const externalDisplayBuses: number[] = [];
 if (dependencies("ddcutil")) {
    try {
@@ -54,6 +68,7 @@ if (dependencies("ddcutil")) {
 
 const hasInternal = dependencies("brightnessctl") && !!internalDisplayName;
 const hasExternal = externalDisplayBuses.length > 0;
+const hasKbd = dependencies("brightnessctl") && !!kbdBacklightName;
 const available = hasInternal || hasExternal;
 
 const getBrightness = (): number => {
@@ -114,6 +129,22 @@ const getExternalBrightness = (bus: number): number => {
    }
 };
 
+const getKbdBrightness = (): number => {
+   if (!hasKbd) return 0;
+   try {
+      const current = parseInt(
+         exec(`brightnessctl -d ${kbdBacklightName} get`).trim(),
+      );
+      const max = parseInt(
+         exec(`brightnessctl -d ${kbdBacklightName} max`).trim(),
+      );
+      return current / (max || 1);
+   } catch (error) {
+      console.warn("Failed to read keyboard backlight brightness:", error);
+      return 0;
+   }
+};
+
 type MonitorState = {
    id: string;
    type: "internal" | "external";
@@ -132,6 +163,9 @@ export default class Brightness extends GObject.Object {
 
    #screen = available ? getBrightness() : 0;
    #available = available;
+   #kbd = hasKbd ? getKbdBrightness() : 0;
+   #kbdAvailable = hasKbd;
+   #kbdChanging = false;
    #monitors: MonitorState[] = [];
 
    @getter(Number)
@@ -142,6 +176,32 @@ export default class Brightness extends GObject.Object {
    @getter(Boolean)
    get available() {
       return this.#available;
+   }
+
+   @getter(Number)
+   get kbd() {
+      return this.#kbd;
+   }
+
+   @getter(Boolean)
+   get kbdAvailable() {
+      return this.#kbdAvailable;
+   }
+
+   @setter(Number)
+   set kbd(percent) {
+      if (!this.#kbdAvailable) return;
+      if (percent < 0) percent = 0;
+      if (percent > 1) percent = 1;
+
+      this.#kbd = percent;
+      this.notify("kbd");
+
+      this.#kbdChanging = true;
+      const value = Math.round(percent * 100);
+      bash(`brightnessctl -d ${kbdBacklightName} set ${value}% -q`).then(
+         () => (this.#kbdChanging = false),
+      );
    }
 
    @setter(Number)
@@ -202,6 +262,18 @@ export default class Brightness extends GObject.Object {
                },
             );
          }
+      }
+
+      if (this.#kbdAvailable) {
+         monitorFile(
+            `/sys/class/leds/${kbdBacklightName}/brightness`,
+            async (f) => {
+               if (this.#kbdChanging) return;
+               await readFileAsync(f);
+               this.#kbd = getKbdBrightness();
+               this.notify("kbd");
+            },
+         );
       }
    }
 

@@ -11,6 +11,8 @@ const wp = AstalWp.get_default();
 
 const Sliders = {
    brightness: () => (brightness.available ? <BrightnessBox /> : null),
+   "keyboard-brightness": () =>
+      brightness.kbdAvailable ? <KeyboardBrightnessBox /> : null,
    volume: () => <VolumeBox />,
    microphone: () => <MicrophoneBox />,
 } as Record<string, any>;
@@ -24,6 +26,18 @@ function BrightnessBox() {
          min={0.05}
          icon={icons.brightness}
          onChangeValue={(value) => (brightness.screen = value)}
+      />
+   );
+}
+
+function KeyboardBrightnessBox() {
+   const level = createBinding(brightness, "kbd");
+
+   return (
+      <QSSlider
+         level={level}
+         icon={icons.keyboardBrightness}
+         onChangeValue={(value) => (brightness.kbd = value)}
       />
    );
 }
