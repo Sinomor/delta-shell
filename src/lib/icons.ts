@@ -68,6 +68,7 @@ export const icons = {
       4: "ds-battery-4-symbolic",
    },
    brightness: "ds-sun-symbolic",
+   keyboardBrightness: "ds-keyboard-brightness-symbolic",
    video: "ds-video-symbolic",
    close: "ds-x-symbolic",
    apps_default: "application-x-executable",

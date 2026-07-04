@@ -129,7 +129,7 @@ export const config = mkOptions(configFile, {
    },
    quicksettings: {
       buttons: ["network", "bluetooth", "notifications", "screenrecord"],
-      sliders: ["volume", "brightness"],
+      sliders: ["volume", "brightness", "keyboard-brightness"],
    },
    launcher: {
       width: 400,
