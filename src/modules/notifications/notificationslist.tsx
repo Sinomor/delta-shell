@@ -30,7 +30,14 @@ function Header({ showArrow = false }: { showArrow?: boolean }) {
          <button
             cssClasses={["qs-header-button", "notifs-clear"]}
             focusOnClick={false}
-            onClicked={() => notifd.notifications.forEach((n) => n.dismiss())}
+            onClicked={() => {
+               notifd.freeze_notify();
+               try {
+                  [...notifd.notifications].forEach((n) => n.dismiss());
+               } finally {
+                  notifd.thaw_notify();
+               }
+            }}
          >
             <image
                halign={Gtk.Align.CENTER}
