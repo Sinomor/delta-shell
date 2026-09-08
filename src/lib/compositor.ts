@@ -158,7 +158,7 @@ export const compositor = {
    focusWindow(win: any) {
       if (!win) return;
       if (hyprland) {
-         hyprDispatch(`hl.dsp.focus({ window = "address:${win.address}" })`);
+         hyprDispatch(`hl.dsp.focus({ window = "address:0x${win.address}" })`);
       } else if (niri) {
          win.focus(win.id);
       }
@@ -167,7 +167,7 @@ export const compositor = {
       if (!win) return;
       if (hyprland) {
          hyprDispatch(
-            `hl.dsp.window.close({ window = "address:${win.address}" })`,
+            `hl.dsp.window.close({ window = "address:0x${win.address}" })`,
          );
       } else if (niri) {
          bash(`niri msg action close-window --id ${win.id}`);
