@@ -120,6 +120,14 @@ window#bar {
   }
 
   .workspaces {
+    // Workspace currently displayed on its monitor (including the focused one).
+    // Adds an accent border so multi-monitor setups can tell at a glance
+    // which workspace is shown on each monitor.
+    .workspace.visible > .content,
+    &.compact .content > .workspace.visible {
+      box-shadow: inset 0 0 0 2px $accent;
+    }
+
     &.compact {
       @if $bar-vertical {
         padding: 0 $bar-padding;
