@@ -13,6 +13,12 @@ const hyprland =
 
 const niri = compositorName === "niri" ? AstalNiri.get_default() : null;
 
+// Hyprland >= 0.56 speaks Lua on its IPC socket; the legacy
+// "dispatch <name> <args>" form used by libastal-hyprland is rejected.
+function hyprDispatch(lua: string) {
+   hyprland?.message_async(`dispatch ${lua}`, null);
+}
+
 export const compositor = {
    name() {
       return compositorName;
@@ -113,18 +119,23 @@ export const compositor = {
       return { get: () => [], subscribe: () => () => {} } as any;
    },
    focusWorkspace(ws: any) {
-      ws?.focus();
+      if (!ws) return;
+      if (hyprland) {
+         hyprDispatch(`hl.dsp.focus({ workspace = ${ws.id} })`);
+      } else {
+         ws.focus();
+      }
    },
    nextWorkspace() {
       if (hyprland) {
-         bash("hyprctl dispatch workspace +1");
+         hyprDispatch('hl.dsp.focus({ workspace = "+1" })');
       } else if (niri) {
          AstalNiri.msg.focus_workspace_up();
       }
    },
    previousWorkspace() {
       if (hyprland) {
-         bash("hyprctl dispatch workspace -1");
+         hyprDispatch('hl.dsp.focus({ workspace = "-1" })');
       } else if (niri) {
          AstalNiri.msg.focus_workspace_down();
       }
@@ -147,7 +158,7 @@ export const compositor = {
    focusWindow(win: any) {
       if (!win) return;
       if (hyprland) {
-         win.focus();
+         hyprDispatch(`hl.dsp.focus({ window = "address:${win.address}" })`);
       } else if (niri) {
          win.focus(win.id);
       }
@@ -155,7 +166,9 @@ export const compositor = {
    closeWindow(win: any) {
       if (!win) return;
       if (hyprland) {
-         win.kill();
+         hyprDispatch(
+            `hl.dsp.window.close({ window = "address:${win.address}" })`,
+         );
       } else if (niri) {
          bash(`niri msg action close-window --id ${win.id}`);
       }
