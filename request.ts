@@ -3,6 +3,7 @@ import ScreenRecorder from "./src/services/screenrecorder";
 import { windows_names } from "./windows";
 import { hasBarItem, toggleQsModule, toggleWindow } from "./src/lib/utils";
 import { config } from "./options";
+import { FunctionsList } from "./src/widgets/baritem";
 const screenrecorder = ScreenRecorder.get_default();
 
 export default function request(
@@ -54,6 +55,15 @@ export default function request(
       switch (args[0]) {
          case "screenrecord":
             screenrecorder.start();
+            break;
+         case "media-play-pause":
+            FunctionsList["media-play-pause"]?.();
+            break;
+         case "media-next":
+            FunctionsList["media-next"]?.();
+            break;
+         case "media-prev":
+            FunctionsList["media-prev"]?.();
             break;
          default:
             print("Unknown request:", request);

@@ -21,6 +21,7 @@ import { CPU } from "./items/cpu";
 import { RAM } from "./items/ram";
 import { Microphone } from "./items/microphone";
 import { ScreenBrightness } from "./items/brightness";
+import { Media } from "./items/media";
 
 const { position, modules, size } = config.bar;
 const { spacing } = theme.bar;
@@ -37,6 +38,7 @@ export function BarModule({
       launcher: () => <Launcher />,
       workspaces: () => <Workspaces gdkmonitor={gdkmonitor} />,
       clock: () => <Clock />,
+      media: () => <Media />,
       tray: () => <Tray />,
       keyboard: () => <Keyboard />,
       recordindicator: () => <RecordIndicator />,

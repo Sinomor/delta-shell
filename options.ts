@@ -125,6 +125,15 @@ export const config = mkOptions(configFile, {
             "on-scroll-up": "brightness-up" as string | null,
             "on-scroll-down": "brightness-down" as string | null,
          },
+         media: {
+            format: "{icon} {title:20} - {artist:15}",
+            "hide-empty": true,
+            "on-click": "media-play-pause" as string | null,
+            "on-click-right": "toggle-qs" as string | null,
+            "on-click-middle": "media-next" as string | null,
+            "on-scroll-up": "media-next" as string | null,
+            "on-scroll-down": "media-prev" as string | null,
+         },
       },
    },
    quicksettings: {

@@ -14,6 +14,7 @@ import { windows_names } from "@/windows";
 import AstalHyprland from "gi://AstalHyprland?version=0.1";
 import AstalNiri from "gi://AstalNiri?version=0.1";
 import AstalWp from "gi://AstalWp?version=0.1";
+import AstalMpris from "gi://AstalMpris?version=0.1";
 import ScreenRecorder from "@/src/services/screenrecorder";
 import { compositor } from "../lib/compositor";
 import Brightness from "../services/brightness";
@@ -88,6 +89,30 @@ export const FunctionsList = {
    },
    "brightness-up": () => (Brightness.get_default().screen += 0.01),
    "brightness-down": () => (Brightness.get_default().screen -= 0.01),
+   "media-play-pause": () => {
+      const mpris = AstalMpris.get_default();
+      const player =
+         mpris.players.find(
+            (p) => p.playbackStatus === AstalMpris.PlaybackStatus.PLAYING,
+         ) || mpris.players[0];
+      if (player?.canControl) player.play_pause();
+   },
+   "media-next": () => {
+      const mpris = AstalMpris.get_default();
+      const player =
+         mpris.players.find(
+            (p) => p.playbackStatus === AstalMpris.PlaybackStatus.PLAYING,
+         ) || mpris.players[0];
+      if (player?.canGoNext) player.next();
+   },
+   "media-prev": () => {
+      const mpris = AstalMpris.get_default();
+      const player =
+         mpris.players.find(
+            (p) => p.playbackStatus === AstalMpris.PlaybackStatus.PLAYING,
+         ) || mpris.players[0];
+      if (player?.canGoPrevious) player.previous();
+   },
 } as Record<string, any>;
 
 function parseFormat(format: string, data: FormatData): JSX.Element[] {
