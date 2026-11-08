@@ -186,6 +186,27 @@ function handleScroll(
    }
 }
 
+export const barItemWidgets = new Map<string, Set<Gtk.Widget>>();
+export let lastClickedBarItem: Gtk.Widget | null = null;
+
+export function getBarItemForWindow(windowName: string): Gtk.Widget | null {
+   const set = barItemWidgets.get(windowName);
+   if (!set || set.size === 0) return null;
+
+   if (
+      lastClickedBarItem &&
+      set.has(lastClickedBarItem) &&
+      lastClickedBarItem.get_root()
+   ) {
+      return lastClickedBarItem;
+   }
+
+   for (const widget of set) {
+      if (widget.get_root()) return widget;
+   }
+   return null;
+}
+
 export default function BarItem({
    window = "",
    children,
@@ -199,12 +220,21 @@ export default function BarItem({
    ...rest
 }: BarItemProps) {
    const content = format ? parseFormat(format, data) : children;
+   let rootBox: Gtk.Box;
 
    return (
       <box
          class={"bar-item"}
          $={(self) => {
+            rootBox = self;
             if (window) {
+               let set = barItemWidgets.get(window);
+               if (!set) {
+                  set = new Set();
+                  barItemWidgets.set(window, set);
+               }
+               set.add(self);
+
                const appconnect = app.connect("window-toggled", (_, win) => {
                   if (win.name === window) {
                      self[win.visible ? "add_css_class" : "remove_css_class"](
@@ -212,7 +242,14 @@ export default function BarItem({
                      );
                   }
                });
-               onCleanup(() => app.disconnect(appconnect));
+               onCleanup(() => {
+                  app.disconnect(appconnect);
+                  const s = barItemWidgets.get(window);
+                  if (s) {
+                     s.delete(self);
+                     if (s.size === 0) barItemWidgets.delete(window);
+                  }
+               });
 
                attachHoverScroll(self, ({ dy }) => {
                   handleScroll(dy, onScrollUp, onScrollDown);
@@ -223,6 +260,7 @@ export default function BarItem({
       >
          <Gtk.GestureClick
             onPressed={(ctrl) => {
+               lastClickedBarItem = rootBox || (ctrl.get_widget() as Gtk.Widget);
                handleClick(
                   ctrl.get_current_button(),
                   onPrimaryClick,

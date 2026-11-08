@@ -18,6 +18,13 @@ type PopupProps = JSX.IntrinsicElements["window"] & {
    gdkmonitor?: Gdk.Monitor;
    transitionType?: Gtk.RevealerTransitionType;
    transitionDuration?: number;
+   halign?: Gtk.Align;
+   valign?: Gtk.Align;
+   onShow?: (context: {
+      window: Astal.Window;
+      revealer: Gtk.Revealer;
+      clamp: Adw.Clamp;
+   }) => void;
 };
 
 export function Popup({
@@ -34,14 +41,28 @@ export function Popup({
    transitionDuration = config.transition,
    halign = Gtk.Align.CENTER,
    valign = Gtk.Align.CENTER,
+   onShow,
    ...props
 }: PopupProps) {
    const { TOP, BOTTOM, RIGHT, LEFT } = Astal.WindowAnchor;
+   let popupWindow: Astal.Window;
+   let revealerWidget: Gtk.Revealer;
    let contentbox: Adw.Clamp;
    const [visible, setVisible] = createState(false);
    const [revealed, setRevealed] = createState(false);
 
    function show() {
+      if (onShow && popupWindow && revealerWidget && contentbox) {
+         try {
+            onShow({
+               window: popupWindow,
+               revealer: revealerWidget,
+               clamp: contentbox,
+            });
+         } catch (e) {
+            console.error("Popup: error in onShow handler:", e);
+         }
+      }
       setVisible(true);
       setRevealed(true);
    }
@@ -50,6 +71,7 @@ export function Popup({
    }
 
    function init(self: Gtk.Window) {
+      popupWindow = self as Astal.Window;
       // override existing show and hide methods
       Object.assign(self, { show, hide });
    }
@@ -88,6 +110,7 @@ export function Popup({
             }}
          />
          <revealer
+            $={(self) => (revealerWidget = self)}
             transitionType={transitionType}
             transitionDuration={transitionDuration * 1000}
             revealChild={revealed}

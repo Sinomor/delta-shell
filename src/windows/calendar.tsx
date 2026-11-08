@@ -4,7 +4,12 @@ import { BarItemPopup } from "../widgets/baritempopup";
 
 export function CalendarWindow() {
    return (
-      <BarItemPopup name={windows_names.calendar} module={"clock"}>
+      <BarItemPopup
+         name={windows_names.calendar}
+         module={"clock"}
+         width={360}
+         centerOnBarItem
+      >
          <CalendarModule />
       </BarItemPopup>
    );

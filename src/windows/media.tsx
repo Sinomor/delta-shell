@@ -14,7 +14,12 @@ export function MediaWindow() {
    const contentWidth = popupWidth - theme.window.padding * 2;
 
    return (
-      <BarItemPopup name={windows_names.media} module={"media"} width={popupWidth}>
+      <BarItemPopup
+         name={windows_names.media}
+         module={"media"}
+         width={popupWidth}
+         centerOnBarItem
+      >
          <box
             orientation={Gtk.Orientation.VERTICAL}
             widthRequest={contentWidth}
