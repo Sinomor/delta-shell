@@ -108,7 +108,7 @@ export function Media() {
 
    return (
       <BarItem
-         window={windows_names.quicksettings}
+         window={windows_names.media}
          onPrimaryClick={conf["on-click"]}
          onSecondaryClick={conf["on-click-right"]}
          onMiddleClick={conf["on-click-middle"]}

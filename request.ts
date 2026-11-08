@@ -45,6 +45,9 @@ export default function request(
          case "power":
             toggleQsModule("power", "battery");
             break;
+         case "media":
+            toggleWindow(windows_names.media);
+            break;
          default:
             print("Unknown request:", request);
             return response("Unknown request");

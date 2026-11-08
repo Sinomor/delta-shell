@@ -9,7 +9,6 @@ import { config, theme } from "@/options";
 import AstalApps from "gi://AstalApps?version=0.1";
 import { getAppInfo, lengthStr } from "@/src/lib/utils";
 const mpris = AstalMpris.get_default();
-let carousel: Adw.Carousel;
 
 function MediaPlayer({ player }: { player: AstalMpris.Player }) {
    const title = createBinding(player, "title").as((t) => t || "Unknown Track");
@@ -168,6 +167,7 @@ function CustomIndicator({ carousel }: { carousel: Adw.Carousel }) {
 
 export function MprisPlayers() {
    const list = createBinding(mpris, "players");
+   let carousel: Adw.Carousel;
 
    return (
       <overlay

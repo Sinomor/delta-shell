@@ -18,6 +18,7 @@ import { PowerWindow } from "./src/windows/power";
 import { dependencies, hasBarItem } from "./src/lib/utils";
 import { ClipboardWindow } from "./src/windows/clipboard";
 import { AppLauncherWindow } from "./src/windows/applauncher";
+import { MediaWindow } from "./src/windows/media";
 
 export const windows_names = {
   bar: "bar",
@@ -36,6 +37,7 @@ export const windows_names = {
   bluetooth: "bluetooth",
   power: "power",
   clipboard: "clipboard",
+  media: "media",
 };
 
 export function hideWindows() {
@@ -71,6 +73,7 @@ export function windows() {
     [hasBarItem("network"),                                              NetworkWindow],
     [hasBarItem("bluetooth"),                                            BluetoothWindow],
     [hasBarItem("battery"),                                              PowerWindow],
+    [hasBarItem("media"),                                                MediaWindow],
   ];
 
   for (const [condition, open] of windows) {

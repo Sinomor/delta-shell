@@ -53,6 +53,7 @@ export const FunctionsList = {
    "toggle-network": () => toggleQsModule(windows_names.network),
    "toggle-bluetooth": () => toggleQsModule(windows_names.bluetooth),
    "toggle-power": () => toggleQsModule(windows_names.power, "battery"),
+   "toggle-media": () => toggleWindow(windows_names.media),
    "workspace-up": () => compositor.nextWorkspace(),
    "workspace-down": () => compositor.previousWorkspace(),
    "volume-up": () => {
