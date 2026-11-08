@@ -13,7 +13,11 @@ type MenuButtonProps = {
 
 function MenuButton({ icon, label, clicked }: MenuButtonProps) {
    return (
-      <button class={"menubutton"} onClicked={clicked} focusOnClick={false}>
+      <button
+         class={`menubutton ${label.toLowerCase()}`}
+         onClicked={clicked}
+         focusOnClick={false}
+      >
          <box
             orientation={Gtk.Orientation.VERTICAL}
             valign={Gtk.Align.CENTER}

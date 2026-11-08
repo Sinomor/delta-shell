@@ -12,17 +12,18 @@ export function VerificationModule() {
    return (
       <box orientation={Gtk.Orientation.VERTICAL} spacing={20}>
          <label label={createBinding(powermenu, "title")} class={"title"} />
-         <Adw.Clamp maximumSize={280}>
+         <Adw.Clamp maximumSize={420}>
             <label
                label={createBinding(powermenu, "label")}
                wrap
                justify={Gtk.Justification.CENTER}
-               wrapMode={Pango.WrapMode.CHAR}
+               wrapMode={Pango.WrapMode.WORD}
                class={"label"}
             />
          </Adw.Clamp>
          <box homogeneous={true} spacing={theme.spacing}>
             <button
+               class={"cancel"}
                label={"Cancel"}
                focusOnClick={false}
                onClicked={() => {
@@ -31,10 +32,11 @@ export function VerificationModule() {
                }}
             />
             <button
+               class={"confirm"}
                label={createBinding(powermenu, "title")}
                focusOnClick={false}
                onClicked={() => {
-                  bash(powermenu.cmd);
+                  powermenu.executeCommand();
                   hideWindows();
                }}
             />

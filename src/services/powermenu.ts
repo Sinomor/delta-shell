@@ -28,6 +28,13 @@ export default class PowerMenu extends GObject.Object {
    constructor() {
       super();
       this.#timer.subscribe(async () => {
+         const seconds = Math.max(0, Math.ceil(this.#timer.timeLeft / 1000));
+         if (this.#labelFormatter && seconds !== this.#lastSeconds) {
+            this.#lastSeconds = seconds;
+            this.#label = this.#labelFormatter(seconds);
+            this.notify("label");
+         }
+
          if (this.#timer.timeLeft <= 0) {
             this.executeCommand();
          }
@@ -38,6 +45,8 @@ export default class PowerMenu extends GObject.Object {
    #label = "";
    #cmd = "";
    #timer = new Timer(60 * 1000);
+   #labelFormatter: ((seconds: number) => string) | null = null;
+   #lastSeconds = -1;
 
    @getter(String)
    get title() {
@@ -60,38 +69,51 @@ export default class PowerMenu extends GObject.Object {
 
    async executeCommand() {
       this.#timer.cancel();
+      this.#labelFormatter = null;
+      this.#lastSeconds = -1;
       await bash(this.#cmd);
       app.get_window(windows_names.verification)?.hide();
    }
 
    cancelAction() {
       this.#timer.cancel();
+      this.#labelFormatter = null;
+      this.#lastSeconds = -1;
       app.get_window(windows_names.verification)?.hide();
    }
 
    async action(action: string) {
-      [this.#cmd, this.#title, this.#label] = {
+      const formatters: Record<string, [string, string, (s: number) => string]> = {
          Sleep: [
             commands.sleep,
             "Sleep",
-            `${user} will be sleep automatically in 60 seconds`,
+            (s) => `${user} will sleep automatically in ${s} second${s === 1 ? "" : "s"}`,
          ],
          Reboot: [
             commands.reboot,
             "Reboot",
-            "The system will restart automatically in 60 seconds",
+            (s) => `The system will restart automatically in ${s} second${s === 1 ? "" : "s"}`,
          ],
          Logout: [
             commands.logout,
             "Log Out",
-            `${user} will be logged out automatically in 60 seconds`,
+            (s) => `${user} will be logged out automatically in ${s} second${s === 1 ? "" : "s"}`,
          ],
          Shutdown: [
             commands.shutdown,
             "Shutdown",
-            "The system will shutdown automatically in 60 seconds",
+            (s) => `The system will shutdown automatically in ${s} second${s === 1 ? "" : "s"}`,
          ],
-      }[action]!;
+      };
+
+      const match = formatters[action];
+      if (!match) return;
+
+      this.#cmd = match[0];
+      this.#title = match[1];
+      this.#labelFormatter = match[2];
+      this.#lastSeconds = 60;
+      this.#label = this.#labelFormatter(60);
 
       this.notify("cmd");
       this.notify("title");
