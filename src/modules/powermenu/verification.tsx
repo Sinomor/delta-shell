@@ -34,7 +34,7 @@ export function VerificationModule() {
                label={createBinding(powermenu, "title")}
                focusOnClick={false}
                onClicked={() => {
-                  bash(powermenu.cmd);
+                  powermenu.executeCommand();
                   hideWindows();
                }}
             />
