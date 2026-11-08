@@ -10,17 +10,24 @@ import { icons } from "../lib/icons";
 export function MediaWindow() {
    const mpris = AstalMpris.get_default();
    const list = createBinding(mpris, "players");
+   const popupWidth = 440;
+   const contentWidth = popupWidth - theme.window.padding * 2;
 
    return (
-      <BarItemPopup name={windows_names.media} module={"media"} width={380}>
-         <box orientation={Gtk.Orientation.VERTICAL}>
-            <MprisPlayers />
+      <BarItemPopup name={windows_names.media} module={"media"} width={popupWidth}>
+         <box
+            orientation={Gtk.Orientation.VERTICAL}
+            widthRequest={contentWidth}
+            spacing={theme.spacing}
+         >
+            <MprisPlayers widthRequest={contentWidth} />
             <box
                valign={Gtk.Align.CENTER}
                halign={Gtk.Align.CENTER}
                spacing={theme.spacing}
                visible={list((players) => players.length === 0)}
-               heightRequest={100}
+               heightRequest={120}
+               widthRequest={contentWidth}
             >
                <image
                   iconName={icons.player.icon}

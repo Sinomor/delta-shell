@@ -10,7 +10,13 @@ import AstalApps from "gi://AstalApps?version=0.1";
 import { getAppInfo, lengthStr } from "@/src/lib/utils";
 const mpris = AstalMpris.get_default();
 
-function MediaPlayer({ player }: { player: AstalMpris.Player }) {
+function MediaPlayer({
+   player,
+   widthRequest = 440 - theme.window.padding * 2,
+}: {
+   player: AstalMpris.Player;
+   widthRequest?: number;
+}) {
    const title = createBinding(player, "title").as((t) => t || "Unknown Track");
    const artist = createBinding(player, "artist").as(
       (a) => a || "Unknown Artist",
@@ -121,7 +127,7 @@ function MediaPlayer({ player }: { player: AstalMpris.Player }) {
 
    function Art() {
       return (
-         <Adw.Clamp $type={"overlay"} opacity={0.5}>
+         <Adw.Clamp opacity={0.5}>
             <Gtk.Picture
                file={coverArt}
                class={"art"}
@@ -132,58 +138,68 @@ function MediaPlayer({ player }: { player: AstalMpris.Player }) {
    }
 
    return (
-      <overlay hexpand class={"mediaplayer"}>
+      <overlay
+         hexpand
+         widthRequest={widthRequest}
+         heightRequest={160}
+         class={"mediaplayer"}
+      >
          <Art />
          <Content />
       </overlay>
    );
 }
 
-function CustomIndicator({ carousel }: { carousel: Adw.Carousel }) {
+export function MprisPlayers({
+   widthRequest = 440 - theme.window.padding * 2,
+}: {
+   widthRequest?: number;
+} = {}) {
+   const list = createBinding(mpris, "players");
+
+   const carousel = (
+      <Adw.Carousel
+         hexpand
+         widthRequest={widthRequest}
+         spacing={theme.spacing}
+      >
+         <For each={list}>
+            {(player: AstalMpris.Player) => (
+               <MediaPlayer player={player} widthRequest={widthRequest} />
+            )}
+         </For>
+      </Adw.Carousel>
+   ) as Adw.Carousel;
+
    const position = createBinding(carousel, "position");
    const nPages = createBinding(carousel, "n_pages");
 
    return (
-      <box
-         $type={"overlay"}
-         class={"indicator"}
-         spacing={theme.spacing}
-         visible={nPages((p) => p > 1)}
-         halign={Gtk.Align.START}
-         valign={Gtk.Align.START}
-      >
-         <For each={nPages((n) => Array.from({ length: n }, (_, i) => i))}>
-            {(index) => (
-               <box
-                  class={position.as((pos) =>
-                     pos === index ? "active-dot" : "inactive-dot",
-                  )}
-               />
-            )}
-         </For>
-      </box>
-   );
-}
-
-export function MprisPlayers() {
-   const list = createBinding(mpris, "players");
-   let carousel: Adw.Carousel;
-
-   return (
       <overlay
+         hexpand
+         widthRequest={widthRequest}
          heightRequest={160}
          visible={list((players) => players.length !== 0)}
       >
-         <Adw.Carousel
-            spacing={theme.spacing}
-            $={(self) => (carousel = self)}
+         {carousel}
+         <box
             $type={"overlay"}
+            class={"indicator"}
+            spacing={theme.spacing}
+            visible={nPages((p) => p > 1)}
+            halign={Gtk.Align.START}
+            valign={Gtk.Align.START}
          >
-            <For each={list}>
-               {(player: AstalMpris.Player) => <MediaPlayer player={player} />}
+            <For each={nPages((n) => Array.from({ length: n }, (_, i) => i))}>
+               {(index) => (
+                  <box
+                     class={position.as((pos) =>
+                        pos === index ? "active-dot" : "inactive-dot",
+                     )}
+                  />
+               )}
             </For>
-         </Adw.Carousel>
-         <CustomIndicator carousel={carousel} />
+         </box>
       </overlay>
    );
 }
