@@ -71,6 +71,11 @@ export function Header() {
 }
 
 export function MainPage() {
+   const showMedia =
+      (config.quicksettings as any)["show-media"] !== false &&
+      config.quicksettings.media !== false &&
+      (config.quicksettings.media as any)?.enabled !== false;
+
    return (
       <box
          $type={"named"}
@@ -82,7 +87,7 @@ export function MainPage() {
          <Header />
          <QSButtons />
          <QSSliders />
-         <MprisPlayers />
+         {showMedia && <MprisPlayers />}
       </box>
    );
 }

@@ -137,6 +137,7 @@ export const config = mkOptions(configFile, {
       },
    },
    quicksettings: {
+      media: true as boolean | { enabled: boolean },
       buttons: ["network", "bluetooth", "notifications", "screenrecord"],
       sliders: ["volume", "brightness"],
    },
