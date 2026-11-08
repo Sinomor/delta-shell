@@ -12,12 +12,12 @@ export function VerificationModule() {
    return (
       <box orientation={Gtk.Orientation.VERTICAL} spacing={20}>
          <label label={createBinding(powermenu, "title")} class={"title"} />
-         <Adw.Clamp maximumSize={280}>
+         <Adw.Clamp maximumSize={420}>
             <label
                label={createBinding(powermenu, "label")}
                wrap
                justify={Gtk.Justification.CENTER}
-               wrapMode={Pango.WrapMode.CHAR}
+               wrapMode={Pango.WrapMode.WORD}
                class={"label"}
             />
          </Adw.Clamp>
