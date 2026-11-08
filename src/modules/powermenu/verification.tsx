@@ -23,6 +23,7 @@ export function VerificationModule() {
          </Adw.Clamp>
          <box homogeneous={true} spacing={theme.spacing}>
             <button
+               class={"cancel"}
                label={"Cancel"}
                focusOnClick={false}
                onClicked={() => {
@@ -31,6 +32,7 @@ export function VerificationModule() {
                }}
             />
             <button
+               class={"confirm"}
                label={createBinding(powermenu, "title")}
                focusOnClick={false}
                onClicked={() => {
