@@ -14,6 +14,7 @@ import { windows_names } from "@/windows";
 import AstalHyprland from "gi://AstalHyprland?version=0.1";
 import AstalNiri from "gi://AstalNiri?version=0.1";
 import AstalWp from "gi://AstalWp?version=0.1";
+import AstalMpris from "gi://AstalMpris?version=0.1";
 import ScreenRecorder from "@/src/services/screenrecorder";
 import { compositor } from "../lib/compositor";
 import Brightness from "../services/brightness";
@@ -52,6 +53,7 @@ export const FunctionsList = {
    "toggle-network": () => toggleQsModule(windows_names.network),
    "toggle-bluetooth": () => toggleQsModule(windows_names.bluetooth),
    "toggle-power": () => toggleQsModule(windows_names.power, "battery"),
+   "toggle-media": () => toggleWindow(windows_names.media),
    "workspace-up": () => compositor.nextWorkspace(),
    "workspace-down": () => compositor.previousWorkspace(),
    "volume-up": () => {
@@ -88,6 +90,30 @@ export const FunctionsList = {
    },
    "brightness-up": () => (Brightness.get_default().screen += 0.01),
    "brightness-down": () => (Brightness.get_default().screen -= 0.01),
+   "media-play-pause": () => {
+      const mpris = AstalMpris.get_default();
+      const player =
+         mpris.players.find(
+            (p) => p.playbackStatus === AstalMpris.PlaybackStatus.PLAYING,
+         ) || mpris.players[0];
+      if (player?.canControl) player.play_pause();
+   },
+   "media-next": () => {
+      const mpris = AstalMpris.get_default();
+      const player =
+         mpris.players.find(
+            (p) => p.playbackStatus === AstalMpris.PlaybackStatus.PLAYING,
+         ) || mpris.players[0];
+      if (player?.canGoNext) player.next();
+   },
+   "media-prev": () => {
+      const mpris = AstalMpris.get_default();
+      const player =
+         mpris.players.find(
+            (p) => p.playbackStatus === AstalMpris.PlaybackStatus.PLAYING,
+         ) || mpris.players[0];
+      if (player?.canGoPrevious) player.previous();
+   },
 } as Record<string, any>;
 
 function parseFormat(format: string, data: FormatData): JSX.Element[] {
@@ -160,6 +186,27 @@ function handleScroll(
    }
 }
 
+export const barItemWidgets = new Map<string, Set<Gtk.Widget>>();
+export let lastClickedBarItem: Gtk.Widget | null = null;
+
+export function getBarItemForWindow(windowName: string): Gtk.Widget | null {
+   const set = barItemWidgets.get(windowName);
+   if (!set || set.size === 0) return null;
+
+   if (
+      lastClickedBarItem &&
+      set.has(lastClickedBarItem) &&
+      lastClickedBarItem.get_root()
+   ) {
+      return lastClickedBarItem;
+   }
+
+   for (const widget of set) {
+      if (widget.get_root()) return widget;
+   }
+   return null;
+}
+
 export default function BarItem({
    window = "",
    children,
@@ -173,12 +220,21 @@ export default function BarItem({
    ...rest
 }: BarItemProps) {
    const content = format ? parseFormat(format, data) : children;
+   let rootBox: Gtk.Box;
 
    return (
       <box
          class={"bar-item"}
          $={(self) => {
+            rootBox = self;
             if (window) {
+               let set = barItemWidgets.get(window);
+               if (!set) {
+                  set = new Set();
+                  barItemWidgets.set(window, set);
+               }
+               set.add(self);
+
                const appconnect = app.connect("window-toggled", (_, win) => {
                   if (win.name === window) {
                      self[win.visible ? "add_css_class" : "remove_css_class"](
@@ -186,7 +242,14 @@ export default function BarItem({
                      );
                   }
                });
-               onCleanup(() => app.disconnect(appconnect));
+               onCleanup(() => {
+                  app.disconnect(appconnect);
+                  const s = barItemWidgets.get(window);
+                  if (s) {
+                     s.delete(self);
+                     if (s.size === 0) barItemWidgets.delete(window);
+                  }
+               });
 
                attachHoverScroll(self, ({ dy }) => {
                   handleScroll(dy, onScrollUp, onScrollDown);
@@ -197,6 +260,7 @@ export default function BarItem({
       >
          <Gtk.GestureClick
             onPressed={(ctrl) => {
+               lastClickedBarItem = rootBox || (ctrl.get_widget() as Gtk.Widget);
                handleClick(
                   ctrl.get_current_button(),
                   onPrimaryClick,

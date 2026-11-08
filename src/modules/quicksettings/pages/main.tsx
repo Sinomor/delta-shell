@@ -9,6 +9,7 @@ import { createBinding } from "ags";
 import { timeout } from "ags/time";
 import { config, theme } from "@/options";
 import { windows_names } from "@/windows";
+import { qs_page_set } from "../quicksettings";
 const battery = AstalBattery.get_default();
 
 function Power() {
@@ -46,6 +47,8 @@ function Battery() {
          cssClasses={["qs-header-button", "battery-button"]}
          visible={createBinding(battery, "isPresent")}
          focusOnClick={false}
+         tooltipText={"Power Profiles"}
+         onClicked={() => qs_page_set("power")}
       >
          <box spacing={theme.spacing}>
             <image iconName={BatteryIcon} pixelSize={24} />
@@ -71,6 +74,11 @@ export function Header() {
 }
 
 export function MainPage() {
+   const showMedia =
+      (config.quicksettings as any)["show-media"] !== false &&
+      config.quicksettings.media !== false &&
+      (config.quicksettings.media as any)?.enabled !== false;
+
    return (
       <box
          $type={"named"}
@@ -82,7 +90,7 @@ export function MainPage() {
          <Header />
          <QSButtons />
          <QSSliders />
-         <MprisPlayers />
+         {showMedia && <MprisPlayers />}
       </box>
    );
 }

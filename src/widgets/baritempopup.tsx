@@ -6,6 +6,7 @@ import Adw from "gi://Adw?version=1";
 import { Popup } from "./popup";
 import { config, theme } from "@/options";
 import { isVertical } from "../modules/bar/bar";
+import { getBarItemForWindow } from "./baritem";
 
 type BarItemPopupProps = JSX.IntrinsicElements["window"] & {
    children?: any;
@@ -15,6 +16,7 @@ type BarItemPopupProps = JSX.IntrinsicElements["window"] & {
    margin?: number;
    gdkmonitor?: Gdk.Monitor;
    transitionDuration?: number;
+   centerOnBarItem?: boolean;
 };
 
 export function BarItemPopup({
@@ -26,6 +28,7 @@ export function BarItemPopup({
    height,
    margin,
    transitionDuration = config.transition,
+   centerOnBarItem,
    ...props
 }: BarItemPopupProps) {
    const { bar } = config;
@@ -37,6 +40,9 @@ export function BarItemPopup({
       : bar.modules.center.includes(module)
         ? "center"
         : "end";
+
+   const shouldCenterOnBarItem =
+      (centerOnBarItem ?? true) && module_pos === "center";
 
    function halign() {
       if (isVertical) {
@@ -90,6 +96,74 @@ export function BarItemPopup({
       }
    }
 
+   function handleShow(context: {
+      window: Astal.Window;
+      revealer: Gtk.Revealer;
+      clamp: Adw.Clamp;
+   }) {
+      if (!shouldCenterOnBarItem || !name) return;
+
+      const barItem = getBarItemForWindow(name);
+      if (!barItem) return;
+
+      const barWindow = barItem.get_root() as Astal.Window;
+      if (!barWindow) return;
+
+      try {
+         const barMon = barWindow.gdkmonitor;
+         if (barMon && context.window.gdkmonitor !== barMon) {
+            context.window.set_gdkmonitor(barMon);
+         }
+      } catch (e) {
+         // Ignore monitor assignment error
+      }
+
+      const [success, bounds] = barItem.compute_bounds(barWindow);
+      if (!success) return;
+
+      const screenMargin = theme.window.margin ?? 10;
+
+      if (!isVertical) {
+         const barWidth =
+            barWindow.get_width() > 0 ? barWindow.get_width() : 1920;
+         const itemCenterX = bounds.origin.x + bounds.size.width / 2;
+         const measuredWidth =
+            context.clamp.measure(Gtk.Orientation.HORIZONTAL, -1)[1];
+         const popupWidth = width
+            ? Math.min(width, measuredWidth || width)
+            : measuredWidth || 380;
+
+         const targetLeft = itemCenterX - popupWidth / 2;
+         const clampedLeft = Math.max(
+            screenMargin,
+            Math.min(barWidth - screenMargin - popupWidth, targetLeft),
+         );
+
+         context.revealer.set_halign(Gtk.Align.START);
+         context.clamp.set_margin_start(Math.round(clampedLeft));
+         context.clamp.set_margin_end(0);
+      } else {
+         const barHeight =
+            barWindow.get_height() > 0 ? barWindow.get_height() : 1080;
+         const itemCenterY = bounds.origin.y + bounds.size.height / 2;
+         const measuredHeight =
+            context.clamp.measure(Gtk.Orientation.VERTICAL, -1)[1];
+         const popupHeight = height
+            ? Math.min(height, measuredHeight || height)
+            : measuredHeight || 300;
+
+         const targetTop = itemCenterY - popupHeight / 2;
+         const clampedTop = Math.max(
+            screenMargin,
+            Math.min(barHeight - screenMargin - popupHeight, targetTop),
+         );
+
+         context.revealer.set_valign(Gtk.Align.START);
+         context.clamp.set_margin_top(Math.round(clampedTop));
+         context.clamp.set_margin_bottom(0);
+      }
+   }
+
    return (
       <Popup
          name={name}
@@ -119,6 +193,8 @@ export function BarItemPopup({
          }
          transitionType={transitionType()}
          transitionDuration={transitionDuration}
+         onShow={handleShow}
+         {...props}
       >
          {children}
       </Popup>

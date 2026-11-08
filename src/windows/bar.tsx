@@ -27,6 +27,7 @@ export function BarWindow({
       windows_names.bluetooth,
       windows_names.power,
       windows_names.clipboard,
+      windows_names.media,
    ];
    let bar: Astal.Window;
 
@@ -106,6 +107,7 @@ export function BarShadowWindow({
       windows_names.bluetooth,
       windows_names.power,
       windows_names.clipboard,
+      windows_names.media,
    ];
    let shadow: Astal.Window;
 
