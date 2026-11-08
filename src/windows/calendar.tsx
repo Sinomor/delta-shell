@@ -8,7 +8,6 @@ export function CalendarWindow() {
          name={windows_names.calendar}
          module={"clock"}
          width={360}
-         centerOnBarItem
       >
          <CalendarModule />
       </BarItemPopup>

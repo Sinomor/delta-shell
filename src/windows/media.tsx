@@ -18,7 +18,6 @@ export function MediaWindow() {
          name={windows_names.media}
          module={"media"}
          width={popupWidth}
-         centerOnBarItem
       >
          <box
             orientation={Gtk.Orientation.VERTICAL}

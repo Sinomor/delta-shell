@@ -28,9 +28,7 @@ export function BarItemPopup({
    height,
    margin,
    transitionDuration = config.transition,
-   centerOnBarItem = module === "clock" ||
-      module === "media" ||
-      config.bar.modules.center.includes(module),
+   centerOnBarItem,
    ...props
 }: BarItemPopupProps) {
    const { bar } = config;
@@ -42,6 +40,9 @@ export function BarItemPopup({
       : bar.modules.center.includes(module)
         ? "center"
         : "end";
+
+   const shouldCenterOnBarItem =
+      (centerOnBarItem ?? true) && module_pos === "center";
 
    function halign() {
       if (isVertical) {
@@ -100,7 +101,7 @@ export function BarItemPopup({
       revealer: Gtk.Revealer;
       clamp: Adw.Clamp;
    }) {
-      if (!centerOnBarItem || !name) return;
+      if (!shouldCenterOnBarItem || !name) return;
 
       const barItem = getBarItemForWindow(name);
       if (!barItem) return;
